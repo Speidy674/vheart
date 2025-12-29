@@ -55,11 +55,21 @@ alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 
 If you work with WSL on Windows you may have to add this to your ~/.gitconfig inside WSL:
 
-```shell
+```ini
 [credential]
     helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
 ```
+(make sure you have up-to-date git installed on windows though)
 
 this allows the git inside WSL to use your window's git credentials.
 
-## 
+
+## Resources
+
+- [Tips & Tricks for windows and WSL](https://jessehouwing.net/tips-tricks-git-under-wsl-and-windows/)
+- [InertiaJS Documentation](https://inertiajs.com/docs/v2/getting-started)
+- [Laravel Documentation](https://laravel.com/docs/12.x/configuration)
+- [Twitch API Documentation](https://dev.twitch.tv/docs/api/reference)
+- [React Documentation](https://react.dev/reference/react)
+  - [shadcn UI Stuff](https://ui.shadcn.com/)
+- [FrankenPHP (if we use it)](https://frankenphp.dev/)
