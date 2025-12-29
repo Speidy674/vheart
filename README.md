@@ -2,7 +2,7 @@
 
 ## Sail Setup (fürs erste)
 
-> Please note that you have to run this in a linux environment. If you are on windows you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run this project.
+> Please note that you have to run this in a linux environment. If you are on Windows you can use the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) to run this project.
 
 To initially setup the project run `composer install` to be able to use sail.
 
@@ -52,3 +52,14 @@ To make working with sail easier you can add the following aliases to your `.bas
 ```bash
 alias sail='[ -f sail ] && sh sail || sh vendor/bin/sail'
 ```
+
+If you work with WSL on Windows you may have to add this to your ~/.gitconfig inside WSL:
+
+```shell
+[credential]
+    helper = /mnt/c/Program\\ Files/Git/mingw64/bin/git-credential-manager.exe
+```
+
+this allows the git inside WSL to use your window's git credentials.
+
+## 
