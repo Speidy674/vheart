@@ -1,3 +1,4 @@
+import ClipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,7 +37,7 @@ const navItemKeys = [
     },
     {
         key: 'evaluate_clips',
-        href: evaluateclips(),
+        href: ClipVoteController.create(),
         icon: ScanHeart,
     },
 ] as const;

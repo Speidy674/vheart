@@ -1,10 +1,17 @@
+import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
 import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { evaluateclips } from '@/routes';
+import { vote } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
-import { ChevronLeft, ChevronRight, CircleX, Heart } from 'lucide-react';
+import {
+    ChevronLeft,
+    ChevronRight,
+    CircleX,
+    Heart,
+    Loader,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,32 +19,39 @@ type Item = {
     id: number;
     clipSlug: string;
     title: string;
+    already_voted: boolean;
+    voted: boolean;
+};
+
+type PageProps = {
+    clip: Clip;
+    history: Vote[];
+};
+
+type Clip = {
+    id: number;
+    twitch_id: string;
+    title: string;
+    public_votes: number;
+};
+
+type Vote = {
+    id: number;
+    clip_id: number;
+    voted: boolean;
+    clip: Clip;
 };
 
 export default function EvaluateClips() {
     const { t } = useTranslation('evaluateclips');
 
     const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('evaluateclips'), href: evaluateclips().url },
+        { title: t('breadcrumb'), href: vote().url },
     ];
 
-    const items: Item[] = [
-        {
-            id: 1,
-            clipSlug: 'StupidProtectiveScorpionTheRinger-rgF-JZJ3vPS2KKin',
-            title: 'Clip 1',
-        },
-        {
-            id: 2,
-            clipSlug: 'SparklingCrunchyChoughNerfBlueBlaster-0eTNXxe7OLJpnyj_',
-            title: 'Clip 2',
-        },
-        {
-            id: 3,
-            clipSlug: 'CourageousLazyBubbleteaStoneLightning-L4YWt7IyzpGD7wt7',
-            title: 'Clip 3',
-        },
-    ];
+    const items: Item[] = [];
+
+    const { props } = usePage<PageProps>();
 
     const [liked, setLiked] = useState<Set<number>>(new Set());
     const [activeIndex, setActiveIndex] = useState(0);
@@ -46,6 +60,37 @@ export default function EvaluateClips() {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<(HTMLElement | null)[]>([]);
 
+    const getClip = () => {
+        router.reload({ only: ['clip', 'history'] });
+    };
+
+    if (props.history) {
+        for (let index = props.history.length - 1; index >= 0; index--) {
+            const vote = props.history[index];
+            items.push({
+                id: vote.clip.id,
+                clipSlug: vote.clip.twitch_id,
+                title: vote.clip.title,
+                already_voted: true,
+                voted: vote.voted,
+            } as Item);
+        }
+    }
+
+    if (props.clip) {
+        items.push({
+            id: props.clip.id,
+            clipSlug: props.clip.twitch_id,
+            title: props.clip.title,
+            already_voted: false,
+            voted: false,
+        } as Item);
+        setTimeout(() => {
+            scrollToIndex(items.length - 1);
+        }, 500);
+    }
+    console.log(items);
+
     function toggleLike(id: number) {
         setLiked((prev) => {
             const next = new Set(prev);
@@ -53,6 +98,7 @@ export default function EvaluateClips() {
             else next.add(id);
             return next;
         });
+        console.log('like', props.clip);
     }
 
     function toggleSkip(id: number) {
@@ -62,6 +108,7 @@ export default function EvaluateClips() {
             else next.add(id);
             return next;
         });
+        console.log('skip', props.clip);
     }
 
     function scrollToIndex(index: number) {
@@ -93,6 +140,10 @@ export default function EvaluateClips() {
             { root: containerRef.current, threshold: [0.6, 0.75, 0.9] },
         );
 
+        if (!props.clip) {
+            getClip();
+        }
+
         itemRefs.current.forEach((el) => el && observer.observe(el));
         return () => observer.disconnect();
     }, []);
@@ -117,9 +168,13 @@ export default function EvaluateClips() {
                         className="scrollbar-none h-full snap-y snap-mandatory overflow-y-auto overscroll-contain"
                     >
                         {items.map((it, index) => {
-                            const isActive = index === activeIndex;
-                            const isSkipped = skipped.has(it.id);
-                            const isLiked = liked.has(it.id);
+                            const isActive = index === activeIndex || true;
+                            const isSkipped =
+                                skipped.has(it.id) ||
+                                (it.already_voted && !it.voted);
+                            const isLiked =
+                                liked.has(it.id) ||
+                                (it.already_voted && it.voted);
 
                             const disableLike = isSkipped;
                             const disableSkip = isLiked;
@@ -134,9 +189,9 @@ export default function EvaluateClips() {
                                     className="flex h-full snap-start snap-always flex-col bg-black"
                                 >
                                     {/* VIDEO */}
-                                    <div className="relative min-h-0 flex-1 overflow-hidden flex items-center justify-center">
+                                    <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                                         {isActive ? (
-                                            <div className="h-full aspect-video">
+                                            <div className="aspect-video h-full">
                                                 <TwitchClipContainer
                                                     slug={it.clipSlug}
                                                     parent="localhost"
@@ -145,7 +200,7 @@ export default function EvaluateClips() {
                                             </div>
                                         ) : (
                                             <div className="absolute inset-0 grid place-items-center text-sm text-white/40">
-                                                Clip bereit
+                                                <Loader />
                                             </div>
                                         )}
                                     </div>
@@ -165,16 +220,26 @@ export default function EvaluateClips() {
                                         </button>
 
                                         {/* Like */}
-                                        <button
+                                        <Link
                                             type="button"
                                             aria-pressed={isLiked}
                                             disabled={disableLike}
                                             onClick={() => toggleLike(it.id)}
+                                            href={store()}
+                                            data={{
+                                                clip: it.id,
+                                                voted: true,
+                                            }}
                                             className={clsx(
                                                 'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 sm:size-11',
                                                 'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
                                                 disableLike && 'opacity-40',
                                             )}
+                                            preserveState
+                                            onSuccess={() => {
+                                                console.log('test Like');
+                                                getClip();
+                                            }}
                                         >
                                             <Heart
                                                 className={clsx(
@@ -184,10 +249,10 @@ export default function EvaluateClips() {
                                                         : 'text-white',
                                                 )}
                                             />
-                                        </button>
+                                        </Link>
 
                                         {/* Skip */}
-                                        <button
+                                        <Link
                                             type="button"
                                             aria-pressed={isSkipped}
                                             disabled={disableSkip}
@@ -195,11 +260,21 @@ export default function EvaluateClips() {
                                                 toggleSkip(it.id);
                                                 scrollToIndex(index + 1);
                                             }}
+                                            href={store()}
+                                            data={{
+                                                clip: it.id,
+                                                voted: false,
+                                            }}
                                             className={clsx(
                                                 'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 sm:size-11',
                                                 'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
                                                 disableSkip && 'opacity-40',
                                             )}
+                                            preserveState
+                                            onSuccess={() => {
+                                                console.log('test Skip');
+                                                getClip();
+                                            }}
                                         >
                                             <CircleX
                                                 className={clsx(
@@ -209,7 +284,7 @@ export default function EvaluateClips() {
                                                         : 'text-white',
                                                 )}
                                             />
-                                        </button>
+                                        </Link>
 
                                         {/* Next */}
                                         <button

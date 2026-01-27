@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\ClipSubmitController;
+use App\Http\Controllers\ClipVoteController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,9 +55,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
 
-    Route::get('/evaluateclips', function () {
-        return Inertia::render('evaluateclips');
-    })->name('evaluateclips');
+    Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
+
+    Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
 
     Route::get('/team', TeamController::class)->name('team');
 

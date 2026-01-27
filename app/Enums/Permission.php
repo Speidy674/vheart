@@ -38,5 +38,7 @@ enum Permission: string implements HasLabel
     case ForceDeleteAnyCompilation = 'force_delete_any_compilation';
 
     // Non-Model stuff
+
+    case JuryVote = 'jury_vote';
     // empty for now
 }
