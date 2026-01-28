@@ -14,16 +14,16 @@ class Game extends Model
     /** @use HasFactory<GameFactory> */
     use HasFactory;
 
-    public $incrementing = false;
+    public const string PLACEHOLDER_BOX_ART = 'https://static-cdn.jtvnw.net/ttv-static/404_boxart-{width}x{height}.jpg';
 
-    public const PLACEHOLDER_BOX_ART = "https://static-cdn.jtvnw.net/ttv-static/404_boxart-{width}x{height}.jpg";
+    public $incrementing = false;
 
     public function clips(): HasMany
     {
         return $this->hasMany(Clip::class, 'game_id', 'id');
     }
 
-    public function getBoxArt($width = 188, $height = 250): ?string
+    public function getBoxArt(int $width = 188, int $height = 250): ?string
     {
         $boxArtUrl = $this->box_art ?? self::PLACEHOLDER_BOX_ART;
 

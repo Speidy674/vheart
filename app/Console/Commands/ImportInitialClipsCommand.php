@@ -26,7 +26,7 @@ class ImportInitialClipsCommand extends Command
      */
     protected $description = 'Import Initinal Clips';
 
-    private $clips = [
+    private array $clips = [
         'https://www.twitch.tv/yhubei/clip/BigImpartialWalletAMPEnergy-8RYRjexnyvbeNfrV',
         'https://www.twitch.tv/ixigami/clip/EnticingLongNuggetsCurseLit-1LUi7d9JzNhMZ2Rx',
         'https://www.twitch.tv/icyhime/clip/GenerousBoxySwanFloof-HM_jprvcQDR7WnwR',
@@ -122,7 +122,7 @@ class ImportInitialClipsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(TwitchService $twitchService, ImportClipAction $importClipAction)
+    public function handle(TwitchService $twitchService, ImportClipAction $importClipAction): void
     {
         $params = ['id' => []];
 
