@@ -26,6 +26,11 @@ export function TwitchClipContainer({
         }
     }, []);
 
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setIsLoading(true);
+    }, [slug]);
+
     const handleConsent = () => {
         document.cookie = 'twitch_embed_consent=true; max-age=31536000; path=/';
         setHasConsent(true);
