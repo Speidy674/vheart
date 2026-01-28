@@ -40,6 +40,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->group('stateless', [
             Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
+
+        $middleware->trustProxies('*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         Sentry\Laravel\Integration::handles($exceptions);
