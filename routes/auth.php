@@ -37,7 +37,8 @@ Route::middleware(['guest'])->group(function () {
             $request->session()->regenerate();
             Auth::login($user);
 
-            return redirect()->intended(route('dashboard'));
+            $url = $request->session()->pull('url.intended', route('start'));
+            return Inertia::location($url);
         }
 
         throw ValidationException::withMessages([
