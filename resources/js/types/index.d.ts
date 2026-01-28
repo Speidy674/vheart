@@ -42,3 +42,37 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Game {
+    id: number;
+    title: string;
+    box_art: string;
+}
+
+export interface PublicUser {
+    id: number;
+    name: string;
+    avatar: string;
+}
+
+/* PublicClipResource */
+export interface PublicClip {
+    id: number;
+    slug: string;
+    title: string;
+    thumbnail_url: string;
+    clip_url: string;
+
+    broadcaster?: PublicUser,
+    clipper?: PublicUser,
+    submitter?: PublicUser,
+    game?: Game
+    vod?: [
+        id: number,
+        offset: number
+    ]
+    votes?: number,
+    clip_duration: number;
+    clipped_at: string;
+    submitted_at: string;
+}
