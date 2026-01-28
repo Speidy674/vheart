@@ -5,14 +5,49 @@ declare(strict_types=1);
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Models\User;
 use Carbon\CarbonInterval;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
+use Inertia\Inertia;
 
 Route::middleware(['guest'])->group(function () {
+    Route::inertia('auth/challenge', 'auth/challenge')->name('auth.challenge');
+    Route::post('auth/challenge', static function (Request $request) {
+        $request->validate([
+            'code' => 'sometimes|numeric|max_digits:6|min_digits:6',
+            'recovery_code' => 'sometimes|string',
+        ]);
+
+        $userId = $request->session()->get('auth.2fa.id');
+        $mfa = app(AppAuthentication::class);
+
+        if (! $userId || ! ($user = User::query()->findOrFail($userId)) || ! $mfa->isEnabled($user)) {
+            return to_route('login');
+        }
+
+        if (
+            $mfa->verifyCode($request->input('code', ''), $user->app_authentication_secret)
+            || $mfa->verifyRecoveryCode($request->input('code', ''), $user)
+        ) {
+            $request->session()->forget(['auth.2fa.id']);
+            $request->session()->regenerate();
+            Auth::login($user);
+
+            return redirect()->intended(route('dashboard'));
+        }
+
+        throw ValidationException::withMessages([
+            'code' => 'Incorrect code',
+            'recovery_code' => 'Incorrect code',
+        ]);
+    })
+        ->middleware(['throttle:two-factor'])
+        ->name('auth.challenge.submit');
+
     Route::get('login', static function (Request $request) {
         return Inertia::render('auth/login', [
             'status' => $request->session()->get('status'),
@@ -29,7 +64,7 @@ Route::middleware(['guest'])->group(function () {
     })
         ->name('auth.twitch');
 
-    Route::get('/auth/twitch/callback', function () {
+    Route::get('/auth/twitch/callback', function (Request $request) {
         try {
             $twitchUser = Socialite::driver('twitch')->user();
         } catch (Exception $e) {
@@ -56,9 +91,19 @@ Route::middleware(['guest'])->group(function () {
             return to_route('login')->withErrors(['login' => __('user.disabled')]);
         }
 
-        session()?->regenerate();
+        $mfa = app(AppAuthentication::class);
+
+        $request->session()->regenerate();
+        $request->session()->put('twitch_access_token', $twitchUser->token);
+
+        if ($mfa->isEnabled($user)) {
+            $request->session()->put('auth.2fa.id', $user->id);
+
+            return to_route('auth.challenge');
+        }
+
         Auth::login($user);
-        session()->put('twitch_access_token', $twitchUser->token);
+
         if ($user->wasRecentlyCreated) {
             Inertia::flash('showTwitchPermissionsPrompt', true);
         }
