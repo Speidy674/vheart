@@ -137,7 +137,7 @@ return [
     ],
 
     'flush' => [
-        Barryvdh\Debugbar\LaravelDebugbar::class,
+        Fruitcake\LaravelDebugbar\LaravelDebugbar::class,
         Whitecube\LaravelCookieConsent\Consent::class,
         'cookie.consent',
         Filament\FilamentManager::class,
