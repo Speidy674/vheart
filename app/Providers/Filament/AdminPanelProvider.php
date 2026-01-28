@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->emailChangeVerification()
             ->multiFactorAuthentication([
                 AppAuthentication::make()
+                    ->regenerableRecoveryCodes(false)
                     ->recoverable()
                     ->brandName('VHeart'),
             ])
