@@ -74,7 +74,7 @@ describe('2FA Challenge', function () {
 describe('2FA Submission', function () {
 
     it('authenticates with valid TOTP code', function () {
-        $user = User::factory()->create(['app_authentication_secret' => 'valid-secret']);
+        $user = User::factory()->withTwoFactor('valid-secret')->create();
 
         $this->mock(AppAuthentication::class)
             ->shouldReceive('isEnabled')->andReturn(true)

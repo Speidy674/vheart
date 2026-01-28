@@ -34,26 +34,21 @@ class UserFactory extends Factory
         ];
     }
 
-    public function withTwoFactor(): self
+    public function withTwoFactor(?string $secret = null): self
     {
-        return $this->state(function (array $attributes): array {
-            $mfa = app(AppAuthentication::class);
-            $secret = $mfa->generateSecretKey();
-
+        return $this->state(function (array $attributes) use ($secret): array {
             return [
-                'app_authentication_secret' => $secret,
+                'app_authentication_secret' => $secret ?? app(AppAuthentication::class)->generateSecretKey(),
                 'app_authentication_recovery_codes' => [],
             ];
         });
     }
-    public function withTwoFactorRecoveryCodes(): self
-    {
-        return $this->state(function (array $attributes): array {
-            $mfa = app(AppAuthentication::class);
-            $recovery = $mfa->generateRecoveryCode();
 
+    public function withTwoFactorRecoveryCodes(?array $recoveryCodes = null): self
+    {
+        return $this->state(function (array $attributes) use ($recoveryCodes): array {
             return [
-                'app_authentication_recovery_codes' => $recovery,
+                'app_authentication_recovery_codes' => $recoveryCodes ?? app(AppAuthentication::class)->generateRecoveryCodes(),
             ];
         });
     }
