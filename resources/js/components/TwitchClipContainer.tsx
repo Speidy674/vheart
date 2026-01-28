@@ -43,7 +43,7 @@ export function TwitchClipContainer({
                     className,
                 )}
             >
-                <div className="absolute inset-0 z-20 flex aspect-video flex-col items-center justify-center gap-4 bg-zinc-900 p-6 text-center">
+                <div className="absolute inset-0 z-20 flex aspect-video flex-col items-center justify-center gap-4 bg-black p-6 text-center">
                     <p className="text-sm font-medium text-zinc-400">
                         <T ns="twitch" k="embeds.consent.text" />
                     </p>
