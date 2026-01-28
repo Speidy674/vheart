@@ -19,7 +19,7 @@ export function TwitchClipContainer({
     useEffect(() => {
         const consent = document.cookie
             .split('; ')
-            .find((row) => row.startsWith('twitch-embed-consent='));
+            .find((row) => row.startsWith('twitch_embed_consent='));
         if (consent) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setHasConsent(true);
@@ -27,7 +27,7 @@ export function TwitchClipContainer({
     }, []);
 
     const handleConsent = () => {
-        document.cookie = 'twitch-embed-consent=true; max-age=31536000; path=/';
+        document.cookie = 'twitch_embed_consent=true; max-age=31536000; path=/';
         setHasConsent(true);
     };
 

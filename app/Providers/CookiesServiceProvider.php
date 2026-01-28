@@ -23,8 +23,8 @@ class CookiesServiceProvider extends ServiceProvider
 
         Cookies::optional()
             ->cookie(function (Cookie $cookie) {
-                $cookie->name('twitch-embed-consent')
-                    ->description(__('cookies.twitch-embed-consent.description'))
+                $cookie->name('twitch_embed_consent')
+                    ->description(__('cookies.twitch_embed_consent.description'))
                     ->duration(60 * 24 * 365);
             })
             ->cookie(function (Cookie $cookie) {

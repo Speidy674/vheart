@@ -7,7 +7,7 @@ return [
     'sidebar_state' => [
         'description' => 'Allows us to remember your sidebar state.',
     ],
-    'twitch-embed-consent' => [
+    'twitch_embed_consent' => [
         'description' => 'Allows us to remember your embed consent for Twitch related embeds.',
     ],
 ];
