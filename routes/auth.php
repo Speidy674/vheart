@@ -31,7 +31,7 @@ Route::middleware(['guest'])->group(function () {
 
         if (
             $mfa->verifyCode($request->input('code', ''), $user->app_authentication_secret)
-            || $mfa->verifyRecoveryCode($request->input('code', ''), $user)
+            || $mfa->verifyRecoveryCode($request->input('recovery_code', ''), $user)
         ) {
             $request->session()->forget(['auth.2fa.id']);
             $request->session()->regenerate();
