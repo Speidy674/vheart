@@ -16,18 +16,24 @@ use Inertia\Inertia;
 
 class ClipVoteController extends Controller
 {
+    private const string SESSION_QUEUE_KEY = 'CLIP_VOTE_QUEUE';
+
     /**
      * Show the form for creating the resource.
      */
     public function create(Request $request)
     {
         $user = $request->user();
+        $session = $request->session();
 
         return Inertia::render('evaluateclips', [
             'history' => Inertia::lazy(function () use ($user) {
                 $lastVotes = Vote::where('user_id', $user->id)->limit(5)
                     ->with(['clip' => function (BelongsTo $query) {
-                        $query->select(['id', 'twitch_id', 'title']);
+                        $query->select(['id', 'twitch_id', 'title'])
+                            ->withCount(['votes as public_votes' => function (Builder $query) {
+                                $query->where('type', ClipVoteType::Public);
+                            }]);
                     }])
                     ->select(['id', 'clip_id', 'voted', 'created_at'])
                     ->orderBy('id', 'desc')
@@ -35,25 +41,41 @@ class ClipVoteController extends Controller
 
                 return $lastVotes;
             }),
-            'clip' => Inertia::lazy(function () use ($user) {
-                /** @var Clip $clip */
-                $clip = Clip::whereDoesntHave('votes', function (Builder $query) use ($user) {
-                    return $query->where('user_id', $user->id);
-                })->whereNot('broadcaster_id', $user->id)
-                    ->whereDoesntHave('compilations', function (Builder $query) {
-                        $status = [
-                            CompilationStatus::Scheduled,
-                            CompilationStatus::Unlisted,
-                            CompilationStatus::Published,
-                            CompilationStatus::Archived,
-                        ];
+            'clip' => Inertia::lazy(function () use ($user, $session) {
 
-                        return $query->where('compilations.status', $status);
-                    })->select(['id', 'twitch_id', 'title'])
+                $clipIdQueue = [];
+
+                if ($session->has(key: self::SESSION_QUEUE_KEY)) {
+                    $clipSessionQueue = $session->get(self::SESSION_QUEUE_KEY);
+                    if (is_array($clipSessionQueue) && ! empty($clipSessionQueue)) {
+                        $clipIdQueue = $clipSessionQueue;
+                    }
+                }
+
+                if (empty($clipIdQueue)) {
+
+                    $clips = Clip::whereDoesntHave('votes', function (Builder $query) use ($user) {
+                        return $query->where('user_id', $user->id);
+                    })->whereNot('broadcaster_id', $user->id)
+                        ->whereNot('submitter_id', $user->id)
+                        ->whereDoesntHave('compilations', function (Builder $query) {
+                            return $query->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases());
+                        })->select(['id'])
+                        ->inRandomOrder()
+                        ->limit(20)
+                        ->get();
+
+                    $clipIdQueue = $clips->pluck('id')->toArray();
+                }
+
+                $clipIdToVote = array_shift($clipIdQueue);
+
+                $session->put(self::SESSION_QUEUE_KEY, $clipIdQueue);
+
+                $clip = Clip::select(['id', 'twitch_id', 'title'])
                     ->withCount(['votes as public_votes' => function (Builder $query) {
                         $query->where('type', ClipVoteType::Public);
-                    }])
-                    ->inRandomOrder()->first();
+                    }])->find($clipIdToVote);
 
                 return $clip;
             }),
