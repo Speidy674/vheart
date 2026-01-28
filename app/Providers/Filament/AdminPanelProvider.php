@@ -33,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
                     ->regenerableRecoveryCodes(false)
                     ->recoverable()
                     ->brandName('VHeart'),
-            ])
+            ], isRequired: config('auth.admin.require_2fa'))
             ->profile(EditProfile::class, isSimple: false)
             ->id('admin')
             ->path('admin')
