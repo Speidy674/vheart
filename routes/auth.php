@@ -15,17 +15,30 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 Route::middleware(['guest'])->group(function () {
-    Route::inertia('auth/challenge', 'auth/challenge')->name('auth.challenge');
+    Route::get('auth/challenge', static function (Request $request) {
+        $userId = $request->session()->get('auth.2fa.id', false);
+        $user = User::query()->find($userId);
+        $mfa = app(AppAuthentication::class);
+
+        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
+            return to_route('login');
+        }
+
+        return Inertia::render('auth/challenge');
+    })->name('auth.challenge');
+
     Route::post('auth/challenge', static function (Request $request) {
         $request->validate([
             'code' => 'sometimes|numeric|max_digits:6|min_digits:6',
             'recovery_code' => 'sometimes|string',
         ]);
 
-        $userId = $request->session()->get('auth.2fa.id');
+        $userId = $request->session()->get('auth.2fa.id', false);
+        $user = User::query()->find($userId);
+
         $mfa = app(AppAuthentication::class);
 
-        if (! $userId || ! ($user = User::query()->findOrFail($userId)) || ! $mfa->isEnabled($user)) {
+        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
             return to_route('login');
         }
 
@@ -38,6 +51,7 @@ Route::middleware(['guest'])->group(function () {
             Auth::login($user);
 
             $url = $request->session()->pull('url.intended', route('start'));
+
             return Inertia::location($url);
         }
 
