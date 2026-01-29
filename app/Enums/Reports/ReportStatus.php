@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Enums\Reports;
 
+use App\Enums\Traits\HasTranslatedLabel;
 use Filament\Support\Contracts\HasLabel;
 
 enum ReportStatus: int implements HasLabel
 {
+    use HasTranslatedLabel;
+
     case Pending = 0;
     case Resolved = 1;
     case Dismissed = 2;
 
-    public function getLabel(): string
+    private function getTranslatableEnumLabelPrefix(): string
     {
-        // todo: implement translatable label trait
-        return $this->name;
+        return 'reports.enums';
     }
 }
