@@ -1,15 +1,9 @@
 import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import { CircleX, Heart, X } from 'lucide-react';
-
-export type ClipModalItem = {
-    id: number;
-    clipSlug: string;
-    title: string;
-};
+import { PublicClip } from '@/types';
 
 export function ClipModal({
-    openClip,
-    twitchParent,
+    clip,
     isLiked,
     isSkipped,
     disableLike,
@@ -18,8 +12,7 @@ export function ClipModal({
     onToggleLike,
     onToggleSkip,
 }: {
-    openClip: ClipModalItem;
-    twitchParent: string;
+    clip: PublicClip;
     isLiked: boolean;
     isSkipped: boolean;
     disableLike: boolean;
@@ -34,7 +27,7 @@ export function ClipModal({
             onClick={onClose}
             role="dialog"
             aria-modal="true"
-            aria-label={`Clip ansehen: ${openClip.title}`}
+            aria-label={`Clip ansehen: ${clip.title}`}
         >
             <div
                 className="flex h-[70svh] w-[80vw] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:w-[45vw] 2xl:w-[55vw] dark:bg-black"
@@ -43,7 +36,7 @@ export function ClipModal({
                 {/* Header */}
                 <div className="text-blac flex items-center justify-between px-4 py-3 2xl:px-8 dark:text-white">
                     <div className="line-clamp-2 pr-2 text-xs font-semibold sm:text-sm 2xl:text-lg">
-                        {openClip.title}
+                        {clip.title}
                     </div>
 
                     <button
@@ -61,8 +54,8 @@ export function ClipModal({
                     <div className="flex h-full min-h-0 items-center justify-center overflow-hidden">
                         <div className="relative aspect-video h-full w-auto">
                             <TwitchClipContainer
-                                slug={openClip.clipSlug}
-                                parent={twitchParent}
+                                slug={clip.slug}
+                                parent={'localhost'}
                                 className="absolute inset-0 h-full w-full"
                             />
                         </div>
@@ -76,7 +69,7 @@ export function ClipModal({
                         type="button"
                         aria-pressed={isLiked}
                         disabled={disableLike}
-                        onClick={() => onToggleLike(openClip.id)}
+                        onClick={() => onToggleLike(clip.id)}
                         className={`grid size-8 place-items-center rounded-full bg-white transition-transform duration-150 2xl:size-12 dark:bg-black ${
                             disableLike
                                 ? 'cursor-not-allowed opacity-40'
@@ -97,7 +90,7 @@ export function ClipModal({
                         type="button"
                         aria-pressed={isSkipped}
                         disabled={disableSkip}
-                        onClick={() => onToggleSkip(openClip.id)}
+                        onClick={() => onToggleSkip(clip.id)}
                         className={`bg:white grid size-8 place-items-center rounded-full transition-transform duration-150 2xl:size-12 dark:bg-black ${
                             disableSkip
                                 ? 'cursor-not-allowed opacity-40'
