@@ -33,11 +33,14 @@ export interface SharedData {
 export interface User {
     id: number;
     name: string;
-    email: string;
+    email: string | null;
+    email_verified_at: string | null;
     avatar?: string;
     clip_permission?: boolean;
-    email_verified_at: string | null;
-    two_factor_enabled?: boolean;
+    rules: string[];
+    app_authentication_secret?: string;
+    app_authentication_recovery_codes?: string[];
+    has_email_authentication: boolean;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
