@@ -35,7 +35,7 @@ services:
             interval: 1s
             timeout: 1s
             retries: 3
-            start_period: 5s
+            start_period: 300s
     autoheal:
         image: willfarrell/autoheal
         restart: unless-stopped
