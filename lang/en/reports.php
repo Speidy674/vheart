@@ -6,6 +6,7 @@ return [
     'enums' => [
         'report-status' => [
             'pending' => 'Pending',
+            'in-review' => 'In Review',
             'resolved' => 'Resolved',
             'dismissed' => 'Dismissed',
         ],

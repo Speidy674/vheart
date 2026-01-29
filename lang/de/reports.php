@@ -5,7 +5,8 @@ declare(strict_types=1);
 return [
     'enums' => [
         'report-status' => [
-            'pending' => 'In Bearbeitung',
+            'pending' => 'Wartend',
+            'in-review' => 'In Bearbeitung',
             'resolved' => 'Fertiggestellt',
             'dismissed' => 'Verworfen',
         ],
