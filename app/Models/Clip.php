@@ -56,7 +56,7 @@ class Clip extends Model
     {
         return $this->hasMany(Vote::class);
     }
-  
+
     public function compilations(): BelongsToMany
     {
         return $this->belongsToMany(Compilation::class)
@@ -68,5 +68,10 @@ class Clip extends Model
     public function claimer(): BelongsTo
     {
         return $this->BelongsTo(User::class, 'claimed_by');
+    }
+
+    public function getReportableTitleAttribute(): string
+    {
+        return 'title';
     }
 }
