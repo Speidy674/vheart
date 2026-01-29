@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Reports\Tables;
 
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
+use App\Enums\Reports\ResolveAction;
 use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\TextColumn;
@@ -20,6 +21,7 @@ class ReportsTable
             ->columns([
                 TextColumn::make('status')
                     ->badge()
+                    ->color('gray')
                     ->sortable(),
                 TextColumn::make('reason')
                     ->wrap()
@@ -40,17 +42,27 @@ class ReportsTable
                     ->label('Claimed By')
                     ->toggleable(),
 
+                TextColumn::make('resolve_action')
+                    ->badge()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->color('gray')
+                    ->sortable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
             ])
             ->filters([
-                TrashedFilter::make(),
                 SelectFilter::make('status')
                     ->options(ReportStatus::class),
 
                 SelectFilter::make('reason')
                     ->options(ReportReason::class),
+
+                SelectFilter::make('resolve_action')
+                    ->options(ResolveAction::class),
+
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),

@@ -13,6 +13,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 
 class ReportInfolist
@@ -26,7 +27,7 @@ class ReportInfolist
                     ->schema([
                         Group::make([
                             Section::make('Report Overview')
-                                ->icon('heroicon-m-document-text')
+                                ->icon(Heroicon::DocumentText)
                                 ->schema([
                                     Grid::make(2)->schema([
                                         TextEntry::make('reason')
@@ -51,15 +52,31 @@ class ReportInfolist
                                         ->extraAttributes(['class' => 'leading-relaxed']),
                                 ]),
 
+                            Section::make('Action')
+                                ->visible(function (Model $record) {
+                                    return $record->resolve_action !== null;
+                                })
+                                ->icon(Heroicon::CommandLine)
+                                ->compact()
+                                ->schema([
+                                    TextEntry::make('resolve_action')
+                                        ->label('Moderative Action'),
+
+                                    TextEntry::make('resolve_description')
+                                        ->label('Details')
+                                        ->markdown()
+                                        ->placeholder('Non Provided'),
+                                ]),
+
                             Section::make('Reported Content')
                                 ->headerActions([
                                     Action::make('view')
                                         ->color('info')
-                                        ->icon('heroicon-m-arrow-top-right-on-square')
-                                        ->url(fn (Model $record) => Filament::getResourceUrl($record->reportable, 'view'))
-                                        ->openUrlInNewTab(),
+                                        ->icon(Heroicon::ArrowTopRightOnSquare)
+                                        ->disabled(fn (Model $record) => self::getResourceUrl($record->reportable) === null)
+                                        ->url(fn (Model $record) => self::getResourceUrl($record->reportable), shouldOpenInNewTab: true),
                                 ])
-                                ->icon('heroicon-m-eye')
+                                ->icon(Heroicon::Eye)
                                 ->columns(2)
                                 ->schema([
                                     TextEntry::make('reportable_type')
@@ -76,30 +93,34 @@ class ReportInfolist
 
                         Group::make([
                             Section::make('Involved Parties')
-                                ->icon('heroicon-m-users')
+                                ->icon(Heroicon::Users)
                                 ->schema([
                                     TextEntry::make('reporter.name')
-                                        ->url(fn (Model $record) => $record->reporter ? Filament::getResourceUrl($record->reporter, 'view') : null, true)
+                                        ->url(fn (Model $record) => self::getResourceUrl($record->reporter), true)
                                         ->label('Reporter')
-                                        ->icon('heroicon-m-user')
+                                        ->icon(Heroicon::User)
                                         ->weight(FontWeight::Bold)
                                         ->color('gray'),
 
                                     TextEntry::make('claimer.name')
-                                        ->url(fn (Model $record) => $record->claimer ? Filament::getResourceUrl($record->claimer, 'view') : null, true)
+                                        ->url(fn (Model $record) => self::getResourceUrl($record->claimer), true)
                                         ->label('Claimed By')
-                                        ->icon('heroicon-m-shield-check')
-                                        ->placeholder('Unclaimed'),
+                                        ->icon(Heroicon::ShieldCheck)
+                                        ->placeholder('Unclaimed')
+                                        ->weight(FontWeight::Bold)
+                                        ->color('gray'),
 
                                     TextEntry::make('resolver.name')
-                                        ->url(fn (Model $record) => $record->resolver ? Filament::getResourceUrl($record->resolver, 'view') : null, true)
+                                        ->url(fn (Model $record) => self::getResourceUrl($record->resolver), true)
                                         ->label('Resolved By')
-                                        ->icon('heroicon-m-check-badge')
-                                        ->placeholder('Unresolved'),
+                                        ->icon(Heroicon::CheckBadge)
+                                        ->placeholder('Unresolved')
+                                        ->weight(FontWeight::Bold)
+                                        ->color('gray'),
                                 ]),
 
                             Section::make('Timeline')
-                                ->icon('heroicon-m-clock')
+                                ->icon(Heroicon::Clock)
                                 ->compact()
                                 ->schema([
                                     TextEntry::make('created_at')
@@ -125,5 +146,14 @@ class ReportInfolist
                         ])->columnSpan(['lg' => 1]),
                     ]),
             ]);
+    }
+
+    private static function getResourceUrl(?Model $model): ?string
+    {
+        if (! $model || Filament::getModelResource($model) === null) {
+            return null;
+        }
+
+        return Filament::getResourceUrl($model, 'view');
     }
 }
