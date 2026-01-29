@@ -6,12 +6,14 @@ namespace Database\Factories;
 
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
+use App\Enums\Reports\ResolveAction;
 use App\Models\Clip;
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Report>
+ * @extends Factory<Report>
  */
 class ReportFactory extends Factory
 {
@@ -34,6 +36,7 @@ class ReportFactory extends Factory
             'reason' => $this->faker->randomElement(ReportReason::cases()),
             'description' => $this->faker->paragraph(),
             'status' => ReportStatus::Pending,
+            'resolve_action' => null,
             'claimed_by' => null,
             'claimed_at' => null,
             'resolved_by' => null,
@@ -55,12 +58,14 @@ class ReportFactory extends Factory
     /**
      * Report has been resolved/closed.
      */
-    public function resolved(?User $user = null): static
+    public function resolved(?User $user = null, ?ResolveAction $resolveAction = null): static
     {
         return $this->state(fn (array $attributes) => [
             'status' => ReportStatus::Resolved,
+            'resolve_action' => $resolveAction ?? $this->faker->randomElement(ResolveAction::cases()),
             'resolved_by' => $user ?? User::factory(),
             'resolved_at' => now(),
+            'deleted_at' => now(),
         ]);
     }
 }
