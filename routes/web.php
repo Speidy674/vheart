@@ -5,12 +5,38 @@ declare(strict_types=1);
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
 use App\Http\Controllers\TeamController;
+use App\Models\Clip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+Route::get('/', static function () {
+
+    $bestRated = Clip::query()
+        ->where('created_at', '>', now()->subDays(30))
+        ->whereHas('votes', fn ($q) => $q->where('voted', true))
+        ->withCount(['votes' => fn ($q) => $q->where('voted', true)])
+        ->orderByDesc('votes_count')
+        ->limit(10)
+        ->get();
+
+    return Inertia::render('start', [
+        'bestRated' => $bestRated->toResourceCollection(),
+        'discover' => Inertia::scroll(static function () {
+            $discover = Clip::query()
+                ->withCount(['votes' => fn ($q) => $q->where('voted', true)])
+                ->orderByDesc('created_at')
+                ->cursorPaginate(25);
+
+            return $discover->toResourceCollection();
+        }),
+    ]);
+})
+    ->middleware(['auth']) // cant be without until topbar is updated to show "Login" instead of user
+    ->name('home');
+
+Route::get('/about-us', static function () {
     $settings = [
         'donationUrl' => 'https://www.betterplace.org/de/fundraising-events/55712-vheart-fuerdiesuessmaeuse',
         'partnerIcon' => null,
@@ -43,10 +69,6 @@ Route::get('/privacy', function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/start', function () {
-        return Inertia::render('start');
-    })->name('start');
-
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
