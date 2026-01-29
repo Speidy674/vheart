@@ -13,7 +13,14 @@ return [
             'other' => 'Anderes',
             'spam' => 'Spam',
             'harassment' => 'Belästigung',
-            'hatespeech' => 'Hassrede',
+            'hate-speech' => 'Hassrede',
+        ],
+        'resolve-action' => [
+            'other' => 'Anderes',
+            'dismissed' => 'Report Verworfen',
+            'content-edited' => 'Inhalte Angepasst',
+            'content-removed' => 'Inhalte entfernt',
+            'user-banned' => 'Benutzer Gesperrt',
         ],
     ],
 ];
