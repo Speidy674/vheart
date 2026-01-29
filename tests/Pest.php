@@ -44,6 +44,7 @@ arch()->preset()->laravel()
         "App\Providers\Socialite", // Custom Socialite Providers
         "App\Services", // Services may not follow the strict laravel conventions (yet)
         "App\Enums\Traits", // should probably organize it better but this has to work for now
+        "App\Http\Resources", // Resources may be used in models, preset was created before laravel had that attribute.
     ]);
 
 // Filament
