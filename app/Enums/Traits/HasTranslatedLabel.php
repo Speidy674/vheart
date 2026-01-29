@@ -12,9 +12,9 @@ trait HasTranslatedLabel
     /**
      * Returns a translated string based on this format:
      *
-     * `enums.<kebab case enum class name>.<lowercase case name>`
+     * `<prefix>.<kebab case enum class name>.<lowercase case name>`
      *
-     * Example key with `CollectionStatus->Internal`:
+     * Example key with `CollectionStatus->Internal` and default prefix:
      *
      * `enums.collection-status.internal`
      */
@@ -23,6 +23,15 @@ trait HasTranslatedLabel
         $enumClassName = Str::kebab(class_basename(static::class));
         $enumValueName = Str::lower($this->name);
 
-        return __("enums.{$enumClassName}.{$enumValueName}");
+        return __("{$this->getTranslatableEnumLabelPrefix()}.{$enumClassName}.{$enumValueName}");
+    }
+
+    /**
+     * Returns the prefix of the translation path
+     * e.g. "enums" will result in `enums.<enum>.<name>`
+     */
+    private function getTranslatableEnumLabelPrefix(): string
+    {
+        return 'enums';
     }
 }
