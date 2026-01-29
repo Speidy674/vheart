@@ -33,7 +33,6 @@ Route::get('/', static function () {
         }),
     ]);
 })
-    ->middleware(['auth']) // cant be without until topbar is updated to show "Login" instead of user
     ->name('home');
 
 Route::get('/about-us', static function () {

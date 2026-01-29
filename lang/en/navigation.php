@@ -5,6 +5,7 @@ return [
     'dashboard' => 'Dashboard',
     'submit_clips' => 'Submit Clips',
     'evaluate_clips' => 'Evaluate Clips',
+    'login' => 'Login',
 
     // Footer navigation
     'team' => 'Team',
