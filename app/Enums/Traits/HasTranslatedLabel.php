@@ -21,7 +21,7 @@ trait HasTranslatedLabel
     public function getLabel(): string|Htmlable|null
     {
         $enumClassName = Str::kebab(class_basename(static::class));
-        $enumValueName = Str::lower($this->name);
+        $enumValueName = Str::kebab($this->name);
 
         return __("{$this->getTranslatableEnumLabelPrefix()}.{$enumClassName}.{$enumValueName}");
     }
