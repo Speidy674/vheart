@@ -7,9 +7,12 @@ import { Form, Head, Link, usePage } from '@inertiajs/react';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
+import { SettingsSection } from '@/components/sidebar/settings-section';
+import { StreamerSection } from '@/components/sidebar/streamer-section';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit } from '@/routes/profile';
@@ -31,7 +34,15 @@ export default function Profile({
     const { auth } = usePage<SharedData>().props;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout
+            breadcrumbs={breadcrumbs}
+            sidebarContent={
+                <SidebarMenu>
+                    <StreamerSection />
+                    <SettingsSection />
+                </SidebarMenu>
+            }
+        >
             <Head title="Profile settings" />
 
             <SettingsLayout>
