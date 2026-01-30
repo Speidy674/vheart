@@ -1,7 +1,4 @@
-import { SettingsSection } from '@/components/sidebar/settings-section';
-import { StreamerSection } from '@/components/sidebar/streamer-section';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
@@ -16,15 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
     return (
-        <AppLayout
-            breadcrumbs={breadcrumbs}
-            sidebarContent={
-                <SidebarMenu>
-                    <StreamerSection />
-                    <SettingsSection />
-                </SidebarMenu>
-            }
-        >
+        <AppLayout breadcrumbs={breadcrumbs} withSidebar={true}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">

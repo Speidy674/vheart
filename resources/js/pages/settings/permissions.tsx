@@ -1,10 +1,7 @@
 import HeadingSmall from '@/components/heading-small';
-import { SettingsSection } from '@/components/sidebar/settings-section';
-import { StreamerSection } from '@/components/sidebar/streamer-section';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit, update } from '@/routes/permissions';
@@ -47,15 +44,7 @@ export default function Permissions() {
     };
 
     return (
-        <AppLayout
-            breadcrumbs={breadcrumbs}
-            sidebarContent={
-                <SidebarMenu>
-                    <StreamerSection />
-                    <SettingsSection />
-                </SidebarMenu>
-            }
-        >
+        <AppLayout breadcrumbs={breadcrumbs} withSidebar={true}>
             <Head title={t('permissions.title')} />
 
             <SettingsLayout>

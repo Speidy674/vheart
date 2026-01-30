@@ -4,9 +4,6 @@ import AppearanceTabs from '@/components/appearance-tabs';
 import HeadingSmall from '@/components/heading-small';
 import { type BreadcrumbItem } from '@/types';
 
-import { SettingsSection } from '@/components/sidebar/settings-section';
-import { StreamerSection } from '@/components/sidebar/streamer-section';
-import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit as editAppearance } from '@/routes/appearance';
@@ -20,15 +17,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Appearance() {
     return (
-        <AppLayout
-            breadcrumbs={breadcrumbs}
-            sidebarContent={
-                <SidebarMenu>
-                    <StreamerSection />
-                    <SettingsSection />
-                </SidebarMenu>
-            }
-        >
+        <AppLayout breadcrumbs={breadcrumbs} withSidebar={true}>
             <Head title="Appearance settings" />
 
             <SettingsLayout>
