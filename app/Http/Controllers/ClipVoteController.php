@@ -18,6 +18,8 @@ class ClipVoteController extends Controller
 {
     private const string SESSION_QUEUE_KEY = 'CLIP_VOTE_QUEUE';
 
+    private const int QUEUE_SIZE = 20;
+
     /**
      * Show the form for creating the resource.
      */
@@ -62,7 +64,7 @@ class ClipVoteController extends Controller
                             return $query->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases());
                         })->select(['id'])
                         ->inRandomOrder()
-                        ->limit(20)
+                        ->limit(value: self::QUEUE_SIZE)
                         ->get();
 
                     $clipIdQueue = $clips->pluck('id')->toArray();
