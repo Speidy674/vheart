@@ -68,11 +68,11 @@ class ClipVoteController extends Controller
                         ->get();
 
                     $clipIdQueue = $clips->pluck('id')->toArray();
+
+                    $session->put(self::SESSION_QUEUE_KEY, $clipIdQueue);
                 }
 
-                $clipIdToVote = array_shift($clipIdQueue);
-
-                $session->put(self::SESSION_QUEUE_KEY, $clipIdQueue);
+                $clipIdToVote = $clipIdQueue[0];
 
                 $clip = Clip::select(['id', 'twitch_id', 'title'])
                     ->withCount(['votes as public_votes' => function (Builder $query) {
@@ -94,12 +94,33 @@ class ClipVoteController extends Controller
             'voted' => ['required', 'bool'],
         ]);
 
+        $session = $request->session();
+
+        if ($session->has(key: self::SESSION_QUEUE_KEY)) {
+            $clipSessionQueue = $session->get(self::SESSION_QUEUE_KEY);
+            $clipIdtoVote = null;
+            if (is_array($clipSessionQueue) && ! empty($clipSessionQueue)) {
+                $clipIdtoVote = $clipSessionQueue[0];
+            }
+
+            if (! empty($clipIdtoVote) && $clipIdtoVote === $data['clip']) {
+                array_shift($clipSessionQueue);
+                $session->put(self::SESSION_QUEUE_KEY, value: $clipSessionQueue);
+            }
+        }
+
+        $clip = Clip::whereDoesntHave('compilations', function (Builder $query) {
+            return $query->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases());
+        })->find($data['clip']);
+
+        if (empty($clip)) {
+            return $this->create($request);
+        }
+
         $voteType = ClipVoteType::Public;
         if ($request->user()->can(Permission::JuryVote)) {
             $voteType = ClipVoteType::Jury;
         }
-
-        $clip = Clip::find($data['clip']);
         $clip->votes()->updateOrCreate([
             'user_id' => $request->user()->id,
         ], [
@@ -107,6 +128,6 @@ class ClipVoteController extends Controller
             'type' => $voteType,
         ]);
 
-        return $this->create($request)->with('voted_ok', true);
+        return $this->create($request);
     }
 }
