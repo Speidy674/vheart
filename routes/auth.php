@@ -8,9 +8,9 @@ use Carbon\CarbonInterval;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Date;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('login', static function (Request $request) {
@@ -61,6 +61,10 @@ Route::middleware(['guest'])->group(function () {
         session()->put('twitch_access_token', $twitchUser->token);
         if ($user->wasRecentlyCreated) {
             Inertia::flash('showTwitchPermissionsPrompt', true);
+
+            if (User::count() === 1) {
+                $user->syncRoles([1]);
+            }
         }
 
         return redirect()->intended(route('dashboard'));
