@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Clips;
 
-use App\Filament\Resources\Clips\Pages\CreateClip;
 use App\Filament\Resources\Clips\Pages\EditClip;
 use App\Filament\Resources\Clips\Pages\ListClips;
 use App\Filament\Resources\Clips\Pages\ViewClip;
@@ -43,7 +44,7 @@ class ClipResource extends Resource
     public static function getRelations(): array
     {
         return [
-            CompilationsRelationManager::class
+            CompilationsRelationManager::class,
         ];
     }
 
@@ -51,7 +52,7 @@ class ClipResource extends Resource
     {
         return [
             'index' => ListClips::route('/'),
-            //'create' => CreateClip::route('/create'),
+            // 'create' => CreateClip::route('/create'),
             'view' => ViewClip::route('/{record}'),
             'edit' => EditClip::route('/{record}/edit'),
         ];
