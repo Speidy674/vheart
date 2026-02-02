@@ -135,6 +135,21 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->hasMany(Vote::class);
     }
 
+    public function broadcastedClips(): HasMany
+    {
+        return $this->hasMany(Clip::class, 'broadcaster_id');
+    }
+
+    public function createdClips(): HasMany
+    {
+        return $this->hasMany(Clip::class, 'creator_id');
+    }
+
+    public function submittedClips(): HasMany
+    {
+        return $this->hasMany(Clip::class, 'submitter_id');
+    }
+
     public function hasVerifiedEmail(): bool
     {
         if (is_null($this->email)) {
