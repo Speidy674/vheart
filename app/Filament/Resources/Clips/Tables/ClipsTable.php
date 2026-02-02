@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
+use App\Enums\ClipVoteType;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
@@ -27,6 +29,13 @@ class ClipsTable
                 'broadcaster',
                 'creator',
                 'submitter',
+            ])->withCount([
+                'votes as votes_jury' => function (Builder $query) {
+                    $query->where('type', ClipVoteType::Jury)->whereVoted(true);
+                },
+                'votes as votes_public' => function (Builder $query) {
+                    $query->where('type', ClipVoteType::Public)->whereVoted(true);
+                },
             ]))
             ->columns([
                 Split::make([
@@ -34,7 +43,7 @@ class ClipsTable
                         ImageColumn::make('thumbnail_url')
                             ->label('admin/resources/clips.table.columns.thumbnail')
                             ->translateLabel()
-                            ->imageHeight(200)
+                            ->imageHeight(100)
                             ->alignCenter()
                             ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
                     ])->grow(false),
@@ -54,27 +63,38 @@ class ClipsTable
                             ->color('primary')
                             ->searchable(),
 
-                        TextColumn::make('duration')
-                            ->label('admin/resources/clips.table.columns.duration')
-                            ->translateLabel()
-                            ->icon(Heroicon::Clock)
-                            ->sortable()
-                            ->formatStateUsing(fn (int $state) => gmdate('i:s', $state))
-                            ->fontFamily(FontFamily::Mono)
-                            ->color('gray'),
-                    ]),
+                        Split::make([
+                            TextColumn::make('duration')
+                                ->label(__('admin/resources/clips.table.columns.duration'))
+                                ->tooltip(__('admin/resources/clips.table.columns.duration'))
+                                ->icon(Heroicon::Clock)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->formatStateUsing(fn (int $state) => gmdate('i:s', $state))
+                                ->fontFamily(FontFamily::Mono)
+                                ->badge()
+                                ->color('gray'),
+
+                            TextColumn::make('votes_jury')
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->label(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->icon(Heroicon::Star)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->badge()
+                                ->color('warning'),
+                            TextColumn::make('votes_public')
+                                ->label(__('admin/resources/clips.table.columns.votes_public'))
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
+                                ->size(TextSize::Medium)
+                                ->icon(Heroicon::UserGroup)
+                                ->sortable()
+                                ->badge()
+                                ->color('success'),
+                        ])->grow(false),
+                    ])->space(),
 
                     Stack::make([
-                        TextColumn::make('date')
-                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->color('gray'),
-                        TextColumn::make('created_at')
-                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->color('gray'),
                         TextColumn::make('broadcaster.name')
                             ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
                             ->icon(Heroicon::VideoCamera)
@@ -88,6 +108,24 @@ class ClipsTable
                         TextColumn::make('submitter.name')
                             ->tooltip(__('admin/resources/clips.table.columns.submitter'))
                             ->icon(Heroicon::User)
+                            ->color('gray'),
+                    ])
+                        ->space(1),
+
+                    Stack::make([
+                        TextColumn::make('date')
+                            ->label(__('admin/resources/clips.table.columns.created_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
+                            ->color('gray'),
+                        TextColumn::make('created_at')
+                            ->label(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
                             ->color('gray'),
                     ])
                         ->space(1),
@@ -110,7 +148,7 @@ class ClipsTable
                     ->searchable()
                     ->preload()
                     ->multiple()
-                    ->label('admin/resources/clips.filters.clipper')
+                    ->label('admin/resources/clips.filters.creator')
                     ->translateLabel(),
                 SelectFilter::make('submitter')
                     ->relationship('submitter', 'name', function (Builder $query): Builder {
@@ -136,7 +174,7 @@ class ClipsTable
                     ->label('admin/resources/clips.filters.tags')
                     ->translateLabel(),
             ])
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('votes_public', 'desc')
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
