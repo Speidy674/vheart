@@ -26,18 +26,21 @@ class Clip extends Model
     public function broadcaster(): BelongsTo
     {
         return $this->BelongsTo(User::class)
+            ->withTrashed()
             ->withDefault(['name' => 'N/A']);
     }
 
     public function creator(): BelongsTo
     {
         return $this->BelongsTo(User::class)
+            ->withTrashed()
             ->withDefault(['name' => 'N/A']);
     }
 
     public function submitter(): BelongsTo
     {
         return $this->BelongsTo(User::class)
+            ->withTrashed()
             ->withDefault(['name' => 'N/A']);
     }
 
@@ -56,7 +59,7 @@ class Clip extends Model
     {
         return $this->hasMany(Vote::class);
     }
-  
+
     public function compilations(): BelongsToMany
     {
         return $this->belongsToMany(Compilation::class)
