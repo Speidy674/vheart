@@ -27,7 +27,7 @@ class ClipsTable
                 ImageColumn::make('thumbnail_url')
                     ->label('admin/resources/clips.table.columns.thumbnail')
                     ->translateLabel()
-                    ->height(100),
+                    ->imageHeight(150),
                 TextColumn::make('title')
                     ->label('admin/resources/clips.table.columns.title')
                     ->translateLabel()
