@@ -44,7 +44,7 @@ class ClipsTable
                         ImageColumn::make('thumbnail_url')
                             ->label('admin/resources/clips.table.columns.thumbnail')
                             ->translateLabel()
-                            ->imageHeight(120)
+                            ->imageHeight(100)
                             ->alignCenter()
                             ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
                     ])->grow(false),
@@ -124,7 +124,7 @@ class ClipsTable
 
                         Split::make([
                             ImageColumn::make('game.box_art')
-                                ->imageHeight(50)
+                                ->imageHeight(40)
                                 ->alignCenter()
                                 ->getStateUsing(function (Clip $record) {
                                     return $record->game?->getBoxArt();
