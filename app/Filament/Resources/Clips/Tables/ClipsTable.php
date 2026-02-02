@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClipsTable
 {
@@ -91,7 +91,47 @@ class ClipsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('broadcaster')
+                    ->relationship('broadcaster', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('broadcastedClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.broadcaster')
+                    ->translateLabel(),
+                SelectFilter::make('creator')
+                    ->relationship('creator', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('createdClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.clipper')
+                    ->translateLabel(),
+                SelectFilter::make('submitter')
+                    ->relationship('submitter', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('submittedClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.submitter')
+                    ->translateLabel(),
+                SelectFilter::make('game')
+                    ->relationship('game', 'title')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.game')
+                    ->translateLabel(),
+                SelectFilter::make('tags')
+                    ->relationship('tags', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.tags')
+                    ->translateLabel(),
             ])
             ->recordActions([
                 ViewAction::make(),
