@@ -4,10 +4,14 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Support\Enums\FontFamily;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -18,77 +22,76 @@ class ClipsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with([
+                'game',
+                'broadcaster',
+                'creator',
+                'submitter',
+            ]))
             ->columns([
-                TextColumn::make('twitch_id')
-                    ->label('admin/resources/clips.table.columns.twitch_id')
-                    ->translateLabel()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->searchable(),
-                ImageColumn::make('thumbnail_url')
-                    ->label('admin/resources/clips.table.columns.thumbnail')
-                    ->translateLabel()
-                    ->imageHeight(150),
-                TextColumn::make('title')
-                    ->label('admin/resources/clips.table.columns.title')
-                    ->translateLabel()
-                    ->wrap()
-                    ->searchable(),
-                TextColumn::make('broadcaster.name')
-                    ->label('admin/resources/clips.table.columns.broadcaster')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('creator.name')
-                    ->label('admin/resources/clips.table.columns.clipper')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('submitter.name')
-                    ->label('admin/resources/clips.table.columns.submitter')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('game.title')
-                    ->label('admin/resources/clips.table.columns.category')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('duration')
-                    ->label('admin/resources/clips.table.columns.duration')
-                    ->translateLabel()
-                    ->numeric()
-                    ->formatStateUsing(function ($state) {
-                        $totalSeconds = (int) round($state);
+                Split::make([
+                    Stack::make([
+                        ImageColumn::make('thumbnail_url')
+                            ->label('admin/resources/clips.table.columns.thumbnail')
+                            ->translateLabel()
+                            ->imageHeight(200)
+                            ->alignCenter()
+                            ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
+                    ])->grow(false),
 
-                        $minutes = intdiv($totalSeconds, 60);
-                        $seconds = $totalSeconds % 60;
+                    Stack::make([
+                        TextColumn::make('title')
+                            ->label('admin/resources/clips.table.columns.title')
+                            ->translateLabel()
+                            ->weight('bold')
+                            ->searchable()
+                            ->wrap(),
 
-                        return sprintf('%d:%02d', $minutes, $seconds);
-                    })
-                    ->sortable(),
-                TextColumn::make('status')
-                    ->label('admin/resources/clips.table.columns.status')
-                    ->translateLabel()
-                    ->searchable(),
-                IconColumn::make('is_anonymous')
-                    ->label('admin/resources/clips.table.columns.is_anonymous')
-                    ->translateLabel()
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->label('admin/resources/clips.table.columns.created_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label('admin/resources/clips.table.columns.updated_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->label('admin/resources/clips.table.columns.deleted_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('game.title')
+                            ->label('admin/resources/clips.table.columns.category')
+                            ->translateLabel()
+                            ->icon(Heroicon::Tag)
+                            ->color('primary')
+                            ->searchable(),
+
+                        TextColumn::make('duration')
+                            ->label('admin/resources/clips.table.columns.duration')
+                            ->translateLabel()
+                            ->icon(Heroicon::Clock)
+                            ->sortable()
+                            ->formatStateUsing(fn (int $state) => gmdate('i:s', $state))
+                            ->fontFamily(FontFamily::Mono)
+                            ->color('gray'),
+                    ]),
+
+                    Stack::make([
+                        TextColumn::make('date')
+                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->color('gray'),
+                        TextColumn::make('created_at')
+                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->color('gray'),
+                        TextColumn::make('broadcaster.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
+                            ->icon(Heroicon::VideoCamera)
+                            ->color('gray'),
+
+                        TextColumn::make('creator.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.creator'))
+                            ->icon(Heroicon::Scissors)
+                            ->color('gray'),
+
+                        TextColumn::make('submitter.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.submitter'))
+                            ->icon(Heroicon::User)
+                            ->color('gray'),
+                    ])
+                        ->space(1),
+                ])->from('lg'),
             ])
             ->filters([
                 SelectFilter::make('broadcaster')
@@ -133,9 +136,12 @@ class ClipsTable
                     ->label('admin/resources/clips.filters.tags')
                     ->translateLabel(),
             ])
+            ->defaultSort('created_at', 'desc')
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ]),
             ]);
     }
 }
