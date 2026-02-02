@@ -5,24 +5,36 @@ import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
+type SidebarVariant = 'none' | 'creator_dashboard' | 'personal_settings';
+
 interface AppLayoutProps {
     children: ReactNode;
     breadcrumbs?: BreadcrumbItem[];
-    withSidebar?: boolean;
+    sidebarVariant?: SidebarVariant;
 }
 
 export default function AppLayout({
     children,
     breadcrumbs,
-    withSidebar = false,
+    sidebarVariant = 'none',
     ...props
 }: AppLayoutProps) {
-    const sidebarContent = withSidebar ? (
-        <SidebarMenu>
-            <StreamerSection />
-            <SettingsSection />
-        </SidebarMenu>
-    ) : null;
+    const sidebarContent =
+        sidebarVariant === 'none' ? null : (
+            <SidebarMenu>
+                {sidebarVariant === 'creator_dashboard' && (
+                    <>
+                        <StreamerSection />
+                    </>
+                )}
+
+                {sidebarVariant === 'personal_settings' && (
+                    <>
+                        <SettingsSection />
+                    </>
+                )}
+            </SidebarMenu>
+        );
 
     return (
         <AppLayoutTemplate

@@ -44,7 +44,7 @@ export default function Permissions() {
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs} withSidebar={true}>
+        <AppLayout breadcrumbs={breadcrumbs} sidebarVariant="personal_settings">
             <Head title={t('permissions.title')} />
 
             <SettingsLayout>
