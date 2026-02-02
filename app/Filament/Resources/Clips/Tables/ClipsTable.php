@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Clips\Tables;
 
 use App\Enums\ClipVoteType;
+use App\Models\Clip;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -43,7 +44,7 @@ class ClipsTable
                         ImageColumn::make('thumbnail_url')
                             ->label('admin/resources/clips.table.columns.thumbnail')
                             ->translateLabel()
-                            ->imageHeight(100)
+                            ->imageHeight(120)
                             ->alignCenter()
                             ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
                     ])->grow(false),
@@ -55,13 +56,6 @@ class ClipsTable
                             ->weight('bold')
                             ->searchable()
                             ->wrap(),
-
-                        TextColumn::make('game.title')
-                            ->label('admin/resources/clips.table.columns.category')
-                            ->translateLabel()
-                            ->icon(Heroicon::Tag)
-                            ->color('primary')
-                            ->searchable(),
 
                         Split::make([
                             TextColumn::make('duration')
@@ -127,6 +121,27 @@ class ClipsTable
                             ->dateTime()
                             ->sortable()
                             ->color('gray'),
+
+                        Split::make([
+                            ImageColumn::make('game.box_art')
+                                ->imageHeight(50)
+                                ->alignCenter()
+                                ->getStateUsing(function (Clip $record) {
+                                    return $record->game?->getBoxArt();
+                                })
+                                ->extraImgAttributes([
+                                    'class' => 'object-cover rounded-md aspect-[3/4]',
+                                ])
+                                ->grow(false),
+                            TextColumn::make('game.title')
+                                ->label('admin/resources/clips.table.columns.category')
+                                ->translateLabel()
+                                ->weight('medium')
+                                ->wrap()
+                                ->color('gray')
+                                ->searchable(),
+                        ])
+                            ->grow(false),
                     ])
                         ->space(1),
                 ])->from('lg'),
