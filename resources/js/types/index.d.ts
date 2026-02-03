@@ -42,3 +42,14 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface CategoryResource {
+    id: number;
+    name: string;
+    art: {
+        small: string;
+        medium: string;
+        large: string;
+        raw: string;
+    }
+}
