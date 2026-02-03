@@ -11,6 +11,8 @@ import { edit } from '@/routes/profile';
 import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
+import AppearanceToggleSlider from "@/components/appearance-slider";
+import LanguageToggleSlider from "@/components/language-slider";
 
 interface UserMenuContentProps {
     user: User;
@@ -45,6 +47,14 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         Settings
                     </Link>
                 </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+                <AppearanceToggleSlider />
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+                <LanguageToggleSlider />
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
