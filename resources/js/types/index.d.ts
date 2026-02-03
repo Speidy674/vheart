@@ -43,6 +43,16 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface RoleResource {
+    id: number;
+    name: string;
+    description: string | null;
+    weight: number;
+    created_at: string;
+    updated_at: string;
+}
+export type MinimalRoleResource = Pick<RoleResource, 'id' | 'name'>;
+
 export interface TagResource {
     id: number;
     name: string;
