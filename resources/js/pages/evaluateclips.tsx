@@ -1,4 +1,5 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
+import SpaceBackground from '@/components/spacebackground';
 import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { vote } from '@/routes';
@@ -59,6 +60,8 @@ export default function EvaluateClips() {
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const itemRefs = useRef<(HTMLElement | null)[]>([]);
+
+    console.log('props', props);
 
     const getClip = () => {
         router.reload({ only: ['clip', 'history'] });
@@ -151,8 +154,9 @@ export default function EvaluateClips() {
     return (
         <AppHeaderLayout breadcrumbs={breadcrumbs}>
             <Head title={t('page_title')} />
+            <SpaceBackground />
 
-            <header className="mb-3 space-y-1 pt-5 text-center sm:mb-4">
+            <header className="z-1 mb-3 space-y-1 pt-5 text-center sm:mb-4">
                 <h1 className="text-base font-bold sm:text-xl 2xl:text-3xl">
                     {t('headline')}
                 </h1>

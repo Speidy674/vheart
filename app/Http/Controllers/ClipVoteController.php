@@ -29,7 +29,7 @@ class ClipVoteController extends Controller
         $session = $request->session();
 
         return Inertia::render('evaluateclips', [
-            'history' => Inertia::lazy(function () use ($user) {
+            'history' => Inertia::optional(function () use ($user) {
                 $lastVotes = Vote::where('user_id', $user->id)->limit(5)
                     ->with(['clip' => function (BelongsTo $query) {
                         $query->select(['id', 'twitch_id', 'title'])
@@ -43,11 +43,11 @@ class ClipVoteController extends Controller
 
                 return $lastVotes;
             }),
-            'clip' => Inertia::lazy(function () use ($user, $session) {
+            'clip' => Inertia::optional(function () use ($user, $session) {
 
                 $clipIdQueue = [];
 
-                if ($session->has(key: self::SESSION_QUEUE_KEY)) {
+                if ($session->has(self::SESSION_QUEUE_KEY)) {
                     $clipSessionQueue = $session->get(self::SESSION_QUEUE_KEY);
                     if (is_array($clipSessionQueue) && ! empty($clipSessionQueue)) {
                         $clipIdQueue = $clipSessionQueue;
@@ -66,6 +66,8 @@ class ClipVoteController extends Controller
                         ->inRandomOrder()
                         ->limit(value: self::QUEUE_SIZE)
                         ->get();
+
+                    // TODO clip permission checken
 
                     $clipIdQueue = $clips->pluck('id')->toArray();
 
