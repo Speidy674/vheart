@@ -18,13 +18,18 @@ use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\PaginationMode;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -50,74 +55,135 @@ class ClipsRelationManager extends RelationManager
             ]))
             ->recordTitleAttribute('title')
             ->columns([
-                TextColumn::make('twitch_id')
-                    ->label('admin/resources/clips.table.columns.twitch_id')
-                    ->translateLabel()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->searchable(),
 
-                ImageColumn::make('thumbnail_url')
-                    ->label('admin/resources/clips.table.columns.thumbnail')
-                    ->translateLabel()
-                    ->imageHeight(100),
+                Split::make([
+                    Stack::make([
+                        ImageColumn::make('thumbnail_url')
+                            ->label('admin/resources/clips.table.columns.thumbnail')
+                            ->translateLabel()
+                            ->imageHeight(100)
+                            ->alignCenter()
+                            ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
+                    ])->grow(false),
 
-                TextColumn::make('title')
-                    ->label('admin/resources/clips.table.columns.title')
-                    ->translateLabel()
-                    ->wrap()
-                    ->searchable(),
+                    Stack::make([
+                        TextColumn::make('title')
+                            ->label('admin/resources/clips.table.columns.title')
+                            ->translateLabel()
+                            ->weight('bold')
+                            ->searchable()
+                            ->wrap(),
+                        Split::make([
+                            TextColumn::make('duration')
+                                ->label(__('admin/resources/clips.table.columns.duration'))
+                                ->tooltip(__('admin/resources/clips.table.columns.duration'))
+                                ->icon(Heroicon::Clock)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->formatStateUsing(fn (int $state) => gmdate('i:s', $state))
+                                ->fontFamily(FontFamily::Mono)
+                                ->badge()
+                                ->color('gray'),
 
-                TextColumn::make('broadcaster.name')
-                    ->label('admin/resources/clips.table.columns.broadcaster')
-                    ->translateLabel(),
+                            TextColumn::make('votes_jury')
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->label(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->icon(Heroicon::Star)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->badge()
+                                ->color('warning'),
+                            TextColumn::make('votes_public')
+                                ->label(__('admin/resources/clips.table.columns.votes_public'))
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
+                                ->size(TextSize::Medium)
+                                ->icon(Heroicon::UserGroup)
+                                ->sortable()
+                                ->badge()
+                                ->color('success'),
+                        ])->grow(false),
+                    ])->space(),
 
-                TextColumn::make('creator.name')
-                    ->label('admin/resources/clips.table.columns.creator')
-                    ->translateLabel(),
+                    Stack::make([
+                        TextColumn::make('broadcaster.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
+                            ->icon(Heroicon::VideoCamera)
+                            ->color('gray'),
 
-                TextColumn::make('submitter.name')
-                    ->label('admin/resources/clips.table.columns.submitter')
-                    ->translateLabel(),
+                        TextColumn::make('creator.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.creator'))
+                            ->icon(Heroicon::Scissors)
+                            ->color('gray'),
 
-                TextColumn::make('game.title')
-                    ->label('admin/resources/clips.table.columns.category')
-                    ->translateLabel(),
+                        TextColumn::make('submitter.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.submitter'))
+                            ->icon(Heroicon::User)
+                            ->color('gray'),
+                    ])
+                        ->space(1),
 
-                TextColumn::make('duration')
-                    ->label('admin/resources/clips.table.columns.duration')
-                    ->translateLabel()
-                    ->numeric()
-                    ->formatStateUsing(fn ($state) => gmdate('i:s', (int) round($state)))
-                    ->sortable(),
+                    Stack::make([
+                        TextColumn::make('date')
+                            ->label(__('admin/resources/clips.table.columns.created_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
+                            ->color('gray'),
+                        TextColumn::make('created_at')
+                            ->label(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
+                            ->color('gray'),
 
-                TextColumn::make('claimer.name')
-                    ->label('admin/resources/compilations.relation_managers.clips.columns.claimer')
-                    ->translateLabel(),
+                        Split::make([
+                            ImageColumn::make('game.box_art')
+                                ->imageHeight(40)
+                                ->alignCenter()
+                                ->getStateUsing(function (Clip $record) {
+                                    return $record->game?->getBoxArt();
+                                })
+                                ->extraImgAttributes([
+                                    'class' => 'object-cover rounded-md aspect-[3/4]',
+                                ])
+                                ->grow(false),
+                            TextColumn::make('game.title')
+                                ->label('admin/resources/clips.table.columns.category')
+                                ->translateLabel()
+                                ->weight('medium')
+                                ->wrap()
+                                ->color('gray')
+                                ->searchable(),
+                        ])
+                            ->grow(false),
+                    ])
+                        ->space(1),
 
-                TextColumn::make('pivot.status')
-                    ->label('admin/resources/compilations.relation_managers.clips.columns.status')
-                    ->badge()
-                    ->translateLabel(),
-
-                IconColumn::make('is_anonymous')
-                    ->label('admin/resources/clips.table.columns.is_anonymous')
-                    ->translateLabel()
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('pivot.removed_at')
-                    ->label('admin/resources/compilations.relation_managers.clips.columns.removed_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
-                TextColumn::make('created_at')
-                    ->label('admin/resources/clips.table.columns.created_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    Stack::make([
+                        TextColumn::make('claimer.name')
+                            ->label('admin/resources/compilations.relation_managers.clips.columns.claimer')
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.claimer'))
+                            ->translateLabel()
+                            ->weight('bold')
+                            ->icon(Heroicon::Check)
+                            ->color('gray'),
+                        TextColumn::make('pivot.status')
+                            ->label('admin/resources/compilations.relation_managers.clips.columns.status')
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status'))
+                            ->badge()
+                            ->icon(Heroicon::Clipboard)
+                            ->translateLabel(),
+                        TextColumn::make('pivot.removed_at')
+                            ->label(__('admin/resources/compilations.relation_managers.clips.columns.removed_at'))
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.removed_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->translateLabel()
+                            ->dateTime(),
+                    ])
+                        ->space(1),
+                ])->from('lg'),
             ])
             ->filters([
                 SelectFilter::make('broadcaster')
@@ -374,6 +440,7 @@ class ClipsRelationManager extends RelationManager
                                 ->send();
                         }),
 
+                    ViewAction::make()->modal(),
                     DetachAction::make(),
                 ]),
             ])
@@ -382,6 +449,7 @@ class ClipsRelationManager extends RelationManager
                     DetachBulkAction::make(),
                 ]),
             ])
+            ->paginationMode(PaginationMode::Cursor)
             ->openRecordUrlInNewTab();
     }
 }
