@@ -24,13 +24,11 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -43,6 +41,13 @@ class ClipsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with([
+                'game',
+                'broadcaster',
+                'creator',
+                'submitter',
+                'claimer',
+            ]))
             ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('twitch_id')
@@ -67,7 +72,7 @@ class ClipsRelationManager extends RelationManager
                     ->translateLabel(),
 
                 TextColumn::make('creator.name')
-                    ->label('admin/resources/clips.table.columns.clipper')
+                    ->label('admin/resources/clips.table.columns.creator')
                     ->translateLabel(),
 
                 TextColumn::make('submitter.name')
@@ -89,20 +94,10 @@ class ClipsRelationManager extends RelationManager
                     ->label('admin/resources/compilations.relation_managers.clips.columns.claimer')
                     ->translateLabel(),
 
-                SelectColumn::make('pivot.status')
+                TextColumn::make('pivot.status')
                     ->label('admin/resources/compilations.relation_managers.clips.columns.status')
-                    ->translateLabel()
-                    ->options(CompilationClipStatus::class)
-                    ->default(CompilationClipStatus::Pending)
-                    ->disabled(function (Clip $record): bool {
-                        return $record->pivot->claimed_by !== auth()->id();
-                    })
-                    ->selectablePlaceholder(false)
-                    ->updateStateUsing(function (Clip $record, $state) {
-                        $record->pivot->update(['status' => $state]);
-
-                        return $state;
-                    }),
+                    ->badge()
+                    ->translateLabel(),
 
                 IconColumn::make('is_anonymous')
                     ->label('admin/resources/clips.table.columns.is_anonymous')
@@ -127,7 +122,7 @@ class ClipsRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('broadcaster')
                     ->relationship('broadcaster', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->clips()->pluck('broadcaster_id')))
+                        $this->getOwnerRecord()->clips->pluck('broadcaster_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
@@ -135,15 +130,15 @@ class ClipsRelationManager extends RelationManager
                     ->translateLabel(),
                 SelectFilter::make('creator')
                     ->relationship('creator', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->clips()->pluck('creator_id')))
+                        $this->getOwnerRecord()->clips->pluck('creator_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.clipper')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.creator')
                     ->translateLabel(),
                 SelectFilter::make('submitter')
                     ->relationship('submitter', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->clips()->pluck('submitter_id')))
+                        $this->getOwnerRecord()->clips->pluck('submitter_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
@@ -232,42 +227,54 @@ class ClipsRelationManager extends RelationManager
                         ->rateLimit(5)
                         ->hidden(fn (Clip $record) => $record->pivot->claimed_by === auth()->id())
                         ->requiresConfirmation(fn (Clip $record) => ! is_null($record->pivot->claimed_by))
-                        ->action(function (Clip $clip) {
-                            $lockKey = 'claim-clip-'.$clip->pivot->compilation_id.':'.$clip->id;
-
-                            Cache::lock($lockKey, 10)->get(function () use ($clip) {
-                                $clip->pivot->update([
-                                    'claimed_by' => auth()->id(),
-                                ]);
-
-                                Notification::make()
-                                    ->title(__('admin/resources/compilations.relation_managers.clips.notifications.claimed_title'))
-                                    ->success()
-                                    ->body(__('admin/resources/compilations.relation_managers.clips.notifications.claimed_body'))
-                                    ->send();
-
-                                return true;
-                            });
-                        }),
-
-                    Action::make('unclaim')
-                        ->label('admin/resources/compilations.relation_managers.clips.actions.unclaim')
-                        ->translateLabel()
-                        ->icon(Heroicon::LockOpen)
-                        ->hidden(fn (Clip $record) => $record->pivot->claimed_by !== auth()->id())
-                        ->requiresConfirmation()
+                        ->modalHeading(fn (Clip $record) => $record->pivot->claimed_by
+                            ? __('admin/resources/compilations.relation_managers.clips.actions.claim_override.heading')
+                            : null)
+                        ->modalDescription(fn (Clip $record) => $record->pivot->claimed_by
+                            ? __('admin/resources/compilations.relation_managers.clips.actions.claim_override.description')
+                            : null)
                         ->action(function (Clip $clip) {
                             $clip->pivot->update([
-                                'claimed_by' => null,
+                                'claimed_by' => auth()->id(),
                             ]);
 
                             Notification::make()
-                                ->title(__('admin/resources/compilations.relation_managers.clips.notifications.unclaimed_title'))
+                                ->title(__('admin/resources/compilations.relation_managers.clips.notifications.claimed.title'))
+                                ->success()
+                                ->body(__('admin/resources/compilations.relation_managers.clips.notifications.claimed.body'))
+                                ->send();
+
+                            return true;
+                        }),
+
+                    Action::make('status')
+                        ->label('admin/resources/compilations.relation_managers.clips.actions.status.title')
+                        ->translateLabel()
+                        ->icon(Heroicon::Clipboard)
+                        ->hidden(fn (Clip $record) => $record->pivot->claimed_by !== auth()->id())
+                        ->fillForm(fn (Clip $record): array => [
+                            'status' => $record->pivot->status,
+                        ])
+                        ->schema([
+                            Select::make('status')
+                                ->hiddenLabel()
+                                ->options(CompilationClipStatus::class)
+                                ->default(CompilationClipStatus::Pending)
+                                ->required(),
+                        ])
+                        ->action(function (Clip $clip, array $data): void {
+                            $clip->pivot->update([
+                                'status' => $data['status'],
+                            ]);
+
+                            Notification::make()
+                                ->title(__('admin/resources/compilations.relation_managers.clips.notifications.status_updated'))
                                 ->success()
                                 ->send();
                         }),
 
                     Action::make('download')
+                        ->hidden() // not required? only hide it for now
                         ->label('admin/resources/clips.actions.download')
                         ->translateLabel()
                         ->icon(Heroicon::ArrowDownTray)
@@ -336,6 +343,33 @@ class ClipsRelationManager extends RelationManager
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copied'))
                                 ->body($filename)
+                                ->success()
+                                ->send();
+                        }),
+                    Action::make('unclaim')
+                        ->label('admin/resources/compilations.relation_managers.clips.actions.unclaim')
+                        ->translateLabel()
+                        ->color('warning')
+                        ->icon(Heroicon::LockOpen)
+                        ->hidden(fn (Clip $record) => $record->pivot->claimed_by !== auth()->id())
+                        ->requiresConfirmation()
+                        ->action(function (Clip $clip) {
+                            if ($clip->pivot->claimed_by !== auth()->id()) {
+                                Notification::make()
+                                    ->title(__('admin/resources/compilations.relation_managers.clips.actions.unclaim_failed.title'))
+                                    ->body(__('admin/resources/compilations.relation_managers.clips.actions.unclaim.message'))
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $clip->pivot->update([
+                                'claimed_by' => null,
+                            ]);
+
+                            Notification::make()
+                                ->title(__('admin/resources/compilations.relation_managers.clips.notifications.unclaimed_title'))
                                 ->success()
                                 ->send();
                         }),
