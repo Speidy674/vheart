@@ -8,9 +8,14 @@ use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Models\Clip;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
@@ -220,6 +225,43 @@ class ClipsTable
             ->defaultSort('votes_public', 'desc')
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('attach_to_compilation')
+                        ->label('admin/resources/clips.actions.attach_to_compilation.label')
+                        ->translateLabel()
+                        ->icon(Heroicon::Link)
+                        ->schema([
+                            Select::make('compilation_id')
+                                ->label('Compilation')
+                                ->searchable()
+                                ->options(function (Clip $record) {
+                                    return Clip\Compilation::query()
+                                        ->whereNotIn('id', $record->compilations()->pluck('compilations.id'))
+                                        ->pluck('title', 'id');
+                                })
+                                ->preload()
+                                ->required(),
+                            Fieldset::make()
+                                ->schema([
+                                    Toggle::make('claim')
+                                        ->reactive()
+                                        ->label('admin/resources/clips.actions.attach_to_compilation.claim')
+                                        ->translateLabel(),
+                                    Select::make('status')
+                                        ->disabled(fn (Get $get) => $get('claim') !== true)
+                                        ->label('admin/resources/clips.actions.attach_to_compilation.status')
+                                        ->translateLabel()
+                                        ->options(CompilationClipStatus::class)
+                                        ->default(CompilationClipStatus::Pending)
+                                        ->required(),
+                                ])->columns(1),
+                        ])
+                        ->action(function (Clip $record, array $data): void {
+                            $record->compilations()->attach($data['compilation_id'], [
+                                'status' => $data['status'] ?? CompilationClipStatus::Pending,
+                                'claimed_by' => $data['claim'] ? auth()->id() : null,
+                            ]);
+                        })
+                        ->successNotificationTitle(__('admin/resources/clips.notifications.actions.attached_to_compilation')),
                     ViewAction::make(),
                     EditAction::make(),
                 ]),

@@ -61,5 +61,15 @@ return [
     'actions' => [
         'download' => 'Open Downloadable Clip',
         'view_on_twitch' => 'View On Twitch',
+        'attach_to_compilation' => [
+            'label' => 'Attach to Compilation',
+            'claim' => 'Claim Clip',
+            'status' => 'Clip Status',
+        ],
+    ],
+    'notifications' => [
+        'actions' => [
+            'attached_to_compilation' => 'Attached to Compilation',
+        ],
     ],
 ];
