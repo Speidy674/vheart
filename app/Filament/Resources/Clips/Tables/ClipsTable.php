@@ -46,7 +46,10 @@ class ClipsTable
                             ->translateLabel()
                             ->imageHeight(100)
                             ->alignCenter()
-                            ->extraImgAttributes(['class' => 'object-cover rounded aspect-video']),
+                            ->extraImgAttributes([
+                                'class' => 'object-cover rounded aspect-video',
+                                'loading' => 'lazy',
+                            ]),
                     ])->grow(false),
 
                     Stack::make([
