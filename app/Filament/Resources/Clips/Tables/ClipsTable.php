@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
+use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Models\Clip;
 use Filament\Actions\ActionGroup;
@@ -17,6 +19,7 @@ use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -191,6 +194,28 @@ class ClipsTable
                     ->multiple()
                     ->label('admin/resources/clips.filters.tags')
                     ->translateLabel(),
+
+                // TODO: use enum method for compilation status when merged later
+                TernaryFilter::make('in_compilation')
+                    ->label('admin/resources/clips.filters.in_compilation.label')
+                    ->translateLabel()
+                    ->nullable()
+                    ->placeholder(__('admin/resources/clips.filters.in_compilation.only_without_compilation'))
+                    ->trueLabel(__('admin/resources/clips.filters.in_compilation.only_with_compilation'))
+                    ->falseLabel(__('admin/resources/clips.filters.in_compilation.with_compilation'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('compilations', function (Builder $query): Builder {
+                            return $query->whereIn('compilations.status', array_merge([
+                                CompilationStatus::Planned,
+                            ], CompilationStatus::getPublicCases()));
+                        }),
+                        false: fn (Builder $query) => $query,
+                        blank: fn (Builder $query) => $query->whereDoesntHave('compilations', function (Builder $query): Builder {
+                            return $query->whereIn('compilations.status', array_merge([
+                                CompilationStatus::Planned,
+                            ], CompilationStatus::getPublicCases()));
+                        }),
+                    ),
             ])
             ->defaultSort('votes_public', 'desc')
             ->recordActions([

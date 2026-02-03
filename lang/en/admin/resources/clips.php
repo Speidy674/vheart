@@ -48,6 +48,12 @@ return [
         'submitter' => 'Submitter',
         'game' => 'Game',
         'tags' => 'Tags',
+        'in_compilation' => [
+            'label' => 'Compilations',
+            'only_without_compilation' => 'Clips without Compilation',
+            'only_with_compilation' => 'Clips with Compilation',
+            'with_compilation' => 'All Clips',
+        ],
     ],
     'edit' => [
         'title' => 'Edit :label by :broadcaster',
