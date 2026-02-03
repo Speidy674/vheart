@@ -442,8 +442,6 @@ class ClipsRelationManager extends RelationManager
                                 ->success()
                                 ->send();
                         }),
-
-                    ViewAction::make()->modal(),
                     DetachAction::make(),
                 ]),
             ])
