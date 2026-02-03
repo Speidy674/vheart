@@ -11,7 +11,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 
 /* https://dev.twitch.tv/docs/api/reference#get-users */
-class UserDto implements TwitchDtoInterface
+readonly class UserDto implements TwitchDtoInterface
 {
     public function __construct(
         public string $id,
