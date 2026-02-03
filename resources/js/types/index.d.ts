@@ -43,6 +43,11 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface TagResource {
+    id: number;
+    name: string;
+}
+
 export interface CategoryResource {
     id: number;
     name: string;
