@@ -106,7 +106,7 @@ class ClipInfolist
                                 })->openUrlInNewTab(),
 
                             TextEntry::make('creator.name')
-                                ->label('admin/resources/clips.infolist.clipper')
+                                ->label('admin/resources/clips.infolist.creator')
                                 ->translateLabel()
                                 ->icon(Heroicon::Scissors)
                                 ->color('gray')
