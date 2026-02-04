@@ -26,7 +26,6 @@ class FaqEntryFactory extends Factory
                 $this->faker->paragraph(),
                 $this->faker->paragraph(),
             ]),
-            'links' => null,
             'order' => $this->faker->numberBetween(1, 10),
             'published_at' => $this->faker->date(),
         ];
