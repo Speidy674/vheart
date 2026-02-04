@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use Whitecube\LaravelCookieConsent\Consent;
@@ -20,17 +22,21 @@ class CookiesServiceProvider extends ServiceProvider
             ->csrf();
 
         Cookies::optional()
-            ->cookie(function(Cookie $cookie) {
-                $cookie->name('appearance')
-                ->description(__('cookies.appearance.description'))
-                ->duration(60 * 24 * 365);
+            ->cookie(function (Cookie $cookie) {
+                $cookie->name('twitch_embed_consent')
+                    ->description(__('cookies.twitch_embed_consent.description'))
+                    ->duration(60 * 24 * 365);
             })
-            ->cookie(function(Cookie $cookie) {
+            ->cookie(function (Cookie $cookie) {
+                $cookie->name('appearance')
+                    ->description(__('cookies.appearance.description'))
+                    ->duration(60 * 24 * 365);
+            })
+            ->cookie(function (Cookie $cookie) {
                 $cookie->name('sidebar_state')
-                ->description(__('cookies.sidebar_state.description'))
-                ->duration(60 * 24 * 365);
+                    ->description(__('cookies.sidebar_state.description'))
+                    ->duration(60 * 24 * 365);
             });
-
 
         // Register all Analytics cookies at once using one single shorthand method:
         // Cookies::analytics()

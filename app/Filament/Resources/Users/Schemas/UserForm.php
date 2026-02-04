@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
@@ -56,7 +57,11 @@ class UserForm
                                     ->helperText('Indicates if the user has confirmed their email address.')
                                     ->disabled(),
 
-                                Checkbox::make('two_factor_confirmed_at')
+                                Checkbox::make('2fa_enabled')
+                                    ->formatStateUsing(function (User $user) {
+                                        return ! empty($user->app_authentication_secret);
+                                    })
+                                    ->dehydrated(false)
                                     ->label('2FA Active')
                                     ->helperText('Indicates if the user has enabled two factor authentication.')
                                     ->disabled(),

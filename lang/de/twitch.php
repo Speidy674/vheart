@@ -7,4 +7,12 @@ return [
         'settings_link' => 'Zu den Nutzereinstellungen',
         'dismiss' => 'Hinweis schliessen',
     ],
+    'embeds' => [
+        'consent' => [
+            'text' => 'Externen Inhalt von Twitch laden?',
+            'button' => 'Inhalt laden',
+            'privacy-policy' => 'Datenschutzerklärung von Twitch'
+        ],
+        'loading' => 'Lade Clip...',
+    ],
 ];
