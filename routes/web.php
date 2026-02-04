@@ -15,8 +15,8 @@ Route::get('/', static function () {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true))
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)])
+        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
+        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
         ->orderByDesc('votes_count')
         ->limit(10)
         ->get();
@@ -25,7 +25,7 @@ Route::get('/', static function () {
         'bestRated' => $bestRated->toResourceCollection(),
         'discover' => Inertia::scroll(static function () {
             $discover = Clip::query()
-                ->withCount(['votes' => fn ($q) => $q->where('voted', true)])
+                ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
                 ->orderByDesc('created_at')
                 ->cursorPaginate(25);
 
