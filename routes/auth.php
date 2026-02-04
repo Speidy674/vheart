@@ -50,7 +50,7 @@ Route::middleware(['guest'])->group(function () {
             $request->session()->regenerate();
             Auth::login($user);
 
-            $url = $request->session()->pull('url.intended', route('start'));
+            $url = $request->session()->pull('url.intended', route('home'));
 
             return Inertia::location($url);
         }

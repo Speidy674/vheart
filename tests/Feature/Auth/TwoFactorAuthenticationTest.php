@@ -82,7 +82,7 @@ describe('2FA Submission', function () {
 
         $this->withSession(['auth.2fa.id' => $user->id])
             ->post(route('auth.challenge.submit'), ['code' => '123456'])
-            ->assertRedirect(route('start'));
+            ->assertRedirect(route('home'));
 
         expect(auth()->user()->id)->toBe($user->id)
             ->and(session('auth.2fa.id'))->toBeNull();
@@ -100,7 +100,7 @@ describe('2FA Submission', function () {
 
         $this->withSession(['auth.2fa.id' => $user->id])
             ->post(route('auth.challenge.submit'), ['recovery_code' => 'recovery-key'])
-            ->assertRedirect(route('start'));
+            ->assertRedirect(route('home'));
 
         expect(auth()->user()->id)->toBe($user->id);
     });
