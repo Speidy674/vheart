@@ -16,6 +16,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -131,6 +132,7 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Inertia::encryptHistory();
+        JsonResource::withoutWrapping();
     }
 
     private function configureRateLimiting(): void

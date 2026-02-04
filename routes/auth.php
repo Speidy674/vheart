@@ -121,6 +121,10 @@ Route::middleware(['guest'])->group(function () {
 
         if ($user->wasRecentlyCreated) {
             Inertia::flash('showTwitchPermissionsPrompt', true);
+
+            if (User::count() === 1) {
+                $user->syncRoles([1]);
+            }
         }
 
         return redirect()->intended(route('dashboard'));
