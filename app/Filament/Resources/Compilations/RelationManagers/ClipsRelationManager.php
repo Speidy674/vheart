@@ -7,6 +7,7 @@ namespace App\Filament\Resources\Compilations\RelationManagers;
 use App\Enums\Clips\CompilationClipStatus;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
+use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDownloadDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
@@ -30,6 +31,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -43,6 +45,7 @@ class ClipsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScope(ClipPermissionScope::class))
             ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('twitch_id')
@@ -350,4 +353,5 @@ class ClipsRelationManager extends RelationManager
             ])
             ->openRecordUrlInNewTab();
     }
+
 }

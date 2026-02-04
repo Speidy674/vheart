@@ -8,9 +8,11 @@ use App\Http\Resources\PublicClipResource;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Clip\Tag;
+use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
 use Database\Factories\ClipFactory;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -20,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Vite;
 
+#[ScopedBy(ClipPermissionScope::class)]
 #[UseResource(PublicClipResource::class)]
 #[UsePolicy(ClipPolicy::class)]
 class Clip extends Model
