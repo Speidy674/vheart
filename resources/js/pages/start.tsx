@@ -34,34 +34,6 @@ export default function Start() {
     const latestVideoId = 'D9PHIxhU_MM?si=L69fuJNqLNI8y0Jc';
 
     const [openClip, setOpenClip] = useState<PublicClip | null>(null);
-    const [liked, setLiked] = useState<Set<number>>(new Set());
-    const [skipped, setSkipped] = useState<Set<number>>(new Set());
-
-    const toggleLike = (id: number) => {
-        if (skipped.has(id)) return;
-        setLiked((prev) => {
-            const nextSet = new Set(prev);
-            if (nextSet.has(id)) nextSet.delete(id);
-            else nextSet.add(id);
-            return nextSet;
-        });
-    };
-
-    const toggleSkip = (id: number) => {
-        if (liked.has(id)) return;
-        setSkipped((prev) => {
-            const nextSet = new Set(prev);
-            if (nextSet.has(id)) nextSet.delete(id);
-            else nextSet.add(id);
-            return nextSet;
-        });
-    };
-
-    const openId = openClip?.id ?? -1;
-    const isLiked = liked.has(openId);
-    const isSkipped = skipped.has(openId);
-    const disableLike = isSkipped;
-    const disableSkip = isLiked;
 
     return (
         <AppHeaderLayout breadcrumbs={breadcrumbs}>
@@ -127,13 +99,7 @@ export default function Start() {
             {openClip && (
                 <ClipModal
                     clip={openClip}
-                    isLiked={isLiked}
-                    isSkipped={isSkipped}
-                    disableLike={disableLike}
-                    disableSkip={disableSkip}
                     onClose={() => setOpenClip(null)}
-                    onToggleLike={toggleLike}
-                    onToggleSkip={toggleSkip}
                 />
             )}
         </AppHeaderLayout>

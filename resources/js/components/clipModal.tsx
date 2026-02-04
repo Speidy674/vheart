@@ -1,25 +1,16 @@
 import { TwitchClipContainer } from '@/components/TwitchClipContainer';
-import { CircleX, Heart, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { PublicClip } from '@/types';
+import { Link } from '@inertiajs/react';
+import { vote } from '@/routes';
+import T from '@/components/t';
 
 export function ClipModal({
     clip,
-    isLiked,
-    isSkipped,
-    disableLike,
-    disableSkip,
     onClose,
-    onToggleLike,
-    onToggleSkip,
 }: {
     clip: PublicClip;
-    isLiked: boolean;
-    isSkipped: boolean;
-    disableLike: boolean;
-    disableSkip: boolean;
     onClose: () => void;
-    onToggleLike: (id: number) => void;
-    onToggleSkip: (id: number) => void;
 }) {
     return (
         <div
@@ -64,47 +55,9 @@ export function ClipModal({
 
                 {/* Actions */}
                 <div className="flex items-center justify-center gap-3 py-3 2xl:gap-5 2xl:py-4">
-                    {/* Like */}
-                    <button
-                        type="button"
-                        aria-pressed={isLiked}
-                        disabled={disableLike}
-                        onClick={() => onToggleLike(clip.id)}
-                        className={`grid size-8 place-items-center rounded-full bg-white transition-transform duration-150 2xl:size-12 dark:bg-black ${
-                            disableLike
-                                ? 'cursor-not-allowed opacity-40'
-                                : 'active:scale-95 sm:hover:scale-110'
-                        }`}
-                    >
-                        <Heart
-                            className={`h-6 w-6 2xl:h-8 2xl:w-8 ${
-                                isLiked
-                                    ? 'text-red-500'
-                                    : 'text-gray-700 hover:text-red-500 dark:text-white dark:hover:text-red-500'
-                            }`}
-                        />
-                    </button>
-
-                    {/* Skip */}
-                    <button
-                        type="button"
-                        aria-pressed={isSkipped}
-                        disabled={disableSkip}
-                        onClick={() => onToggleSkip(clip.id)}
-                        className={`bg:white grid size-8 place-items-center rounded-full transition-transform duration-150 2xl:size-12 dark:bg-black ${
-                            disableSkip
-                                ? 'cursor-not-allowed opacity-40'
-                                : 'active:scale-95 sm:hover:scale-110'
-                        }`}
-                    >
-                        <CircleX
-                            className={`h-6 w-6 2xl:h-8 2xl:w-8 ${
-                                isSkipped
-                                    ? 'text-red-500'
-                                    : 'text-gray-700 hover:text-red-500 dark:text-white dark:hover:text-red-500'
-                            }`}
-                        />
-                    </button>
+                    <Link type={'button'} href={vote().url}>
+                        <T ns={'vote'} k={'call_to_action'} />
+                    </Link>
                 </div>
             </div>
         </div>
