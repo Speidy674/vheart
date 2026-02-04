@@ -45,7 +45,6 @@ class ClipsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScope(ClipPermissionScope::class))
             ->recordTitleAttribute('title')
             ->columns([
                 TextColumn::make('twitch_id')
