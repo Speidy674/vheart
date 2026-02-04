@@ -39,4 +39,12 @@ trait Reportable
             return $query->where('status', ReportStatus::Pending);
         });
     }
+
+    /**
+     * Override to return the correct title attribute for this model so we can use it to show a human readable name
+     */
+    public function getReportableTitleAttribute(): string
+    {
+        return "name";
+    }
 }

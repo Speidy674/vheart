@@ -20,6 +20,12 @@ return new class extends Migration
             $table->boolean('clip_permission')->default(false);
             $table->text('twitch_refresh_token')->nullable();
             $table->json('rules')->nullable();
+
+            // Filament 2FA
+            $table->text('app_authentication_secret')->nullable();
+            $table->text('app_authentication_recovery_codes')->nullable();
+            $table->boolean('has_email_authentication')->default(false);
+
             $table->timestamps();
             $table->softDeletes();
         });

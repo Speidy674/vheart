@@ -3,6 +3,9 @@
 return [
 
     'required_account_age' => env('MINIMUM_REQUIRED_ACCOUNT_AGE', '1 day'),
+    'admin' => [
+        'require_2fa' => env('ADMIN_REQUIRE_2FA', false),
+    ],
 
     /*
     |--------------------------------------------------------------------------

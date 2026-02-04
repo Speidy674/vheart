@@ -1,10 +1,11 @@
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { Form, Head, Link, usePage } from '@inertiajs/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { store } from '@/actions/App/Http/Controllers/ClipSubmitController';
 import InputError from '@/components/input-error';
+import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,11 +28,6 @@ interface Tag {
     id: number;
     name: string;
 }
-
-type ClipPreview = {
-    clip_id: string;
-    embed_url: string;
-} | null;
 
 type InertiaBaseProps = Record<string, unknown>;
 
@@ -56,17 +52,22 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
     const { errors } = props;
     const user = props.auth?.user || null;
 
-    const [clipPreview, setClipPreview] = useState<ClipPreview>(null);
-
     const [isSubmitting] = useState(false);
     const [clipUrl, setClipUrl] = useState('');
+    const [debouncedClipUrl, setDebouncedClipUrl] = useState('');
+
     const [error] = useState<string | null>(null);
-
-    const [isChecking, setIsChecking] = useState(false);
-
-    const lastPreviewUrlRef = useRef<string>('');
-    const debounceRef = useRef<number | null>(null);
     const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedClipUrl(clipUrl);
+        }, 250);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [clipUrl]);
 
     const breadcrumbs = useMemo(
         () => [{ title: t('breadcrumb'), href: submitclip.create().url }],
@@ -75,51 +76,19 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
 
     const previewErrors: string[] = [];
 
-    const hasInput = clipUrl.trim().length > 0;
+    const hasInput = debouncedClipUrl.trim().length > 0;
 
     const showErrors = false;
-    const showLoading = hasInput && isChecking;
 
+    const clipId = useMemo(() => {
+        const clipMatch = debouncedClipUrl.match(
+            /https?:\/\/(?:www|clips)?\.?(?:twitch\.tv\/)(?:embed\?clip=|[\w/]+\/clip\/)?([\w_-]+)/,
+        );
 
-    useEffect(() => {
-        const trimmed = clipUrl.trim();
+        return clipMatch ? clipMatch[1] : null;
+    }, [debouncedClipUrl]);
 
-        if (debounceRef.current) window.clearTimeout(debounceRef.current);
-
-        if (!trimmed) {
-            lastPreviewUrlRef.current = '';
-            return;
-        }
-
-        debounceRef.current = window.setTimeout(() => {
-            if (trimmed === lastPreviewUrlRef.current) return;
-
-            setIsChecking(true);
-            const host = document.location.hostname;
-
-            const clipMatch = clipUrl.match(
-                /https?:\/\/(?:www|clips)?\.?(?:twitch\.tv\/)(?:embed\?clip=|[\w/]+\/clip\/)?([\w_-]+)/,
-            );
-
-            if (clipMatch) {
-                const clipId = clipMatch[1];
-
-                setClipPreview({
-                    clip_id: clipId,
-                    embed_url: `https://clips.twitch.tv/embed?clip=${clipId}&parent=${host}`,
-                } as ClipPreview);
-            } else {
-                setClipPreview(null);
-            }
-
-            setIsChecking(false);
-        }, 200);
-
-        return () => {
-            if (debounceRef.current) window.clearTimeout(debounceRef.current);
-        };
-    }, [clipUrl]);
-
+    const showLoading = hasInput && !clipId;
     const isTagSelectionValid = selectedTagIds.length >= 1;
 
     if (!user) {
@@ -190,14 +159,10 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
 
                                 <CardContent>
                                     <div className="space-y-4">
-                                        <div className="relative aspect-video overflow-hidden rounded-lg bg-black">
-                                            {clipPreview ? (
-                                                <iframe
-                                                    key={clipPreview.clip_id}
-                                                    src={clipPreview.embed_url}
-                                                    className="h-full w-full"
-                                                    style={{ border: 0 }}
-                                                    allow="fullscreen"
+                                        <div className="aspect-video overflow-hidden rounded-lg bg-black">
+                                            {clipId ? (
+                                                <TwitchClipContainer
+                                                    slug={clipId}
                                                 />
                                             ) : (
                                                 <div className="flex h-full w-full items-center justify-center text-center text-muted-foreground">
@@ -252,7 +217,6 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                         className="space-y-6"
                                         onSuccess={() => {
                                             setClipUrl('');
-                                            setClipPreview(null);
                                             setSelectedTagIds([]);
                                         }}
                                         noValidate
@@ -301,10 +265,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                             noResultsText={t(
                                                 'submit.tags_no_results',
                                             )}
-                                            selectedCountText={(
-                                                count,
-                                                max,
-                                            ) =>
+                                            selectedCountText={(count, max) =>
                                                 t(
                                                     'submit.tags_selected_count',
                                                     { count, max },
@@ -349,10 +310,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                             type="submit"
                                             className="w-full"
                                             disabled={
-                                                clipUrl.match(
-                                                    /https?:\/\/(?:www|clips)?\.?(?:twitch\.tv\/)(?:embed\?clip=|[\w/]+\/clip\/)?([\w_-]+)/,
-                                                ) === null ||
-                                                !isTagSelectionValid
+                                                !clipId || !isTagSelectionValid
                                             }
                                         >
                                             {t('submit.cta')}
@@ -372,25 +330,25 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                 <CardContent className="space-y-3">
                                     <ul className="space-y-2 text-sm">
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-primary" />
                                             <span>
                                                 {t('rules.items.registered')}
                                             </span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-primary" />
                                             <span>
                                                 {t('rules.items.consent')}
                                             </span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-primary" />
                                             <span>
                                                 {t('rules.items.no_explicit')}
                                             </span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-primary" />
                                             <span>
                                                 {t('rules.items.tags_match')}
                                             </span>
@@ -408,17 +366,17 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                 <CardContent>
                                     <ul className="space-y-2 text-sm">
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500 translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-blue-500" />
                                             <span>{t('tips.items.short')}</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500 translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-blue-500" />
                                             <span>
                                                 {t('tips.items.quality')}
                                             </span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500 translate-y-0.5" />
+                                            <div className="mt-1 h-2 w-2 shrink-0 translate-y-0.5 rounded-full bg-blue-500" />
                                             <span>{t('tips.items.funny')}</span>
                                         </li>
                                     </ul>

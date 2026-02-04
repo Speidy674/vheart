@@ -9,6 +9,10 @@ use App\Enums\Permission;
 use App\Models\Traits\Reportable;
 use App\Policies\UserPolicy;
 use Database\Factories\UserFactory;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -25,10 +29,10 @@ use Illuminate\Support\Facades\DB;
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements FilamentUser, MustVerifyEmail
+class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, Reportable, SoftDeletes;
+    use HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, Notifiable, Reportable, SoftDeletes;
 
     public $incrementing = false;
 
@@ -39,8 +43,8 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected $hidden = [
         'password',
-        'two_factor_secret',
-        'two_factor_recovery_codes',
+        'app_authentication_secret',
+        'app_authentication_recovery_codes',
         'remember_token',
         'twitch_refresh_token',
     ];
@@ -76,6 +80,11 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             ->filter()
             ->values()
             ->toArray();
+    }
+
+    public function getAppAuthenticationHolderName(): string
+    {
+        return $this->name;
     }
 
     /**
