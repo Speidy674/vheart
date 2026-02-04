@@ -36,6 +36,7 @@ enum Permission: string implements HasLabel
     case DeleteAnyCompilation = 'delete_any_compilation';
     case RestoreAnyCompilation = 'restore_any_compilation';
     case ForceDeleteAnyCompilation = 'force_delete_any_compilation';
+
     // FAQ
     case ViewAnyFaq = 'view_any_faq';
     case ViewFaq = 'view_faq';
