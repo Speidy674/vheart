@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
+use App\Enums\Permission;
 use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
@@ -13,58 +15,66 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::firstOrCreate(
+        if (Role::count() > 0) {
+            return;
+        }
+
+        $admin = Role::firstOrCreate(
             [
-                'name' => 'Administrator'
+                'name' => 'Administrator',
             ],
             [
                 'weight' => 100,
-                'public' => true
+                'public' => true,
             ]
         );
+
+        $admin->permissions()
+            ->createMany(collect(Permission::cases())->map(fn (Permission $p) => ['permission' => $p->value])->toArray());
+
         Role::firstOrCreate(
             [
-                'name' => 'Community Manager'
+                'name' => 'Community Manager',
             ],
             [
                 'weight' => 90,
-                'public' => true
+                'public' => true,
             ]
         );
         Role::firstOrCreate(
             [
-                'name' => 'Moderator'
+                'name' => 'Moderator',
             ],
             [
                 'weight' => 80,
-                'public' => true
+                'public' => true,
             ]
         );
         Role::firstOrCreate(
             [
-                'name' => 'Cutter'
+                'name' => 'Cutter',
             ],
             [
                 'weight' => 70,
-                'public' => true
+                'public' => true,
             ]
         );
         Role::firstOrCreate(
             [
-                'name' => 'IT'
+                'name' => 'IT',
             ],
             [
                 'weight' => 60,
-                'public' => true
+                'public' => true,
             ]
         );
         Role::firstOrCreate(
             [
-                'name' => 'Jury'
+                'name' => 'Jury',
             ],
             [
                 'weight' => 50,
-                'public' => true
+                'public' => true,
             ]
         );
     }
