@@ -33,7 +33,7 @@ class Clip extends Model
     public function broadcaster(): BelongsTo
     {
         return $this->BelongsTo(User::class)
-            ->withDefault(['name' => 'N/A', 'avatar_url' => Vite::asset('images/png/cat.png')]);
+            ->withDefault(['name' => 'N/A', 'avatar_url' => Vite::asset('resources/images/png/cat.png')]);
     }
 
     public function creator(): BelongsTo
