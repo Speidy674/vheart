@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
     private function configureGates(): void
     {
         // Check if $user has $ability in any of their roles
-        Gate::before(static function (User $user, $ability) {
+        Gate::before(static function (User $user, $ability): ?bool {
             $requestedPermission = $ability instanceof Permission
                 ? $ability
                 : Permission::tryFrom($ability);
@@ -110,11 +110,11 @@ class AppServiceProvider extends ServiceProvider
 
         // Some logging for us so we can see if there are issues
         DB::whenQueryingForLongerThan(config('database.warn-threshold.slow-queries'),
-            static function (Connection $connection) {
+            static function (Connection $connection): void {
                 Log::channel(config('logging.slow-queries-channel'))->warning("Database queries exceeded 5 seconds on {$connection->getName()}");
             });
 
-        DB::listen(static function ($query) {
+        DB::listen(static function ($query): void {
             if ($query->time > config('database.warn-threshold.slow-query')) {
                 Log::channel(config('logging.slow-queries-channel'))->warning('An individual database query exceeded 350 milliseconds.',
                     [
@@ -137,15 +137,15 @@ class AppServiceProvider extends ServiceProvider
 
     private function configureRateLimiting(): void
     {
-        RateLimiter::for('locales', static function (Request $request) {
+        RateLimiter::for('locales', static function (Request $request): Limit {
             return Limit::perMinute(30)->by($request->user()?->id ?? sha1($request->ip()));
         });
 
-        RateLimiter::for('two-factor', static function (Request $request) {
+        RateLimiter::for('two-factor', static function (Request $request): Limit {
             return Limit::perMinute(5)->by($request->user()?->id ?? sha1($request->ip()));
         });
 
-        RateLimiter::for('login', static function (Request $request) {
+        RateLimiter::for('login', static function (Request $request): Limit {
             $throttleKey = sha1($request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);

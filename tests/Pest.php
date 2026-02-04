@@ -13,7 +13,10 @@ declare(strict_types=1);
 |
 */
 
+use App\Models\User;
 use Filament\PanelProvider as AbstractFilamentPanelProvider;
+use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User as SocialiteUser;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider as AbstractSocialiteProvider;
 
 pest()->extend(Tests\TestCase::class)
@@ -74,3 +77,18 @@ arch()
     ->classes()
     ->toHaveSuffix('Exception')
     ->toExtend(Exception::class);
+
+/**
+ * mocks a successful socialite response from twitch with $user as data source
+ */
+function mockTwitchUser(User $user): void
+{
+    $socialiteUser = new SocialiteUser();
+    $socialiteUser->id = $user->id;
+    $socialiteUser->name = $user->name;
+    $socialiteUser->token = 'mock-access-token';
+    $socialiteUser->refreshToken = 'mock-refresh-token';
+    $socialiteUser->user = ['created_at' => now()->subYear()->toIso8601String()];
+
+    Socialite::shouldReceive('driver->user')->andReturn($socialiteUser);
+}

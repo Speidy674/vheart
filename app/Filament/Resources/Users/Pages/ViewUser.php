@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Enums\Permission;
 use App\Filament\Resources\Users\UserResource;
+use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
@@ -16,6 +19,22 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('2fa_reset')
+                ->label('Remove 2FA')
+                ->hidden(function (User $record) {
+                    if (! auth()->user()->can(Permission::UpdateAnyUser)) {
+                        return true;
+                    }
+
+                    return $record->app_authentication_secret === null;
+                })
+                ->requiresConfirmation()
+                ->action(function (User $user) {
+                    $user->update([
+                        'app_authentication_secret' => null,
+                        'app_authentication_recovery_codes' => null,
+                    ]);
+                }),
             EditAction::make(),
             DeleteAction::make()->label('Disable User'),
             ForceDeleteAction::make(),
