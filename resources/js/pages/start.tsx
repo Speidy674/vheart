@@ -12,6 +12,7 @@ import {
 import { ClipPreview } from '@/components/clip-preview';
 import { ClipModal } from '@/components/clipModal';
 import SpaceBackground from '@/components/spacebackground';
+import VideoEmb from '@/components/video-emb';
 
 type InertiaBaseProps = Record<string, unknown>;
 interface PageProps extends InertiaBaseProps {
@@ -25,13 +26,9 @@ export default function Start() {
     const { t } = useTranslation('homepage');
     const { props } = usePage<PageProps>();
 
-    console.log(props);
-
     const breadcrumbs: BreadcrumbItem[] = [
         { title: t('Homepage'), href: home().url },
     ];
-
-    const latestVideoId = 'D9PHIxhU_MM?si=L69fuJNqLNI8y0Jc';
 
     const [openClip, setOpenClip] = useState<PublicClip | null>(null);
 
@@ -49,12 +46,10 @@ export default function Start() {
                                 </h2>
 
                                 <div className="mx-auto aspect-video w-full max-w-4xl overflow-hidden rounded-xl dark:bg-linear-to-b dark:from-white/10 dark:to-black/40 dark:ring-1 dark:ring-white/10">
-                                    <iframe
-                                        src={`https://www.youtube.com/embed/${latestVideoId}`}
-                                        title="Aktuellstes YouTube Video"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        className="h-full w-full"
+                                    <VideoEmb
+                                        youtubeUrl={
+                                            'https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A'
+                                        }
                                     />
                                 </div>
                             </section>
@@ -97,10 +92,7 @@ export default function Start() {
             </div>
 
             {openClip && (
-                <ClipModal
-                    clip={openClip}
-                    onClose={() => setOpenClip(null)}
-                />
+                <ClipModal clip={openClip} onClose={() => setOpenClip(null)} />
             )}
         </AppHeaderLayout>
     );
