@@ -453,4 +453,5 @@ class ClipsRelationManager extends RelationManager
             ->paginationMode(PaginationMode::Cursor)
             ->openRecordUrlInNewTab();
     }
+
 }
