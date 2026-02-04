@@ -47,10 +47,10 @@ class PublicClipResource extends JsonResource
 
             'game' => $this->whenLoaded('game', $this->game->toResource()),
 
-            'vod' => [
+            'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,
                 'offset' => $this->vod_offset,
-            ],
+            ]),
             'votes' => $this->whenCounted('votes', default: 0),
             'clip_duration' => $this->duration,
             'clipped_at' => $this->date,
