@@ -194,7 +194,6 @@ export default function EvaluateClips() {
                                             <div className="aspect-video h-full">
                                                 <TwitchClipContainer
                                                     slug={it.clipSlug}
-                                                    parent="localhost"
                                                     className="h-full w-full"
                                                 />
                                             </div>

@@ -4,27 +4,16 @@ import { useKeenSlider } from 'keen-slider/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { ClipPreview } from './clip-preview';
-
-export type BestRatedItem = {
-    id: number;
-    clipSlug: string;
-    title: string;
-    thumbUrl: string;
-    likes: number;
-    lengthSeconds: number;
-    broadcasterName: string;
-};
+import { PublicClip } from '@/types';
 
 export function BestRatedSlider({
-    items,
-    twitchParent,
+    clips,
     headline = 'AM BESTEN BEWERTET DEZEMBER',
 }: {
-    items: BestRatedItem[];
-    twitchParent: string;
+    clips: PublicClip[];
     headline?: string;
 }) {
-    const [openClip, setOpenClip] = useState<BestRatedItem | null>(null);
+    const [openClip, setOpenClip] = useState<PublicClip | null>(null);
     const [liked, setLiked] = useState<Set<number>>(new Set());
     const [skipped, setSkipped] = useState<Set<number>>(new Set());
 
@@ -83,7 +72,7 @@ export function BestRatedSlider({
     const disableLike = isSkipped;
     const disableSkip = isLiked;
 
-    if (!items.length) return null;
+    if (!clips?.length) return null;
 
     return (
         <>
@@ -105,20 +94,13 @@ export function BestRatedSlider({
 
                     {/* Slider */}
                     <div ref={sliderRef} className="keen-slider py-15">
-                        {items.map((it) => {
+                        {clips.map((it) => {
                             return (
                                 <div
-                                    key={it.clipSlug}
+                                    key={it.slug}
                                     className="keen-slider__slide"
                                 >
-                                    <ClipPreview
-                                        thumbUrl={it.thumbUrl}
-                                        title={it.title}
-                                        likes={it.likes}
-                                        lengthSeconds={it.lengthSeconds}
-                                        broadcasterName={it.broadcasterName}
-                                        onClick={() => setOpenClip(it)}
-                                    />
+                                    <ClipPreview clip={it} onClick={() => setOpenClip(it)} />
                                 </div>
                             );
                         })}
@@ -138,8 +120,7 @@ export function BestRatedSlider({
 
             {openClip && (
                 <ClipModal
-                    openClip={openClip}
-                    twitchParent={twitchParent}
+                    clip={openClip}
                     isLiked={isLiked}
                     isSkipped={isSkipped}
                     disableLike={disableLike}
