@@ -27,7 +27,7 @@ Route::get('/', static function () {
             $discover = Clip::query()
                 ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
                 ->orderByDesc('created_at')
-                ->cursorPaginate(25);
+                ->cursorPaginate();
 
             return $discover->toResourceCollection();
         }),
