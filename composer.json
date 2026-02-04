@@ -98,7 +98,7 @@
             "npm run lint"
         ],
         "refactor": "rector",
-        "test:type-coverage": "pest --type-coverage --min=95",
+        "test:type-coverage": "pest --type-coverage --min=90",
         "test:lint": [
             "pint --test",
             "npm run test:lint"

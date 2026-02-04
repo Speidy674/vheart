@@ -2,7 +2,9 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Middleware\StagingGateMiddleware;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -25,6 +27,14 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
+            ->emailChangeVerification()
+            ->multiFactorAuthentication([
+                AppAuthentication::make()
+                    ->regenerableRecoveryCodes(false)
+                    ->recoverable()
+                    ->brandName('VHeart'),
+            ], isRequired: config('auth.admin.require_2fa'))
+            ->profile(EditProfile::class, isSimple: false)
             ->id('admin')
             ->path('admin')
             ->viteTheme('resources/css/filament/admin/theme.css')
