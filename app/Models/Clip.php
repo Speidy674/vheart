@@ -74,4 +74,9 @@ class Clip extends Model
     {
         return $this->BelongsTo(User::class, 'claimed_by');
     }
+
+    public function getReportableTitleAttribute(): string
+    {
+        return 'title';
+    }
 }
