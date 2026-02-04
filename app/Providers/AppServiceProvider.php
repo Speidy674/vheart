@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Providers;
 
 use App\Enums\Permission;
@@ -23,9 +25,9 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use Spatie\Translatable\Facades\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
 
+
         $this->configureRateLimiting();
         $this->configureGates();
         $this->configureVite();
@@ -63,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
                 ? $ability
                 : Permission::tryFrom($ability);
 
-            if (!$requestedPermission) {
+            if (! $requestedPermission) {
                 return null;
             }
 
@@ -114,7 +117,7 @@ class AppServiceProvider extends ServiceProvider
 
         DB::listen(static function ($query) {
             if ($query->time > config('database.warn-threshold.slow-query')) {
-                Log::channel(config('logging.slow-queries-channel'))->warning("An individual database query exceeded 350 milliseconds.",
+                Log::channel(config('logging.slow-queries-channel'))->warning('An individual database query exceeded 350 milliseconds.',
                     [
                         'sql' => $query->sql,
                         'time_ms' => $query->time,
@@ -130,6 +133,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Inertia::encryptHistory();
+
+        Translatable::fallback('en');
     }
 
     private function configureRateLimiting(): void
