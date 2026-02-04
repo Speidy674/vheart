@@ -52,7 +52,7 @@ export function ClipModal({
                 {/* Video */}
                 <div className="min-h-0 flex-1 px-0 2xl:px-4">
                     <div className="flex h-full min-h-0 items-center justify-center overflow-hidden">
-                        <div className="relative aspect-video h-full w-auto">
+                        <div className="relative aspect-video w-full">
                             <TwitchClipContainer
                                 slug={clip.slug}
                                 parent={'localhost'}
