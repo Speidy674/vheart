@@ -46,7 +46,6 @@ export function ClipModal({
                         <div className="relative aspect-video w-full">
                             <TwitchClipContainer
                                 slug={clip.slug}
-                                parent={'localhost'}
                                 className="absolute inset-0 h-full w-full"
                             />
                         </div>
