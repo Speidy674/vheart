@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,8 @@ Route::get('/privacy', function () {
 
     return view($view);
 });
+
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/start', function () {
