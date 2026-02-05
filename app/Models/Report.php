@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
+use App\Enums\Reports\ResolveAction;
 use App\Policies\ReportPolicy;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -74,6 +75,7 @@ class Report extends Model
             'claimed_at' => 'datetime',
             'status' => ReportStatus::class,
             'reason' => ReportReason::class,
+            'resolve_action' => ResolveAction::class,
         ];
     }
 }
