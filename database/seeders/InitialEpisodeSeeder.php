@@ -284,8 +284,7 @@ class InitialEpisodeSeeder extends Seeder
             return;
         }
 
-        $system = User::find(0);
-
+        $systemUser = User::find(0);
         $allClips = collect(self::Clips);
 
         foreach (self::Episodes as $episode) {
@@ -303,7 +302,7 @@ class InitialEpisodeSeeder extends Seeder
             $params = ['id' => $requestedIds];
 
             try {
-                /** @var ClipDto $clips */
+                /** @var ClipDto[] $clips */
                 $clips = $twitchService->get(TwitchEndpoints::GetClips, $params);
 
                 $fetchedClips = collect($clips);
@@ -329,8 +328,8 @@ class InitialEpisodeSeeder extends Seeder
             sleep(1);
         });
 
-        $twitchClips->each(function (ClipDto $clip) use ($system, $importClipAction) {
-            $importClipAction->execute($clip, $system, true);
+        $twitchClips->each(function (ClipDto $clip) use ($systemUser, $importClipAction) {
+            $importClipAction->execute($clip, $systemUser, true);
         });
 
         Log::notice("{$twitchClips->count()} Clips have been imported.");
