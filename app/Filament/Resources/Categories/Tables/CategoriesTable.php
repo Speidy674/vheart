@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Categories\Tables;
 
 use App\Models\Category;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class CategoriesTable
@@ -21,19 +23,55 @@ class CategoriesTable
                 ImageColumn::make('box_art')
                     ->label('admin/resources/categories.table.columns.box_art')
                     ->translateLabel()
-                    ->width(50)
                     ->getStateUsing(function (Category $game) {
                         return $game->getBoxArt();
                     })
-                    ->imageHeight(80),
+                    ->imageHeight(100)
+                    ->width(75)
+                    ->grow(false),
+
                 TextColumn::make('title')
+                    ->searchable()
                     ->label('admin/resources/categories.table.columns.title')
                     ->translateLabel(),
+
+                IconColumn::make('is_banned')
+                    ->label('admin/resources/categories.table.columns.is_banned')
+                    ->translateLabel()
+                    ->falseColor('success')
+                    ->trueColor('danger')
+                    ->boolean(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_banned')
+                    ->label('admin/resources/categories.table.filters.is_banned')
+                    ->translateLabel(),
             ])
             ->recordActions([
+                ActionGroup::make([
+                    Action::make('ban')
+                        ->label('admin/resources/categories.table.actions.ban')
+                        ->translateLabel()
+                        ->icon(Heroicon::LockClosed)
+                        ->color('danger')
+                        ->hidden(fn (Category $record): bool => $record->is_banned)
+                        ->requiresConfirmation()
+                        ->action(function (Category $category) {
+                            $category->is_banned = true;
+                            $category->save();
+                        }),
+                    Action::make('unban')
+                        ->label('admin/resources/categories.table.actions.unban')
+                        ->translateLabel()
+                        ->icon(Heroicon::LockOpen)
+                        ->color('success')
+                        ->hidden(fn (Category $record): bool => ! $record->is_banned)
+                        ->requiresConfirmation()
+                        ->action(function (Category $category) {
+                            $category->is_banned = false;
+                            $category->save();
+                        }),
+                ]),
             ])
             ->toolbarActions([
             ]);
