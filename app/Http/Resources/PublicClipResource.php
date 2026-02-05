@@ -46,17 +46,13 @@ class PublicClipResource extends JsonResource
                 'avatar' => URL::signedRoute('image-proxy', ['url' => $this->submitter?->avatar_url]),
             ]),
 
-            'game' => $this->whenLoaded('game', [
-                'id' => $this->game_id,
-                'title' => $this->game->title,
-                'box_art' => $this->game->getBoxArt(),
-            ]),
+            'game' => $this->whenLoaded('game', $this->game->toResource()),
 
-            'vod' => [
+            'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,
                 'offset' => $this->vod_offset,
-            ],
-            'votes' => $this->whenCounted('votes', $this->votes_count),
+            ]),
+            'votes' => $this->whenCounted('votes', default: 0),
             'clip_duration' => $this->duration,
             'clipped_at' => $this->date,
             'submitted_at' => $this->created_at,

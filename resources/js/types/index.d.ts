@@ -46,10 +46,37 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Game {
+export interface FaqEntryResource {
     id: number;
     title: string;
-    box_art: string;
+    body: string;
+    order: number;
+}
+
+export interface RoleResource {
+    id: number;
+    name: string;
+    description: string | null;
+    weight: number;
+    created_at: string;
+    updated_at: string;
+}
+export type MinimalRoleResource = Pick<RoleResource, 'id' | 'name'>;
+
+export interface TagResource {
+    id: number;
+    name: string;
+}
+
+export interface CategoryResource {
+    id: number;
+    name: string;
+    art: {
+        small: string;
+        medium: string;
+        large: string;
+        raw: string;
+    }
 }
 
 export interface PublicUser {
@@ -66,15 +93,12 @@ export interface PublicClip {
     thumbnail_url: string;
     clip_url: string;
 
-    broadcaster?: PublicUser,
-    clipper?: PublicUser,
-    submitter?: PublicUser,
-    game?: Game
-    vod?: [
-        id: number,
-        offset: number
-    ]
-    votes?: number,
+    broadcaster?: PublicUser;
+    clipper?: PublicUser;
+    submitter?: PublicUser;
+    game?: CategoryResource;
+    vod?: [id: number, offset: number];
+    votes?: number;
     clip_duration: number;
     clipped_at: string;
     submitted_at: string;

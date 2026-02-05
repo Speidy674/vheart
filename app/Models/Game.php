@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Http\Resources\CategoryResource;
 use Database\Factories\GameFactory;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\URL;
 
+#[UseResource(CategoryResource::class)]
 class Game extends Model
 {
     /** @use HasFactory<GameFactory> */
