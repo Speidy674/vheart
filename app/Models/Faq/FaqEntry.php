@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models\Faq;
+
+use App\Http\Resources\FaqEntryResource;
+use Database\Factories\Faq\FaqEntryFactory;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
+
+#[UseResource(FaqEntryResource::class)]
+class FaqEntry extends Model
+{
+    /** @use HasFactory<FaqEntryFactory> */
+    use HasFactory;
+    use HasTranslations;
+
+    public array $translatable = [
+        'title',
+        'body',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'title' => 'json:unicode',
+            'body' => 'json:unicode',
+            'links' => 'array',
+            'published_at' => 'datetime',
+        ];
+    }
+}

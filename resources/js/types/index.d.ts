@@ -46,6 +46,13 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
+export interface FaqEntryResource {
+    id: number;
+    title: string;
+    body: string;
+    order: number;
+}
+
 export interface RoleResource {
     id: number;
     name: string;
