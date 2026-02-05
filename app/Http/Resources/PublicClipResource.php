@@ -45,17 +45,13 @@ class PublicClipResource extends JsonResource
                 'avatar' => $this->submitter?->avatar_url,
             ]),
 
-            'category' => $this->whenLoaded('category', [
-                'id' => $this->category_id,
-                'title' => $this->category->title,
-                'box_art' => $this->category->getBoxArt(),
-            ]),
+            'category' => $this->whenLoaded('category', $this->category->toResource()),
 
-            'vod' => [
+            'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,
                 'offset' => $this->vod_offset,
-            ],
-            'votes' => $this->whenCounted('votes', $this->votes_count),
+            ]),
+            'votes' => $this->whenCounted('votes', default: 0),
             'clip_duration' => $this->duration,
             'clipped_at' => $this->date,
             'submitted_at' => $this->created_at,

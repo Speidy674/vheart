@@ -9,12 +9,15 @@ use App\Policies\CategoryPolicy;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use App\Http\Resources\CategoryResource;
+use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ScopedBy(BannedCategoriesScope::class)]
 #[UsePolicy(CategoryPolicy::class)]
+#[UseResource(CategoryResource::class)]
 class Category extends Model
 {
     /** @use HasFactory<CategoryFactory> */
