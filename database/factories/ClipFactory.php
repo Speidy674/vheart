@@ -26,7 +26,7 @@ class ClipFactory extends Factory
             'broadcaster_id' => User::factory(),
             'creator_id' => User::factory(),
             'submitter_id' => User::factory(),
-            'game_id' => Category::factory(),
+            'category_id' => Category::factory(),
             'duration' => fake()->randomFloat(2, 5, 30),
             'date' => fake()->dateTimeBetween('-1 year'),
             'is_anonymous' => fake()->boolean(),

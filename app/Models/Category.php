@@ -23,7 +23,7 @@ class Category extends Model
 
     public function clips(): HasMany
     {
-        return $this->hasMany(Clip::class, 'game_id', 'id');
+        return $this->hasMany(Clip::class, 'category_id', 'id');
     }
 
     public function getBoxArt(int $width = 188, int $height = 250): ?string
