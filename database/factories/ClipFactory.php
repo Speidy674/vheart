@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Models\Game;
+use App\Models\Category;
+use App\Models\Clip;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Clip>
+ * @extends Factory<Clip>
  */
 class ClipFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -27,7 +26,7 @@ class ClipFactory extends Factory
             'broadcaster_id' => User::factory(),
             'creator_id' => User::factory(),
             'submitter_id' => User::factory(),
-            'game_id' => Game::factory(),
+            'game_id' => Category::factory(),
             'duration' => fake()->randomFloat(2, 5, 30),
             'date' => fake()->dateTimeBetween('-1 year'),
             'is_anonymous' => fake()->boolean(),

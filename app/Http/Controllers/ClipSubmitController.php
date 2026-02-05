@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Actions\ImportClipAction;
 use App\Models\Clip;
 use App\Models\Clip\Tag;
-use App\Models\Game;
 use App\Models\User;
 use App\Services\Twitch\Exceptions\TwitchApiException;
 use App\Services\Twitch\TwitchEndpoints;
@@ -58,12 +57,12 @@ class ClipSubmitController extends Controller
 
         $clipId = $this->twitchService->parseClipId($data['clip_url']);
 
-        if (!$clipId) {
+        if (! $clipId) {
             $this->returnError('sendinclip.errors.clip_not_found');
         }
 
         $tagIds = $data['tags'] ?? [];
-        $isAnonymous = ($data['is_anonymous'] ?? "off") === "on";
+        $isAnonymous = ($data['is_anonymous'] ?? 'off') === 'on';
 
         $user = $request->user();
 
@@ -75,7 +74,7 @@ class ClipSubmitController extends Controller
 
         $clipInfo = $this->twitchService->asUser($user, $this->getUserToken())->getClipByID($clipId);
 
-        if (!$clipInfo) {
+        if (! $clipInfo) {
             $this->returnError('sendinclip.errors.clip_not_found');
         }
 
@@ -138,7 +137,7 @@ class ClipSubmitController extends Controller
             'name' => $clipInfo->creator_name,
         ]);
 
-        $isGameBlackListed = $broadcasterUser->broadcasterGameFilter()->where('filter_id', $clipInfo->game_id)
+        $isGameBlackListed = $broadcasterUser->broadcasterCategoryFilter()->where('filter_id', $clipInfo->game_id)
             ->where('allowed', false)
             ->first();
 
@@ -146,8 +145,8 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.game_blocked');
         }
 
-        $hasOneGameWhiteListed = $broadcasterUser->broadcasterGameFilter()->where('allowed', true)->exists();
-        $isGameWhiteListed = $broadcasterUser->broadcasterGameFilter()->where('filter_id', $clipInfo->game_id)
+        $hasOneGameWhiteListed = $broadcasterUser->broadcasterCategoryFilter()->where('allowed', true)->exists();
+        $isGameWhiteListed = $broadcasterUser->broadcasterCategoryFilter()->where('filter_id', $clipInfo->game_id)
             ->where('allowed', true)
             ->first();
 
@@ -174,10 +173,6 @@ class ClipSubmitController extends Controller
 
     /**
      * Summary of returnError
-     *
-     * @return never
-     *
-     * @throws ValidationException;
      */
     private function returnError(string $errorKey): void
     {

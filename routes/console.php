@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Models\Game;
+use App\Models\Category;
 use App\Services\Twitch\Data\GameDto;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Support\Facades\Log;
@@ -31,7 +31,7 @@ Schedule::call(function (TwitchService $twitchService) {
     ]);
 
     collect($games)->each(function (GameDto $game) {
-        Game::firstOrCreate([
+        Category::firstOrCreate([
             'id' => $game->id,
         ], [
             'title' => $game->name,

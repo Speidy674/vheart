@@ -46,7 +46,7 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Game {
+export interface Category {
     id: number;
     title: string;
     box_art: string;
@@ -69,7 +69,7 @@ export interface PublicClip {
     broadcaster?: PublicUser,
     clipper?: PublicUser,
     submitter?: PublicUser,
-    game?: Game
+    category?: Category
     vod?: [
         id: number,
         offset: number

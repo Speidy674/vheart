@@ -46,9 +46,9 @@ class Clip extends Model
         return $this->BelongsTo(User::class);
     }
 
-    public function game(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Game::class)
+        return $this->belongsTo(Category::class)
             ->withDefault(['title' => 'Pending']);
     }
 

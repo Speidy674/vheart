@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Categories\Tables;
 
-use App\Models\Game;
+use App\Models\Category;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -22,7 +22,7 @@ class CategoriesTable
                     ->label('admin/resources/categories.table.columns.box_art')
                     ->translateLabel()
                     ->width(50)
-                    ->getStateUsing(function (Game $game) {
+                    ->getStateUsing(function (Category $game) {
                         return $game->getBoxArt();
                     })
                     ->imageHeight(80),
