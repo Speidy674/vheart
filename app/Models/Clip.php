@@ -9,6 +9,7 @@ use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Clip\Tag;
 use App\Models\Scopes\ClipPermissionScope;
+use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
 use Database\Factories\ClipFactory;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Vite;
 
 #[ScopedBy(ClipPermissionScope::class)]
+#[ScopedBy(ClipWithoutBannedCategoryScope::class)]
 #[UseResource(PublicClipResource::class)]
 #[UsePolicy(ClipPolicy::class)]
 class Clip extends Model
