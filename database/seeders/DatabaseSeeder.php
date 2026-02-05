@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             TagSeeder::class,
             InitialEpisodeSeeder::class,
+            FaqSeeder::class,
         ]);
 
         // Kindly wipe unused permission pivots on deployment
