@@ -9,6 +9,7 @@ use App\Services\Twitch\Data\CategoryDto;
 use App\Services\Twitch\Data\ClipDownloadDto;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Data\GameDto;
+use App\Services\Twitch\Data\UserDto;
 
 enum TwitchEndpoints: string
 {
@@ -103,6 +104,19 @@ enum TwitchEndpoints: string
     case SearchCategories = 'search/categories';
 
     /**
+     * Gets information about one or more users.
+     *
+     * You may look up users using their user ID, login name, or both but the sum total of the number of users you may look up is 100. For example, you may specify 50 IDs and 50 names or 100 IDs or names, but you cannot specify 100 IDs and 100 names.
+     *
+     * If you don’t specify IDs or login names, the request returns information about the user in the access token if you specify a user access token.
+     *
+     * To include the user’s verified email address in the response, you must use a user access token that includes the `user:read:email` scope.
+     *
+     * Requires an **app access token** or **user access token**.
+     */
+    case GetUsers = 'users';
+
+    /**
      * Returns the DTO for this Endpoint
      *
      * @return class-string<TwitchDtoInterface>|null
@@ -114,6 +128,7 @@ enum TwitchEndpoints: string
             self::SearchCategories => CategoryDto::class,
             self::GetGames => GameDto::class,
             self::GetClipsDownload => ClipDownloadDto::class,
+            self::GetUsers => UserDto::class,
             default => null
         };
     }
