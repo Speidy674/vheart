@@ -37,7 +37,7 @@ class ClipSubmitController extends Controller
         $tags = Tag::all();
 
         return Inertia::render('submitclip', [
-            'tags' => $tags,
+            'tags' => $tags->toResourceCollection(),
         ]);
     }
 
