@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\Permission;
-use App\Models\Clip;
 use App\Models\Category;
+use App\Models\Clip;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\Socialite\TwitchSocialiteProvider;
