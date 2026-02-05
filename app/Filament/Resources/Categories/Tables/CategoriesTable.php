@@ -13,12 +13,16 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CategoriesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                $query->withCount('clips');
+            })
             ->columns([
                 ImageColumn::make('box_art')
                     ->label('admin/resources/categories.table.columns.box_art')
@@ -34,6 +38,11 @@ class CategoriesTable
                     ->searchable()
                     ->label('admin/resources/categories.table.columns.title')
                     ->translateLabel(),
+
+                TextColumn::make('clips_count')
+                    ->label('admin/resources/categories.table.columns.clips_count')
+                    ->translateLabel()
+                    ->sortable(),
 
                 IconColumn::make('is_banned')
                     ->label('admin/resources/categories.table.columns.is_banned')
@@ -71,7 +80,8 @@ class CategoriesTable
                             $category->is_banned = false;
                             $category->save();
                         }),
-                ]),
+                ])
+                    ->hidden(fn (Category $record): bool => ! auth()->user()->can('update', $record)),
             ])
             ->toolbarActions([
             ]);
