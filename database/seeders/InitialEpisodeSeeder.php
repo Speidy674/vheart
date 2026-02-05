@@ -280,7 +280,7 @@ class InitialEpisodeSeeder extends Seeder
      */
     public function run(ImportClipAction $importClipAction, TwitchService $twitchService): void
     {
-        if (Compilation::count() > 0) {
+        if (Compilation::count() > 0 || app()->environment() === 'testing') {
             return;
         }
 
