@@ -22,6 +22,12 @@ class Category extends Model
 
     public const string PLACEHOLDER_BOX_ART = 'https://static-cdn.jtvnw.net/ttv-static/404_boxart-{width}x{height}.jpg';
 
+    public const array Defaults = [
+        'title' => 'Pending Category',
+        'is_banned' => false,
+        'box_art' => self::PLACEHOLDER_BOX_ART,
+    ];
+
     public $incrementing = false;
 
     public function clips(): HasMany

@@ -52,7 +52,7 @@ class Clip extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class)
-            ->withDefault(['title' => 'Pending']);
+            ->withDefault(Category::Defaults);
     }
 
     public function tags(): BelongsToMany
