@@ -45,10 +45,10 @@ class PublicClipResource extends JsonResource
                 'avatar' => $this->submitter?->avatar_url,
             ]),
 
-            'game' => $this->whenLoaded('game', [
-                'id' => $this->game_id,
-                'title' => $this->game->title,
-                'box_art' => $this->game->getBoxArt(),
+            'category' => $this->whenLoaded('category', [
+                'id' => $this->category_id,
+                'title' => $this->category->title,
+                'box_art' => $this->category->getBoxArt(),
             ]),
 
             'vod' => [
