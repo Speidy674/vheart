@@ -36,7 +36,7 @@ return [
             ],
             'filters' => [
                 'broadcaster' => 'Broadcaster',
-                'clipper' => 'Clipper',
+                'creator' => 'Clip Creator',
                 'submitter' => 'Submitter',
                 'claimer' => 'Claimer',
                 'claimer_option_none' => 'None / Unclaimed',
@@ -51,18 +51,28 @@ return [
             ],
             'actions' => [
                 'claim' => 'Claim',
+                'claim_override' => [
+                    'heading' => 'Already Claimed',
+                    'description' => 'Are you sure you want to claim this clip?',
+                ],
                 'unclaim' => 'Unclaim',
                 'copy_filename' => 'Copy Filename',
                 'copy_filename_tooltip' => 'Copy standardized filename for editors',
+                'status' => [
+                    'title' => 'Update Status',
+                ],
             ],
             'notifications' => [
-                'claimed_title' => 'Clip Claimed',
-                'claimed_body' => 'You have successfully claimed this clip.',
+                'claimed' => [
+                    'title' => 'Clip Claimed',
+                    'body' => 'You have successfully claimed this clip.',
+                ],
                 'unclaimed_title' => 'Clip Unclaimed',
                 'download_error_title' => 'Cannot download Clip',
                 'download_error_broadcaster' => 'Broadcaster is not available.',
                 'download_error_not_found' => 'Clip was not found.',
                 'filename_copied' => 'Filename Copied',
+                'status_updated' => 'Status has been updated',
             ],
         ],
     ],

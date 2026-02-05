@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\Twitch\Data;
 
-class ClipDownloadDto implements TwitchDtoInterface
+use App\Services\Twitch\Contracts\TwitchDtoInterface;
+
+readonly class ClipDownloadDto implements TwitchDtoInterface
 {
     public function __construct(
         public string $clip_id,
