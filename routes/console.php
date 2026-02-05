@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Models\Category;
 use App\Services\Twitch\Data\GameDto;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Schedule;
  *
  * This reduces the amount of API calls we have to do and we should be eventually consistent within 5 minute frames
  */
-Schedule::call(function (TwitchService $twitchService) {
+Schedule::call(function (TwitchService $twitchService, App\Actions\ImportCategoryAction $importCategoryAction) {
     $missingGames = App\Models\Clip::query()
         ->whereDoesntHave('game')
         ->distinct()
@@ -30,13 +29,8 @@ Schedule::call(function (TwitchService $twitchService) {
         'id' => $missingGames->toArray(),
     ]);
 
-    collect($games)->each(function (GameDto $game) {
-        Category::firstOrCreate([
-            'id' => $game->id,
-        ], [
-            'title' => $game->name,
-            'box_art' => $game->box_art_url,
-        ]);
+    collect($games)->each(function (GameDto $game) use ($importCategoryAction) {
+        $importCategoryAction->execute($game);
     });
 
     Log::debug('Fetched missing Categories from Twitch', [
