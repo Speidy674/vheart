@@ -1,19 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Enums\Reports;
 
 use App\Enums\Traits\HasTranslatedLabel;
 use Filament\Support\Contracts\HasLabel;
 
-enum ReportStatus: int implements HasLabel
+enum ResolveAction: int implements HasLabel
 {
     use HasTranslatedLabel;
 
-    case Pending = 0;
-    case InReview = 1;
-    case Resolved = 2;
+    case Other = 0;
+    case Dismissed = 1;
+    case ContentRemoved = 2;
+    case ContentEdited = 3;
+    case UserBanned = 4;
 
     private function getTranslatableEnumLabelPrefix(): string
     {
