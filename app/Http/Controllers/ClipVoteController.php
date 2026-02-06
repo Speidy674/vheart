@@ -8,9 +8,7 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\Permission;
 use App\Models\Clip;
-use App\Models\Vote;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -29,20 +27,6 @@ class ClipVoteController extends Controller
         $session = $request->session();
 
         return Inertia::render('evaluateclips', [
-            'history' => Inertia::optional(function () use ($user) {
-                $lastVotes = Vote::where('user_id', $user->id)->limit(5)
-                    ->with(['clip' => function (BelongsTo $query) {
-                        $query->select(['id', 'twitch_id', 'title'])
-                            ->withCount(['votes as public_votes' => function (Builder $query) {
-                                $query->where('type', ClipVoteType::Public);
-                            }]);
-                    }])
-                    ->select(['id', 'clip_id', 'voted', 'created_at'])
-                    ->orderBy('id', 'desc')
-                    ->get();
-
-                return $lastVotes;
-            }),
             'clip' => Inertia::optional(function () use ($user, $session) {
 
                 $clipIdQueue = [];
@@ -67,19 +51,20 @@ class ClipVoteController extends Controller
                         ->limit(value: self::QUEUE_SIZE)
                         ->get();
 
-                    // TODO clip permission checken
-
                     $clipIdQueue = $clips->pluck('id')->toArray();
 
                     $session->put(self::SESSION_QUEUE_KEY, $clipIdQueue);
                 }
 
+                if (count($clipIdQueue) === 0) {
+                    return null;
+                }
+
                 $clipIdToVote = $clipIdQueue[0];
 
-                $clip = Clip::select(['id', 'twitch_id', 'title'])
-                    ->withCount(['votes as public_votes' => function (Builder $query) {
-                        $query->where('type', ClipVoteType::Public);
-                    }])->find($clipIdToVote);
+                $clip = Clip::withCount(['votes' => function (Builder $query) {
+                    $query->where('type', ClipVoteType::Public);
+                }])->find($clipIdToVote)->toResource();
 
                 return $clip;
             }),
@@ -116,7 +101,7 @@ class ClipVoteController extends Controller
         })->find($data['clip']);
 
         if (empty($clip)) {
-            return $this->create($request);
+            return back();
         }
 
         $voteType = ClipVoteType::Public;
@@ -130,6 +115,6 @@ class ClipVoteController extends Controller
             'type' => $voteType,
         ]);
 
-        return $this->create($request);
+        return back();
     }
 }
