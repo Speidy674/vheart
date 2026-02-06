@@ -16,7 +16,7 @@ export function useCookie(cookieName: string) {
         if (!documentAvailable || !isAllowed) return null;
 
         const match = document.cookie.match(
-            new RegExp('(^| )' + cookieName + '=([^;]+)'),
+            new RegExp(`(^|;\\s*)(${cookieName})=([^;]*)`),
         );
 
         return match ? decodeURIComponent(match[2]) : null;
