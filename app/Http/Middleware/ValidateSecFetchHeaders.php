@@ -70,7 +70,7 @@ class ValidateSecFetchHeaders
         }
 
         // Resource Isolation
-        if (in_array($site, ['same-origin', 'same-site', 'none'], true)) {
+        if ($isTrusted || in_array($site, ['same-site', 'none'], true)) {
             return $this->setVary($next($request));
         }
 
