@@ -89,11 +89,9 @@ export function TwitchClipContainer({
                     onLoad={() => setIsLoading(false)}
                     src={clipSrc}
                     allow="fullscreen; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    frameBorder="0"
                     allowFullScreen={true}
-                    scrolling="no"
                     className={clsx(
-                        'aspect-video h-full w-full transition-opacity duration-500',
+                        'aspect-video h-full w-full transition-opacity duration-500 border-none m-0 overflow-hidden',
                         isLoading ? 'opacity-0' : 'opacity-100',
                     )}
                 />
