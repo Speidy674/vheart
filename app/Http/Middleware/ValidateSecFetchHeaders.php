@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\JsonResponse as SymfonyJsonResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
@@ -56,11 +57,11 @@ class ValidateSecFetchHeaders
         $site = $headers->get('Sec-Fetch-Site');
 
         if ($site === null) {
-            return $this->fail('Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
             Log::notice('Browser Agent does not support Sec-Fetch headers', [
                 'agent' => $request->headers->get('User-Agent'),
             ]);
 
+            return $this->fail($request, 'Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
         }
 
         $isTrusted = in_array($site, self::$TrustedOrigins, true);
@@ -68,7 +69,7 @@ class ValidateSecFetchHeaders
         // CSRF Protection
         if (! $request->isMethodSafe()) {
             if (! $isTrusted) {
-                return $this->fail('Cross-site request blocked.');
+                return $this->fail($request, 'Cross-site request blocked.');
             }
 
             return $this->setVary($next($request));
@@ -89,7 +90,7 @@ class ValidateSecFetchHeaders
             return $this->setVary($next($request));
         }
 
-        return $this->fail('Cross-site resource access forbidden.');
+        return $this->fail($request, 'Cross-site resource access forbidden.');
     }
 
     private function setVary(SymfonyResponse $response): SymfonyResponse
@@ -99,10 +100,16 @@ class ValidateSecFetchHeaders
         return $response;
     }
 
-    private function fail(string $message = 'Access forbidden.'): SymfonyResponse
+    private function fail(Request $request, string $message = 'Access forbidden.'): SymfonyResponse|SymfonyJsonResponse
     {
-        return new SymfonyResponse($message, 403, [
+        $varyHeader = [
             'Vary' => 'Sec-Fetch-Site, Sec-Fetch-Mode, Sec-Fetch-Dest',
-        ]);
+        ];
+
+        if ($request->expectsJson()) {
+            return new SymfonyJsonResponse(['message' => $message], 403, $varyHeader);
+        }
+
+        return new SymfonyResponse($message, 403, $varyHeader);
     }
 }
