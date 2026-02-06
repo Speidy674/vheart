@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             TagSeeder::class,
+            FaqSeeder::class,
         ]);
 
         // Kindly wipe unused permission pivots on deployment

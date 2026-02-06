@@ -28,14 +28,6 @@ class EditClip extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('open_twitch')
-                ->label(__('admin/resources/clips.actions.view_on_twitch'))
-                ->icon(Heroicon::Link)
-                ->url(function (Clip $clip) {
-                    return $clip->url;
-                })
-                ->openUrlInNewTab(),
-
             ActionGroup::make([
                 DeleteAction::make(),
             ]),

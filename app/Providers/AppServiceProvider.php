@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use SocialiteProviders\Manager\SocialiteWasCalled;
+use Spatie\Translatable\Facades\Translatable;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(static function (SocialiteWasCalled $event) {
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
+
 
         $this->configureRateLimiting();
         $this->configureGates();
@@ -132,6 +134,8 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Inertia::encryptHistory();
+
+        Translatable::fallback('en');
         JsonResource::withoutWrapping();
     }
 
