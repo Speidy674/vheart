@@ -26,7 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(
             append: [
-                App\Http\Middleware\EnforceSecFetchSite::class,
+                App\Http\Middleware\ValidateSecFetchHeaders::class,
                 HandleAppearance::class,
                 HandleInertiaRequests::class,
                 AddLinkHeadersForPreloadedAssets::class,
