@@ -31,7 +31,7 @@ class ValidateSecFetchHeaders
      *
      * @var string[]
      */
-    protected static array $TrustedOrigins = ['same-origin', 'same-site'];
+    protected static array $TrustedOrigins = ['same-origin'];
 
     /**
      * Blocked Destinations for Resource Isolation
