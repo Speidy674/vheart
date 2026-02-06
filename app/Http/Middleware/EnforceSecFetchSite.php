@@ -6,7 +6,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Using modern browser features, this will ensure CSRF protection by simply looking at the Sec-Fetch-Site header
@@ -20,22 +20,35 @@ use Symfony\Component\HttpFoundation\Response;
 class EnforceSecFetchSite
 {
     /**
-     * @param  Closure(Request): (Response)  $next
+     * @param  Closure(Request): (SymfonyResponse)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next): SymfonyResponse
     {
-        // read only stuff does not need this check
-        if (in_array($request->getMethod(), ['GET', 'HEAD', 'OPTIONS'])) {
-            return $next($request);
+        $headers = $request->headers;
+        $site = $headers->get('Sec-Fetch-Site');
+        abort_if($site === null, 403, 'Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
+
+        if (in_array($site, ['same-origin', 'same-site', 'none'], true)) {
+            return $this->setVary($next($request));
         }
 
-        $secFetchSite = $request->headers->get('sec-fetch-site');
-        abort_if($secFetchSite === null, 403, 'Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
-
-        if ($secFetchSite === 'same-origin' || $secFetchSite === 'same-site') {
-            return $next($request);
+        $mode = $headers->get('Sec-Fetch-Mode');
+        $dest = $headers->get('Sec-Fetch-Dest');
+        if (
+            $mode === 'navigate' &&
+            $request->isMethodSafe() &&
+            ! in_array($dest, ['iframe', 'object', 'embed'], true)
+        ) {
+            return $this->setVary($next($request));
         }
 
-        abort(403, 'Cross-site request forbidden.');
+        abort(403, 'Cross-site resource access forbidden.');
+    }
+
+    private function setVary(SymfonyResponse $response): SymfonyResponse
+    {
+        $response->setVary('Sec-Fetch-Site, Sec-Fetch-Mode, Sec-Fetch-Dest', false);
+
+        return $response;
     }
 }
