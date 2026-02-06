@@ -6,6 +6,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
@@ -56,6 +57,10 @@ class ValidateSecFetchHeaders
 
         if ($site === null) {
             return $this->fail('Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
+            Log::notice('Browser Agent does not support Sec-Fetch headers', [
+                'agent' => $request->headers->get('User-Agent'),
+            ]);
+
         }
 
         $isTrusted = in_array($site, self::$TrustedOrigins, true);
