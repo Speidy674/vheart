@@ -61,6 +61,12 @@ export default function EvaluateClips() {
                                     </div>
                                 </div>
 
+                                {/* Likes */}
+                                <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs text-white">
+                                    <Heart className="h-4 w-4 text-red-500" />
+                                    {props.clip.votes ?? 0}
+                                </div>
+
                                 {/* ACTION BAR */}
                                 <div className="flex shrink-0 items-center justify-center gap-3 py-2 sm:gap-4 sm:py-3">
                                     {/* Like */}
