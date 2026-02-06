@@ -24,6 +24,10 @@ class EnforceSecFetchSite
      */
     public function handle(Request $request, Closure $next): SymfonyResponse
     {
+        if (! $request->headers->has('X-Force-Sec-Fetch') && app()->runningUnitTests()) {
+            return $next($request);
+        }
+
         $headers = $request->headers;
         $site = $headers->get('Sec-Fetch-Site');
         abort_if($site === null, 403, 'Your browser is too old or a privacy extension is stripping the "Sec-Fetch-Site" header. Please disable strict privacy tools or update your browser.');
