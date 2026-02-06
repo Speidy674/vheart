@@ -8,6 +8,7 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\Permission;
 use App\Models\Clip;
+use App\Models\Scopes\ClipPermissionScope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -62,11 +63,11 @@ class ClipVoteController extends Controller
 
                 $clipIdToVote = $clipIdQueue[0];
 
-                $clip = Clip::withCount(['votes' => function (Builder $query) {
+                $clip = Clip::withoutGlobalScope(ClipPermissionScope::class)->withCount(['votes' => function (Builder $query) {
                     $query->where('type', ClipVoteType::Public);
-                }])->find($clipIdToVote)->toResource();
+                }])->find($clipIdToVote);
 
-                return $clip;
+                return empty($clip) ? null : $clip->toResource();
             }),
         ]);
     }
