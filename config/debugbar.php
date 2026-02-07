@@ -249,7 +249,7 @@ return [
     'storage' => [
         'enabled'    => env('DEBUGBAR_STORAGE_ENABLED', true),
         'open'       => env('DEBUGBAR_OPEN_STORAGE'), // bool/callback.
-        'driver'     => env('DEBUGBAR_STORAGE_DRIVER', 'file'), // redis, file, sqlite, pdo, custom
+        'driver'     => env('DEBUGBAR_STORAGE_DRIVER', 'sqlite'), // redis, file, sqlite, pdo, custom
         'path'       => env('DEBUGBAR_STORAGE_PATH', storage_path('debugbar')), // For file driver
         'connection' => env('DEBUGBAR_STORAGE_CONNECTION'), // Leave null for default connection (Redis/PDO)
         'provider'   => env('DEBUGBAR_STORAGE_PROVIDER', ''), // Instance of StorageInterface for custom driver
