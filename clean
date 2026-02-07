@@ -34,6 +34,5 @@ clean_path "./resources/js/wayfinder"
 
 # Build & Misc Files
 clean_path "./public/build"
-clean_path "./public/hot"
 
 echo "done"

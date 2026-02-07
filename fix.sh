@@ -9,6 +9,7 @@ rm -f ./frankenphp
 rm -f ./public/frankenphp-worker.php
 rm -f ./.phpstorm.meta.php
 rm -f ./_ide_helper.php
+rm -f ./public/hot
 
 ./clean
 
