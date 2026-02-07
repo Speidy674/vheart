@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ReportButton from '@/components/reports/report-button';
 
 type Item = {
     id: number;
@@ -298,6 +299,16 @@ export default function EvaluateClips() {
                                         >
                                             <ChevronRight className="h-4 w-4 text-white sm:h-5 sm:w-5" />
                                         </button>
+
+                                        <ReportButton
+                                            items={[
+                                                {
+                                                    type: 'clip',
+                                                    id: it.id,
+                                                },
+                                                // TODO: implement broadcaster reportable when using proper types and data
+                                            ]}
+                                        />
                                     </div>
                                 </section>
                             );

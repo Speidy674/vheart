@@ -24,4 +24,28 @@ return [
             'user-banned' => 'Benutzer Gesperrt',
         ],
     ],
+    'modal' => [
+        'title' => ':reportable Melden',
+        'subtitle' => 'Bitte beschreibe dein Problem',
+        'inputs' => [
+            'reason' => [
+                'label' => 'Grund für die Meldung',
+            ],
+            'description' => [
+                'label' => 'Weitere Informationen',
+                'placeholder' => 'Benötigt wenn "Anderes" gewählt.',
+            ],
+            'cancel' => 'Abbrechen',
+            'submit' => 'Melden',
+        ],
+        'success' => [
+            'title' => 'Erfolgreich gemeldet!',
+            'message' => 'Wir werden uns darum kümmern.',
+        ],
+        'button' => ':reportable Melden',
+    ],
+    'reportable' => [
+        'user' => 'Benutzer',
+        'clip' => 'Clip',
+    ],
 ];
