@@ -22,7 +22,7 @@ class FaqEntriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('question')
+                TextColumn::make('title')
                     ->label('admin/resources/faq-entry.table.columns.question.label')
                     ->translateLabel()
                     ->placeholder(__('admin/resources/faq-entry.table.columns.question.placeholder')),
