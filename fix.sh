@@ -5,20 +5,8 @@
 echo "Deleting stuff that may be broken..."
 rm -rf ./vendor
 rm -rf ./node_modules
-rm ./bootstrap/cache/packages.php
-rm ./bootstrap/cache/services.php
-rm ./frankenphp
-rm ./.phpstorm.meta.php
-rm ./_ide_helper.php
-rm ./public/hot
-rm ./public/frankenphp-worker.php
-rm -rf ./public/css/filament
-rm -rf ./public/fonts/filament
-rm -rf ./public/js/filament
-rm -rf ./resources/js/actions
-rm -rf ./resources/js/routes
-rm -rf ./resources/js/wayfinder
-rm -rf ./public/build
+
+./clean.sh
 
 echo "Installing Composer dependencies..."
 docker run --rm \
