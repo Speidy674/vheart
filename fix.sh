@@ -1,4 +1,3 @@
-#!/bin/bash
 #!/usr/bin/env bash
 
 ./vendor/bin/sail down
@@ -17,8 +16,10 @@ docker run --rm \
     --user "$(id -u):$(id -g)" \
     composer install --ignore-platform-reqs
 
-#echo "Building Sail (can take a while)..."
-#./vendor/bin/sail build --no-cache
+if [[ "$1" == "--build" ]]; then
+    echo "Building Sail (can take a while)..."
+    ./vendor/bin/sail build --no-cache
+fi
 
 echo "Starting Sail..."
 ./vendor/bin/sail up -d
