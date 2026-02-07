@@ -24,7 +24,7 @@ echo "Starting Sail..."
 
 until ./vendor/bin/sail ps | grep "laravel.test" | grep -q "(healthy)"; do
     echo "waiting for sail to be healthy..."
-    sleep 3
+    sleep 1
 done
 
 echo "(re)Installing dependencies using sail..."
