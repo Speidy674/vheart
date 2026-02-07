@@ -109,7 +109,7 @@ export default function ReportModal({
                             }}
                         >
                             {({ errors, processing }) => (
-                                <div className="relative space-y-2">
+                                <div className="relative space-y-4">
                                     {processing && (
                                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
                                             <LucideLoaderCircle className="size-8 animate-spin text-primary" />
@@ -127,14 +127,14 @@ export default function ReportModal({
                                         defaultValue={reportableType}
                                     />
 
-                                    <div className="space-y-2">
+                                    <div>
                                         <label className="text-sm leading-none font-medium">
                                             {t('modal.inputs.reason.label')}
                                         </label>
                                         <select
                                             name="reason"
                                             required
-                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
+                                            className="flex mt-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
                                         >
                                             {reasons.map((reason) => (
                                                 <option
@@ -152,7 +152,7 @@ export default function ReportModal({
                                         )}
                                     </div>
 
-                                    <div className="space-y-2">
+                                    <div>
                                         <label className="text-sm leading-none font-medium">
                                             {t(
                                                 'modal.inputs.description.label',
@@ -164,7 +164,7 @@ export default function ReportModal({
                                             placeholder={t(
                                                 'modal.inputs.description.placeholder',
                                             )}
-                                            className="flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
+                                            className="flex mt-2 min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
                                         />
                                         {errors.description && (
                                             <p className="text-xs font-medium text-destructive">
