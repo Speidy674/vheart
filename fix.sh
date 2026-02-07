@@ -6,7 +6,7 @@ echo "Deleting stuff that may be broken..."
 rm -rf ./vendor
 rm -rf ./node_modules
 
-./clean.sh
+./clean
 
 echo "Installing Composer dependencies..."
 docker run --rm \
