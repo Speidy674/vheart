@@ -5,6 +5,10 @@
 echo "Deleting stuff that may be broken..."
 rm -rf ./vendor
 rm -rf ./node_modules
+rm -f ./frankenphp
+rm -f ./public/frankenphp-worker.php
+rm -f ./.phpstorm.meta.php
+rm -f ./_ide_helper.php
 
 ./clean
 
