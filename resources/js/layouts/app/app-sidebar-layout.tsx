@@ -8,7 +8,7 @@ import { type PropsWithChildren, type ReactNode } from 'react';
 
 interface AppSidebarLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
-    /** Custom content for the sidebar (appears in sidebar header area) */
+    /** Custom content for the sidebar*/
     sidebarContent?: ReactNode;
 }
 

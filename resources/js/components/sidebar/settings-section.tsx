@@ -5,13 +5,13 @@ import { edit as editPermissions } from '@/routes/permissions';
 import { edit } from '@/routes/profile';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Settings } from 'lucide-react';
+import { Eye, Settings, ShieldCheck, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const sidebarNavItems: NavItem[] = [
-    { title: 'nav.profile', href: edit(), icon: null },
-    { title: 'nav.appearance', href: editAppearance(), icon: null },
-    { title: 'nav.permissions', href: editPermissions(), icon: null },
+    { title: 'nav.profile', href: edit(), icon: User },
+    { title: 'nav.appearance', href: editAppearance(), icon: Eye },
+    { title: 'nav.permissions', href: editPermissions(), icon: ShieldCheck },
 ];
 
 export function SettingsSection() {
@@ -26,12 +26,14 @@ export function SettingsSection() {
             <SidebarMenuItem>
                 <div className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-black uppercase dark:text-white">
                     <Settings className="size-4" />
-                    <span>{t('title')}</span>
+                    <span className="group-data-[collapsible=icon]:hidden">
+                        {t('title')}
+                    </span>
                 </div>
             </SidebarMenuItem>
 
             {/* Sub items */}
-            <div className="mt-1 space-y-1 pl-7">
+            <div className="mt-1 space-y-1 pl-7 group-data-[collapsible=icon]:pl-0">
                 {sidebarNavItems.map((item, index) => {
                     const active = isSameUrl(currentPath, item.href);
 
@@ -49,9 +51,11 @@ export function SettingsSection() {
                             >
                                 <Link href={item.href}>
                                     {item.icon && (
-                                        <item.icon className="mr-2 size-4" />
+                                        <item.icon className="size-4 shrink-0" />
                                     )}
-                                    <span>{t(item.title)}</span>
+                                    <span className="group-data-[collapsible=icon]:hidden">
+                                        {t(item.title)}
+                                    </span>
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
