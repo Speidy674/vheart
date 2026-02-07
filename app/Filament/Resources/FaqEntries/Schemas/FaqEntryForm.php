@@ -18,10 +18,14 @@ class FaqEntryForm
             ->components([
                 TextInput::make('title')
                     ->reactive()
+                    ->minLength(10)
+                    ->maxLength(255)
                     ->label('admin/resources/faq-entry.form.question.label')
                     ->translateLabel()
                     ->placeholder(__('admin/resources/faq-entry.form.question.placeholder')),
+
                 DateTimePicker::make('published_at')
+                    ->seconds(false)
                     ->label('admin/resources/faq-entry.form.published_at.label')
                     ->translateLabel(),
 
@@ -33,6 +37,8 @@ class FaqEntryForm
                     ->required(function (Get $get) {
                         return ! empty($get('title'));
                     })
+                    ->minLength(10)
+                    ->maxLength(4000)
                     ->label('admin/resources/faq-entry.form.body.label')
                     ->translateLabel()
                     ->placeholder(__('admin/resources/faq-entry.form.body.placeholder'))
