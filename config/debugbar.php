@@ -300,7 +300,7 @@ return [
      | Extension, without the server-side code. It uses Debugbar collectors instead.
      |
      */
-    'clockwork' => env('DEBUGBAR_CLOCKWORK', false),
+    'clockwork' => env('DEBUGBAR_CLOCKWORK', true),
 
     /*
      |--------------------------------------------------------------------------
