@@ -50,6 +50,19 @@ export default function ReportButton({ items }: { items: ReportableItem[] }) {
 
     if (items.length === 0) return null;
 
+    if(!ready) {
+        return (
+            <Button
+                variant="ghost"
+                size="icon"
+                disabled={true}
+                className="size-9 rounded-full bg-black ring-1 ring-white/10 transition-transform duration-150 ease-out hover:bg-black active:scale-95 disabled:opacity-40 sm:size-11 sm:hover:scale-110"
+            >
+                <ReportIcon />
+            </Button>
+        );
+    }
+
     return (
         <>
             {items.length > 1 ? (
