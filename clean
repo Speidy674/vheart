@@ -28,9 +28,13 @@ clean_path "./public/fonts/filament"
 clean_path "./public/js/filament"
 
 # Wayfinder
-clean_path "./resources/js/actions"
-clean_path "./resources/js/routes"
-clean_path "./resources/js/wayfinder"
+if [ ! -f "./public/hot" ]; then
+    clean_path "./resources/js/actions"
+    clean_path "./resources/js/routes"
+    clean_path "./resources/js/wayfinder"
+else
+    echo "Vite is running, skipping Wayfinder cleanup."
+fi
 
 # Build & Misc Files
 clean_path "./public/build"
