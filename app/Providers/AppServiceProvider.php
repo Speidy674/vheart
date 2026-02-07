@@ -37,9 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (config('APP_DEBUG')) {
-            app()->register(\Fruitcake\LaravelDebugbar\ServiceProvider::class);
-        }
+        //
     }
 
     /**

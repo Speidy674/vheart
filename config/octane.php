@@ -140,7 +140,6 @@ return [
         Whitecube\LaravelCookieConsent\Consent::class,
         'cookie.consent',
         Filament\FilamentManager::class,
-        Fruitcake\LaravelDebugbar\LaravelDebugbar::class,
     ],
 
     /*
