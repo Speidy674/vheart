@@ -9,7 +9,7 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard, start } from '@/routes';
+import { dashboard, home, login } from '@/routes';
 import submitclip from '@/routes/submitclip';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -84,7 +84,7 @@ export function AppTopbar() {
                     {/* Logo */}
                     <div className="flex w-auto shrink-0 items-center md:w-[calc(var(--sidebar-width)-3.5rem)]">
                         <Link
-                            href={start()}
+                            href={home()}
                             prefetch
                             className="flex items-center transition-opacity hover:opacity-80"
                         >
@@ -139,33 +139,44 @@ export function AppTopbar() {
                     </nav>
 
                     {/* User Dropdown */}
-                    <div className="flex shrink-0 items-center">
-                        <DropdownMenu modal={false}>
-                            <DropdownMenuTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-sidebar-accent/50"
+                    {auth.user !== null ? (
+                        <div className="flex shrink-0 items-center">
+                            <DropdownMenu modal={false}>
+                                <DropdownMenuTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-sidebar-accent/50"
+                                    >
+                                        <Avatar className="size-7 overflow-hidden rounded-full">
+                                            <AvatarImage
+                                                src={auth.user.avatar}
+                                                alt={auth.user.name}
+                                            />
+                                            <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                                {getInitials(auth.user.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <span className="hidden text-sm font-medium lg:inline">
+                                            {auth.user.name}
+                                        </span>
+                                        <ChevronDown className="size-4 text-muted-foreground" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    className="w-56"
+                                    align="end"
                                 >
-                                    <Avatar className="size-7 overflow-hidden rounded-full">
-                                        <AvatarImage
-                                            src={auth.user.avatar}
-                                            alt={auth.user.name}
-                                        />
-                                        <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
-                                            {getInitials(auth.user.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <span className="hidden text-sm font-medium lg:inline">
-                                        {auth.user.name}
-                                    </span>
-                                    <ChevronDown className="size-4 text-muted-foreground" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-64" align="end">
-                                <UserMenuContent user={auth.user} />
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                                    <UserMenuContent user={auth.user} />
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
+                    ) : (
+                        <Link href={login()}>
+                            <Button variant={'outline'}>
+                                <span>{t('login')}</span>
+                            </Button>
+                        </Link>
+                    )}
                 </div>
             </header>
         </div>

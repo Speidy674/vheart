@@ -33,8 +33,12 @@ return new class extends Migration
             // ReportStatus Enum, default "Pending"
             $table->unsignedInteger('status')->default(0)->index();
 
+            $table->unsignedInteger('resolve_action')->nullable();
+            $table->string('resolve_description')->nullable();
+
             $table->timestamp('claimed_at')->nullable();
             $table->timestamp('resolved_at')->nullable();
+
             $table->softDeletes();
             $table->timestamps();
 
