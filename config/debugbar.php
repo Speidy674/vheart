@@ -344,7 +344,7 @@ return [
      | By default Debugbar route served from the same domain that request served.
      | To override default domain, specify it as a non-empty value.
      */
-    'route_domain' => env('DEBUGBAR_ROUTE_DOMAIN'),
+    'route_domain' => env('DEBUGBAR_ROUTE_DOMAIN', 'localhost'),
 
     /*
      |--------------------------------------------------------------------------
