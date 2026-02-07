@@ -1,4 +1,5 @@
 import { store } from '@/actions/App/Http/Controllers/ReportController';
+import { ReportableType } from '@/components/reports/report-button';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -7,18 +8,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Form } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { Form, router, usePage } from '@inertiajs/react';
+import { LucideCheck, LucideLoaderCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    LucideCheck,
-    LucideLoaderCircle,
-} from 'lucide-react';
-import { ReportableType } from '@/components/reports/report-button';
 
 export interface ReportReason {
     id: number;
-    labelKey: string;
+    label: string;
 }
 
 export interface ReportModalProps {
@@ -39,24 +36,46 @@ export default function ReportModal({
 }: ReportModalProps) {
     const { t } = useTranslation('reports');
     const [wasSuccessful, setWasSuccessful] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasFetched, setHasFetched] = useState(false);
+    const isFetchingRef = useRef(false);
+
+    const { reportOptions } = usePage<{
+        reportOptions?: { reasons: ReportReason[] };
+    }>().props;
 
     useEffect(() => {
-        onLoaded?.();
-    }, [onLoaded]);
+        async function setLoading(state: boolean) {
+            setIsLoading(state);
+        }
+        async function setFetched(state: boolean) {
+            setHasFetched(state);
+        }
+
+        if (isOpen && !hasFetched && !isLoading && !isFetchingRef.current) {
+            isFetchingRef.current = true;
+            void setLoading(true);
+
+            router.reload({
+                only: ['reportOptions'],
+                onFinish: () => {
+                    void setLoading(false);
+                    void setFetched(true);
+                    isFetchingRef.current = false;
+                    onLoaded?.();
+                },
+            });
+        }
+
+        if (!isOpen && hasFetched) {
+            void setFetched(false);
+        }
+    }, [isOpen, hasFetched, isLoading, onLoaded]);
 
     const handleClose = () => {
         setWasSuccessful(false);
         onClose();
     };
-
-    // hardcoded for now, can fetch them later if we need it
-    const reasons: ReportReason[] = [
-        { id: 0, labelKey: 'enums.report-reason.other' },
-        { id: 1, labelKey: 'enums.report-reason.spam' },
-        { id: 2, labelKey: 'enums.report-reason.harassment' },
-        { id: 3, labelKey: 'enums.report-reason.hate_speech' },
-        { id: 4, labelKey: 'enums.report-reason.ai_content' },
-    ];
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
@@ -86,14 +105,15 @@ export default function ReportModal({
                         <DialogHeader>
                             <DialogTitle>
                                 {t('modal.title', {
-                                    reportable: t('reportable.' + reportableType),
+                                    reportable: t(
+                                        'reportable.' + reportableType,
+                                    ),
                                 })}
                             </DialogTitle>
                             <DialogDescription>
                                 {t('modal.subtitle')}
                             </DialogDescription>
                         </DialogHeader>
-
                         <Form
                             action={store()}
                             method="post"
@@ -110,7 +130,7 @@ export default function ReportModal({
                         >
                             {({ errors, processing }) => (
                                 <div className="relative space-y-4">
-                                    {processing && (
+                                    {(processing || isLoading) && (
                                         <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-[1px]">
                                             <LucideLoaderCircle className="size-8 animate-spin text-primary" />
                                         </div>
@@ -134,16 +154,18 @@ export default function ReportModal({
                                         <select
                                             name="reason"
                                             required
-                                            className="flex mt-2 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
+                                            className="mt-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
                                         >
-                                            {reasons.map((reason) => (
-                                                <option
-                                                    key={reason.id}
-                                                    value={reason.id}
-                                                >
-                                                    {t(reason.labelKey)}
-                                                </option>
-                                            ))}
+                                            {(reportOptions?.reasons ?? []).map(
+                                                (reason) => (
+                                                    <option
+                                                        key={reason.id}
+                                                        value={reason.id}
+                                                    >
+                                                        {reason.label}
+                                                    </option>
+                                                ),
+                                            )}
                                         </select>
                                         {errors.reason && (
                                             <p className="text-xs font-medium text-destructive">
@@ -164,7 +186,7 @@ export default function ReportModal({
                                             placeholder={t(
                                                 'modal.inputs.description.placeholder',
                                             )}
-                                            className="flex mt-2 min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
+                                            className="mt-2 flex min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-gray-700 dark:bg-gray-800"
                                         />
                                         {errors.description && (
                                             <p className="text-xs font-medium text-destructive">
@@ -185,7 +207,9 @@ export default function ReportModal({
                                         <Button
                                             type="submit"
                                             variant="destructive"
-                                            disabled={processing}
+                                            disabled={
+                                                processing || isLoading
+                                            }
                                         >
                                             {t('modal.inputs.submit')}
                                         </Button>
