@@ -14,8 +14,8 @@ return [
             'other' => 'Other',
             'spam' => 'Spam',
             'harassment' => 'Harassment',
-            'hate_speech' => 'Hate Speech',
-            'ai_content' => 'AI Content',
+            'hate-speech' => 'Hate Speech',
+            'ai-content' => 'AI Content',
         ],
         'resolve-action' => [
             'other' => 'Other',
