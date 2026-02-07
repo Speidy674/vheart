@@ -42,6 +42,7 @@ return [
         'success' => [
             'title' => 'Report successfully submitted',
             'message' => 'Thank you, your report has been submitted.',
+            'ok' => 'Okay',
         ],
         'button' => 'Report :reportable',
     ],

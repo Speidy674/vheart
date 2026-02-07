@@ -42,6 +42,7 @@ return [
         'success' => [
             'title' => 'Erfolgreich gemeldet!',
             'message' => 'Wir werden uns darum kümmern.',
+            'ok' => 'Verstanden',
         ],
         'button' => ':reportable Melden',
     ],
