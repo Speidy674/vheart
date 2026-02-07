@@ -33,7 +33,6 @@ echo "(re)Installing dependencies using sail..."
 ./vendor/bin/sail npm install
 
 echo "Resetting stuff..."
-./vendor/bin/sail artisan optimize:clear
 ./vendor/bin/sail artisan migrate:fresh --seed
 ./vendor/bin/sail composer helper
 ./vendor/bin/sail down
