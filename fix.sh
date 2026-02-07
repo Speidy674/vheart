@@ -3,15 +3,7 @@
 ./vendor/bin/sail down
 
 echo "Deleting stuff that may be broken..."
-rm -rf ./vendor
-rm -rf ./node_modules
-rm -f ./frankenphp
-rm -f ./public/frankenphp-worker.php
-rm -f ./.phpstorm.meta.php
-rm -f ./_ide_helper.php
-rm -f ./public/hot
-
-./clean
+./clean --force
 
 echo "Installing Composer dependencies..."
 docker run --rm \

@@ -22,10 +22,22 @@ clean_path "./storage/logs"
 # debugbar needs special treatment, potentially way too many files lol
 find ./storage/debugbar -type f ! -name ".gitignore" -delete
 
-# Filament
-clean_path "./public/css/filament"
-clean_path "./public/fonts/filament"
-clean_path "./public/js/filament"
+if [[ "$1" == "--force" ]]; then
+    # Filament
+    clean_path "./public/css/filament"
+    clean_path "./public/fonts/filament"
+    clean_path "./public/js/filament"
+
+    # Vendor
+    rm -rf ./vendor
+    rm -rf ./node_modules
+
+    clean_path "./frankenphp"
+    clean_path "./public/frankenphp-worker.php"
+    clean_path "./.phpstorm.meta.php"
+    clean_path "./_ide_helper.php"
+    clean_path "./public/hot"
+fi
 
 # Wayfinder
 if [ ! -f "./public/hot" ]; then
