@@ -209,7 +209,7 @@ export function BetterplaceDonationCard() {
                                     }
                                 `}</style>
 
-                                <div className="custom-scrollbar h-full min-h-0 overflow-y-auto pr-2">
+                                <div className="custom-scrollbar min-h-0 overflow-y-auto pr-2 max-h-[20rem] lg:max-h-none lg:h-full">
                                     {donations.map((donation, index) => {
                                         const amount =
                                             (donation.donated_amount_in_cents ||
