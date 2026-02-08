@@ -14,6 +14,7 @@ use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
 use Database\Factories\ClipFactory;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -83,6 +84,24 @@ class Clip extends Model
     public function getReportableTitleAttribute(): string
     {
         return 'title';
+    }
+
+    /**
+     * Exclude Clips that has been Submitted before a date
+     */
+    #[Scope]
+    protected function whereSubmittedAfter(Builder $query, DateTimeInterface $dateTime): Builder
+    {
+        return $query->where('created_at', '>=', $dateTime);
+    }
+
+    /**
+     * Exclude Clips that has been Clipped before a date
+     */
+    #[Scope]
+    protected function whereClippedAfter(Builder $query, DateTimeInterface $dateTime): Builder
+    {
+        return $query->where('date', '>=', $dateTime);
     }
 
     /**
