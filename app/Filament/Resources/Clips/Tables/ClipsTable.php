@@ -4,102 +4,266 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationStatus;
+use App\Enums\ClipVoteType;
+use App\Models\Clip;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Support\Enums\FontFamily;
+use Filament\Support\Enums\TextSize;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ClipsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with([
+                'game',
+                'broadcaster',
+                'creator',
+                'submitter',
+            ])->withCount([
+                'votes as votes_jury' => function (Builder $query) {
+                    $query->where('type', ClipVoteType::Jury)->whereVoted(true);
+                },
+                'votes as votes_public' => function (Builder $query) {
+                    $query->where('type', ClipVoteType::Public)->whereVoted(true);
+                },
+            ]))
             ->columns([
-                TextColumn::make('twitch_id')
-                    ->label('admin/resources/clips.table.columns.twitch_id')
-                    ->translateLabel()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->searchable(),
-                ImageColumn::make('thumbnail_url')
-                    ->label('admin/resources/clips.table.columns.thumbnail')
-                    ->translateLabel()
-                    ->height(100),
-                TextColumn::make('title')
-                    ->label('admin/resources/clips.table.columns.title')
-                    ->translateLabel()
-                    ->wrap()
-                    ->searchable(),
-                TextColumn::make('broadcaster.name')
-                    ->label('admin/resources/clips.table.columns.broadcaster')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('creator.name')
-                    ->label('admin/resources/clips.table.columns.clipper')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('submitter.name')
-                    ->label('admin/resources/clips.table.columns.submitter')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('game.title')
-                    ->label('admin/resources/clips.table.columns.category')
-                    ->translateLabel()
-                    ->searchable(),
-                TextColumn::make('duration')
-                    ->label('admin/resources/clips.table.columns.duration')
-                    ->translateLabel()
-                    ->numeric()
-                    ->formatStateUsing(function ($state) {
-                        $totalSeconds = (int) round($state);
+                Split::make([
+                    Stack::make([
+                        ImageColumn::make('thumbnail_url')
+                            ->label('admin/resources/clips.table.columns.thumbnail')
+                            ->translateLabel()
+                            ->imageHeight(100)
+                            ->alignCenter()
+                            ->extraImgAttributes([
+                                'class' => 'object-cover rounded aspect-video',
+                                'loading' => 'lazy',
+                            ]),
+                    ])->grow(false),
 
-                        $minutes = intdiv($totalSeconds, 60);
-                        $seconds = $totalSeconds % 60;
+                    Stack::make([
+                        TextColumn::make('title')
+                            ->label('admin/resources/clips.table.columns.title')
+                            ->translateLabel()
+                            ->weight('bold')
+                            ->searchable()
+                            ->wrap(),
 
-                        return sprintf('%d:%02d', $minutes, $seconds);
-                    })
-                    ->sortable(),
-                TextColumn::make('status')
-                    ->label('admin/resources/clips.table.columns.status')
-                    ->translateLabel()
-                    ->searchable(),
-                IconColumn::make('is_anonymous')
-                    ->label('admin/resources/clips.table.columns.is_anonymous')
-                    ->translateLabel()
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->label('admin/resources/clips.table.columns.created_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label('admin/resources/clips.table.columns.updated_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->label('admin/resources/clips.table.columns.deleted_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                        Split::make([
+                            TextColumn::make('duration')
+                                ->label(__('admin/resources/clips.table.columns.duration'))
+                                ->tooltip(__('admin/resources/clips.table.columns.duration'))
+                                ->icon(Heroicon::Clock)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->formatStateUsing(fn (int $state) => gmdate('i:s', $state))
+                                ->fontFamily(FontFamily::Mono)
+                                ->badge()
+                                ->color('gray'),
+
+                            TextColumn::make('votes_jury')
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->label(__('admin/resources/clips.table.columns.votes_jury'))
+                                ->icon(Heroicon::Star)
+                                ->size(TextSize::Medium)
+                                ->sortable()
+                                ->badge()
+                                ->color('warning'),
+                            TextColumn::make('votes_public')
+                                ->label(__('admin/resources/clips.table.columns.votes_public'))
+                                ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
+                                ->size(TextSize::Medium)
+                                ->icon(Heroicon::UserGroup)
+                                ->sortable()
+                                ->badge()
+                                ->color('success'),
+                        ])->grow(false),
+                    ])->space(),
+
+                    Stack::make([
+                        TextColumn::make('broadcaster.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
+                            ->icon(Heroicon::VideoCamera)
+                            ->color('gray'),
+
+                        TextColumn::make('creator.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.creator'))
+                            ->icon(Heroicon::Scissors)
+                            ->color('gray'),
+
+                        TextColumn::make('submitter.name')
+                            ->tooltip(__('admin/resources/clips.table.columns.submitter'))
+                            ->icon(Heroicon::User)
+                            ->color('gray'),
+                    ])
+                        ->space(1),
+
+                    Stack::make([
+                        TextColumn::make('date')
+                            ->label(__('admin/resources/clips.table.columns.created_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
+                            ->color('gray'),
+                        TextColumn::make('created_at')
+                            ->label(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->dateTime()
+                            ->sortable()
+                            ->color('gray'),
+
+                        Split::make([
+                            ImageColumn::make('game.box_art')
+                                ->imageHeight(40)
+                                ->alignCenter()
+                                ->getStateUsing(function (Clip $record) {
+                                    return $record->game?->getBoxArt();
+                                })
+                                ->extraImgAttributes([
+                                    'class' => 'object-cover rounded-md aspect-[3/4]',
+                                ])
+                                ->grow(false),
+                            TextColumn::make('game.title')
+                                ->label('admin/resources/clips.table.columns.category')
+                                ->translateLabel()
+                                ->weight('medium')
+                                ->wrap()
+                                ->color('gray')
+                                ->searchable(),
+                        ])
+                            ->grow(false),
+                    ])
+                        ->space(1),
+                ])->from('lg'),
             ])
             ->filters([
-                //
+                SelectFilter::make('broadcaster')
+                    ->relationship('broadcaster', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('broadcastedClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.broadcaster')
+                    ->translateLabel(),
+                SelectFilter::make('creator')
+                    ->relationship('creator', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('createdClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.creator')
+                    ->translateLabel(),
+                SelectFilter::make('submitter')
+                    ->relationship('submitter', 'name', function (Builder $query): Builder {
+                        return $query->whereHas('submittedClips');
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.submitter')
+                    ->translateLabel(),
+                SelectFilter::make('game')
+                    ->relationship('game', 'title')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.game')
+                    ->translateLabel(),
+                SelectFilter::make('tags')
+                    ->relationship('tags', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple()
+                    ->label('admin/resources/clips.filters.tags')
+                    ->translateLabel(),
+
+                // TODO: use enum method for compilation status when merged later
+                TernaryFilter::make('in_compilation')
+                    ->label('admin/resources/clips.filters.in_compilation.label')
+                    ->translateLabel()
+                    ->nullable()
+                    ->placeholder(__('admin/resources/clips.filters.in_compilation.only_without_compilation'))
+                    ->trueLabel(__('admin/resources/clips.filters.in_compilation.only_with_compilation'))
+                    ->falseLabel(__('admin/resources/clips.filters.in_compilation.with_compilation'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereHas('compilations', function (Builder $query): Builder {
+                            return $query->whereIn('compilations.status', array_merge([
+                                CompilationStatus::Planned,
+                            ], CompilationStatus::getPublicCases()));
+                        }),
+                        false: fn (Builder $query) => $query,
+                        blank: fn (Builder $query) => $query->whereDoesntHave('compilations', function (Builder $query): Builder {
+                            return $query->whereIn('compilations.status', array_merge([
+                                CompilationStatus::Planned,
+                            ], CompilationStatus::getPublicCases()));
+                        }),
+                    ),
             ])
+            ->defaultSort('votes_public', 'desc')
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                ActionGroup::make([
+                    Action::make('attach_to_compilation')
+                        ->label('admin/resources/clips.actions.attach_to_compilation.label')
+                        ->translateLabel()
+                        ->icon(Heroicon::Link)
+                        ->schema([
+                            Select::make('compilation_id')
+                                ->label('Compilation')
+                                ->searchable()
+                                ->options(function (Clip $record) {
+                                    return Clip\Compilation::query()
+                                        ->whereNotIn('id', $record->compilations()->pluck('compilations.id'))
+                                        ->pluck('title', 'id');
+                                })
+                                ->preload()
+                                ->required(),
+                            Fieldset::make()
+                                ->schema([
+                                    Toggle::make('claim')
+                                        ->reactive()
+                                        ->label('admin/resources/clips.actions.attach_to_compilation.claim')
+                                        ->translateLabel(),
+                                    Select::make('status')
+                                        ->disabled(fn (Get $get) => $get('claim') !== true)
+                                        ->label('admin/resources/clips.actions.attach_to_compilation.status')
+                                        ->translateLabel()
+                                        ->options(CompilationClipStatus::class)
+                                        ->default(CompilationClipStatus::Pending)
+                                        ->required(),
+                                ])->columns(1),
+                        ])
+                        ->action(function (Clip $record, array $data): void {
+                            $record->compilations()->attach($data['compilation_id'], [
+                                'status' => $data['status'] ?? CompilationClipStatus::Pending,
+                                'claimed_by' => $data['claim'] ? auth()->id() : null,
+                            ]);
+                        })
+                        ->successNotificationTitle(__('admin/resources/clips.notifications.actions.attached_to_compilation')),
+                    ViewAction::make(),
+                    EditAction::make(),
                 ]),
             ]);
     }

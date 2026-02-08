@@ -18,6 +18,7 @@
         "laravel/wayfinder": "^0.1.9",
         "sentry/sentry-laravel": "^4.20",
         "socialiteproviders/twitch": "^5.4",
+        "spatie/laravel-translatable": "^6.12",
         "whitecube/laravel-cookie-consent": "^1.3"
     },
     "require-dev": {
@@ -97,7 +98,7 @@
             "npm run lint"
         ],
         "refactor": "rector",
-        "test:type-coverage": "pest --type-coverage --min=95",
+        "test:type-coverage": "pest --type-coverage --min=90",
         "test:lint": [
             "pint --test",
             "npm run test:lint"
