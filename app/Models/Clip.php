@@ -113,13 +113,11 @@ class Clip extends Model
     #[Scope]
     protected function whereNotPublished(Builder $query): Builder
     {
-        return $query->where(function (Builder $query) {
-            $query->whereDoesntHave('compilations', function (Builder $q) {
-                $q->whereIn('compilations.status', array_merge(
-                    CompilationStatus::getPublicCases(),
-                    [CompilationStatus::Scheduled]
-                ));
-            });
+        return $query->whereDoesntHave('compilations', function (Builder $q) {
+            $q->whereIn('compilations.status', array_merge(
+                CompilationStatus::getPublicCases(),
+                [CompilationStatus::Scheduled]
+            ));
         });
     }
 
