@@ -50,7 +50,8 @@ export default function AppearanceToggleSlider({
         return (
             <div
                 className={cn(
-                    'relative inline-flex w-full items-center rounded-lg',
+                    'relative inline-flex items-center rounded-lg',
+                    'w-[92px] sm:w-[104px]',
                     'bg-neutral-100 p-1 dark:bg-neutral-800',
                     className,
                 )}
@@ -62,7 +63,8 @@ export default function AppearanceToggleSlider({
     return (
         <div
             className={cn(
-                'relative inline-flex w-full items-center rounded-lg',
+                'relative inline-flex items-center rounded-lg',
+                'w-[92px] sm:w-[104px]',
                 'bg-neutral-100 p-1 dark:bg-neutral-800',
                 className,
             )}
@@ -78,9 +80,7 @@ export default function AppearanceToggleSlider({
                     'dark:bg-neutral-700 dark:shadow-none dark:ring-neutral-600',
                     'transition-transform duration-200 ease-out',
                 )}
-                style={{
-                    transform: `translateX(calc(${activeIndex} * 100%))`,
-                }}
+                style={{ transform: `translateX(calc(${activeIndex} * 100%))` }}
                 aria-hidden="true"
             />
 
@@ -93,10 +93,9 @@ export default function AppearanceToggleSlider({
                         type="button"
                         onClick={() => handleAppearanceChange(value)}
                         className={cn(
-                            'relative z-10 inline-flex h-6 flex-1 items-center justify-center',
-                            'rounded-md transition-colors',
-                            'focus-visible:ring-2 focus-visible:ring-neutral-400/60',
-                            'focus-visible:outline-none dark:focus-visible:ring-neutral-500/60',
+                            'relative z-10 inline-flex h-6 flex-1 items-center justify-center rounded-md transition-colors',
+                            'focus-visible:ring-2 focus-visible:ring-neutral-400/60 focus-visible:outline-none',
+                            'dark:focus-visible:ring-neutral-500/60',
                             isActive
                                 ? 'text-neutral-900 dark:text-neutral-50'
                                 : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-50',
