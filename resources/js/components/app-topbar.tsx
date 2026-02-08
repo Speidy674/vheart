@@ -9,7 +9,7 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard, home, login } from '@/routes';
+import { home, login, manage_clips } from '@/routes';
 import submitclip from '@/routes/submitclip';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -27,7 +27,7 @@ const TwitchPermissionsBanner = lazy(
 const navItemKeys = [
     {
         key: 'dashboard',
-        href: dashboard(),
+        href: manage_clips(),
         icon: LayoutGrid,
     },
     {

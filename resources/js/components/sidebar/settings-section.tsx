@@ -1,5 +1,11 @@
-import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
+import {
+    SidebarGroupLabel,
+    SidebarMenuItem,
+    SidebarMenuSub,
+    SidebarMenuSubButton,
+    SidebarMenuSubItem,
+} from '@/components/ui/sidebar';
+import { isSameUrl, resolveUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPermissions } from '@/routes/permissions';
 import { edit } from '@/routes/profile';
@@ -16,52 +22,42 @@ const sidebarNavItems: NavItem[] = [
 
 export function SettingsSection() {
     const { t } = useTranslation('settings');
-
     const { url } = usePage();
     const currentPath = url.split('?')[0];
 
     return (
-        <>
-            {/* Section label */}
-            <SidebarMenuItem>
-                <div className="flex items-center gap-2 px-2 py-1.5 text-xs font-medium text-black uppercase dark:text-white">
-                    <Settings className="size-4" />
-                    <span className="group-data-[collapsible=icon]:hidden">
-                        {t('title')}
-                    </span>
-                </div>
-            </SidebarMenuItem>
+        <SidebarMenuItem>
+            <SidebarGroupLabel className="flex items-center gap-2 text-sm font-medium">
+                <Settings className="size-4 shrink-0" />
+                <span className="group-data-[collapsible=icon]:hidden">
+                    {t('title')}
+                </span>
+            </SidebarGroupLabel>
 
-            {/* Sub items */}
-            <div className="mt-1 space-y-1 pl-7 group-data-[collapsible=icon]:pl-0">
+            <SidebarMenuSub>
                 {sidebarNavItems.map((item, index) => {
                     const active = isSameUrl(currentPath, item.href);
+                    const Icon = item.icon;
 
                     return (
-                        <SidebarMenuItem
+                        <SidebarMenuSubItem
                             key={`${resolveUrl(item.href)}-${index}`}
                         >
-                            <SidebarMenuButton
-                                asChild
-                                size="sm"
-                                className={cn(
-                                    'justify-start',
-                                    active && 'bg-muted text-foreground',
-                                )}
-                            >
-                                <Link href={item.href}>
-                                    {item.icon && (
-                                        <item.icon className="size-4 shrink-0" />
+                            <SidebarMenuSubButton asChild isActive={active}>
+                                <Link
+                                    href={item.href}
+                                    className="flex items-center gap-2"
+                                >
+                                    {Icon && (
+                                        <Icon className="size-4 shrink-0" />
                                     )}
-                                    <span className="group-data-[collapsible=icon]:hidden">
-                                        {t(item.title)}
-                                    </span>
+                                    <span>{t(item.title)}</span>
                                 </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
                     );
                 })}
-            </div>
-        </>
+            </SidebarMenuSub>
+        </SidebarMenuItem>
     );
 }

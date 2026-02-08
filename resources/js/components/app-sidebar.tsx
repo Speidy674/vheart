@@ -46,13 +46,14 @@ export function AppSidebar({ className, children }: AppSidebarProps) {
             }}
             data-sidebar="true"
         >
-            {/* Main content area */}
+            {/* Main content area  */}
             {children && <SidebarContent>{children}</SidebarContent>}
 
             {/* Footer navigation */}
             <SidebarFooter>
                 <SidebarMenu className="mt-auto"></SidebarMenu>
 
+                {/* Sidebar collapse toggle */}
                 <SidebarTrigger />
             </SidebarFooter>
         </Sidebar>
