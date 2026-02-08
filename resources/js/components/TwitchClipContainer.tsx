@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useMemo, useState } from 'react';
 import T from '@/components/t';
+import { useCookie } from '@/hooks/useCookie';
 
 type TwitchClipProps = {
     slug: string;
@@ -15,16 +16,14 @@ export function TwitchClipContainer({
 }: TwitchClipProps) {
     const [isLoading, setIsLoading] = useState(true);
     const [hasConsent, setHasConsent] = useState(false);
+    const [hasEmbedConsent, setEmbedConsent] = useCookie('twitch_embed_consent');
 
     useEffect(() => {
-        const consent = document.cookie
-            .split('; ')
-            .find((row) => row.startsWith('twitch_embed_consent='));
-        if (consent) {
+        if (hasEmbedConsent) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
             setHasConsent(true);
         }
-    }, []);
+    }, [hasEmbedConsent]);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -32,7 +31,7 @@ export function TwitchClipContainer({
     }, [slug]);
 
     const handleConsent = () => {
-        document.cookie = 'twitch_embed_consent=true; max-age=31536000; path=/';
+        setEmbedConsent("1");
         setHasConsent(true);
     };
 
@@ -40,7 +39,7 @@ export function TwitchClipContainer({
         return `https://clips.twitch.tv/embed?clip=${slug}&parent=${document.location.hostname}&autoplay=${autoplay}&muted=false&fullscreen=true`;
     }, [slug, autoplay]);
 
-    if (!hasConsent) {
+    if (!hasEmbedConsent && !hasConsent) {
         return (
             <div
                 className={clsx(
@@ -90,11 +89,9 @@ export function TwitchClipContainer({
                     onLoad={() => setIsLoading(false)}
                     src={clipSrc}
                     allow="fullscreen; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                    frameBorder="0"
                     allowFullScreen={true}
-                    scrolling="no"
                     className={clsx(
-                        'aspect-video h-full w-full transition-opacity duration-500',
+                        'aspect-video h-full w-full transition-opacity duration-500 border-none m-0 overflow-hidden',
                         isLoading ? 'opacity-0' : 'opacity-100',
                     )}
                 />
