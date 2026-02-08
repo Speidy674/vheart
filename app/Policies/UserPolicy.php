@@ -18,6 +18,8 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
+    public const int SystemUser = 0;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -48,6 +50,10 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        if ($model->id === self::SystemUser) {
+            return false;
+        }
+
         return $user->can(Permission::UpdateAnyUser);
     }
 
@@ -56,6 +62,10 @@ class UserPolicy
      */
     public function delete(User $user, User $model): Response
     {
+        if ($model->id === self::SystemUser) {
+            return $this->deny('System user can not be deleted');
+        }
+
         if ($user->is($model)) {
             return $this->deny('Cannot delete own user');
         }
@@ -72,6 +82,10 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
+        if ($model->id === self::SystemUser) {
+            return false;
+        }
+
         return $user->can(Permission::RestoreAnyUser);
     }
 
@@ -80,6 +94,10 @@ class UserPolicy
      */
     public function forceDelete(User $user, User $model): bool
     {
+        if ($model->id === self::SystemUser) {
+            return false;
+        }
+
         return $user->can(Permission::ForceDeleteAnyUser);
     }
 }
