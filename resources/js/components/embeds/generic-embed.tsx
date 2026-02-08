@@ -47,7 +47,7 @@ const GenericEmbed = memo(
 
         const accept = () => {
             setHasConsentGiven(true);
-            setCookie('1');
+            setCookie('1', { days: 30 });
         };
 
         if (!url) {
