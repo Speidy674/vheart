@@ -25,7 +25,7 @@ class CookiesServiceProvider extends ServiceProvider
             ->cookie(function (Cookie $cookie) {
                 $cookie->name('twitch_embed_consent')
                     ->description(__('cookies.twitch_embed_consent.description'))
-                    ->duration(60 * 24 * 365);
+                    ->duration(60 * 24 * 30);
             })
             ->cookie(function (Cookie $cookie) {
                 $cookie->name('youtube_embed_consent')
