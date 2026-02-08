@@ -93,3 +93,17 @@ If you work with WSL on Windows you may have to add this to your ~/.gitconfig in
 (make sure you have up-to-date git installed on windows though)
 
 this allows the git inside WSL to use your window's git credentials.
+
+## Cleanup & Fix
+
+| Script   | Description                                                                                                               |
+|----------|---------------------------------------------------------------------------------------------------------------------------|
+| ./clean  | Removes cache related and temporary files which may cause issues when stale.                                              |
+| ./fix.sh | Completely resets the project state and reinstalls everything, will also rebuild the container if `--build` flag was set. |
+
+To automatically run the clean script on switching branches, you can enable the provided git hooks in this project with this command:
+
+`git config core.hooksPath .github/hooks`
+
+Git will then run the `/cleanup` script after switching to a branch, making sure we don't work with stale config, cache or other temporary files
+that may break the application between branches. 

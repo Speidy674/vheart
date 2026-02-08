@@ -20,8 +20,7 @@ class ClipPermissionScope implements Scope
             return;
         }
 
-        $builder->whereHas('broadcaster', function (Builder $q) {
-            $q->where('clip_permission', true);
-        });
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        $builder->whereBroadcasterGavePermission();
     }
 }

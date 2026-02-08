@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\URL;
 
 #[ScopedBy(BannedCategoriesScope::class)]
 #[UsePolicy(CategoryPolicy::class)]
@@ -42,6 +43,6 @@ class Category extends Model
     {
         $boxArtUrl = $this->box_art ?? self::PLACEHOLDER_BOX_ART;
 
-        return str_replace(['{width}', '{height}'], [$width, $height], $boxArtUrl);
+        return URL::signedRoute('image-proxy', ['url' => str_replace(['{width}', '{height}'], [$width, $height], $boxArtUrl)]);
     }
 }

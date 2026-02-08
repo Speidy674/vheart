@@ -6,8 +6,10 @@ namespace Database\Seeders;
 
 use App\Enums\Permission;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,20 +18,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        // User::firstOrCreate(
-        //    ['email' => 'test@example.com'],
-        //    [
-        //        'name' => 'Test User',
-        //        'password' => 'password',
-        //        'email_verified_at' => now(),
-        //    ]
-        // );
+        User::updateOrCreate([
+            'id' => 0,
+        ], [
+            'name' => 'System',
+            'avatar_url' => 'https://api.dicebear.com/9.x/pixel-art/svg?seed='.Str::random(),
+        ]);
 
         $this->call([
             RoleSeeder::class,
             TagSeeder::class,
+            InitialEpisodeSeeder::class,
             FaqSeeder::class,
         ]);
 
