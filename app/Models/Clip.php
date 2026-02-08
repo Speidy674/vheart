@@ -86,6 +86,28 @@ class Clip extends Model
     }
 
     /**
+     * Include only Clips where the broadcaster has explicitly granted content use permission.
+     */
+    #[Scope]
+    protected function whereBroadcasterGavePermission(Builder $query): Builder
+    {
+        return $query->whereHas('broadcaster',
+            fn (Builder $q) => $q->where('clip_permission', true)
+        );
+    }
+
+    /**
+     * Exclude Clips where the broadcaster has not granted content use permission.
+     */
+    #[Scope]
+    protected function whereBroadcasterDeniedPermission(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('broadcaster',
+            fn (Builder $q) => $q->where('clip_permission', true)
+        );
+    }
+
+    /**
      * Exclude Clips that are attached to a published or scheduled Compilation
      */
     #[Scope]
