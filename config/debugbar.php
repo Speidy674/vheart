@@ -22,6 +22,7 @@ return [
         'telescope*',
         'horizon*',
         '_boost/browser-logs',
+        'up',
     ],
 
     /*
