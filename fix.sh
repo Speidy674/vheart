@@ -31,9 +31,14 @@ echo "(re)Installing dependencies using sail..."
 ./vendor/bin/sail composer install
 ./vendor/bin/sail npm install
 
+# make it think we got dev-mode running so laravel doesnt scream because of missing manifest files
+touch ./public/hot
+
 echo "Resetting stuff..."
 ./vendor/bin/sail artisan migrate:fresh --seed
 ./vendor/bin/sail composer helper
 ./vendor/bin/sail down
+
+rm -f ./public/hot
 
 echo "everything should be fixed now"
