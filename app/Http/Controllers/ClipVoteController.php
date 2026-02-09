@@ -67,7 +67,7 @@ class ClipVoteController extends Controller
                     $query->where('type', ClipVoteType::Public);
                 }])->find($clipIdToVote);
 
-                return empty($clip) ? null : $clip->toResource();
+                return $clip?->toResource();
             }),
         ]);
     }

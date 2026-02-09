@@ -23,8 +23,6 @@ export default function EvaluateClips() {
 
     const { props } = usePage<PageProps>();
 
-    console.log('props', props);
-
     const getClip = () => {
         router.reload({ only: ['clip'] });
     };
@@ -122,7 +120,7 @@ export default function EvaluateClips() {
                             </section>
                         ) : (
                             <div className="absolute inset-0 grid place-items-center text-sm text-white/40">
-                                {props.clip !== null
+                                {typeof props.clip === 'undefined'
                                     ? ''
                                     : t('nothing_to_vote')}
                             </div>
