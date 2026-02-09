@@ -5,6 +5,8 @@ import { FaqEntryResource, SharedData } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 export default function Index() {
     const { t } = useTranslation('faq');
@@ -26,7 +28,17 @@ export default function Index() {
             <div className="relative min-h-screen overflow-hidden bg-blue-50 dark:bg-[#0a0a1a]">
                 <SpaceBackground />
 
-                <main className="relative z-10 mx-auto w-full max-w-[900px] px-4 py-12">
+                <main className="space-y-8 relative z-10 mx-auto w-full max-w-[900px] px-4 py-12">
+                    <div>
+                        <Button
+                            size="lg"
+                            onClick={() => window.history.back()}
+                            className="rounded-full border-0 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 px-8 py-5 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:shadow-xl hover:shadow-emerald-500/25"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            {t('back')}
+                        </Button>
+                    </div>
                     <Card className="rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-6 shadow-2xl ring-1 shadow-black/10 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0 dark:shadow-purple-900/30">
                         <div className="mb-8 flex flex-col items-center text-center">
                             <h1 className="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-3xl font-bold text-transparent dark:from-purple-300 dark:via-white dark:to-cyan-300">

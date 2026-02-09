@@ -75,6 +75,11 @@ export default function Footer() {
                                         <a href="/about-us">{t('about')}</a>
                                     </Button>
                                 </li>
+                                <li>
+                                    <Button className="h-auto px-1.5 py-0.5 text-[10px] text-gray-600 hover:text-gray-900 sm:px-2 sm:py-1 sm:text-xs md:text-sm dark:text-white/70 dark:hover:text-white">
+                                        <a href="/faq">{t('faq')}</a>
+                                    </Button>
+                                </li>
                             </ul>
                         </nav>
 
