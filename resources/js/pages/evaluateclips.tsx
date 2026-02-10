@@ -9,6 +9,8 @@ import clsx from 'clsx';
 import { CircleX, Heart } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import ReportButton from '@/components/reports/report-button';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 type PageProps = {
     clip: null | PublicClip;
@@ -116,6 +118,16 @@ export default function EvaluateClips() {
                                             )}
                                         />
                                     </Link>
+                                  
+                                    <ReportButton
+                                            items={[
+                                                {
+                                                    type: 'clip',
+                                                    id: it.id,
+                                                },
+                                                // TODO: implement broadcaster reportable when using proper types and data
+                                            ]}
+                                        />
                                 </div>
                             </section>
                         ) : (
