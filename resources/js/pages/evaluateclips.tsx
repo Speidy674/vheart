@@ -1,6 +1,6 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 import SpaceBackground from '@/components/spacebackground';
-import { TwitchClipEmbed } from '@/components/TwitchClipEmbed';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { vote } from '@/routes';
 import { PublicClip, type BreadcrumbItem } from '@/types';
@@ -9,7 +9,6 @@ import clsx from 'clsx';
 import { CircleX, Heart } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 type PageProps = {
     clip: null | PublicClip;
