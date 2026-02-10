@@ -1,6 +1,6 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
 import SpaceBackground from '@/components/spacebackground';
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
+import { TwitchClipEmbed } from '@/components/TwitchClipEmbed';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { vote } from '@/routes';
 import { PublicClip, type BreadcrumbItem } from '@/types';
@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { CircleX, Heart } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 type PageProps = {
     clip: null | PublicClip;
@@ -52,7 +53,7 @@ export default function EvaluateClips() {
                                 {/* VIDEO */}
                                 <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                                     <div className="aspect-video h-full">
-                                        <TwitchClipContainer
+                                        <TwitchClipEmbed
                                             slug={props.clip.slug}
                                             className="h-full w-full"
                                         />

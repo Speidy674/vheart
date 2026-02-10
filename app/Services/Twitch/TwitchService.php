@@ -41,10 +41,10 @@ class TwitchService
      */
     public function __construct()
     {
-        $this->clientId = config('services.twitch.client_id');
-        $this->clientSecret = config('services.twitch.client_secret');
+        $this->clientId = config('services.twitch.client_id', '');
+        $this->clientSecret = config('services.twitch.client_secret', '');
 
-        if (empty($this->clientId) || empty($this->clientSecret)) {
+        if ((empty($this->clientId) || empty($this->clientSecret)) && app()->environment(['local', 'staging', 'production'])) {
             throw TwitchApiException::ApplicationClientIdOrSecretNotConfiguredError();
         }
     }

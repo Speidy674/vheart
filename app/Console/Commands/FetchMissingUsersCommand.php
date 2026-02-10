@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Clip;
+use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchEndpoints;
@@ -26,9 +27,9 @@ class FetchMissingUsersCommand extends Command
 
     public function handle(TwitchService $twitchService): void
     {
-        $broadcasterIds = Clip::doesntHave('broadcaster')->pluck('broadcaster_id');
-        $creatorIds = Clip::doesntHave('creator')->pluck('creator_id');
-        $submitterIds = Clip::doesntHave('submitter')->pluck('submitter_id');
+        $broadcasterIds = Clip::withoutGlobalScope(ClipPermissionScope::class)->doesntHave('broadcaster')->pluck('broadcaster_id');
+        $creatorIds = Clip::withoutGlobalScope(ClipPermissionScope::class)->doesntHave('creator')->pluck('creator_id');
+        $submitterIds = Clip::withoutGlobalScope(ClipPermissionScope::class)->doesntHave('submitter')->pluck('submitter_id');
 
         $missingIds = $broadcasterIds
             ->concat($creatorIds->toArray())

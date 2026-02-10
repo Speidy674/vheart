@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { store } from '@/actions/App/Http/Controllers/ClipSubmitController';
 import InputError from '@/components/input-error';
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +22,7 @@ import { Separator } from '@/components/ui/separator';
 import { TagSelect } from '@/components/ui/tag-select';
 import submitclip from '@/routes/submitclip';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 interface Tag {
     id: number;
@@ -161,9 +161,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                     <div className="space-y-4">
                                         <div className="aspect-video overflow-hidden rounded-lg bg-black">
                                             {clipId ? (
-                                                <TwitchClipContainer
-                                                    slug={clipId}
-                                                />
+                                                <TwitchClipEmbed slug={clipId} />
                                             ) : (
                                                 <div className="flex h-full w-full items-center justify-center text-center text-muted-foreground">
                                                     {showLoading ? (

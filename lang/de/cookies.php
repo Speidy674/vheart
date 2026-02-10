@@ -10,4 +10,7 @@ return [
     'twitch_embed_consent' => [
         'description' => 'Erlaubt uns, deine Zustimmung für eingebettete Twitch-Inhalte zu speichern.',
     ],
+    'youtube_embed_consent' => [
+        'description' => 'Erlaubt uns, deine Zustimmung für eingebettete Youtube-Inhalte zu speichern.',
+    ],
 ];
