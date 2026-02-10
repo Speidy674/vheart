@@ -1,10 +1,9 @@
+import SpaceBackground from '@/components/spacebackground';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import AppLayout from '@/layouts/app-layout';
-import { team } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ArrowLeft } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import cat from '/resources/images/png/cat.png';
@@ -12,7 +11,6 @@ import cat from '/resources/images/png/cat.png';
 interface TeamMember {
     name: string;
     avatar?: string;
-    description?: string;
 }
 
 interface TeamRole {
@@ -27,98 +25,41 @@ interface TeamPageProps {
 function getInitials(name: string): string {
     const cleaned = String(name).trim();
     if (!cleaned) return '?';
-
     const parts = cleaned.split(/\s+/);
     const first = parts[0]?.[0] || '';
     const second = parts[1]?.[0] || parts[0]?.[1] || '';
-
     return (first + second).toUpperCase() || '?';
 }
 
-const ROLE_COLORS = {
-    Admin: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-200' },
-    'Community Manager': {
-        bg: 'bg-blue-100',
-        text: 'text-blue-800',
-        border: 'border-blue-200',
-    },
-    Mod: {
-        bg: 'bg-green-100',
-        text: 'text-green-800',
-        border: 'border-green-200',
-    },
-    'Jr Mod': {
-        bg: 'bg-yellow-100',
-        text: 'text-yellow-800',
-        border: 'border-yellow-200',
-    },
-    Cutter: {
-        bg: 'bg-purple-100',
-        text: 'text-purple-800',
-        border: 'border-purple-200',
-    },
-    'IT-Management': {
-        bg: 'bg-indigo-100',
-        text: 'text-indigo-800',
-        border: 'border-indigo-200',
-    },
-    'Dev/Tec': {
-        bg: 'bg-indigo-100',
-        text: 'text-indigo-800',
-        border: 'border-indigo-200',
-    },
-} as const;
-
-function TeamMemberCard({
-    member,
-    roleName,
-}: {
-    member: TeamMember;
-    roleName: string;
-}) {
-    const { t } = useTranslation('team');
+function TeamMemberCard({ member }: { member: TeamMember }) {
     const { name, avatar } = member;
-
-    const avatarSrc = avatar?.trim() || cat;
-    const avatarAlt = t('avatar_alt', {
-        name,
-        defaultValue: `${name}'s profile picture`,
-    });
-    //todo: Member Desc ... maybe vom backend oder raus?
-    //const memberDescription = t(`members.${desc}`, { defaultValue: name });
 
     return (
         <div
-            className="group flex items-center gap-3 rounded-lg border p-3 transition-all duration-200 hover:bg-muted/50 hover:shadow-sm"
-            role="listitem"
-            aria-label={t('team_member', {
-                name,
-                role: roleName,
-                defaultValue: `${name}, ${roleName}`,
-            })}
+            className={cn(
+                'group relative flex items-center gap-4 rounded-2xl border p-4 transition-all duration-300',
+                'border-white bg-white/95 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-xl',
+                'dark:border-white/10 dark:bg-zinc-900/40 dark:shadow-2xl dark:shadow-purple-900/20',
+                'group-hover:shadow-purple-500/10 hover:border-purple-500/30',
+            )}
         >
-            <Avatar className="h-12 w-12 ring-2 ring-background group-hover:ring-primary/20">
-                <AvatarImage
-                    src={avatarSrc}
-                    alt={avatarAlt}
-                    loading="lazy"
-                    className="object-cover"
-                />
-                <AvatarFallback className="bg-primary/10">
-                    {getInitials(name)}
-                </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+                <Avatar className="h-14 w-14 border-2 border-white shadow-sm dark:border-white/10">
+                    <AvatarImage
+                        src={avatar?.trim() || cat}
+                        alt={name}
+                        className="object-cover"
+                    />
+                    <AvatarFallback className="bg-purple-100 font-bold text-purple-700 dark:bg-purple-500/10 dark:text-purple-300">
+                        {getInitials(name)}
+                    </AvatarFallback>
+                </Avatar>
+            </div>
 
             <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-foreground group-hover:text-primary">
+                <p className="text-lg font-bold tracking-tight text-zinc-950 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400">
                     {name}
                 </p>
-                {/*<p*/}
-            {/*        className="truncate text-xs text-muted-foreground"*/}
-            {/*        title={memberDescription}*/}
-            {/*    >*/}
-            {/*        {memberDescription}*/}
-            {/*    </p>*/}
             </div>
         </div>
     );
@@ -128,40 +69,31 @@ function RoleSection({ role }: { role: TeamRole }) {
     const { t } = useTranslation('team');
     const { name, members } = role;
 
-    const roleColor = ROLE_COLORS[name as keyof typeof ROLE_COLORS] || {
-        bg: 'bg-slate-100',
-        text: 'text-slate-800',
-        border: 'border-slate-200',
-    };
-
-    const translatedRoleName = t(`roles.${name}`, { defaultValue: name });
-    const memberCount = members.length;
-    const memberLabel = memberCount === 1 ? t('member') : t('members');
-
     return (
-        <section
-            className="space-y-6"
-            aria-labelledby={`role-${name.replace(/\s+/g, '-').toLowerCase()}`}
-        >
-            <div className="flex flex-wrap items-center gap-3">
+        <section className="space-y-8">
+            <div className="flex items-center gap-4">
                 <Badge
                     variant="outline"
-                    className={`${roleColor.bg} ${roleColor.text} ${roleColor.border} px-4 py-1.5 font-medium`}
+                    className={cn(
+                        'border-2 px-6 py-2 text-sm font-bold backdrop-blur-md',
+                        'border-purple-100 bg-white text-purple-900 shadow-sm',
+                        'dark:border-purple-500/30 dark:bg-zinc-900/60 dark:text-purple-300',
+                    )}
                 >
-                    {translatedRoleName}
+                    {name}
                 </Badge>
-
-                <span className="text-sm text-muted-foreground">
-                    {memberCount} {memberLabel}
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-purple-100 via-transparent to-transparent dark:from-white/10" />
+                <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase dark:text-white/30">
+                    {members.length}{' '}
+                    {members.length === 1 ? t('member') : t('members')}
                 </span>
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {members.map((member, index) => (
                     <TeamMemberCard
                         key={`${name}-${member.name}-${index}`}
                         member={member}
-                        roleName={translatedRoleName}
                     />
                 ))}
             </div>
@@ -171,11 +103,6 @@ function RoleSection({ role }: { role: TeamRole }) {
 
 export default function TeamPage({ roles = [] }: TeamPageProps) {
     const { t } = useTranslation('team');
-
-    const breadcrumbs: BreadcrumbItem[] = useMemo(
-        () => [{ title: t('breadcrumb'), href: team().url }],
-        [t],
-    );
 
     const totalMembers = useMemo(
         () =>
@@ -187,65 +114,58 @@ export default function TeamPage({ roles = [] }: TeamPageProps) {
     );
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={t('page_title')} />
+        <div className="relative min-h-screen w-full overflow-hidden bg-[#F8FAFF] dark:bg-[#0a0a1a]">
+            <SpaceBackground />
 
-            <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/5">
-                <div className="container mx-auto px-4 py-8 sm:py-12">
-                    <header className="mb-10 text-center">
-                        <h1 className="mb-3 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-                            {t('our_team', 'Unser Team')}
-                        </h1>
-                            <span className="mt-2 block text-sm font-medium text-primary">
-                                {t('total_members', {
-                                    count: totalMembers,
-                                    defaultValue: `${totalMembers} Teammitglieder`,
-                                })}
-                            </span>
-                    </header>
-
-                    <main>
-                        <Card className="overflow-hidden border shadow-sm">
-                            <CardContent className="p-6 sm:p-8">
-                                <div className="space-y-10">
-                                    {roles.length > 0 ? (
-                                        roles.map((role) => (
-                                            <RoleSection
-                                                key={role.name}
-                                                role={role}
-                                            />
-                                        ))
-                                    ) : (
-                                        <div
-                                            className="rounded-lg border-2 border-dashed p-8 text-center"
-                                            role="alert"
-                                            aria-live="polite"
-                                        >
-                                            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-                                                <span className="text-2xl">
-                                                    👥
-                                                </span>
-                                            </div>
-                                            <h3 className="mb-2 text-lg font-semibold">
-                                                {t(
-                                                    'no_team_data',
-                                                    'Noch kein Team vorhanden',
-                                                )}
-                                            </h3>
-                                            <p className="text-muted-foreground">
-                                                {t(
-                                                    'no_team_description',
-                                                    'Das Team wird in Kürze hier erscheinen.',
-                                                )}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </main>
-                </div>
+            <div className="relative z-10 container mx-auto px-4 py-16 sm:py-24">
+                <Button
+                    size="lg"
+                    onClick={() => window.history.back()}
+                    className={cn(
+                        'group relative flex items-center gap-2 rounded-full border px-8 py-6 font-bold transition-all duration-300',
+                        'border-slate-200 bg-white/90 text-slate-900 shadow-lg shadow-slate-200/50 backdrop-blur-md',
+                        'dark:border-white/10 dark:bg-white/5 dark:text-white dark:shadow-purple-900/20',
+                        'hover:border-purple-500/50 hover:bg-white hover:text-purple-600 dark:hover:bg-white/10 dark:hover:text-purple-400',
+                    )}
+                >
+                    <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+                    <span className="tracking-wide">{t('back')}</span>
+                    <div className="absolute inset-0 -z-10 rounded-full bg-purple-500/10 opacity-0 blur-xl transition-opacity group-hover:opacity-100" />
+                </Button>
+                <header className="mb-24 text-center">
+                    <h1 className="mb-6 text-6xl font-black tracking-tighter sm:text-7xl md:text-8xl">
+                        <span
+                            className={cn(
+                                'bg-gradient-to-b bg-clip-text text-transparent',
+                                'from-zinc-950 via-zinc-800 to-purple-600',
+                                'dark:from-white dark:via-white dark:to-purple-500/50',
+                            )}
+                        >
+                            {t('our_team')}
+                        </span>
+                    </h1>
+                    <div className="mx-auto h-1.5 w-24 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500" />
+                    <p className="mt-8 text-sm font-bold tracking-[0.3em] text-purple-600 uppercase dark:text-cyan-400">
+                        {t('total_members', { count: totalMembers })}
+                    </p>
+                </header>
+                <main className="mx-auto max-w-7xl space-y-32">
+                    {roles.length > 0 ? (
+                        roles.map((role) => (
+                            <RoleSection key={role.name} role={role} />
+                        ))
+                    ) : (
+                        <div className="flex h-64 flex-col items-center justify-center rounded-3xl border-2 border-dashed border-purple-100 bg-white/50 backdrop-blur-xl dark:border-white/5 dark:bg-white/5">
+                            <h3 className="text-xl font-bold tracking-widest text-zinc-400 uppercase dark:text-white/40">
+                                {t('no_team_data')}
+                            </h3>
+                            <p className="mt-2 text-sm text-zinc-500 dark:text-white/30">
+                                {t('no_team_description')}
+                            </p>
+                        </div>
+                    )}
+                </main>
             </div>
-        </AppLayout>
+        </div>
     );
 }
