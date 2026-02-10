@@ -3,6 +3,9 @@ import { PublicClip } from '@/types';
 import { Link } from '@inertiajs/react';
 import { vote } from '@/routes';
 import T from '@/components/t';
+import ReportButton, {
+    ReportableItem,
+} from '@/components/reports/report-button';
 import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 export function ClipModal({
@@ -58,6 +61,22 @@ export function ClipModal({
                     <Link type={'button'} href={vote().url}>
                         <T ns={'vote'} k={'call_to_action'} />
                     </Link>
+
+                    <ReportButton
+                        items={[
+                            {
+                                type: 'clip',
+                                id: clip.id,
+                            },
+                            clip.broadcaster?.id && {
+                                type: 'user',
+                                id: clip.broadcaster.id,
+                                label: 'broadcaster',
+                            }
+                        ].filter((item): item is ReportableItem =>
+                            Boolean(item),
+                        )}
+                    />
                 </div>
             </div>
         </div>
