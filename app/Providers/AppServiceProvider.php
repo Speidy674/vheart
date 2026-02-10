@@ -10,6 +10,7 @@ use App\Models\Game;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\Socialite\TwitchSocialiteProvider;
+use App\Support\CookieConsent\CustomCookiesManager;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Connection;
@@ -29,6 +30,7 @@ use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Spatie\Translatable\Facades\Translatable;
+use Whitecube\LaravelCookieConsent\CookiesManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +39,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CookiesManager::class, CustomCookiesManager::class);
     }
 
     /**
@@ -48,7 +50,6 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(static function (SocialiteWasCalled $event) {
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
-
 
         $this->configureRateLimiting();
         $this->configureGates();
@@ -153,6 +154,10 @@ class AppServiceProvider extends ServiceProvider
             $throttleKey = sha1($request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
+        });
+
+        RateLimiter::for('image-proxy', static function (Request $request): Limit {
+            return Limit::perMinute(50)->by($request->user()?->id ?? sha1($request->ip()));
         });
     }
 }

@@ -1,53 +1,107 @@
-import { Clock, Heart } from 'lucide-react';
 import { PublicClip } from '@/types';
+import { Clock, Heart, Image as ImageIcon, ImageOff } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 type ClipPreviewProps = {
-    clip: PublicClip
+    clip: PublicClip;
     onClick?: () => void;
 };
 
 const formatDuration = (seconds: number) => {
     const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
+    const s = Math.round(seconds % 60);
     return `${m}:${String(s).padStart(2, '0')}`;
 };
 
-export function ClipPreview({
-    clip,
-    onClick,
-}: ClipPreviewProps) {
+type ImageStatus = 'loading' | 'loaded' | 'error';
+
+export function ClipPreview({ clip, onClick }: ClipPreviewProps) {
+    const [imageStatus, setImageStatus] = useState<ImageStatus>('loading');
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    useEffect(() => {
+        const img = imgRef.current;
+        async function updateState(state: ImageStatus) {
+            setImageStatus(state);
+        }
+
+        if (img && img.complete) {
+            // If image is already cached/loaded, update state immediately
+            if (img.naturalWidth > 0) {
+                void updateState('loaded');
+            } else {
+                void updateState('error');
+            }
+        }
+    }, []);
+
     return (
         <button
             type="button"
             onClick={onClick}
             aria-label={`Clip öffnen: ${clip.title}`}
-            className="group relative aspect-video w-full overflow-hidden rounded-md bg-gray-400 drop-shadow-md dark:drop-shadow-white/20"
+            className="group focus-visible:ring-primary-500 relative aspect-video w-full overflow-hidden rounded-md bg-gray-200 outline-none focus-visible:ring-2 dark:bg-gray-800"
         >
+            {/* Loading */}
+            {imageStatus === 'loading' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-600">
+                    <ImageIcon className="size-12 animate-pulse" />
+                </div>
+            )}
+
+            {/* Error */}
+            {imageStatus === 'error' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-300 text-gray-500 dark:bg-gray-800 dark:text-gray-500">
+                    <ImageOff className="size-12" />
+                </div>
+            )}
+
+            {/* Image */}
             <img
+                ref={imgRef}
                 src={clip.thumbnail_url}
                 alt={clip.title}
-                className="h-full w-full object-cover"
+                className={`h-full w-full object-cover ${
+                    imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
+                }`}
                 loading="lazy"
+                decoding="async"
+                onLoad={() => setImageStatus('loaded')}
+                onError={() => setImageStatus('error')}
             />
 
             {/* Länge */}
-            <div className="absolute top-2 left-2 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs text-white">
-                <Clock className="h-4 w-4" />
-                {formatDuration(clip.clip_duration)}
+            <div className="absolute top-2 left-2 flex items-center gap-1 rounded-lg bg-black/60 px-1.5 py-0.5 text-white backdrop-blur-[2px] transition-colors group-hover:bg-black/85 sm:px-2 sm:py-1 sm:text-xs">
+                <Clock
+                    className="size-3 sm:size-4 md:size-6"
+                    aria-hidden="true"
+                />
+                <p className={'sr-only'}>Länge</p>
+                <span className={'font-mono text-sm md:text-base'}>
+                    {formatDuration(clip.clip_duration)}
+                </span>
             </div>
 
             {/* Likes */}
-            <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs text-white">
-                <Heart className="h-4 w-4 text-red-500" />
-                {clip.votes ?? 0}
+            <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-black/60 px-1.5 py-0.5 text-white backdrop-blur-[2px] transition-colors group-hover:bg-black/85 sm:px-2 sm:py-1 sm:text-xs">
+                <Heart
+                    className="size-3 text-red-500 sm:size-4 md:size-6"
+                    aria-hidden="true"
+                />
+                <p className={'sr-only'}>Stimmen</p>
+                <span className={'text-sm md:text-base lg:text-lg'}>
+                    {clip.votes ?? 0}
+                </span>
             </div>
 
             {/* Titel unten */}
-            <div className="absolute right-2 bottom-0.5 left-2 rounded-xl bg-black/75 px-2 py-1 text-white">
-                <div className="line-clamp-1 text-sm font-medium">{clip.title}</div>
+            <div className="absolute right-2 bottom-1 left-2 rounded-xl bg-black/75 px-2 py-1 text-white backdrop-blur-[2px] transition-colors group-hover:bg-black/85 sm:bottom-2">
+                <div className="line-clamp-1 text-xs font-medium sm:text-sm">
+                    {clip.title}
+                </div>
 
                 {clip.broadcaster && (
-                    <div className="truncate text-xs text-white/80">
+                    <div className="truncate text-white/80 sm:text-xs">
                         {clip.broadcaster.name}
                     </div>
                 )}

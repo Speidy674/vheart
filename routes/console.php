@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\Game;
+use App\Models\Scopes\ClipPermissionScope;
 use App\Services\Twitch\Data\GameDto;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Support\Facades\Log;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Schedule;
  */
 Schedule::call(function (TwitchService $twitchService) {
     $missingGames = App\Models\Clip::query()
+        ->withoutGlobalScope(ClipPermissionScope::class)
         ->whereDoesntHave('game')
         ->distinct()
         ->limit(100)

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+PREV_HEAD=$1
+NEW_HEAD=$2
+IS_BRANCH_CHECKOUT=$3
+
+if [ "$IS_BRANCH_CHECKOUT" -eq 1 ]; then
+  [ -x "./clean" ] && ./clean
+fi

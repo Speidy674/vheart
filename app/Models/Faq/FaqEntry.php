@@ -9,6 +9,7 @@ use Database\Factories\Faq\FaqEntryFactory;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Translatable\HasTranslations;
 
 #[UseResource(FaqEntryResource::class)]
@@ -17,6 +18,7 @@ class FaqEntry extends Model
     /** @use HasFactory<FaqEntryFactory> */
     use HasFactory;
     use HasTranslations;
+    use SoftDeletes;
 
     public array $translatable = [
         'title',
