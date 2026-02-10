@@ -10,4 +10,7 @@ return [
     'twitch_embed_consent' => [
         'description' => 'Allows us to remember your embed consent for Twitch related embeds.',
     ],
+    'youtube_embed_consent' => [
+        'description' => 'Allows us to remember your embed consent for Youtube related embeds.',
+    ],
 ];
