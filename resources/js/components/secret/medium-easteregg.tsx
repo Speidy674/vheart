@@ -1,6 +1,7 @@
 import { Card } from '@/components/ui/card';
-import VideoEmb from '@/components/video-emb';
 import { useEffect, useRef, useState } from 'react';
+import { Youtube } from 'lucide-react';
+import YoutubeEmbed from '@/components/embeds/youtube-embed';
 
 type Props = {
     triggerWord: string;
@@ -101,7 +102,7 @@ export default function EasterEggModal({
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative z-0 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-800">
                             {videoUrl ? (
-                                <VideoEmb youtubeUrl={videoUrl} />
+                                <YoutubeEmbed url={videoUrl} />
                             ) : (
                                 imageUrl && (
                                     <img
