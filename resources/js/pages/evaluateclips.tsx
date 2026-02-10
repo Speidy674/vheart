@@ -1,5 +1,4 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { vote } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
@@ -15,6 +14,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReportButton from '@/components/reports/report-button';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 type Item = {
     id: number;
@@ -193,10 +193,7 @@ export default function EvaluateClips() {
                                     <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
                                         {isActive ? (
                                             <div className="aspect-video h-full">
-                                                <TwitchClipContainer
-                                                    slug={it.clipSlug}
-                                                    className="h-full w-full"
-                                                />
+                                                <TwitchClipEmbed slug={it.clipSlug} className="h-full w-full" />
                                             </div>
                                         ) : (
                                             <div className="absolute inset-0 grid place-items-center text-sm text-white/40">

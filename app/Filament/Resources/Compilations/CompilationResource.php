@@ -23,7 +23,7 @@ class CompilationResource extends Resource
 {
     protected static ?string $model = Compilation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::ClipboardDocument;
 
     protected static ?string $recordTitleAttribute = 'title';
 

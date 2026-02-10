@@ -1,4 +1,3 @@
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import { X } from 'lucide-react';
 import { PublicClip } from '@/types';
 import { Link } from '@inertiajs/react';
@@ -7,6 +6,7 @@ import T from '@/components/t';
 import ReportButton, {
     ReportableItem,
 } from '@/components/reports/report-button';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
 export function ClipModal({
     clip,
@@ -47,8 +47,9 @@ export function ClipModal({
                 <div className="min-h-0 flex-1 px-0 2xl:px-4">
                     <div className="flex h-full min-h-0 items-center justify-center overflow-hidden">
                         <div className="relative aspect-video w-full">
-                            <TwitchClipContainer
+                            <TwitchClipEmbed
                                 slug={clip.slug}
+                                thumbnail={clip.thumbnail_url}
                                 className="absolute inset-0 h-full w-full"
                             />
                         </div>
