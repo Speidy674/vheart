@@ -6,7 +6,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import './lib/i18n';
-import Footer from '@/components/footer/footer';
 import EasterEggModal from '@/components/secret/medium-easteregg';
 import.meta.glob([
     '../images/**',
@@ -44,7 +43,6 @@ createInertiaApp({
                     creditLabel="Youtube"
                     creditHref="https://www.youtube.com/"
                 />
-                <Footer />
             </StrictMode>,
         );
     },

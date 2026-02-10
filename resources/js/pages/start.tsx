@@ -13,6 +13,7 @@ import { ClipPreview } from '@/components/clip-preview';
 import { ClipModal } from '@/components/clipModal';
 import SpaceBackground from '@/components/spacebackground';
 import YoutubeEmbed from '@/components/embeds/youtube-embed';
+import Footer from '@/components/footer/footer';
 
 type InertiaBaseProps = Record<string, unknown>;
 interface PageProps extends InertiaBaseProps {
@@ -86,6 +87,7 @@ export default function Start() {
                     </CardContent>
                 </Card>
             </div>
+            <Footer isIsland={true} />
 
             {openClip && (
                 <ClipModal clip={openClip} onClose={() => setOpenClip(null)} />

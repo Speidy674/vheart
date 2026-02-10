@@ -34,6 +34,10 @@ interface SharedData extends BaseSharedData {
     };
 }
 
+interface AppTopbarProps {
+    isIsland?: boolean;
+}
+
 const TwitchPermissionsBanner = lazy(
     () => import('@/components/twitch-permissions-banner'),
 );
@@ -48,10 +52,10 @@ const NAVIGATION_ITEMS = [
     },
 ] as const;
 
-export function AppTopbar() {
+export function AppTopbar({ isIsland = true }: AppTopbarProps) {
     const { t } = useTranslation('navigation');
     const page = usePage<SharedData>();
-    const { auth } = page.props;
+    const auth = page.props.auth || { user: null };
     const getInitials = useInitials();
     const desktopSearchRef = useRef<HTMLInputElement>(null);
     const mobileSearchRef = useRef<HTMLInputElement>(null);
@@ -83,9 +87,14 @@ export function AppTopbar() {
     }, []);
 
     return (
-        <div className="sticky top-0 z-50 w-full px-2 pt-2 sm:px-4 sm:pt-4">
-            {Boolean(page.flash?.showTwitchPermissionsPrompt) && (
-                <div className="mb-2 w-full">
+        <div
+            className={cn(
+                'sticky top-0 z-50 w-full',
+                isIsland ? 'px-2 pt-2 sm:px-4 sm:pt-4' : 'px-0 pt-0',
+            )}
+        >
+            {Boolean(page.props.flash?.showTwitchPermissionsPrompt) && (
+                <div className={cn('w-full', isIsland ? 'mb-2' : 'mb-0')}>
                     <Suspense fallback={null}>
                         <TwitchPermissionsBanner />
                     </Suspense>
@@ -94,15 +103,25 @@ export function AppTopbar() {
 
             <header
                 className={cn(
-                    'relative flex h-14 w-full items-center justify-between rounded-2xl px-3 shadow-xl transition-all duration-300 sm:px-4',
-                    'border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 text-gray-900 ring-1 ring-black/5 backdrop-blur-md',
-                    'dark:border-white/20 dark:bg-black/80 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:text-white/85 dark:ring-0',
+                    'relative flex h-14 w-full items-center justify-between',
+                    'bg-gradient-to-br from-white/70 via-white/85 to-white/70 text-gray-900 backdrop-blur-md',
+                    'dark:bg-black/80 dark:!bg-none dark:text-white/85',
+                    isIsland
+                        ? [
+                              'mx-auto rounded-2xl border border-gray-200 px-3 shadow-xl ring-1 ring-black/5 sm:px-4',
+                              'dark:border-white/20 dark:ring-0',
+                          ]
+                        : [
+                              'h-18 rounded-none border-b border-gray-200 px-4 shadow-none sm:px-6 md:px-8',
+                              'dark:border-white/20',
+                          ],
                 )}
             >
                 <div
                     className={cn(
-                        'absolute inset-0 z-20 flex items-center gap-2 rounded-2xl bg-background/95 px-3 md:hidden',
+                        'absolute inset-0 z-20 flex items-center gap-2 bg-background/95 px-3 md:hidden',
                         !isMobileSearchActive && 'hidden',
+                        isIsland ? 'rounded-2xl' : 'rounded-none',
                     )}
                 >
                     <div className="relative flex-1">
@@ -131,7 +150,7 @@ export function AppTopbar() {
                 <div className="flex min-w-0 flex-1 items-center justify-start">
                     <Link
                         href={home()}
-                        className="flex items-center transition-opacity hover:opacity-80"
+                        className="flex items-center hover:opacity-80"
                     >
                         <img
                             src={LogoFullDark}
@@ -148,12 +167,12 @@ export function AppTopbar() {
 
                 <div className="hidden flex-none items-center justify-center md:flex md:px-4">
                     <div className="group relative w-full md:w-[320px] lg:w-[450px]">
-                        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-accent" />
+                        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground group-focus-within:text-accent" />
                         <input
                             ref={desktopSearchRef}
                             type="text"
                             placeholder={t('search_placeholder')}
-                            className="h-9 w-full rounded-xl border-none bg-black/5 pr-12 pl-9 text-sm transition-all focus:ring-2 focus:ring-accent dark:bg-white/10"
+                            className="h-9 w-full rounded-xl border-none bg-black/5 pr-12 pl-9 text-sm focus:ring-2 focus:ring-accent dark:bg-white/10"
                         />
                         <kbd className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 rounded border border-gray-300/50 bg-white/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground dark:border-white/10 dark:bg-black/20">
                             {t('search_shortcut')}
@@ -169,7 +188,7 @@ export function AppTopbar() {
                                     key={item.key}
                                     href={item.href}
                                     className={cn(
-                                        'relative flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium outline-hidden transition-colors select-none sm:px-3',
+                                        'relative flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium outline-hidden select-none sm:px-3',
                                         checkActive(item.href)
                                             ? 'bg-accent text-accent-foreground'
                                             : 'text-gray-600 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground dark:text-white/70 dark:hover:text-white dark:focus:text-white',
@@ -240,3 +259,5 @@ export function AppTopbar() {
         </div>
     );
 }
+
+export default AppTopbar;

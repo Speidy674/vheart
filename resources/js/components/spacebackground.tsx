@@ -19,8 +19,12 @@ const StaticSpaceBackground = () => {
             container.innerHTML = '';
 
             const starColor = isDark ? 'rgba(255,255,255,' : 'rgba(10,10,40,';
-            const planetColor1 = isDark ? 'rgba(100, 65, 165, ' : 'rgba(100, 80, 200, ';
-            const planetColor2 = isDark ? 'rgba(145, 70, 255, ' : 'rgba(120, 80, 220, ';
+            const planetColor1 = isDark
+                ? 'rgba(100, 65, 165, '
+                : 'rgba(100, 80, 200, ';
+            const planetColor2 = isDark
+                ? 'rgba(145, 70, 255, '
+                : 'rgba(120, 80, 220, ';
             const background = isDark ? '#0a0a1a' : '#E8F0FE';
             const starAlphaMultiplier = isDark ? 1 : 0.8;
 
@@ -243,22 +247,33 @@ const StaticSpaceBackground = () => {
 
         drawBackground();
 
-        const handleResize = () => {
-            if (resizeTimeoutRef.current) {
-                clearTimeout(resizeTimeoutRef.current);
+        const observer = new MutationObserver((mutations) => {
+            for (const mutation of mutations) {
+                if (mutation.attributeName === 'class') {
+                    drawBackground();
+                    break;
+                }
             }
+        });
 
-            resizeTimeoutRef.current = window.setTimeout(() => {
-                drawBackground();
-            }, 150);
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
+        const handleResize = () => {
+            if (resizeTimeoutRef.current)
+                clearTimeout(resizeTimeoutRef.current);
+            resizeTimeoutRef.current = window.setTimeout(drawBackground, 150);
         };
 
         window.addEventListener('resize', handleResize);
+
         return () => {
             window.removeEventListener('resize', handleResize);
-            if (resizeTimeoutRef.current) {
+            observer.disconnect();
+            if (resizeTimeoutRef.current)
                 clearTimeout(resizeTimeoutRef.current);
-            }
         };
     }, []);
 

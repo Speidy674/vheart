@@ -3,9 +3,9 @@ import { AppTopbar } from './app-topbar';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
+    isIsland?: boolean;
 }
 
-// eslint-disable-next-line no-empty-pattern
-export function AppHeader({}: AppHeaderProps) {
-    return <AppTopbar />;
+export function AppHeader({ isIsland }: AppHeaderProps) {
+    return <AppTopbar isIsland={isIsland} />;
 }
