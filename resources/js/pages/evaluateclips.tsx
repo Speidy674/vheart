@@ -27,7 +27,7 @@ export default function EvaluateClips() {
         if (!props.clip) {
             getClip();
         }
-    }, []);
+    }, [props.clip]);
 
     return (
         <AppHeaderLayout>
