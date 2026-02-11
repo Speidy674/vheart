@@ -1,7 +1,5 @@
-import { lazy, Suspense } from 'react';
-const EasterEggModal = lazy(
-    () => import('@/components/secret/medium-easteregg'),
-);
+import { Suspense } from 'react';
+import EasterEggModal from '@/components/secret/medium-easteregg';
 
 export default function EasterEggContainer() {
     return (
