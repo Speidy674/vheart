@@ -193,6 +193,7 @@ return [
         'config/**/*.php',
         'database/**/*.php',
         'public/**/*.php',
+        'public/build',
         'resources/**/*.php',
         'lang/**/*.php',
         'lang/**/*.json',
