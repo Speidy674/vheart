@@ -34,7 +34,7 @@ class ClipsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with([
-                'game',
+                'category',
                 'broadcaster',
                 'creator',
                 'submitter',
@@ -134,17 +134,17 @@ class ClipsTable
                             ->color('gray'),
 
                         Split::make([
-                            ImageColumn::make('game.box_art')
+                            ImageColumn::make('category.box_art')
                                 ->imageHeight(40)
                                 ->alignCenter()
                                 ->getStateUsing(function (Clip $record) {
-                                    return $record->game?->getBoxArt();
+                                    return $record->category?->getBoxArt();
                                 })
                                 ->extraImgAttributes([
                                     'class' => 'object-cover rounded-md aspect-[3/4]',
                                 ])
                                 ->grow(false),
-                            TextColumn::make('game.title')
+                            TextColumn::make('category.title')
                                 ->label('admin/resources/clips.table.columns.category')
                                 ->translateLabel()
                                 ->weight('medium')
@@ -185,12 +185,12 @@ class ClipsTable
                     ->multiple()
                     ->label('admin/resources/clips.filters.submitter')
                     ->translateLabel(),
-                SelectFilter::make('game')
-                    ->relationship('game', 'title')
+                SelectFilter::make('category')
+                    ->relationship('category', 'title')
                     ->searchable()
                     ->preload()
                     ->multiple()
-                    ->label('admin/resources/clips.filters.game')
+                    ->label('admin/resources/clips.filters.category')
                     ->translateLabel(),
                 SelectFilter::make('tags')
                     ->relationship('tags', 'name')
