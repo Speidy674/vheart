@@ -38,6 +38,7 @@ describe('Banned Category', function () {
             'category_id' => 1,
         ]);
 
+        $this->assertNull(Category::find(1));
         $this->assertDatabaseCount('clips', 1);
         $this->assertCount(1, Clip::all());
     });
