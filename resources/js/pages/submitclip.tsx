@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TagSelect } from '@/components/ui/tag-select';
-import submitclip from '@/routes/submitclip';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
@@ -69,11 +68,6 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
         };
     }, [clipUrl]);
 
-    const breadcrumbs = useMemo(
-        () => [{ title: t('breadcrumb'), href: submitclip.create().url }],
-        [t],
-    );
-
     const previewErrors: string[] = [];
 
     const hasInput = debouncedClipUrl.trim().length > 0;
@@ -93,7 +87,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
 
     if (!user) {
         return (
-            <AppHeaderLayout breadcrumbs={breadcrumbs}>
+            <AppHeaderLayout>
                 <Head title={t('page_title')} />
                 <div className="container mx-auto px-4 py-8">
                     <Card>
@@ -125,7 +119,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
     }
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
 
             <div className="container mx-auto px-4 py-8">

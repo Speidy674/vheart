@@ -1,7 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { home } from '@/routes';
-import { type BreadcrumbItem, PublicClip } from '@/types';
+import { PublicClip } from '@/types';
 import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -27,14 +26,10 @@ export default function Start() {
     const { t } = useTranslation('homepage');
     const { props } = usePage<PageProps>();
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('Homepage'), href: home().url },
-    ];
-
     const [openClip, setOpenClip] = useState<PublicClip | null>(null);
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
             <SpaceBackground />
             <div className="relative z-10 mx-auto w-[90vw] py-5">
