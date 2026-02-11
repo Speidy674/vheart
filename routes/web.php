@@ -10,6 +10,7 @@ use App\Http\Controllers\TeamController;
 use App\Models\Clip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -72,8 +73,8 @@ Route::get('/privacy', function () {
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+    Route::get('dashboard', function (Request $request) {
+        return Redirect::route('dashboard.main', $request->user()->id);
     })->name('dashboard');
 
     Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
@@ -111,5 +112,6 @@ Route::get('/locales/{lang}', static function (Request $request, $lang) {
     ], 200);
 });
 
+require __DIR__.'/dashboard.php';
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

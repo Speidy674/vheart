@@ -2,8 +2,8 @@ import { StreamerSection } from '@/components/sidebar/streamer-section';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { PublicUser, type BreadcrumbItem } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,9 +12,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type PageProps = {
+    streamer: PublicUser;
+};
+
 export default function Dashboard() {
+    const { props } = usePage<PageProps>();
+    console.dir(props);
+
     return (
-        <AppLayout breadcrumbs={breadcrumbs} sidebarContent={<StreamerSection />}>
+        <AppLayout
+            breadcrumbs={breadcrumbs}
+            sidebarContent={<StreamerSection />}
+        >
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
