@@ -45,11 +45,6 @@ type Vote = {
 
 export default function EvaluateClips() {
     const { t } = useTranslation('evaluateclips');
-
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('breadcrumb'), href: vote().url },
-    ];
-
     const items: Item[] = [];
 
     const { props } = usePage<PageProps>();
@@ -150,7 +145,7 @@ export default function EvaluateClips() {
     }, []);
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
 
             <header className="mb-3 space-y-1 pt-5 text-center sm:mb-4">
