@@ -17,6 +17,7 @@ describe('Banned Category', function () {
 
         Clip::factory()->recycle($category)->recycle($user)->create();
 
+        $this->assertModelExists($category);
         $this->assertDatabaseCount('clips', 1);
         $this->assertCount(1, Clip::all());
     });
@@ -27,6 +28,7 @@ describe('Banned Category', function () {
 
         Clip::factory()->recycle($category)->recycle($user)->create();
 
+        $this->assertModelExists($category);
         $this->assertDatabaseCount('clips', 1);
         $this->assertCount(0, Clip::all());
     });
