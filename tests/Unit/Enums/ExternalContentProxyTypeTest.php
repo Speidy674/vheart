@@ -6,7 +6,7 @@ namespace Tests\Unit\Enums;
 
 use App\Enums\ExternalContentProxyType;
 use App\Models\Clip;
-use App\Models\Game;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,8 +15,12 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
+beforeEach(function () {
+    $this->withoutVite();
+});
+
 test('it can determine type from model instance', function () {
-    $game = Game::factory()->make();
+    $game = Category::factory()->make();
     $clip = Clip::factory()->make();
     $user = User::factory()->make();
 
@@ -50,7 +54,7 @@ test('it handles the special user id 0 case', function () {
 });
 
 test('it generates dynamic size urls for categories', function () {
-    $game = Game::factory()->create(['id' => 999]);
+    $game = Category::factory()->create(['id' => 999]);
 
     $urlResized = ExternalContentProxyType::toProxyUrl($game, 50, 50);
     $urlStandard = ExternalContentProxyType::toProxyUrl($game);
@@ -74,7 +78,7 @@ test('it correctly resolves resource url from database', function () {
 });
 
 test('it resolves and replaces dynamic dimensions for categories', function () {
-    Game::factory()->create([
+    Category::factory()->create([
         'id' => 123,
         'box_art' => 'https://example.com/box-{width}x{height}.jpg',
     ]);
