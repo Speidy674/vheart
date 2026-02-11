@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enums;
 
 use App\Models\Clip;
-use App\Models\Game;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Vite;
@@ -20,7 +20,7 @@ enum ExternalContentProxyType: string
     public static function fromModel(Model $model): ?self
     {
         return match (true) {
-            $model instanceof Game => self::TwitchCategory,
+            $model instanceof Category => self::TwitchCategory,
             $model instanceof Clip => self::TwitchClip,
             $model instanceof User => self::TwitchUser,
             default => null,
@@ -87,7 +87,7 @@ enum ExternalContentProxyType: string
     private function modelClass(): string
     {
         return match ($this) {
-            self::TwitchCategory => Game::class,
+            self::TwitchCategory => Category::class,
             self::TwitchClip => Clip::class,
             self::TwitchUser => User::class,
         };
