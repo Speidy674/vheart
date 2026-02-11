@@ -124,14 +124,13 @@ export default function EvaluateClips() {
                                 </Link>
 
                                 <ReportButton
+                                    disabled={!props.clip}
                                     items={[
-                                        props.clip && {
+                                        {
                                             type: 'clip',
-                                            id: props.clip.id,
+                                            id: props.clip?.id ?? -1,
                                         }
-                                    ].filter((item): item is ReportableItem =>
-                                        Boolean(item),
-                                    )}
+                                    ]}
                                 />
                             </div>
                         </section>
