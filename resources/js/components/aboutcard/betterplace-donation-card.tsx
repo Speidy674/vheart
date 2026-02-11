@@ -104,7 +104,7 @@ export function BetterplaceDonationCard() {
     }, []);
 
     return (
-        <section className="w-full px-4 py-8">
+        <section className="w-full">
             <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
                 <Card className="flex w-full flex-col rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-6 shadow-xl ring-1 shadow-black/10 ring-black/5 md:p-8 lg:h-[55rem] dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:ring-0 dark:shadow-purple-900/30">
                     <div className="custom-scrollbar overflow-y-auto pr-2">
