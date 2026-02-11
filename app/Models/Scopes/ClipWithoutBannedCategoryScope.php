@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 
 /**
- * Limit Clips to only those we have permissions for
+ * Hide clips that have banned categories or where the category is missing
  */
 class ClipWithoutBannedCategoryScope implements Scope
 {
@@ -20,8 +20,12 @@ class ClipWithoutBannedCategoryScope implements Scope
             return;
         }
 
-        $builder->whereDoesntHave('category', function (Builder $q) {
-            $q->where('is_banned', true);
+        $builder->where(function ($query) {
+            return $query->whereHas('category', function (Builder $builder) {
+                $builder->where('is_banned', false);
+            })->orWhereDoesntHave('category', function (Builder $builder) {
+                $builder->where('is_banned', true);
+            });
         });
     }
 }
