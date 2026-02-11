@@ -9,6 +9,9 @@ use Illuminate\Auth\Access\Response;
 
 class CategoryPolicy
 {
+
+    public const int PlaceholderCategory = 0;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -38,6 +41,10 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category): bool
     {
+        if ($category->id === self::PlaceholderCategory) {
+            return false;
+        }
+
         return $user->can(Permission::UpdateAnyCategory);
     }
 
