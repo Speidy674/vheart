@@ -49,6 +49,7 @@ export default function EvaluateClips() {
                                 <div className="aspect-video h-full">
                                     {props.clip ? (
                                         <TwitchClipEmbed
+                                            thumbnail={props.clip.thumbnail_url}
                                             slug={props.clip.slug}
                                             className="h-full w-full"
                                         />
