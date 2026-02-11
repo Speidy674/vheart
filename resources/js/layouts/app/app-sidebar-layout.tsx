@@ -5,6 +5,7 @@ import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { AppTopbar } from '@/components/app-topbar';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren, type ReactNode } from 'react';
+import Footer from '@/components/footer/footer';
 
 interface AppSidebarLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -29,6 +30,7 @@ export default function AppSidebarLayout({
                         <AppSidebarHeader breadcrumbs={breadcrumbs} />
                         {children}
                     </AppContent>
+                    <Footer />
                 </AppShell>
             </div>
         </div>
