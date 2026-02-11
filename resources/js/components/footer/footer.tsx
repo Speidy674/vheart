@@ -1,7 +1,15 @@
 import AppearanceToggleSlider from '@/components/appearance-slider';
 import LanguageToggleDropdown from '@/components/language-slider';
 import { Button } from '@headlessui/react';
-import { lazy, Suspense, useLayoutEffect, useRef, useState } from 'react';
+import {
+    lazy,
+    ReactNode,
+    Suspense,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     SiBluesky,
@@ -16,6 +24,39 @@ const EasterEggContainer = lazy(
     () => import('@/components/easer-egg-container'),
 );
 
+
+function SocialLink({
+    href,
+    title,
+    colorLight = '#000000',
+    colorDark,
+    children,
+}: {
+    href: string;
+    title: string;
+    colorLight?: string;
+    colorDark?: string;
+    children: ReactNode;
+}) {
+    return useMemo(
+        () => (
+            <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={title}
+                style={{
+                    ['--hover-color' as string]: colorLight,
+                    ['--hover-color-dark' as string]: colorDark || colorLight,
+                }}
+                className="text-gray-600 transition-colors hover:text-(--hover-color) dark:text-white/70 dark:hover:text-(--hover-color-dark)"
+            >
+                {children}
+            </a>
+        ),
+        [children, colorDark, colorLight, href, title],
+    );
+}
 
 export default function Footer() {
     const { t } = useTranslation('footer');
@@ -99,75 +140,63 @@ export default function Footer() {
                         {/* Social icons */}
                         <div className="min-w-0">
                             <div className="flex items-center justify-center gap-2 sm:gap-3 md:justify-end">
-                                <a
+                                <SocialLink
                                     href="https://github.com/VHeart-Clips/VHeart_Webseite"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={t('github_aria', 'GitHub')}
-                                    className="text-gray-600 transition-colors hover:text-[#181717] dark:text-white/70 dark:hover:text-[#F2F5F3]"
+                                    title="Github"
+                                    colorLight="#181717"
+                                    colorDark="#F2F5F3"
                                 >
-                                    <SiGithub className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiGithub className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://discord.gg/ThVZHqvXnD"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={t('discord_aria', 'Discord')}
-                                    className="text-gray-600 transition-colors hover:text-[#5865F2] dark:text-white/70 dark:hover:text-[#5865F2]"
+                                    title="Discord"
+                                    colorLight="#5865F2"
                                 >
-                                    <SiDiscord className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiDiscord className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://www.youtube.com/@vheartclips"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="YouTube"
-                                    className="text-gray-600 transition-colors hover:text-[#FF0000] dark:text-white/70 dark:hover:text-[#FF0000]"
+                                    title="Youtube"
+                                    colorLight="#FF0000"
                                 >
-                                    <SiYoutube className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiYoutube className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://www.twitch.tv/vheartclips"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="Twitch"
-                                    className="text-gray-600 transition-colors hover:text-[#9146FF] dark:text-white/70 dark:hover:text-[#9146FF]"
+                                    title="Youtube"
+                                    colorLight="#9146FF"
                                 >
-                                    <SiTwitch className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiTwitch className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://x.com/VHeartClips"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="X (Twitter)"
-                                    className="text-gray-600 transition-colors hover:text-[#000000] dark:text-white/70 dark:hover:text-[#FFFFFF]"
+                                    title="X (Twitter)"
+                                    colorLight="#000000"
+                                    colorDark="#FFFFFF"
                                 >
-                                    <SiX className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiX className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://www.reddit.com/r/VHeartClips/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="Reddit"
-                                    className="text-gray-600 transition-colors hover:text-[#FF4500] dark:text-white/70 dark:hover:text-[#FF4500]"
+                                    title="Reddit"
+                                    colorLight="#FF4500"
                                 >
-                                    <SiReddit className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiReddit className="size-4 sm:size-5" />
+                                </SocialLink>
 
-                                <a
+                                <SocialLink
                                     href="https://bsky.app/profile/vheart.net"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="Bluesky"
-                                    className="text-gray-600 transition-colors hover:text-[#1185FE] dark:text-white/70 dark:hover:text-[#1185FE]"
+                                    title="Bluesky"
+                                    colorLight="#1185FE"
                                 >
-                                    <SiBluesky className="h-4 w-4 sm:h-5 sm:w-5" />
-                                </a>
+                                    <SiBluesky className="size-4 sm:size-5" />
+                                </SocialLink>
 
                                 <div className="h-4 w-px bg-gray-200 dark:bg-white/20" />
 
