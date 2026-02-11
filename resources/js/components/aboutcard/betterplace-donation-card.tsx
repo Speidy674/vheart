@@ -104,25 +104,25 @@ export function BetterplaceDonationCard() {
     }, []);
 
     return (
-        <section>
-            <div className="grid grid-cols-1 justify-items-stretch gap-10 lg:grid-cols-2 lg:justify-items-center lg:gap-12">
-                <Card className="w-full rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-4 shadow-xl ring-1 shadow-black/10 ring-black/5 sm:h-[55rem] sm:w-[36rem] sm:p-6 lg:p-8 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0 dark:shadow-purple-900/30">
-                    <div className="h-full overflow-y-auto px-4 py-6">
+        <section className="w-full px-4 py-8">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12">
+                <Card className="flex w-full flex-col rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-6 shadow-xl ring-1 shadow-black/10 ring-black/5 md:p-8 lg:h-[55rem] dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:ring-0 dark:shadow-purple-900/30">
+                    <div className="custom-scrollbar overflow-y-auto pr-2">
                         {loadingProject ? (
-                            <div className="flex items-center justify-center gap-3 py-8">
+                            <div className="flex items-center justify-center gap-3 py-12">
                                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 border-t-transparent dark:border-white dark:border-t-transparent" />
                                 <span className="text-gray-800 dark:text-white/90">
                                     Lade Projekt…
                                 </span>
                             </div>
                         ) : (
-                            <div className="mx-auto max-w-5xl">
-                                <h2 className="mb-4 bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
+                            <div className="space-y-6">
+                                <h2 className="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
                                     {eventData?.title || 'Spendenprojekt'}
                                 </h2>
 
                                 {eventData?.description && (
-                                    <div className="mb-6 text-sm leading-relaxed text-gray-800 md:text-base dark:text-white/90">
+                                    <div className="text-sm leading-relaxed text-gray-800 md:text-base dark:text-white/90">
                                         <div
                                             dangerouslySetInnerHTML={{
                                                 __html: eventData.description,
@@ -153,8 +153,8 @@ export function BetterplaceDonationCard() {
                     </div>
                 </Card>
 
-                <Card className="w-full rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-4 shadow-xl ring-1 shadow-black/10 ring-black/5 sm:h-[55rem] sm:w-[36rem] sm:p-6 lg:p-8 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0 dark:shadow-purple-900/30">
-                    <div className="flex h-full min-h-0 flex-col px-4 py-6">
+                <Card className="flex w-full flex-col rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-6 shadow-xl ring-1 shadow-black/10 ring-black/5 md:p-8 lg:h-[55rem] dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:ring-0 dark:shadow-purple-900/30">
+                    <div className="flex h-full flex-col">
                         <h3 className="mb-6 bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-xl font-bold text-transparent sm:text-2xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
                             {t('last_donations')}
                         </h3>
@@ -163,7 +163,7 @@ export function BetterplaceDonationCard() {
                             <div className="flex flex-1 items-center justify-center gap-3">
                                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-900 border-t-transparent dark:border-white dark:border-t-transparent" />
                                 <span className="text-gray-800 dark:text-white/90">
-                                    {t('last_donations')}
+                                    Lade Spenden…
                                 </span>
                             </div>
                         ) : error ? (
@@ -174,42 +174,21 @@ export function BetterplaceDonationCard() {
                             </div>
                         ) : donations.length === 0 ? (
                             <div className="flex flex-1 items-center justify-center">
-                                <div className="rounded-xl border border-gray-300/80 bg-white/60 p-6 dark:border-white/15 dark:bg-black/20">
-                                    <p className="text-center text-gray-800 dark:text-white/90">
-                                        {t('no_donations_yet')}
-                                    </p>
-                                </div>
+                                <p className="text-gray-800 dark:text-white/90">
+                                    {t('no_donations_yet')}
+                                </p>
                             </div>
                         ) : (
-                            <div className="mb-6 min-h-0 flex-1 overflow-hidden">
+                            <div className="flex-1 overflow-hidden">
                                 <style>{`
-                                    .custom-scrollbar::-webkit-scrollbar {
-                                        width: 6px;
-                                        height: 6px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-track {
-                                        background: rgba(0, 0, 0, 0.05);
-                                        border-radius: 10px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-thumb {
-                                        background: rgba(0, 0, 0, 0.2);
-                                        border-radius: 10px;
-                                    }
-                                    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                                        background: rgba(0, 0, 0, 0.3);
-                                    }
-                                    .dark .custom-scrollbar::-webkit-scrollbar-track {
-                                        background: rgba(255, 255, 255, 0.05);
-                                    }
-                                    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-                                        background: rgba(255, 255, 255, 0.2);
-                                    }
-                                    .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                                        background: rgba(255, 255, 255, 0.3);
-                                    }
+                                    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+                                    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
+                                    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
+                                    .dark .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+                                    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
                                 `}</style>
 
-                                <div className="custom-scrollbar min-h-0 overflow-y-auto pr-2 max-h-[20rem] lg:max-h-none lg:h-full">
+                                <div className="custom-scrollbar h-full max-h-[30rem] overflow-y-auto pr-2 lg:max-h-none">
                                     {donations.map((donation, index) => {
                                         const amount =
                                             (donation.donated_amount_in_cents ||
@@ -237,86 +216,35 @@ export function BetterplaceDonationCard() {
                                         return (
                                             <div
                                                 key={index}
-                                                className="border-b border-gray-300/80 py-3 last:border-b-0 dark:border-white/15"
+                                                className="border-b border-gray-300/80 py-4 last:border-b-0 dark:border-white/15"
                                             >
-                                                <div
-                                                    className={[
-                                                        'grid',
-                                                        'grid-cols-[5.75rem_2.5rem_1fr]',
-                                                        hasMessage
-                                                            ? 'grid-rows-[auto_auto]'
-                                                            : 'grid-rows-[auto]',
-                                                        'gap-x-3',
-                                                        'items-center',
-                                                    ].join(' ')}
-                                                >
-                                                    <div
-                                                        className={[
-                                                            'bg-gradient-to-r',
-                                                            'from-purple-700',
-                                                            'to-cyan-700',
-                                                            'bg-clip-text',
-                                                            'text-sm',
-                                                            'font-bold',
-                                                            'text-transparent',
-                                                            'sm:text-base',
-                                                            'dark:from-purple-300',
-                                                            'dark:to-cyan-300',
-                                                            hasMessage
-                                                                ? 'row-span-2 self-center'
-                                                                : 'self-center',
-                                                        ].join(' ')}
-                                                    >
+                                                <div className="flex items-start gap-4">
+                                                    <div className="w-20 shrink-0 bg-gradient-to-r from-purple-700 to-cyan-700 bg-clip-text text-base font-bold text-transparent dark:from-purple-300 dark:to-cyan-300">
                                                         {formatCurrency(amount)}{' '}
                                                         €
                                                     </div>
 
-                                                    <div
-                                                        className={[
-                                                            hasMessage
-                                                                ? 'row-span-2 flex items-center justify-center'
-                                                                : 'flex items-center justify-center',
-                                                        ].join(' ')}
-                                                    >
+                                                    <div className="shrink-0">
                                                         {image ? (
                                                             <img
                                                                 src={image}
                                                                 alt={name}
-                                                                className="h-8 w-8 rounded-full border-2 border-gray-300/80 object-cover dark:border-white/20"
+                                                                className="h-9 w-9 rounded-full border border-gray-300/80 object-cover dark:border-white/20"
                                                             />
                                                         ) : (
-                                                            <div className="h-8 w-8 rounded-full border-2 border-gray-300/80 bg-emerald-400/80 dark:border-white/20" />
+                                                            <div className="h-9 w-9 rounded-full bg-emerald-400/80" />
                                                         )}
                                                     </div>
 
-                                                    <div
-                                                        className={[
-                                                            'min-w-0',
-                                                            hasMessage
-                                                                ? 'row-span-2 self-stretch'
-                                                                : '',
-                                                        ].join(' ')}
-                                                    >
-                                                        <div
-                                                            className={[
-                                                                'flex',
-                                                                'h-full',
-                                                                'flex-col',
-                                                                hasMessage
-                                                                    ? 'justify-center gap-1'
-                                                                    : 'justify-center',
-                                                            ].join(' ')}
-                                                        >
-                                                            <div className="truncate text-sm font-medium text-gray-900/90 sm:text-base dark:text-white/90">
-                                                                {name}
-                                                            </div>
-
-                                                            {hasMessage && (
-                                                                <div className="min-w-0 text-xs break-words whitespace-normal text-[#8ea0ff] sm:text-sm">
-                                                                    {message}
-                                                                </div>
-                                                            )}
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="truncate text-sm font-semibold text-gray-900 dark:text-white/90">
+                                                            {name}
                                                         </div>
+                                                        {hasMessage && (
+                                                            <div className="mt-1 line-clamp-3 text-xs break-words text-[#8ea0ff]">
+                                                                {message}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
