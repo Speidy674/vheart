@@ -46,7 +46,7 @@ class PublicClipResource extends JsonResource
                 'avatar' => ExternalContentProxyType::toProxyUrl($this->submitter),
             ]),
 
-            'game' => $this->whenLoaded('game', $this->game->toResource()),
+            'category' => $this->whenLoaded('category', $this->category->toResource()),
 
             'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,

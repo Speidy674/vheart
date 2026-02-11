@@ -56,6 +56,16 @@ enum CompilationStatus: string implements HasLabel
         ];
     }
 
+    public static function getVoteDisabledCases(): array
+    {
+        return [
+            CompilationStatus::Scheduled,
+            CompilationStatus::Unlisted,
+            CompilationStatus::Published,
+            CompilationStatus::Archived,
+        ];
+    }
+
     /**
      * Do we consider this collection public and visible?
      */
