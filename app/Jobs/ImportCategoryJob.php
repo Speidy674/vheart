@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Actions\ImportCategoryAction;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
+use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Services\Twitch\Data\GameDto;
 use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
@@ -39,6 +40,7 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
     {
         $missingCategories = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
+            ->withoutGlobalScope(ClipWithoutBannedCategoryScope::class)
             ->whereDoesntHave('category')
             ->distinct('category_id')
             ->limit(100)
