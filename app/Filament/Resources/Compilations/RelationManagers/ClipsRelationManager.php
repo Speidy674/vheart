@@ -47,7 +47,7 @@ class ClipsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with([
-                'game',
+                'category',
                 'broadcaster',
                 'creator',
                 'submitter',
@@ -142,17 +142,17 @@ class ClipsRelationManager extends RelationManager
                             ->color('gray'),
 
                         Split::make([
-                            ImageColumn::make('game.box_art')
+                            ImageColumn::make('category.box_art')
                                 ->imageHeight(40)
                                 ->alignCenter()
                                 ->getStateUsing(function (Clip $record) {
-                                    return $record->game?->getBoxArt();
+                                    return $record->category?->getBoxArt();
                                 })
                                 ->extraImgAttributes([
                                     'class' => 'object-cover rounded-md aspect-[3/4]',
                                 ])
                                 ->grow(false),
-                            TextColumn::make('game.title')
+                            TextColumn::make('category.title')
                                 ->label('admin/resources/clips.table.columns.category')
                                 ->translateLabel()
                                 ->weight('medium')
@@ -243,13 +243,13 @@ class ClipsRelationManager extends RelationManager
                             }
                         });
                     }),
-                SelectFilter::make('game')
-                    ->relationship('game', 'title',
-                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('game_id')))
+                SelectFilter::make('category')
+                    ->relationship('category', 'title',
+                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('category_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.game')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.category')
                     ->translateLabel(),
 
                 TernaryFilter::make('was_removed')
@@ -406,7 +406,7 @@ class ClipsRelationManager extends RelationManager
                         ->action(function (Clip $clip, $livewire) {
                             $title = Str::limit($clip->title, 50, '');
 
-                            $filename = "[{$clip->id}] {$clip->broadcaster->name} - {$clip->game->title} - {$title}.mp4";
+                            $filename = "[{$clip->id}] {$clip->broadcaster->name} - {$clip->category->title} - {$title}.mp4";
                             $livewire->js("window.navigator.clipboard.writeText('{$filename}');");
 
                             Notification::make()
