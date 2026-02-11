@@ -104,7 +104,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={t('github_aria', 'GitHub')}
-                                    className="text-gray-600 transition-colors hover:text-gray-900 dark:text-white/70 dark:hover:text-white"
+                                    className="text-gray-600 transition-colors hover:text-[#181717] dark:text-white/70 dark:hover:text-[#F2F5F3]"
                                 >
                                     <SiGithub className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -114,7 +114,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label={t('discord_aria', 'Discord')}
-                                    className="text-gray-600 transition-colors hover:text-gray-900 dark:text-white/70 dark:hover:text-white"
+                                    className="text-gray-600 transition-colors hover:text-[#5865F2] dark:text-white/70 dark:hover:text-[#5865F2]"
                                 >
                                     <SiDiscord className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -124,7 +124,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="YouTube"
-                                    className="text-gray-600 transition-colors hover:text-red-600 dark:text-white/70 dark:hover:text-red-400"
+                                    className="text-gray-600 transition-colors hover:text-[#FF0000] dark:text-white/70 dark:hover:text-[#FF0000]"
                                 >
                                     <SiYoutube className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -134,7 +134,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Twitch"
-                                    className="text-gray-600 transition-colors hover:text-purple-600 dark:text-white/70 dark:hover:text-purple-400"
+                                    className="text-gray-600 transition-colors hover:text-[#9146FF] dark:text-white/70 dark:hover:text-[#9146FF]"
                                 >
                                     <SiTwitch className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -144,7 +144,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="X (Twitter)"
-                                    className="text-gray-600 transition-colors hover:text-gray-900 dark:text-white/70 dark:hover:text-white"
+                                    className="text-gray-600 transition-colors hover:text-[#000000] dark:text-white/70 dark:hover:text-[#FFFFFF]"
                                 >
                                     <SiX className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -154,7 +154,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Reddit"
-                                    className="text-gray-600 transition-colors hover:text-orange-600 dark:text-white/70 dark:hover:text-orange-400"
+                                    className="text-gray-600 transition-colors hover:text-[#FF4500] dark:text-white/70 dark:hover:text-[#FF4500]"
                                 >
                                     <SiReddit className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
@@ -164,7 +164,7 @@ export default function Footer() {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     aria-label="Bluesky"
-                                    className="text-gray-600 transition-colors hover:text-[#0085FF] dark:text-white/70 dark:hover:text-[#0085FF]"
+                                    className="text-gray-600 transition-colors hover:text-[#1185FE] dark:text-white/70 dark:hover:text-[#1185FE]"
                                 >
                                     <SiBluesky className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </a>
