@@ -6,7 +6,7 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Enums\ExternalContentProxyType;
 use App\Models\Clip;
-use App\Models\Game;
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Facades\Http;
 
@@ -65,13 +65,13 @@ test('it aborts with 415 if external content is not an image', function () {
 });
 
 test('it handles dynamic size requests in the controller', function () {
-    Game::factory()->create([
+    Category::factory()->create([
         'id' => 50,
-        'box_art' => 'https://example.com/game-{width}x{height}.jpg',
+        'box_art' => 'https://example.com/category-{width}x{height}.jpg',
     ]);
 
     Http::fake([
-        'https://example.com/game-100x200.jpg' => Http::response('small-cover', 200, ['Content-Type' => 'image/jpeg']),
+        'https://example.com/category-100x200.jpg' => Http::response('small-cover', 200, ['Content-Type' => 'image/jpeg']),
     ]);
 
     $response = $this->get(route('static-external', [
