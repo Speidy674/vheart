@@ -11,7 +11,6 @@ Route::get('/locales.json', LocalesController::class)
 
 Route::get('/static/proxy', ImageProxyController::class)
     ->middleware([
-        'signed',
         'throttle:image-proxy',
     ])
     ->name('image-proxy');
