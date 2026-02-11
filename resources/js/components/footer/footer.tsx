@@ -3,6 +3,7 @@ import LanguageToggleDropdown from '@/components/language-slider';
 import { Button } from '@headlessui/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import EasterEggContainer from '@/components/easer-egg-container';
 
 export default function Footer() {
     const { t } = useTranslation('footer');
@@ -35,6 +36,7 @@ export default function Footer() {
 
     return (
         <>
+            <EasterEggContainer />
             <footer
                 ref={footerRef}
                 className="fixed right-0 bottom-0 left-0 z-40 border-t border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 py-2 text-gray-900 ring-black/5 sm:py-4 md:py-6 dark:border-white/20 dark:bg-black/80 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:text-white/85 dark:ring-0"
