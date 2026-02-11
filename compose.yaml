@@ -32,10 +32,10 @@ services:
             - mailpit
         healthcheck:
             test: curl --fail http://laravel.test/up || exit 1
-            interval: 1s
-            timeout: 1s
-            retries: 3
-            start_period: 300s
+            interval: 5s
+            timeout: 5s
+            retries: 5
+            start_period: 30s
     autoheal:
         image: willfarrell/autoheal
         restart: unless-stopped
