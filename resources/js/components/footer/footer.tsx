@@ -1,3 +1,5 @@
+import AppearanceToggleSlider from '@/components/appearance-slider';
+import LanguageToggleDropdown from '@/components/language-slider';
 import { Button } from '@headlessui/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -200,6 +202,13 @@ export default function Footer() {
                                         <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
                                     </svg>
                                 </a>
+
+                                <div className="h-4 w-px bg-gray-200 dark:bg-white/20" />
+
+                                <div className="flex items-center gap-1">
+                                    <LanguageToggleDropdown />
+                                    <AppearanceToggleSlider />
+                                </div>
                             </div>
                         </div>
                     </div>

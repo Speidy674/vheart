@@ -15,6 +15,7 @@ enum ReportReason: int implements HasLabel
     case Spam = 1;
     case Harassment = 2;
     case HateSpeech = 3;
+    case AiContent = 4;
 
     private function getTranslatableEnumLabelPrefix(): string
     {
