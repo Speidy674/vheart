@@ -30,6 +30,6 @@ class Game extends Model
     {
         $boxArtUrl = $this->box_art ?? self::PLACEHOLDER_BOX_ART;
 
-        return route('image-proxy', ['url' => str_replace(['{width}', '{height}'], [$width, $height], $boxArtUrl)]);
+        return str_replace(['{width}', '{height}'], [$width, $height], $boxArtUrl);
     }
 }

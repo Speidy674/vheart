@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\ExternalContentProxyType;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,10 +21,9 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'art' => [
-                'small' => $this->getBoxArt(144, 192),
-                'medium' => $this->getBoxArt(285, 380),
-                'large' => $this->getBoxArt(600, 800),
-                'raw' => $this->box_art,
+                'small' => ExternalContentProxyType::toProxyUrl($this->getModel(), 144, 192),
+                'medium' => ExternalContentProxyType::toProxyUrl($this->getModel(), 285, 380),
+                'large' => ExternalContentProxyType::toProxyUrl($this->getModel(), 600, 800),
             ],
         ];
     }
