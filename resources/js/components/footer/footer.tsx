@@ -3,6 +3,7 @@ import LanguageToggleDropdown from '@/components/language-slider';
 import { Button } from '@headlessui/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from '@inertiajs/react';
 
 export default function Footer() {
     const { t } = useTranslation('footer');
@@ -79,7 +80,7 @@ export default function Footer() {
                                 </li>
                                 <li>
                                     <Button className="h-auto px-1.5 py-0.5 text-[10px] text-gray-600 hover:text-gray-900 sm:px-2 sm:py-1 sm:text-xs md:text-sm dark:text-white/70 dark:hover:text-white">
-                                        <a href="/faq">{t('faq')}</a>
+                                        <Link href="/faq">{t('faq')}</Link>
                                     </Button>
                                 </li>
                             </ul>
