@@ -25,6 +25,22 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (
+                        id.includes('@icons-pack/react-simple-icons') ||
+                        id.includes('lucide-react')
+                    ) {
+                        return 'icons';
+                    }
+
+                    return null;
+                },
+            },
+        },
+    },
     esbuild: {
         jsx: 'automatic',
     },
