@@ -21,6 +21,15 @@ class CategoryFactory extends Factory
             'id' => fake()->unique()->numberBetween(),
             'title' => fake()->paragraph(1),
             'box_art' => fake()->imageUrl(268, 357),
+            'is_banned' => false,
         ];
+    }
+
+
+    public function isBanned(?bool $value = true): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_banned' => $value,
+        ]);
     }
 }
