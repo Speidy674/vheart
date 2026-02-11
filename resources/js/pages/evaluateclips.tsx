@@ -3,8 +3,7 @@ import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 import ReportButton from '@/components/reports/report-button';
 import SpaceBackground from '@/components/spacebackground';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { vote } from '@/routes';
-import { PublicClip, type BreadcrumbItem } from '@/types';
+import { PublicClip } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 import { CircleX, Heart } from 'lucide-react';
@@ -17,10 +16,6 @@ type PageProps = {
 
 export default function EvaluateClips() {
     const { t } = useTranslation('evaluateclips');
-
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('breadcrumb'), href: vote().url },
-    ];
 
     const { props } = usePage<PageProps>();
 
@@ -35,7 +30,7 @@ export default function EvaluateClips() {
     }, []);
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
             <SpaceBackground />
 
