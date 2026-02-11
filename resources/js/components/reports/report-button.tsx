@@ -48,9 +48,7 @@ export default function ReportButton({ items, disabled }: { items: ReportableIte
         );
     };
 
-    if (items.length === 0 && !disabled) return null;
-
-    if(!ready || disabled) {
+    if (!ready || disabled || items.length === 0) {
         return (
             <Button
                 variant="ghost"
