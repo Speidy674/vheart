@@ -7,8 +7,8 @@ namespace App\Filament\Resources\Clips\Schemas;
 use App\Enums\ClipVoteType;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
 use App\Filament\Resources\Users\UserResource;
+use App\Models\Category;
 use App\Models\Clip;
-use App\Models\Game;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
@@ -44,9 +44,9 @@ class ClipInfolist
 
                         Grid::make(4)
                             ->schema([
-                                ImageEntry::make('game.box_art')
+                                ImageEntry::make('category.box_art')
                                     ->hiddenLabel()
-                                    ->state(fn (Game $category) => $category->getBoxArt())
+                                    ->state(fn (?Category $category) => ($category ?? new Category(Category::Defaults))->getBoxArt())
                                     ->extraImgAttributes([
                                         'class' => 'object-cover rounded aspect-[3/4]',
                                     ])
@@ -60,7 +60,7 @@ class ClipInfolist
                                     ->size(TextSize::Medium)
                                     ->weight('medium'),
                             ])
-                            ->relationship('game'),
+                            ->relationship('category'),
 
                         Grid::make(3)
                             ->schema([

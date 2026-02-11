@@ -68,4 +68,10 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+    public function withClipPermission(?bool $value = true): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'clip_permission' => $value,
+        ]);
+    }
 }

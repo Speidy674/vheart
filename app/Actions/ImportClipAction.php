@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Events\ClipSubmitted;
+use App\Jobs\ImportCategoryJob;
 use App\Models\Clip;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
@@ -26,6 +27,10 @@ class ImportClipAction
         if (is_array($tags)) {
             $clipModel->tags()->sync($tags);
         }
+
+        ImportCategoryJob::dispatch($clipModel->category_id)
+            // some time to breath for other submissions, take as many as possible.
+            ->delay(now()->addSeconds(5));
 
         ClipSubmitted::dispatch($clipModel, $user, $isAnonymous, $tags);
 

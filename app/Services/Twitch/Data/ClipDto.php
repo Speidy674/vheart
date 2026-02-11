@@ -73,7 +73,7 @@ readonly class ClipDto implements TwitchDtoInterface
             'thumbnail_url' => $this->thumbnail_url,
             'broadcaster_id' => $this->broadcaster_id,
             'creator_id' => $this->creator_id,
-            'game_id' => $this->game_id,
+            'category_id' => $this->game_id,
             'vod_id' => $this->video_id,
             'vod_offset' => $this->vod_offset,
             'duration' => $this->duration,
