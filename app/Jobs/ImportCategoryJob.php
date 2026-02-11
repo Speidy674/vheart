@@ -43,24 +43,30 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
             ->withoutGlobalScope(ClipWithoutBannedCategoryScope::class)
             ->whereDoesntHave('category')
             ->distinct('category_id')
-            ->limit(100)
             ->pluck('category_id');
 
         if ($missingCategories->isEmpty()) {
             Log::debug('No Categories missing.');
+
             return;
         }
 
-        $categories = $twitchService->get(TwitchEndpoints::GetGames, [
-            'id' => $missingCategories->toArray(),
+        Log::debug('Fetching missing Categories.', [
+            'total' => $missingCategories->count(),
         ]);
 
-        collect($categories)->each(function (GameDto $game) use ($importCategoryAction) {
-            $importCategoryAction->execute($game);
+        $missingCategories->chunk(100)->each(function ($chunk) use ($twitchService, $importCategoryAction) {
+            $categories = $twitchService->get(TwitchEndpoints::GetGames, [
+                'id' => $chunk->values()->toArray(),
+            ]);
+
+            collect($categories)->each(function (GameDto $game) use ($importCategoryAction) {
+                $importCategoryAction->execute($game);
+            });
+
+            Log::debug('Fetched Batch of Categories from Twitch', [
+                'count' => count($categories),
+            ]);
         });
-
-        Log::debug('Fetched Batch of Categories from Twitch', [
-            'count' => count($categories),
-        ]);
     }
 }
