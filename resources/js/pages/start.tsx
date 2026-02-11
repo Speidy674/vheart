@@ -12,7 +12,7 @@ import {
 import { ClipPreview } from '@/components/clip-preview';
 import { ClipModal } from '@/components/clipModal';
 import SpaceBackground from '@/components/spacebackground';
-import VideoEmb from '@/components/video-emb';
+import YoutubeEmbed from '@/components/embeds/youtube-embed';
 
 type InertiaBaseProps = Record<string, unknown>;
 interface PageProps extends InertiaBaseProps {
@@ -46,11 +46,7 @@ export default function Start() {
                                 </h2>
 
                                 <div className="mx-auto aspect-video w-full max-w-4xl overflow-hidden rounded-xl dark:bg-linear-to-b dark:from-white/10 dark:to-black/40 dark:ring-1 dark:ring-white/10">
-                                    <VideoEmb
-                                        youtubeUrl={
-                                            'https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A'
-                                        }
-                                    />
+                                    <YoutubeEmbed url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A" />
                                 </div>
                             </section>
 

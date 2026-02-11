@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports;
 
+use App\Enums\NavigationGroup;
+use App\Enums\Reports\ReportStatus;
 use App\Filament\Resources\Reports\Pages\ListReports;
 use App\Filament\Resources\Reports\Pages\ViewReport;
 use App\Filament\Resources\Reports\Schemas\ReportInfolist;
@@ -16,14 +18,34 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use UnitEnum;
 
 class ReportResource extends Resource
 {
     protected static ?string $model = Report::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Moderation;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Flag;
+
+    protected static ?int $navigationSort = 0;
 
     protected static ?string $recordTitleAttribute = null;
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::$model::query()
+            ->where('status', ReportStatus::Pending)
+            ->whereNull('claimed_by')
+            ->whereNull('resolved_by')
+            ->count();
+
+        if ($count > 0) {
+            return (string) $count;
+        }
+
+        return null;
+    }
 
     public static function infolist(Schema $schema): Schema
     {
