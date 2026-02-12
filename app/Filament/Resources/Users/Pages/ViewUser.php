@@ -11,6 +11,9 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Enums\Width;
+use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
 class ViewUser extends ViewRecord
 {
@@ -19,6 +22,11 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            CommentsAction::make()
+                ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                ->perPage(4)
+                ->loadMoreIncrementsBy(8)
+                ->modalWidth(Width::SevenExtraLarge),
             Action::make('2fa_reset')
                 ->label('Remove 2FA')
                 ->hidden(function (User $record) {
