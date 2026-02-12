@@ -10,6 +10,7 @@ return [
         'broadcaster' => 'Broadcaster',
         'creator' => 'Clip Creator',
         'submitted_by' => 'Submitted By',
+        'category' => 'Category',
         'created_at' => 'Clip Created At',
     ],
     'infolist' => [
@@ -46,7 +47,7 @@ return [
         'broadcaster' => 'Broadcaster',
         'creator' => 'Creator',
         'submitter' => 'Submitter',
-        'game' => 'Game',
+        'category' => 'Category',
         'tags' => 'Tags',
         'in_compilation' => [
             'label' => 'Compilations',

@@ -23,6 +23,7 @@ return [
         'horizon*',
         '_boost/browser-logs',
         'up',
+        'cookie-consent/*',
     ],
 
     /*

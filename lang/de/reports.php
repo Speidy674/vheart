@@ -15,6 +15,7 @@ return [
             'spam' => 'Spam',
             'harassment' => 'Belästigung',
             'hate-speech' => 'Hassrede',
+            'ai-content' => 'AI Inhalte',
         ],
         'resolve-action' => [
             'other' => 'Anderes',
@@ -23,5 +24,30 @@ return [
             'content-removed' => 'Inhalte entfernt',
             'user-banned' => 'Benutzer Gesperrt',
         ],
+    ],
+    'modal' => [
+        'title' => ':reportable Melden',
+        'subtitle' => 'Bitte beschreibe dein Problem',
+        'inputs' => [
+            'reason' => [
+                'label' => 'Grund für die Meldung',
+            ],
+            'description' => [
+                'label' => 'Weitere Informationen',
+                'placeholder' => 'Benötigt wenn "Anderes" gewählt.',
+            ],
+            'cancel' => 'Abbrechen',
+            'submit' => 'Melden',
+        ],
+        'success' => [
+            'title' => 'Erfolgreich gemeldet!',
+            'message' => 'Wir werden uns darum kümmern.',
+            'ok' => 'Verstanden',
+        ],
+        'button' => ':reportable Melden',
+    ],
+    'reportable' => [
+        'user' => 'Benutzer',
+        'clip' => 'Clip',
     ],
 ];

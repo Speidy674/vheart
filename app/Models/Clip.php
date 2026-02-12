@@ -11,6 +11,7 @@ use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Clip\Tag;
 use App\Models\Scopes\ClipPermissionScope;
+use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
 use Database\Factories\ClipFactory;
@@ -26,14 +27,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Vite;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\HasComments;
 
 #[ScopedBy(ClipPermissionScope::class)]
+#[ScopedBy(ClipWithoutBannedCategoryScope::class)]
 #[UseResource(PublicClipResource::class)]
 #[UsePolicy(ClipPolicy::class)]
-class Clip extends Model
+class Clip extends Model implements Commentable
 {
     /** @use HasFactory<ClipFactory> */
-    use HasFactory, Reportable;
+    use HasComments, HasFactory, Reportable;
 
     public function broadcaster(): BelongsTo
     {
@@ -52,10 +56,10 @@ class Clip extends Model
         return $this->BelongsTo(User::class)->withTrashed();
     }
 
-    public function game(): BelongsTo
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(Game::class)
-            ->withDefault(['title' => 'Pending']);
+        return $this->belongsTo(Category::class)
+            ->withDefault(Category::Defaults);
     }
 
     public function tags(): BelongsToMany
