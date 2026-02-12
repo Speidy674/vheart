@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Enums\Permission;
 use App\Models\Category;
 use App\Models\Clip;
+use App\Models\Contracts\FilamentResourceful;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\Socialite\TwitchSocialiteProvider;
@@ -144,12 +145,17 @@ class AppServiceProvider extends ServiceProvider
 
         Config::resolveCommentUrlUsing(function (Comment $comment) {
             $record = $comment->commentable;
+            $page = 'view';
 
             if (! $record) {
                 return null;
             }
 
-            return Filament::getResourceUrl($record, 'view');
+            if ($record instanceof FilamentResourceful) {
+                $page = $record->filamentResourcePageForCommentNotifications;
+            }
+
+            return Filament::getResourceUrl($record, $page);
         });
     }
 
