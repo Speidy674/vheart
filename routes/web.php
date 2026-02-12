@@ -73,10 +73,6 @@ Route::get('/privacy', function () {
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function (Request $request) {
-        return Redirect::route('dashboard.main', $request->user()->id);
-    })->name('dashboard');
-
     Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
 
     Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
