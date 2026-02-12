@@ -43,7 +43,7 @@ export function AppSidebarHeader({
     }, [page.url]);
 
     return (
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 md:px-4">
+        <header className="z-1 flex h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 md:px-4">
             <div className="flex items-center gap-2">
                 <Icon className="size-5 text-muted-foreground" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
