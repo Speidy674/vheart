@@ -17,6 +17,16 @@ class SubmitClipRequest extends FormRequest
 {
     public ?ClipDto $clipInfo = null;
 
+    public ?User $broadcaster = null;
+
+    public ?array $disallowedUsers = null;
+
+    public ?array $allowedUsers = null;
+
+    public ?array $disallowedCategories = null;
+
+    public ?array $allowedCategories = null;
+
     public ?string $clipId = null;
 
     public function __construct(
@@ -59,18 +69,16 @@ class SubmitClipRequest extends FormRequest
                 if ($validator->errors()->isNotEmpty()) {
                     return;
                 }
-                $this->clipId = $this->twitchService->parseClipId($this->input('clip_url'));
 
+                $this->clipId = $this->twitchService->parseClipId($this->input('clip_url'));
                 if (! $this->clipId) {
                     $validator->errors()->add('clip_url', __('sendinclip.errors.clip_not_found'));
 
                     return;
                 }
 
-                $user = $this->user();
-
                 $this->clipInfo = $this->twitchService
-                    ->asUser($user, session()?->get('twitch_access_token'))
+                    ->asUser($this->user(), session()?->get('twitch_access_token'))
                     ->getClipByID($this->clipId);
 
                 if (! $this->clipInfo) {
@@ -91,107 +99,115 @@ class SubmitClipRequest extends FormRequest
                     return;
                 }
 
-                // Check if the Broadcaster is even registered (block if not)
-                $broadcasterUser = User::query()
+                // Check if the Broadcaster is even registered (deny otherwise)
+                // also fetch other data if possible to minimize queries in one go
+                // broadcasters should never have enough data to make this a memory issue
+                $this->broadcaster = User::query()
                     ->where('id', $this->clipInfo->broadcaster_id)
-                    ->where('users.clip_permission', true)
+                    ->whereClipPermission(true)
+                    ->with(['broadcasterFilter'])
                     ->first();
 
-                if ($broadcasterUser === null) {
+                if ($this->broadcaster === null) {
                     $validator->errors()->add('clip_url', __('sendinclip.errors.broadcaster_not_allowed'));
 
                     return;
                 }
 
-                // Check if user is blacklisted by Broadcaster
-                $isUserBlackedListed = $broadcasterUser
-                    ->broadcasterUserFilter()
-                    ->where('filter_id', $user->id)
-                    ->where('allowed', false)
-                    ->exists();
+                $userType = $this->user()->getMorphClass();
+                $categoryType = new Category()->getMorphClass();
 
-                if ($isUserBlackedListed) {
+                $groupedFilters = $this->broadcaster->broadcasterFilter->groupBy(['filterable_type', 'state']);
+                $this->allowedUsers = $groupedFilters->get($userType)?->get(true)?->pluck('filterable_id')->toArray();
+                $this->disallowedUsers = $groupedFilters->get($userType)?->get(false)?->pluck('filterable_id')->toArray();
+                $this->allowedCategories = $groupedFilters->get($categoryType)?->get(true)?->pluck('filterable_id')->toArray();
+                $this->disallowedCategories = $groupedFilters->get($categoryType)?->get(false)?->pluck('filterable_id')->toArray();
+
+                if (! $this->passesUserChecks()) {
                     $validator->errors()->add('clip_url', __('sendinclip.errors.user_not_allowed_for_broadcaster'));
 
                     return;
                 }
 
-                // Check Broadcaster Rules
-                $broadcasterRules = $broadcasterUser->rules ?? [];
-                $isUserAllowed = empty($broadcasterRules) || $this->clipInfo->broadcaster_id === $user->id;
-
-                // Check if user is in explicit Allow-list (allow if yes)
-                if (! $isUserAllowed && in_array('userAllowList', $broadcasterRules, true)) {
-                    $isUserAllowed = $broadcasterUser
-                        ->broadcasterUserFilter()
-                        ->where('user_id', $user->id)
-                        ->where('allowed', true)
-                        ->exists();
-                }
-
-                // Check if Broadcaster has enabled Mod Allow-list and if the User is on it
-                if (! $isUserAllowed && in_array('userAllowMods', $broadcasterRules, true)) {
-                    $isUserAllowed = $this->twitchService
-                        ->asUser($user, session()?->get('twitch_access_token'))
-                        ->isModeratorFor($broadcasterUser);
-                }
-
-                // Check if Broadcaster has enabled VIP Allow-list and if the User is on it
-                if (! $isUserAllowed && in_array('userAllowVips', $broadcasterRules, true)) {
-                    try {
-                        $vipInfos = $this->twitchService->asUser($broadcasterUser)->onUserTokenRefresh()->get(TwitchEndpoints::GetVIPs, [
-                            'user_id' => $user->id,
-                            'broadcaster_id' => $this->clipInfo->broadcaster_id,
-                        ]);
-                        $isUserAllowed = ! empty($vipInfos['data']);
-                    } catch (TwitchApiException $th) {
-                        report($th);
-                    }
-                }
-
-                // If user was not allowed by any of the previous checks, deny
-                if (! $isUserAllowed) {
-                    $validator->errors()->add('clip_url', __('sendinclip.errors.user_not_allowed_for_broadcaster'));
-
-                    return;
-                }
-
-                // Check if Broadcaster has banned the Category
-                $isGameBlackListed = $broadcasterUser
-                    ->broadcasterCategoryFilter()
-                    ->where('filter_id', $this->clipInfo->game_id)
-                    ->where('allowed', false)
-                    ->exists();
-
-                if ($isGameBlackListed) {
+                if (! $this->passesCategoryChecks()) {
                     $validator->errors()->add('clip_url', __('sendinclip.errors.category_blocked'));
 
                     return;
                 }
-
-                // Check if Broadcaster has enabled Category Whitelist (>0 entries)
-                $hasOneGameWhiteListed = $broadcasterUser
-                    ->broadcasterCategoryFilter()
-                    ->where('allowed', true)
-                    ->exists();
-
-                // If whitelist has entries, check if category is whitelisted
-                if ($hasOneGameWhiteListed) {
-                    $isGameWhiteListed = $broadcasterUser
-                        ->broadcasterCategoryFilter()
-                        ->where('filter_id', $this->clipInfo->game_id)
-                        ->where('allowed', true)
-                        ->exists();
-
-                    if (! $isGameWhiteListed) {
-                        $validator->errors()->add('clip_url', __('sendinclip.errors.category_blocked'));
-
-                        return;
-                    }
-                }
-
-                // Everything is OK
             },
         ];
+    }
+
+    /**
+     * User related checks
+     */
+    protected function passesUserChecks(): bool
+    {
+        $user = $this->user();
+        $rules = $this->broadcaster->rules ?? [];
+
+        // Check if user is blacklisted
+        if (in_array($user->id, $this->disallowedUsers ?? [], true)) {
+            return false;
+        }
+
+        // bypass if no rules or broadcaster is submitting
+        $isAllowed = empty($rules) || $this->broadcaster->id === $user->id;
+
+        // Check if user is in explicit Allow-list (allow if yes)
+        if (! $isAllowed &&
+            $this->allowedUsers &&
+            in_array('userAllowList', $rules, true)
+        ) {
+            $isAllowed = in_array($user->id, $this->allowedUsers, true);
+        }
+
+        // Check if Broadcaster has enabled Mod Allow-list and if the User is on it
+        if (! $isAllowed && in_array('userAllowMods', $rules, true)) {
+            $isAllowed = $this->twitchService
+                ->asUser($user, session()?->get('twitch_access_token'))
+                ->isModeratorFor($this->broadcaster);
+        }
+
+        // Check if Broadcaster has enabled VIP Allow-list and if the User is on it
+        if (! $isAllowed && in_array('userAllowVips', $rules, true)) {
+            try {
+                $vipInfos = $this->twitchService
+                    ->asUser($this->broadcaster)
+                    ->onUserTokenRefresh()
+                    ->get(TwitchEndpoints::GetVIPs, [
+                        'user_id' => $user->id,
+                        'broadcaster_id' => $this->broadcaster->id,
+                    ]);
+                $isAllowed = ! empty($vipInfos['data']);
+            } catch (TwitchApiException $th) {
+                report($th);
+
+                return false;
+            }
+        }
+
+        return $isAllowed;
+    }
+
+    /**
+     * Category related checks
+     */
+    protected function passesCategoryChecks(): bool
+    {
+        $gameId = $this->clipInfo->game_id;
+
+        // Check if Broadcaster has banned the Category
+        if (in_array($gameId, $this->disallowedCategories ?? [], true)) {
+            return false;
+        }
+
+        // Check if Broadcaster has enabled Category Whitelist (>0 entries)
+        if ($this->allowedCategories && count($this->allowedCategories) > 0) {
+            // If whitelist has entries, check if category is whitelisted
+            return in_array($gameId, $this->allowedCategories, true);
+        }
+
+        return true;
     }
 }
