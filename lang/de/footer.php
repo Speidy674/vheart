@@ -7,6 +7,7 @@ return [
 
     'team' => 'Unser Team',
     'about' => 'Über uns',
+    'faq' => 'FAQ',
 
     'all_rights_reserved' => 'Alle Rechte vorbehalten.',
     'footer_navigation' => 'Footer Navigation',
