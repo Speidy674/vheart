@@ -153,6 +153,7 @@ class ReportInfolist
                     ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
                     ->schema([
                         CommentsEntry::make('comments')
+                            ->hiddenLabel()
                             ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get()),
                     ]),
             ]);
