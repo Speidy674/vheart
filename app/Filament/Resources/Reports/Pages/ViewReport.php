@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports\Pages;
 
+use App\Enums\Permission;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Filament\Resources\Reports\ReportResource;
@@ -28,6 +29,7 @@ class ViewReport extends ViewRecord
         return [
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
                 ->perPage(4)
                 ->loadMoreIncrementsBy(8)
                 ->modalWidth(Width::SevenExtraLarge),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Enums\Permission;
@@ -24,6 +26,7 @@ class ViewUser extends ViewRecord
         return [
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
                 ->perPage(4)
                 ->loadMoreIncrementsBy(8)
                 ->modalWidth(Width::SevenExtraLarge),

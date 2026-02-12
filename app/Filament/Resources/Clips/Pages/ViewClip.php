@@ -2,12 +2,11 @@
 
 namespace App\Filament\Resources\Clips\Pages;
 
+use App\Enums\Permission;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Enums\Width;
@@ -24,6 +23,7 @@ class ViewClip extends ViewRecord
         return [
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
                 ->perPage(4)
                 ->loadMoreIncrementsBy(8)
                 ->modalWidth(Width::SevenExtraLarge),

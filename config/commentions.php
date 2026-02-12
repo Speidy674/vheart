@@ -30,7 +30,7 @@ return [
     */
     'comment' => [
         'model' => Kirschbaum\Commentions\Comment::class,
-        'policy' => Kirschbaum\Commentions\Policies\CommentPolicy::class,
+        'policy' => App\Policies\CommentPolicy::class,
     ],
 
     /*
