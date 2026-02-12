@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports\Pages;
 
+use App\Enums\Permission;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Filament\Resources\Reports\ReportResource;
