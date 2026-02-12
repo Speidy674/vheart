@@ -17,12 +17,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\HasComments;
 
 #[UsePolicy(ReportPolicy::class)]
-class Report extends Model
+class Report extends Model implements Commentable
 {
     /** @use HasFactory<ReportFactory> */
-    use HasFactory, SoftDeletes;
+    use HasComments, HasFactory, SoftDeletes;
 
     public function reporter(): BelongsTo
     {
