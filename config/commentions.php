@@ -58,7 +58,7 @@ return [
         // Automatically subscribe the author when they add a comment
         'auto_subscribe_on_comment' => env('COMMENTIONS_SUBSCRIPTIONS_AUTO_SUBSCRIBE_ON_COMMENT', true),
         // Automatically subscribe a user when they are mentioned in a comment
-        'auto_subscribe_on_mention' => env('COMMENTIONS_SUBSCRIPTIONS_AUTO_SUBSCRIBE_ON_MENTION', true),
+        'auto_subscribe_on_mention' => env('COMMENTIONS_SUBSCRIPTIONS_AUTO_SUBSCRIBE_ON_MENTION', false),
     ],
 
     /*
