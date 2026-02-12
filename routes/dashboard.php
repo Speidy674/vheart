@@ -25,18 +25,10 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard.main');
 
     Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
-        return Inertia::render('dashboard', ['streamer' => $user->toResource(UserResource::class)]);
+        return Inertia::render('dashboard/clips', ['streamer' => $user->toResource(UserResource::class)]);
 
     })->middleware(BroadcasterDashboardAcces::class)
         ->missing(function () {
             return Redirect::route('home');
         })->name('dashboard.clips');
-
-    Route::get('/dashboard/{user}/permissions', function (User $user, Request $request) {
-        return Inertia::render('dashboard', ['streamer' => $user->toResource(UserResource::class)]);
-
-    })->middleware(BroadcasterDashboardAcces::class)
-        ->missing(function () {
-            return Redirect::route('home');
-        })->name('dashboard.permissions');
 });
