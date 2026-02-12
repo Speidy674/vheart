@@ -5,10 +5,17 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\Permission;
+use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
+use App\Models\Clip\Compilation;
+use App\Models\Clip\CompilationClip;
+use App\Models\Faq\FaqEntry;
+use App\Models\Report;
 use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\User;
+use App\Models\Vote;
 use App\Providers\Socialite\TwitchSocialiteProvider;
 use App\Support\CookieConsent\CustomCookiesManager;
 use Carbon\CarbonImmutable;
@@ -105,10 +112,18 @@ class AppServiceProvider extends ServiceProvider
         DB::prohibitDestructiveCommands(app()->isProduction());
 
         Relation::enforceMorphMap([
-            'user' => User::class,
-            'clip' => Clip::class,
-            'role' => Role::class,
+            'compilation' => Compilation::class,
+            'compilation_clip' => CompilationClip::class,
+            'tag' => Clip\Tag::class,
+            'faq_entry' => FaqEntry::class,
+            'broadcaster_filter' => BroadcasterFilter::class,
             'category' => Category::class,
+            'clip' => Clip::class,
+            'report' => Report::class,
+            'role' => Role::class,
+            'role_permission' => RolePermission::class,
+            'user' => User::class,
+            'vote' => Vote::class,
         ]);
 
         // Some logging for us so we can see if there are issues
