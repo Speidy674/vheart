@@ -9,7 +9,6 @@ use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Filament\Resources\Reports\ReportResource;
 use App\Models\Report;
-use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
@@ -17,8 +16,6 @@ use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Model;
-use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
 class ViewReport extends ViewRecord
 {
@@ -27,12 +24,6 @@ class ViewReport extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            CommentsAction::make()
-                ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
-                ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
-                ->perPage(4)
-                ->loadMoreIncrementsBy(8)
-                ->modalWidth(Width::SevenExtraLarge),
             Action::make('claim')
                 ->requiresConfirmation()
                 ->label('Claim')

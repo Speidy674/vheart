@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports\Schemas;
 
+use App\Enums\Permission;
+use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Infolists\Components\TextEntry;
@@ -15,6 +17,7 @@ use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
 
 class ReportInfolist
 {
@@ -144,6 +147,13 @@ class ReportInfolist
                                         ->color('gray'),
                                 ]),
                         ])->columnSpan(['lg' => 1]),
+                    ]),
+                Section::make('Comments')
+                    ->columnSpanFull()
+                    ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
+                    ->schema([
+                        CommentsEntry::make('comments')
+                            ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get()),
                     ]),
             ]);
     }
