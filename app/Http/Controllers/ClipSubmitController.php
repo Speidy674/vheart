@@ -77,6 +77,17 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.clip_not_found');
         }
 
+        // Check if the Category is Site-Banned
+        $isCategoryBanned = Category::query()
+            ->where('is_banned', true)
+            ->where('id', $clipInfo->game_id)
+            ->exists();
+
+        if ($isCategoryBanned) {
+            $this->returnError('sendinclip.errors.game_blocked');
+        }
+
+        // Check if the Broadcaster is even registered (block if not)
         $broadcasterUser = User::query()
             ->where('id', $clipInfo->broadcaster_id)
             ->where('users.clip_permission', true)
@@ -86,6 +97,7 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.broadcaster_not_allowed');
         }
 
+        // Check if user is blacklisted by Creator
         $isUserBlackedListed = $broadcasterUser
             ->broadcasterUserFilter()
             ->where('filter_id', $user->id)
@@ -96,9 +108,11 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.user_not_allowed_for_broadcaster');
         }
 
+        // Check Broadcaster Rules
         $broadcasterRules = $broadcasterUser->rules ?? [];
         $isUserAllowed = empty($broadcasterRules) || $clipInfo->broadcaster_id === $user->id;
 
+        // Check if user is in explicit Allow-list (allow if yes)
         if (! $isUserAllowed && in_array('userAllowList', $broadcasterRules, true)) {
             $isUserAllowed = $broadcasterUser
                 ->broadcasterUserFilter()
@@ -107,10 +121,12 @@ class ClipSubmitController extends Controller
                 ->exists();
         }
 
+        // Check if Broadcaster has enabled Mod Allow-list and if the User is on it
         if (! $isUserAllowed && in_array('userAllowMods', $broadcasterRules, true)) {
             $isUserAllowed = $this->twitchService->asUser($user, $this->getUserToken())->isModeratorFor($broadcasterUser);
         }
 
+        // Check if Broadcaster has enabled VIP Allow-list and if the User is on it
         if (! $isUserAllowed && in_array('userAllowVips', $broadcasterRules, true)) {
             try {
                 $vipInfos = $this->twitchService->asUser($broadcasterUser)->onUserTokenRefresh()->get(TwitchEndpoints::GetVIPs, [
@@ -124,10 +140,12 @@ class ClipSubmitController extends Controller
             }
         }
 
+        // If user was not allowed by any of the previous checks, deny
         if (! $isUserAllowed) {
             $this->returnError('sendinclip.errors.user_not_allowed_for_broadcaster');
         }
 
+        // Check if Broadcaster has banned the Category
         $isGameBlackListed = $broadcasterUser
             ->broadcasterCategoryFilter()
             ->where('filter_id', $clipInfo->game_id)
@@ -138,12 +156,14 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.game_blocked');
         }
 
+        // Check if Broadcaster has enabled Category Whitelist (>0 entries)
         $hasOneGameWhiteListed = $broadcasterUser
             ->broadcasterCategoryFilter()
             ->where('allowed', true)
             ->exists();
         $isGameWhiteListed = ! $hasOneGameWhiteListed;
 
+        // If whitelist has entries, check if category is whitelisted
         if ($hasOneGameWhiteListed) {
             $isGameWhiteListed = $broadcasterUser
                 ->broadcasterCategoryFilter()
@@ -156,6 +176,7 @@ class ClipSubmitController extends Controller
             $this->returnError('sendinclip.errors.game_blocked');
         }
 
+        // Everything is OK, submit clip and store/update clip creator
         User::updateOrCreate([
             'id' => $clipInfo->creator_id,
         ], [
