@@ -21,8 +21,7 @@ class SubmitClipRequest extends FormRequest
 
     public function __construct(
         protected TwitchService $twitchService
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->twitchService->onUserTokenRefresh(function ($token) {
@@ -38,8 +37,8 @@ class SubmitClipRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'clip_url' => ['required', 'string', 'url'],
-            'tags' => ['required', 'array', 'min:1', 'max:3'],
+            'clip_url' => ['bail', 'required', 'string', 'url'],
+            'tags' => ['bail', 'required', 'array', 'min:1', 'max:3'],
             'tags.*' => ['integer', 'exists:tags,id'],
             'is_anonymous' => ['sometimes', 'accepted'],
         ];
