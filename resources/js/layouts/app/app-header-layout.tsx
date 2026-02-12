@@ -4,14 +4,19 @@ import { AppShell } from '@/components/app-shell';
 import type { PropsWithChildren } from 'react';
 import Footer from '@/components/footer/footer';
 
+type AppHeaderLayoutProps = PropsWithChildren<{
+    isIsland?: boolean;
+}>;
+
 export default function AppHeaderLayout({
     children,
-}: PropsWithChildren) {
+    isIsland
+}: AppHeaderLayoutProps) {
     return (
         <AppShell>
-            <AppHeader />
+            <AppHeader isIsland={isIsland} />
             <AppContent>{children}</AppContent>
-            <Footer />
+            <Footer isIsland={isIsland} />
         </AppShell>
     );
 }
