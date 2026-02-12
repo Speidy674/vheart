@@ -6,6 +6,7 @@ import SpaceBackground from '@/components/spacebackground';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { BetterplaceDonationCard } from '@/components/aboutcard/betterplace-donation-card';
 
 export default function About({
     donationUrl,

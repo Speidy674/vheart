@@ -7,6 +7,7 @@ return [
 
     'team' => 'Our team',
     'about' => 'About us',
+    'faq' => 'FAQ',
 
     'all_rights_reserved' => 'All rights reserved.',
     'footer_navigation' => 'Footer navigation',

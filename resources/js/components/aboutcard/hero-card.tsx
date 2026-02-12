@@ -1,12 +1,11 @@
 import { Card } from '@/components/ui/card';
 import LogoDark from '/resources/images/svg/logo-full-dark.svg';
 import LogoLight from '/resources/images/svg/logo-full-title.svg';
+import { useTranslation } from 'react-i18next';
 
-interface HeroCardProps {
-    t: (key: string) => string;
-}
+export default function HeroCard() {
+    const { t } = useTranslation('hero');
 
-export default function HeroCard({ t }: HeroCardProps) {
     return (
         <Card className="rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-8 shadow-2xl ring-1 shadow-black/10 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0 dark:shadow-purple-900/30">
             <div className="flex justify-center pt-10 pb-6">
@@ -27,9 +26,9 @@ export default function HeroCard({ t }: HeroCardProps) {
                 <div className="mx-auto max-w-5xl">
                     <div className="mb-10 text-center">
                         <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl dark:text-white">
-                            {t('hero.title_prefix')}{' '}
+                            {t('title_prefix')}{' '}
                             <span className="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-transparent dark:from-purple-300 dark:via-white dark:to-cyan-300">
-                                {t('hero.brand')}
+                                {t('brand')}
                             </span>
                         </h1>
 
@@ -39,9 +38,9 @@ export default function HeroCard({ t }: HeroCardProps) {
 
                         <div className="mt-6 flex flex-wrap justify-center gap-2">
                             {[
-                                t('hero.tags.tag1'),
-                                t('hero.tags.tag2'),
-                                t('hero.tags.tag3'),
+                                t('tags.tag1'),
+                                t('tags.tag2'),
+                                t('tags.tag3'),
                             ].map((tag, idx) => (
                                 <span
                                     key={idx}
