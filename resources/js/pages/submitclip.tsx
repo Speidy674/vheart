@@ -119,7 +119,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
     }
 
     return (
-        <AppHeaderLayout>
+        <AppHeaderLayout isIsland={false}>
             <Head title={t('page_title')} />
 
             <div className="container mx-auto px-4 py-8">

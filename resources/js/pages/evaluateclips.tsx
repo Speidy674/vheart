@@ -1,7 +1,5 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { vote } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 import {
@@ -81,6 +79,7 @@ export default function EvaluateClips() {
             already_voted: false,
             voted: false,
         } as Item);
+        // eslint-disable-next-line react-hooks/refs
         setTimeout(() => {
             scrollToIndex(items.length - 1);
         }, 500);
@@ -145,7 +144,7 @@ export default function EvaluateClips() {
     }, []);
 
     return (
-        <AppHeaderLayout>
+        <AppHeaderLayout isIsland={false}>
             <Head title={t('page_title')} />
 
             <header className="mb-3 space-y-1 pt-5 text-center sm:mb-4">
