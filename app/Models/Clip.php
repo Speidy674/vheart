@@ -27,15 +27,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Vite;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\HasComments;
 
 #[ScopedBy(ClipPermissionScope::class)]
 #[ScopedBy(ClipWithoutBannedCategoryScope::class)]
 #[UseResource(PublicClipResource::class)]
 #[UsePolicy(ClipPolicy::class)]
-class Clip extends Model
+class Clip extends Model implements Commentable
 {
     /** @use HasFactory<ClipFactory> */
-    use HasFactory, Reportable;
+    use HasComments, HasFactory, Reportable;
 
     public function broadcaster(): BelongsTo
     {

@@ -14,6 +14,7 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecover
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -25,14 +26,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\Contracts\Commenter;
+use Kirschbaum\Commentions\HasComments;
 
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, MustVerifyEmail
+class User extends Authenticatable implements Commentable, Commenter, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
 {
+    use HasComments;
+    use InteractsWithAppAuthentication;
+    use InteractsWithAppAuthenticationRecovery;
+    use Notifiable;
+    use Reportable;
+    use SoftDeletes;
+
     /** @use HasFactory<UserFactory> */
-    use HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, Notifiable, Reportable, SoftDeletes;
+    use HasFactory;
 
     public $incrementing = false;
 
@@ -137,6 +148,11 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     public function broadcasterCategoryFilter(): MorphToMany
     {
         return $this->morphedByMany(Category::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url;
     }
 
     public function votes(): HasMany

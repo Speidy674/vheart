@@ -7,6 +7,7 @@ namespace App\Models\Clip;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
 use App\Models\Clip;
+use App\Models\Contracts\FilamentResourceful;
 use App\Models\User;
 use App\Policies\CompilationPolicy;
 use Database\Factories\Clip\CompilationFactory;
@@ -16,12 +17,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\HasComments;
 
 #[UsePolicy(CompilationPolicy::class)]
-class Compilation extends Model
+class Compilation extends Model implements Commentable, FilamentResourceful
 {
     /** @use HasFactory<CompilationFactory> */
-    use HasFactory, SoftDeletes;
+    use HasComments, HasFactory, SoftDeletes;
 
     /**
      * User who has Created the Compilation (if available)
@@ -48,4 +51,6 @@ class Compilation extends Model
             'removed_at' => 'datetime',
         ];
     }
+
+    public string $filamentResourcePageForCommentNotifications = "edit";
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Compilations\RelationManagers;
 
 use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Permission;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
@@ -18,12 +19,12 @@ use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
@@ -34,7 +35,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 use Livewire\Component;
 
 class ClipsRelationManager extends RelationManager
@@ -288,6 +291,12 @@ class ClipsRelationManager extends RelationManager
                     ]),
             ])
             ->recordActions([
+                CommentsAction::make()
+                    ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                    ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
+                    ->perPage(4)
+                    ->loadMoreIncrementsBy(8)
+                    ->modalWidth(Width::SevenExtraLarge),
                 ActionGroup::make([
                     Action::make('claim')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.claim')
