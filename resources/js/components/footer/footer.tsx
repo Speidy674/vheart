@@ -75,6 +75,7 @@ const SOCIAL_DATA = [
 const NAV_LINK = [
     { key: 'privacy.footer', path: '/privacy', static: true },
     { key: 'imprint.footer', path: '/imprint', static: true },
+    { key: 'faq', path: '/faq', static: false },
     { key: 'team', path: '/team', static: false },
     { key: 'about', path: '/about-us', static: false },
 ];
@@ -240,23 +241,31 @@ export function Footer({ isIsland = true }: { isIsland?: boolean }) {
                             </div>
 
                             <nav className="flex items-center justify-center">
-                                <ul className="flex items-center gap-0.5">
-                                    {[
-                                        'privacy.footer',
-                                        'imprint.footer',
-                                        'team',
-                                        'about',
-                                    ].map((key) => (
-                                        <li key={key}>
-                                            <Link
-                                                href={`/${key.split('.')[0] === 'about' ? 'about-us' : key.split('.')[0]}`}
-                                                className="rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap text-gray-600 transition-all hover:bg-accent hover:text-accent-foreground dark:text-white/70 dark:hover:text-white"
-                                            >
-                                                {t(key)}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <nav>
+                                    <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+                                        {NAV_LINK.map(
+                                            ({
+                                                key,
+                                                path,
+                                                static: isStatic,
+                                            }) => {
+                                                const Tag = isStatic
+                                                    ? 'a'
+                                                    : Link;
+                                                return (
+                                                    <li key={key}>
+                                                        <Tag
+                                                            href={path}
+                                                            className="rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap text-gray-600 transition-all hover:bg-accent hover:text-accent-foreground dark:text-white/70 dark:hover:text-white"
+                                                        >
+                                                            {t(key)}
+                                                        </Tag>
+                                                    </li>
+                                                );
+                                            },
+                                        )}
+                                    </ul>
+                                </nav>
                             </nav>
 
                             <div className="flex min-w-0 items-center justify-end gap-3">
