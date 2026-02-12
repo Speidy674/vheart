@@ -1,17 +1,12 @@
 import SpaceBackground from '@/components/spacebackground';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ArrowLeft } from 'lucide-react';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import cat from '/resources/images/png/cat.png';
 import { Head } from '@inertiajs/react';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import type { BreadcrumbItem } from '@/types';
-import { home } from '@/routes';
-
 interface TeamMember {
     name: string;
     avatar?: string;
@@ -53,6 +48,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
                             src={avatar?.trim() || cat}
                             alt={name}
                             className="object-cover"
+                            loading="lazy"
                         />
                         <AvatarFallback className="bg-purple-100 font-bold text-purple-700 dark:bg-purple-500/10 dark:text-purple-300">
                             {getInitials(name)}
@@ -117,31 +113,13 @@ export default function TeamPage({ roles = [] }: TeamPageProps) {
         [roles],
     );
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('Team'), href: home().url },
-    ];
-
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
             <div className="relative min-h-screen w-full overflow-hidden bg-[#F8FAFF] dark:bg-[#0a0a1a]">
                 <SpaceBackground />
 
                 <div className="relative z-10 container mx-auto px-4 py-16 sm:py-24">
-                    <Button
-                        size="lg"
-                        onClick={() => window.history.back()}
-                        className={cn(
-                            'group relative flex items-center gap-2 rounded-full border px-8 py-6 font-bold transition-all duration-300',
-                            'border-slate-200 bg-white/90 text-slate-900 shadow-lg shadow-slate-200/50 backdrop-blur-md',
-                            'dark:border-white/10 dark:bg-white/5 dark:text-white dark:shadow-purple-900/20',
-                            'hover:border-purple-500/50 hover:bg-white hover:text-purple-600 dark:hover:bg-white/10 dark:hover:text-purple-400',
-                        )}
-                    >
-                        <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-                        <span className="tracking-wide">{t('back')}</span>
-                        <div className="absolute inset-0 -z-10 rounded-full bg-purple-500/10 opacity-0 blur-xl transition-opacity group-hover:opacity-100" />
-                    </Button>
                     <header className="mb-24 text-center">
                         <h1 className="mb-6 text-6xl font-black tracking-tighter sm:text-7xl md:text-8xl">
                             <span
