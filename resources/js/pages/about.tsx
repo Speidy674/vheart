@@ -1,9 +1,11 @@
+import { BetterplaceDonationCard } from '@/components/aboutcard/betterplace-donation-card';
 import ClipProcessCard from '@/components/aboutcard/clip-process-card';
 import { AboutDonationCard as DonationCard } from '@/components/aboutcard/donation-card';
 import HeroCard from '@/components/aboutcard/hero-card';
-import SpaceBackground from '@/components/spacebackground';
+import Spacebackground from '@/components/spacebackground';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { BetterplaceDonationCard } from '@/components/aboutcard/betterplace-donation-card';
 
 export default function About({
     donationUrl,
@@ -15,26 +17,30 @@ export default function About({
     const { t } = useTranslation('about');
 
     return (
-            <div className="relative flex min-h-screen flex-col overflow-hidden bg-blue-50 dark:bg-[#0a0a1a]">
-                <SpaceBackground />
-
-                <main className="relative z-10 flex flex-1 items-center justify-center pwepx-4 py-12">
-                    <div className="w-full max-w-[1200px] space-y-8">
-                        <HeroCard t={t} />
-                        <DonationCard
-                            t={t}
-                            donationUrl={donationUrl}
-                            partnerIcon={partnerIcon}
-                        />
-                        <BetterplaceDonationCard
-                            eventId={55712}
-                            maxVisibleDonations={8}
-                            refreshInterval={300000}
-                            projectId={0}
-                        />
-                        <ClipProcessCard t={t} />
+        <div>
+            <Spacebackground/>
+            <main className="pwepx-4 relative z-10 flex flex-1 justify-center py-12">
+                <div className="w-full max-w-[1200px] space-y-8">
+                    <div>
+                        <Button
+                            size="lg"
+                            onClick={() => window.history.back()}
+                            className="rounded-full border-0 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 px-8 py-5 font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:shadow-xl hover:shadow-emerald-500/25"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            {t('back')}
+                        </Button>
                     </div>
-                </main>
-            </div>
+
+                    <HeroCard />
+                    <DonationCard
+                        donationUrl={donationUrl}
+                        partnerIcon={partnerIcon}
+                    />
+                    <BetterplaceDonationCard />
+                    <ClipProcessCard/>
+                </div>
+            </main>
+        </div>
     );
 }
