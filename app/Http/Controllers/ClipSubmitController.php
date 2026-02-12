@@ -84,7 +84,7 @@ class ClipSubmitController extends Controller
             ->exists();
 
         if ($isCategoryBanned) {
-            $this->returnError('sendinclip.errors.game_blocked');
+            $this->returnError('sendinclip.errors.category_blocked');
         }
 
         // Check if the Broadcaster is even registered (block if not)
@@ -153,7 +153,7 @@ class ClipSubmitController extends Controller
             ->exists();
 
         if ($isGameBlackListed) {
-            $this->returnError('sendinclip.errors.game_blocked');
+            $this->returnError('sendinclip.errors.category_blocked');
         }
 
         // Check if Broadcaster has enabled Category Whitelist (>0 entries)
@@ -173,7 +173,7 @@ class ClipSubmitController extends Controller
         }
 
         if ($hasOneGameWhiteListed && ! $isGameWhiteListed) {
-            $this->returnError('sendinclip.errors.game_blocked');
+            $this->returnError('sendinclip.errors.category_blocked');
         }
 
         // Everything is OK, submit clip and store/update clip creator
