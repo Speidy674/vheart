@@ -22,10 +22,13 @@ export default function AppSidebarLayout({
             <AppTopbar />
             <div className="flex flex-1">
                 <AppShell variant="sidebar">
-                    <AppSidebar className="top-[calc(4.75rem+var(--app-banner-height,0px))]! h-[calc(100svh-4.75rem-var(--app-banner-height,0px))]! transition-[top,height] duration-300 ease-out">
+                    <AppSidebar className="top-[calc(4.75rem+var(--app-banner-height,0px))]! h-[calc(100svh-4.75rem-var(--app-banner-height,0px))]! border! border-sidebar-border! transition-[top,height] duration-300 ease-out">
                         {sidebarContent}
                     </AppSidebar>
-                    <AppContent variant="sidebar" className="overflow-x-hidden">
+                    <AppContent
+                        variant="sidebar"
+                        className="mt-2! ml-2! overflow-x-hidden"
+                    >
                         <AppSidebarHeader breadcrumbs={breadcrumbs} />
                         {children}
                     </AppContent>

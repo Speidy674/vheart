@@ -5,8 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { manage_clips } from '@/routes';
 
-import SolidPageBackground from '@/components/solid-page-background';
-
 export default function ManageClips() {
     const { t } = useTranslation('dashboard');
 
@@ -20,8 +18,6 @@ export default function ManageClips() {
     return (
         <AppLayout breadcrumbs={breadcrumbs} sidebarVariant="creator_dashboard">
             <Head title={t('nav.manage_clips')} />
-
-            <SolidPageBackground />
         </AppLayout>
     );
 }

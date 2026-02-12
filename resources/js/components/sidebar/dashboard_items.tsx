@@ -1,9 +1,8 @@
 import { StreamerSection } from '@/components/sidebar/streamer-section';
 import {
+    SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
+    SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { isSameUrl } from '@/lib/utils';
 import { manage_clips, manage_permissions } from '@/routes';
@@ -26,29 +25,31 @@ export function Dashboard_items() {
     ];
 
     return (
-        <SidebarMenuItem>
+        <>
             <StreamerSection />
 
-            <SidebarMenuSub>
-                {items.map((item) => {
-                    const active = isSameUrl(currentPath, item.href);
-                    const Icon = item.icon;
+            <SidebarSeparator />
 
-                    return (
-                        <SidebarMenuSubItem key={item.href}>
-                            <SidebarMenuSubButton asChild isActive={active}>
-                                <Link
-                                    href={item.href}
-                                    className="flex items-center gap-2"
-                                >
-                                    <Icon className="size-4 shrink-0" />
-                                    <span>{t(item.title)}</span>
-                                </Link>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                    );
-                })}
-            </SidebarMenuSub>
-        </SidebarMenuItem>
+            {items.map((item) => {
+                const active = isSameUrl(currentPath, item.href);
+                const Icon = item.icon;
+
+                return (
+                    <SidebarMenuItem key={item.href}>
+                        <SidebarMenuButton asChild isActive={active}>
+                            <Link
+                                href={item.href}
+                                className="flex items-center"
+                            >
+                                <Icon className="size-4 shrink-0" />
+                                <span className="group-data-[collapsible=icon]:hidden">
+                                    {t(item.title)}
+                                </span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+            })}
+        </>
     );
 }

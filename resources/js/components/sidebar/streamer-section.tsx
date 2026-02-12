@@ -1,5 +1,5 @@
 import { usePage } from '@inertiajs/react';
-import { ChevronDown } from 'lucide-react';
+import { Check, ChevronDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -55,7 +55,7 @@ export function StreamerSection() {
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuButton className="hover:bg-transparent">
-                        <Avatar className="size-5">
+                        <Avatar className="size-4">
                             <AvatarImage
                                 src={activeStreamer.avatar ?? undefined}
                             />
@@ -107,9 +107,7 @@ export function StreamerSection() {
                                     </span>
 
                                     {isActive && (
-                                        <span className="ml-auto text-xs text-muted-foreground">
-                                            ✓
-                                        </span>
+                                        <Check className="ml-auto size-3 text-muted-foreground" />
                                     )}
                                 </div>
                             </DropdownMenuItem>

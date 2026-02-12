@@ -1,9 +1,8 @@
 import {
-    SidebarGroupLabel,
+    SidebarHeader,
+    SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
+    SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { isSameUrl, resolveUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
@@ -26,38 +25,32 @@ export function SettingsSection() {
     const currentPath = url.split('?')[0];
 
     return (
-        <SidebarMenuItem>
-            <SidebarGroupLabel className="flex items-center gap-2 text-sm font-medium">
+        <>
+            <SidebarHeader className="flex-row items-center group-data-[collapsible=icon]:hidden">
                 <Settings className="size-4 shrink-0" />
-                <span className="group-data-[collapsible=icon]:hidden">
-                    {t('title')}
-                </span>
-            </SidebarGroupLabel>
+                <span>{t('title')}</span>
+            </SidebarHeader>
 
-            <SidebarMenuSub>
-                {sidebarNavItems.map((item, index) => {
-                    const active = isSameUrl(currentPath, item.href);
-                    const Icon = item.icon;
+            <SidebarSeparator />
 
-                    return (
-                        <SidebarMenuSubItem
-                            key={`${resolveUrl(item.href)}-${index}`}
-                        >
-                            <SidebarMenuSubButton asChild isActive={active}>
-                                <Link
-                                    href={item.href}
-                                    className="flex items-center gap-2"
-                                >
-                                    {Icon && (
-                                        <Icon className="size-4 shrink-0" />
-                                    )}
-                                    <span>{t(item.title)}</span>
-                                </Link>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                    );
-                })}
-            </SidebarMenuSub>
-        </SidebarMenuItem>
+            {sidebarNavItems.map((item, index) => {
+                const active = isSameUrl(currentPath, item.href);
+                const Icon = item.icon;
+
+                return (
+                    <SidebarMenuItem key={`${resolveUrl(item.href)}-${index}`}>
+                        <SidebarMenuButton asChild isActive={active}>
+                            <Link
+                                href={item.href}
+                                className="flex items-center gap-2"
+                            >
+                                {Icon && <Icon className="size-4 shrink-0" />}
+                                <span>{t(item.title)}</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                );
+            })}
+        </>
     );
 }
