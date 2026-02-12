@@ -8,6 +8,7 @@ use App\Enums\Permission;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
+use App\Models\Contracts\FilamentResourceful;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Faq\FaqEntry;
@@ -19,6 +20,7 @@ use App\Models\Vote;
 use App\Providers\Socialite\TwitchSocialiteProvider;
 use App\Support\CookieConsent\CustomCookiesManager;
 use Carbon\CarbonImmutable;
+use Filament\Facades\Filament;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +37,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
+use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Config;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Spatie\Translatable\Facades\Translatable;
 use Whitecube\LaravelCookieConsent\CookiesManager;
@@ -153,6 +157,21 @@ class AppServiceProvider extends ServiceProvider
 
         Translatable::fallback('en');
         JsonResource::withoutWrapping();
+
+        Config::resolveCommentUrlUsing(function (Comment $comment) {
+            $record = $comment->commentable;
+            $page = 'view';
+
+            if (! $record) {
+                return null;
+            }
+
+            if ($record instanceof FilamentResourceful) {
+                $page = $record->filamentResourcePageForCommentNotifications;
+            }
+
+            return Filament::getResourceUrl($record, $page);
+        });
     }
 
     private function configureRateLimiting(): void
