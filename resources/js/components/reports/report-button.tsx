@@ -18,7 +18,7 @@ export interface ReportableItem {
     label?: string;
 }
 
-export default function ReportButton({ items }: { items: ReportableItem[] }) {
+export default function ReportButton({ items, disabled }: { items: ReportableItem[], disabled?: boolean }) {
     const [selectedItem, setSelectedItem] = useState<ReportableItem | null>(
         null,
     );
@@ -48,9 +48,7 @@ export default function ReportButton({ items }: { items: ReportableItem[] }) {
         );
     };
 
-    if (items.length === 0) return null;
-
-    if(!ready) {
+    if (!ready || disabled || items.length === 0) {
         return (
             <Button
                 variant="ghost"

@@ -134,9 +134,9 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
         return $this->morphedByMany(self::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
     }
 
-    public function broadcasterGameFilter(): MorphToMany
+    public function broadcasterCategoryFilter(): MorphToMany
     {
-        return $this->morphedByMany(Game::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
+        return $this->morphedByMany(Category::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
     }
 
     public function votes(): HasMany

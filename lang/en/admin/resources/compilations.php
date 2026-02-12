@@ -40,7 +40,7 @@ return [
                 'submitter' => 'Submitter',
                 'claimer' => 'Claimer',
                 'claimer_option_none' => 'None / Unclaimed',
-                'game' => 'Game',
+                'category' => 'Category',
                 'status' => 'Status',
                 'was_removed' => [
                     'label' => 'Removed',
