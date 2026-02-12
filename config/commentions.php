@@ -77,7 +77,7 @@ return [
             'channels' => explode(',', env('COMMENTIONS_NOTIFICATIONS_MENTIONS_CHANNELS', 'database')),
 
             'listener' => Kirschbaum\Commentions\Listeners\SendUserMentionedNotification::class,
-            'notification' => Kirschbaum\Commentions\Notifications\UserMentionedInComment::class,
+            'notification' => App\Notifications\Admin\UserMentionedInCommentNotification::class,
 
             'mail' => [
                 'subject' => env('COMMENTIONS_NOTIFICATIONS_MENTIONS_MAIL_SUBJECT', 'You were mentioned in a comment'),
