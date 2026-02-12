@@ -4,27 +4,36 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Policies\CategoryPolicy;
+use Database\Factories\CategoryFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use App\Http\Resources\CategoryResource;
-use Database\Factories\GameFactory;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\URL;
 
+#[UsePolicy(CategoryPolicy::class)]
 #[UseResource(CategoryResource::class)]
-class Game extends Model
+class Category extends Model
 {
-    /** @use HasFactory<GameFactory> */
+    /** @use HasFactory<CategoryFactory> */
     use HasFactory;
 
     public const string PLACEHOLDER_BOX_ART = 'https://static-cdn.jtvnw.net/ttv-static/404_boxart-{width}x{height}.jpg';
+
+    public const array Defaults = [
+        'title' => 'Pending Category',
+        'is_banned' => false,
+        'box_art' => self::PLACEHOLDER_BOX_ART,
+    ];
 
     public $incrementing = false;
 
     public function clips(): HasMany
     {
-        return $this->hasMany(Clip::class, 'game_id', 'id');
+        return $this->hasMany(Clip::class, 'category_id', 'id');
     }
 
     public function getBoxArt(int $width = 188, int $height = 250): ?string

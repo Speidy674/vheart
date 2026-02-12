@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\Permission;
+use App\Models\Category;
 use App\Models\Clip;
-use App\Models\Game;
 use App\Models\Role;
 use App\Models\User;
 use App\Providers\Socialite\TwitchSocialiteProvider;
@@ -108,7 +108,7 @@ class AppServiceProvider extends ServiceProvider
             'user' => User::class,
             'clip' => Clip::class,
             'role' => Role::class,
-            'game' => Game::class,
+            'category' => Category::class,
         ]);
 
         // Some logging for us so we can see if there are issues

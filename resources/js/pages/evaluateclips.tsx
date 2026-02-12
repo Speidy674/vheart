@@ -1,307 +1,139 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
+import ReportButton, { ReportableItem } from '@/components/reports/report-button';
+import SpaceBackground from '@/components/spacebackground';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { vote } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
+import { PublicClip } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
-import {
-    ChevronLeft,
-    ChevronRight,
-    CircleX,
-    Heart,
-    Loader,
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { CircleX, Heart } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-type Item = {
-    id: number;
-    clipSlug: string;
-    title: string;
-    already_voted: boolean;
-    voted: boolean;
-};
-
 type PageProps = {
-    clip: Clip;
-    history: Vote[];
-};
-
-type Clip = {
-    id: number;
-    twitch_id: string;
-    title: string;
-    public_votes: number;
-};
-
-type Vote = {
-    id: number;
-    clip_id: number;
-    voted: boolean;
-    clip: Clip;
+    clip: null | PublicClip;
 };
 
 export default function EvaluateClips() {
     const { t } = useTranslation('evaluateclips');
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('breadcrumb'), href: vote().url },
-    ];
-
-    const items: Item[] = [];
-
     const { props } = usePage<PageProps>();
 
-    const [liked, setLiked] = useState<Set<number>>(new Set());
-    const [activeIndex, setActiveIndex] = useState(0);
-    const [skipped, setSkipped] = useState<Set<number>>(new Set());
-
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const itemRefs = useRef<(HTMLElement | null)[]>([]);
-
     const getClip = () => {
-        router.reload({ only: ['clip', 'history'] });
+        router.reload({ only: ['clip'] });
     };
 
-    if (props.history) {
-        for (let index = props.history.length - 1; index >= 0; index--) {
-            const vote = props.history[index];
-            items.push({
-                id: vote.clip.id,
-                clipSlug: vote.clip.twitch_id,
-                title: vote.clip.title,
-                already_voted: true,
-                voted: vote.voted,
-            } as Item);
-        }
-    }
-
-    if (props.clip) {
-        items.push({
-            id: props.clip.id,
-            clipSlug: props.clip.twitch_id,
-            title: props.clip.title,
-            already_voted: false,
-            voted: false,
-        } as Item);
-        setTimeout(() => {
-            scrollToIndex(items.length - 1);
-        }, 500);
-    }
-    console.log(items);
-
-    function toggleLike(id: number) {
-        setLiked((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
-        console.log('like', props.clip);
-    }
-
-    function toggleSkip(id: number) {
-        setSkipped((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) next.delete(id);
-            else next.add(id);
-            return next;
-        });
-        console.log('skip', props.clip);
-    }
-
-    function scrollToIndex(index: number) {
-        const clamped = Math.max(0, Math.min(index, items.length - 1));
-        const container = containerRef.current;
-        if (container) {
-            container.scrollTo({
-                top: clamped * container.clientHeight,
-                behavior: 'smooth',
-            });
-        }
-    }
-
     useEffect(() => {
-        if (!containerRef.current) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const best = entries
-                    .filter((e) => e.isIntersecting)
-                    .sort(
-                        (a, b) => b.intersectionRatio - a.intersectionRatio,
-                    )[0];
-
-                if (!best) return;
-                const idx = Number((best.target as HTMLElement).dataset.index);
-                if (!Number.isNaN(idx)) setActiveIndex(idx);
-            },
-            { root: containerRef.current, threshold: [0.6, 0.75, 0.9] },
-        );
-
         if (!props.clip) {
             getClip();
         }
-
-        itemRefs.current.forEach((el) => el && observer.observe(el));
-        return () => observer.disconnect();
-    }, []);
+    }, [props.clip]);
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
+            <SpaceBackground />
 
-            <header className="mb-3 space-y-1 pt-5 text-center sm:mb-4">
+            <header className="z-1 mb-3 space-y-1 pt-5 text-center sm:mb-4">
                 <h1 className="text-base font-bold sm:text-xl 2xl:text-3xl">
                     {t('headline')}
                 </h1>
-                <p className="mx-auto max-w-2xl text-sm text-muted-foreground 2xl:text-base">
-                    {t('subtitle')}
-                </p>
             </header>
 
-            <div className="mx-auto w-[95vw] max-w-3xl pt-5">
+            <div className="mx-auto w-full max-w-[60vw] pt-5">
                 <div className="relative aspect-video overflow-hidden rounded-xl border bg-background shadow-sm dark:shadow-none dark:ring-1 dark:ring-white/10">
-                    <div
-                        ref={containerRef}
-                        className="scrollbar-none h-full snap-y snap-mandatory overflow-y-auto overscroll-contain"
-                    >
-                        {items.map((it, index) => {
-                            const isActive = index === activeIndex || true;
-                            const isSkipped =
-                                skipped.has(it.id) ||
-                                (it.already_voted && !it.voted);
-                            const isLiked =
-                                liked.has(it.id) ||
-                                (it.already_voted && it.voted);
+                    <div className="h-full snap-y snap-mandatory overflow-y-auto">
+                        <section className="flex h-full snap-start snap-always flex-col bg-black">
+                            {/* VIDEO */}
+                            <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
+                                <div className="aspect-video h-full">
+                                    {props.clip ? (
+                                        <TwitchClipEmbed
+                                            thumbnail={props.clip.thumbnail_url}
+                                            slug={props.clip.slug}
+                                            className="h-full w-full"
+                                        />
+                                    ) : (
+                                        <div className="absolute inset-0 grid place-items-center text-sm text-white/40">
+                                            {typeof props.clip === 'undefined'
+                                                ? ''
+                                                : t('nothing_to_vote')}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
-                            const disableLike = isSkipped;
-                            const disableSkip = isLiked;
+                            {/* Likes */}
+                            <div className="absolute top-2 right-2 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs text-white">
+                                <Heart className="h-4 w-4 text-red-500" />
+                                {props.clip?.votes ?? 0}
+                            </div>
 
-                            return (
-                                <section
-                                    ref={(el) => {
-                                        itemRefs.current[index] = el;
+                            {/* ACTION BAR */}
+                            <div className="flex shrink-0 items-center justify-center gap-3 py-2 sm:gap-4 sm:py-3">
+                                {/* Like */}
+                                <Link
+                                    disabled={!props.clip}
+                                    type="button"
+                                    href={store()}
+                                    data={{
+                                        clip: props.clip?.id,
+                                        voted: true,
                                     }}
-                                    data-index={index}
-                                    key={it.id}
-                                    className="flex h-full snap-start snap-always flex-col bg-black"
+                                    className={clsx(
+                                        'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
+                                        'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
+                                    )}
+                                    preserveState
+                                    onSuccess={() => {
+                                        getClip();
+                                    }}
                                 >
-                                    {/* VIDEO */}
-                                    <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden">
-                                        {isActive ? (
-                                            <div className="aspect-video h-full">
-                                                <TwitchClipContainer
-                                                    slug={it.clipSlug}
-                                                    className="h-full w-full"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <div className="absolute inset-0 grid place-items-center text-sm text-white/40">
-                                                <Loader />
-                                            </div>
+                                    <Heart
+                                        className={clsx(
+                                            'h-4 w-4 sm:h-5 sm:w-5',
+                                            'text-white',
                                         )}
-                                    </div>
+                                    />
+                                </Link>
 
-                                    {/* ACTION BAR */}
-                                    <div className="flex shrink-0 items-center justify-center gap-3 py-2 sm:gap-4 sm:py-3">
-                                        {/* Previous */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                scrollToIndex(index - 1)
-                                            }
-                                            disabled={index === 0}
-                                            className="grid size-9 place-items-center rounded-full bg-black/55 ring-1 ring-white/10 backdrop-blur transition-transform duration-150 ease-out active:scale-95 disabled:opacity-40 sm:size-11 sm:hover:scale-110"
-                                        >
-                                            <ChevronLeft className="h-4 w-4 text-white sm:h-5 sm:w-5" />
-                                        </button>
+                                {/* Skip */}
+                                <Link
+                                    disabled={!props.clip}
+                                    type="button"
+                                    href={store()}
+                                    data={{
+                                        clip: props.clip?.id,
+                                        voted: false,
+                                    }}
+                                    className={clsx(
+                                        'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
+                                        'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
+                                    )}
+                                    preserveState
+                                    onSuccess={() => {
+                                        getClip();
+                                    }}
+                                >
+                                    <CircleX
+                                        className={clsx(
+                                            'h-4 w-4 sm:h-5 sm:w-5',
+                                            'text-white',
+                                        )}
+                                    />
+                                </Link>
 
-                                        {/* Like */}
-                                        <Link
-                                            type="button"
-                                            aria-pressed={isLiked}
-                                            disabled={disableLike}
-                                            onClick={() => toggleLike(it.id)}
-                                            href={store()}
-                                            data={{
-                                                clip: it.id,
-                                                voted: true,
-                                            }}
-                                            className={clsx(
-                                                'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 sm:size-11',
-                                                'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
-                                                disableLike && 'opacity-40',
-                                            )}
-                                            preserveState
-                                            onSuccess={() => {
-                                                console.log('test Like');
-                                                getClip();
-                                            }}
-                                        >
-                                            <Heart
-                                                className={clsx(
-                                                    'h-4 w-4 sm:h-5 sm:w-5',
-                                                    isLiked
-                                                        ? 'text-red-500'
-                                                        : 'text-white',
-                                                )}
-                                            />
-                                        </Link>
-
-                                        {/* Skip */}
-                                        <Link
-                                            type="button"
-                                            aria-pressed={isSkipped}
-                                            disabled={disableSkip}
-                                            onClick={() => {
-                                                toggleSkip(it.id);
-                                                scrollToIndex(index + 1);
-                                            }}
-                                            href={store()}
-                                            data={{
-                                                clip: it.id,
-                                                voted: false,
-                                            }}
-                                            className={clsx(
-                                                'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 sm:size-11',
-                                                'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
-                                                disableSkip && 'opacity-40',
-                                            )}
-                                            preserveState
-                                            onSuccess={() => {
-                                                console.log('test Skip');
-                                                getClip();
-                                            }}
-                                        >
-                                            <CircleX
-                                                className={clsx(
-                                                    'h-4 w-4 sm:h-5 sm:w-5',
-                                                    isSkipped
-                                                        ? 'text-red-500'
-                                                        : 'text-white',
-                                                )}
-                                            />
-                                        </Link>
-
-                                        {/* Next */}
-                                        <button
-                                            type="button"
-                                            onClick={() =>
-                                                scrollToIndex(index + 1)
-                                            }
-                                            disabled={
-                                                index === items.length - 1
-                                            }
-                                            className="grid size-9 place-items-center rounded-full bg-black/55 ring-1 ring-white/10 backdrop-blur transition-transform duration-150 ease-out active:scale-95 disabled:opacity-40 sm:size-11 sm:hover:scale-110"
-                                        >
-                                            <ChevronRight className="h-4 w-4 text-white sm:h-5 sm:w-5" />
-                                        </button>
-                                    </div>
-                                </section>
-                            );
-                        })}
+                                <ReportButton
+                                    disabled={!props.clip}
+                                    items={[
+                                        {
+                                            type: 'clip',
+                                            id: props.clip?.id ?? -1,
+                                        }
+                                    ]}
+                                />
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>

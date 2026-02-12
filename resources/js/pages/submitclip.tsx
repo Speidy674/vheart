@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { store } from '@/actions/App/Http/Controllers/ClipSubmitController';
 import InputError from '@/components/input-error';
-import { TwitchClipContainer } from '@/components/TwitchClipContainer';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,13 +20,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TagSelect } from '@/components/ui/tag-select';
-import submitclip from '@/routes/submitclip';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
-interface Tag {
-    id: number;
-    name: string;
-}
+import { TagResource } from '@/types';
+import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
+
 
 type InertiaBaseProps = Record<string, unknown>;
 
@@ -41,12 +38,12 @@ interface PageProps extends InertiaBaseProps {
             daily_submission_limit: number;
         };
     };
-    tags: Tag[];
+    tags: TagResource[];
     submit_ok?: boolean;
     submit_message?: string;
 }
 
-export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
+export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
     const { t } = useTranslation('sendinclip');
     const { props } = usePage<PageProps>();
     const { errors } = props;
@@ -69,11 +66,6 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
         };
     }, [clipUrl]);
 
-    const breadcrumbs = useMemo(
-        () => [{ title: t('breadcrumb'), href: submitclip.create().url }],
-        [t],
-    );
-
     const previewErrors: string[] = [];
 
     const hasInput = debouncedClipUrl.trim().length > 0;
@@ -93,7 +85,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
 
     if (!user) {
         return (
-            <AppHeaderLayout breadcrumbs={breadcrumbs}>
+            <AppHeaderLayout>
                 <Head title={t('page_title')} />
                 <div className="container mx-auto px-4 py-8">
                     <Card>
@@ -125,7 +117,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
     }
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
 
             <div className="container mx-auto px-4 py-8">
@@ -161,9 +153,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
                                     <div className="space-y-4">
                                         <div className="aspect-video overflow-hidden rounded-lg bg-black">
                                             {clipId ? (
-                                                <TwitchClipContainer
-                                                    slug={clipId}
-                                                />
+                                                <TwitchClipEmbed slug={clipId} />
                                             ) : (
                                                 <div className="flex h-full w-full items-center justify-center text-center text-muted-foreground">
                                                     {showLoading ? (
