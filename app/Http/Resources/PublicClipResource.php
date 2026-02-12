@@ -46,7 +46,7 @@ class PublicClipResource extends JsonResource
                 'avatar' => URL::signedRoute('image-proxy', ['url' => $this->submitter?->avatar_url]),
             ]),
 
-            'game' => $this->whenLoaded('game', $this->game->toResource()),
+            'category' => $this->whenLoaded('category', $this->category->toResource()),
 
             'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,

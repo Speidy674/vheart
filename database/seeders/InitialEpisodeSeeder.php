@@ -8,6 +8,7 @@ use App\Actions\ImportClipAction;
 use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
+use App\Jobs\ImportCategoryJob;
 use App\Models\Clip;
 use App\Models\Clip\Compilation;
 use App\Models\Scopes\ClipPermissionScope;
@@ -439,5 +440,8 @@ class InitialEpisodeSeeder extends Seeder
 
             $compilation->clips()->sync($clips);
         }
+
+        // Force-run the import Job because we are lazy
+        ImportCategoryJob::dispatchSync([]);
     }
 }

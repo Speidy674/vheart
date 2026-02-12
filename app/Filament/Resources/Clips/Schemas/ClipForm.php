@@ -32,12 +32,12 @@ class ClipForm
                             ->label('admin/resources/clips.form.title')
                             ->translateLabel()
                             ->required(),
-                        Select::make('game_id')
-                            ->label('admin/resources/clips.form.twitch_category')
+                        Select::make('category_id')
+                            ->label('admin/resources/clips.form.category')
                             ->translateLabel()
                             ->required()
                             ->preload()
-                            ->relationship('game', 'title')
+                            ->relationship('category', 'title')
                             ->searchable(),
                         TextEntry::make('duration')
                             ->label('admin/resources/clips.form.duration')
