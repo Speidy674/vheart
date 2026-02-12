@@ -28,6 +28,7 @@ enum Permission: string implements HasLabel
     case DeleteAnyReport = 'delete_any_report';
     case RestoreAnyReport = 'restore_any_report';
     case ForceDeleteAnyReport = 'force_delete_any_report';
+
     // Compilation
     case ViewAnyCompilation = 'view_any_compilation';
     case ViewCompilation = 'view_compilation';
@@ -36,6 +37,15 @@ enum Permission: string implements HasLabel
     case DeleteAnyCompilation = 'delete_any_compilation';
     case RestoreAnyCompilation = 'restore_any_compilation';
     case ForceDeleteAnyCompilation = 'force_delete_any_compilation';
+
+    // Category
+    case ViewAnyCategory = 'view_any_category';
+    case ViewCategory = 'view_category';
+    case CreateCategory = 'create_category';
+    case UpdateAnyCategory = 'update_any_category';
+    case DeleteAnyCategory = 'delete_any_category';
+    case RestoreAnyCategory = 'restore_any_category';
+    case ForceDeleteAnyCategory = 'force_delete_any_category';
 
     // FAQ
     case ViewAnyFaq = 'view_any_faq';
@@ -46,8 +56,11 @@ enum Permission: string implements HasLabel
     case RestoreAnyFaq = 'restore_any_faq';
     case ForceDeleteAnyFaq = 'force_delete_any_faq';
 
-    // Non-Model stuff
+    // Comments
+    case ViewAnyComment = 'view_any_comment';
+    case CreateComment = 'create_comment';
+    case DeleteAnyComment = 'delete_any_comment';
 
+    // Non-Model stuff
     case JuryVote = 'jury_vote';
-    // empty for now
 }

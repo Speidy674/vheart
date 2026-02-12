@@ -40,20 +40,14 @@ export default function Welcome({
                         </Link>
                     </div>
 
-                    <HeroCard t={t} />
+                    <HeroCard/>
                     <DonationCard
-                        t={t}
                         donationUrl={donationUrl}
                         partnerIcon={partnerIcon}
                     />
-                    <BetterplaceDonationCard
-                        eventId={55712}
-                        maxVisibleDonations={8}
-                        refreshInterval={300000}
-                        projectId={0}
-                    />
+                    <BetterplaceDonationCard/>
                     <VideoCard t={t} youtubeUrl={youtubeUrl} />
-                    <ClipProcessCard t={t} />
+                    <ClipProcessCard/>
                 </div>
             </main>
         </div>

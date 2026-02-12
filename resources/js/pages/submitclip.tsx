@@ -21,12 +21,10 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TagSelect } from '@/components/ui/tag-select';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
+
+import { TagResource } from '@/types';
 import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
 
-interface Tag {
-    id: number;
-    name: string;
-}
 
 type InertiaBaseProps = Record<string, unknown>;
 
@@ -40,12 +38,12 @@ interface PageProps extends InertiaBaseProps {
             daily_submission_limit: number;
         };
     };
-    tags: Tag[];
+    tags: TagResource[];
     submit_ok?: boolean;
     submit_message?: string;
 }
 
-export default function SubmitClipPage({ tags = [] }: { tags: Tag[] }) {
+export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
     const { t } = useTranslation('sendinclip');
     const { props } = usePage<PageProps>();
     const { errors } = props;
