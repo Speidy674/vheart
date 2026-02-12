@@ -44,7 +44,7 @@ class ClipSubmitController extends Controller
     /**
      * Store the newly created resource in storage.
      */
-    public function store(Request $request, ImportClipAction $importClipAction)
+    public function store(Request $request, ImportClipAction $importClipAction): Response
     {
         Gate::authorize('submit', Clip::class);
 
@@ -88,14 +88,14 @@ class ClipSubmitController extends Controller
             ->where('allowed', false)
             ->first();
 
-        if (! empty($isUserBlackedListed)) {
+        if ($isUserBlackedListed !== null) {
             $this->returnError('sendinclip.errors.user_not_allowed_for_broadcaster');
         }
 
         $broadcasterRules = $broadcasterUser->rules ?? [];
         $userIsAllowed = empty($broadcasterRules) || $clipInfo->broadcaster_id === $user->id;
 
-        if (! $userIsAllowed && in_array('userAllowList', $broadcasterRules)) {
+        if (! $userIsAllowed && in_array('userAllowList', $broadcasterRules, true)) {
             $isUserWhiteListed = $broadcasterUser->broadcasterUserFilter()->where('user_id', $clipInfo->creator_id)
                 ->where('allowed', true)
                 ->first();
@@ -105,13 +105,13 @@ class ClipSubmitController extends Controller
             }
         }
 
-        if (! $userIsAllowed && in_array('userAllowMods', $broadcasterRules)) {
+        if (! $userIsAllowed && in_array('userAllowMods', $broadcasterRules, true)) {
             if ($this->twitchService->asUser($user, $this->getUserToken())->isModeratorFor($broadcasterUser)) {
                 $userIsAllowed = true;
             }
         }
 
-        if (! $userIsAllowed && in_array('userAllowVips', $broadcasterRules)) {
+        if (! $userIsAllowed && in_array('userAllowVips', $broadcasterRules, true)) {
             try {
                 $vipInfos = $this->twitchService->asUser($broadcasterUser)->onUserTokenRefresh()->get(TwitchEndpoints::GetVIPs, [
                     'user_id' => $user->id,
@@ -141,7 +141,7 @@ class ClipSubmitController extends Controller
             ->where('allowed', false)
             ->first();
 
-        if (! empty($isGameBlackListed)) {
+        if ($isGameBlackListed !== null) {
             $this->returnError('sendinclip.errors.game_blocked');
         }
 
