@@ -30,10 +30,9 @@ export default function AppSidebarLayout({
                         <AppSidebarHeader breadcrumbs={breadcrumbs} />
                         {children}
                     </AppContent>
-                    <Footer />
+                    <Footer isIsland={false} />
                 </AppShell>
             </div>
-            <Footer isIsland={false} />
         </div>
     );
 }

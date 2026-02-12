@@ -11,12 +11,12 @@ type AppHeaderLayoutProps = PropsWithChildren<{
 export default function AppHeaderLayout({
     children,
     isIsland
-}: PropsWithChildren) {
+}: AppHeaderLayoutProps) {
     return (
         <AppShell>
-            <AppHeader  isIsland={isIsland} />
+            <AppHeader isIsland={isIsland} />
             <AppContent>{children}</AppContent>
-            <Footer />
+            <Footer isIsland={isIsland} />
         </AppShell>
     );
 }
