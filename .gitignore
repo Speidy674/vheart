@@ -4,6 +4,7 @@
 /public/build
 /public/hot
 /public/storage
+/public/locales
 /public/css/filament
 /public/fonts/filament
 /public/js/filament
