@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table): void {
             $table->id();
-            $table->string(column: 'name');
+            $table->string('name');
             $table->timestamps();
+        });
+
+        Schema::create('clip_tags', function (Blueprint $table) {
+            $table->foreignId('clip_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignId('tag_id')->index()->constrained()->cascadeOnDelete();
         });
     }
 
