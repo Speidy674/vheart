@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
-use App\Models\Clip;
 use App\Models\Category;
+use App\Models\Clip;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Vite;
@@ -31,6 +31,10 @@ enum ExternalContentProxyType: string
     {
         if (! $model) {
             return null;
+        }
+
+        if (! $model->exists) {
+            return Vite::asset('resources/images/png/cat.png');
         }
 
         if ($model instanceof User && $model->id === 0) {
