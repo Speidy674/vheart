@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Role\RoleUserListResource;
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,15 +18,17 @@ class TeamController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $roles = Role::query()
-            ->with('users')
-            ->orderBy('weight', 'desc')
-            ->orderBy('name')
-            ->where('public', true)
-            ->get();
-
         return Inertia::render('team', [
-            'roles' => $roles->toResourceCollection(RoleUserListResource::class),
+            'total_members' => Inertia::once(static fn () => User::query()
+                ->whereHas('roles', fn (Builder $builder) => $builder->where('public', true))
+                ->count()),
+            'roles' => Inertia::once(static fn () => Role::query()
+                ->where('public', true)
+                ->orderBy('weight', 'desc')
+                ->orderBy('name')
+                ->with('users:id,name,avatar_url')
+                ->get()
+                ->toResourceCollection(RoleUserListResource::class)),
         ]);
     }
 }

@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import cat from '/resources/images/png/cat.png';
-import { Deferred, Head, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { PublicUser, RoleUserListResource, SharedData } from '@/types';
 
@@ -90,21 +90,13 @@ function RoleSection({ role }: { role: RoleUserListResource }) {
 }
 
 interface PageProps extends SharedData {
-    roles: RoleUserListResource[]
+    roles: RoleUserListResource[],
+    total_members: number
 }
 
 export default function TeamPage() {
     const { t } = useTranslation('team');
     const { props } = usePage<PageProps>()
-
-    const totalMembers = useMemo(
-        () =>
-            props.roles?.reduce(
-                (total, role) => total + (role?.users?.length || 0),
-                0,
-            ) || 0,
-        [props.roles],
-    );
 
     const memberList = useMemo(() => {
         return (
@@ -148,7 +140,7 @@ export default function TeamPage() {
                         </h1>
                         <div className="mx-auto h-1.5 w-24 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500" />
                         <p className="mt-8 text-sm font-bold tracking-[0.3em] text-purple-600 uppercase dark:text-cyan-400">
-                            {t('total_members', { count: totalMembers })}
+                            {t('total_members', { count: props.total_members })}
                         </p>
                     </header>
                     <main className="mx-auto max-w-7xl space-y-32">
