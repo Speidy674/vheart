@@ -30,6 +30,10 @@ test('correctly parses clip ids from any input', function (string $input, ?strin
         'input' => 'https://clips.twitch.tv/AttractiveAgreeableOxNononoCat-rI2mENW1153C9KU-',
         'expectedOutput' => 'AttractiveAgreeableOxNononoCat-rI2mENW1153C9KU-',
     ],
+    [
+        'input' => 'AttractiveAgreeableOxNononoCat-rI2mENW1153C9KU-',
+        'expectedOutput' => 'AttractiveAgreeableOxNononoCat-rI2mENW1153C9KU-',
+    ],
     // Invalid, should return null
     ['https://www.twitch.tv/videos/123456789', null],
     ['https://www.twitch.tv/shroud', null],
