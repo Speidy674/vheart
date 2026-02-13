@@ -1,125 +1,82 @@
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import * as React from 'react';
+import { Check, ChevronUp, Globe } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-interface LanguageToggleDropdownProps extends React.HTMLAttributes<HTMLDivElement> {
-    className?: string;
-}
-
-interface LanguageItem {
-    readonly value: string;
-    readonly label: string;
-    readonly flag?: string;
-}
-
-const LANGUAGE_ITEMS: readonly LanguageItem[] = [
+const LANGUAGES = [
     { value: 'en', label: 'English' },
     { value: 'de', label: 'Deutsch' },
-] as const;
+];
 
-export default function LanguageToggleDropdown({
-    className,
-    ...props
-}: LanguageToggleDropdownProps): React.ReactElement {
+const LanguageToggleDropdown = React.memo(() => {
     const { i18n } = useTranslation();
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
-    const currentLanguage =
-        LANGUAGE_ITEMS.find((item) => i18n.language.startsWith(item.value)) ||
-        LANGUAGE_ITEMS[0];
-
-    const handleLanguageChange = async (language: string) => {
-        if (language === currentLanguage.value || isLoading) return;
-
-        setIsLoading(true);
-        try {
-            const response = await fetch(`/locales/${language}`);
-            if (!response.ok)
-                throw new Error(`Backend error: ${response.status}`);
-            await i18n.changeLanguage(language);
-        } catch (error) {
-            console.error('Language change failed:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const current = useMemo(() => {
+        return (
+            LANGUAGES.find((l) => i18n.language.startsWith(l.value)) ||
+            LANGUAGES[0]
+        );
+    }, [i18n.language]);
 
     return (
-        <div className={cn('relative', className)} {...props}>
-            <Menu>
-                <MenuButton
-                    disabled={isLoading}
-                    className={cn(
-                        'inline-flex items-center gap-1.5 rounded-md px-2 py-1',
-                        'text-gray-600 hover:text-gray-900',
-                        'dark:text-white/70 dark:hover:text-white',
-                        'transition-colors duration-150',
-                        'text-xs sm:text-sm',
-                        'focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:outline-none',
-                        'dark:focus-visible:ring-white/20',
-                        isLoading && 'opacity-50',
-                    )}
-                    aria-label="Change language"
+        <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
+            <DropdownMenuTrigger asChild>
+                <Button
+                    variant="ghost"
+                    className="flex h-8 gap-2 rounded-full bg-gray-400 px-3 text-xs font-bold text-white shadow-sm hover:bg-[#d8347d] hover:text-white dark:bg-black"
                 >
-                    <span className="text-sm">🌐</span>
-                    <span>{currentLanguage.value.toUpperCase()}</span>
-                    <span className="text-[10px]">▼</span>
-                </MenuButton>
+                    <Globe className="size-3.5" />
+                    <span className="uppercase">{current.value}</span>
+                    <ChevronUp
+                        className={cn(
+                            'size-3 transition-transform duration-300',
+                            open ? 'rotate-0' : 'rotate-180',
+                        )}
+                    />
+                </Button>
+            </DropdownMenuTrigger>
 
-                <MenuItems
-                    transition
-                    className={cn(
-                        'absolute right-0 bottom-full z-50 mb-2',
-                        'min-w-[110px] rounded border shadow-lg',
-                        'bg-white/95 backdrop-blur-sm dark:bg-black/95',
-                        'border-gray-200 dark:border-gray-700',
-                        'origin-top-right transition duration-100 ease-out',
-                        'data-[closed]:scale-95 data-[closed]:opacity-0',
-                    )}
+            <DropdownMenuPortal>
+                <DropdownMenuContent
+                    side="top"
+                    align="end"
+                    sideOffset={15}
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                    onEscapeKeyDown={(e) => e.preventDefault()}
+                    className="z-[110] min-w-[130px] rounded-xl border border-gray-200 bg-white/95 p-1.5 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-[#0a0a0a]/95"
                 >
-                    <div className="py-1">
-                        {LANGUAGE_ITEMS.map((item) => (
-                            <MenuItem key={item.value}>
-                                {({ focus, close }) => (
-                                    <button
-                                        onClick={async () => {
-                                            await handleLanguageChange(
-                                                item.value,
-                                            );
-                                            close();
-                                        }}
-                                        className={cn(
-                                            'flex w-full items-center justify-between px-3 py-2 text-sm',
-                                            'transition-colors duration-150',
-                                            focus &&
-                                                'bg-gray-100 dark:bg-gray-800',
-                                            currentLanguage.value ===
-                                                item.value &&
-                                                'font-medium text-gray-900 dark:text-white',
-                                        )}
-                                    >
-                                        <span
-                                            className={cn(
-                                                'text-gray-700 dark:text-gray-300',
-                                                currentLanguage.value ===
-                                                    item.value &&
-                                                    'text-gray-900 dark:text-white',
-                                            )}
-                                        >
-                                            {item.label}
-                                        </span>
-                                        {currentLanguage.value ===
-                                            item.value && (
-                                            <span className="text-xs">✓</span>
-                                        )}
-                                    </button>
-                                )}
-                            </MenuItem>
-                        ))}
-                    </div>
-                </MenuItems>
-            </Menu>
-        </div>
+                    {LANGUAGES.map((lang) => (
+                        <DropdownMenuItem
+                            key={lang.value}
+                            onSelect={() => i18n.changeLanguage(lang.value)}
+                            className={cn(
+                                'flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs transition-colors focus:bg-accent focus:text-accent-foreground',
+                                current.value === lang.value
+                                    ? 'font-bold text-[#e9458e]'
+                                    : 'text-gray-600 dark:text-white/60',
+                            )}
+                        >
+                            {lang.label}
+                            {current.value === lang.value && (
+                                <Check className="size-3" />
+                            )}
+                        </DropdownMenuItem>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenuPortal>
+        </DropdownMenu>
     );
-}
+});
+
+LanguageToggleDropdown.displayName = 'LanguageToggleDropdown';
+
+export default LanguageToggleDropdown;
