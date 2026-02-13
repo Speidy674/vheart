@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('twitch_id');
             $table->string('title');
-            $table->string('url')->nullable();
             $table->string('thumbnail_url')->nullable();
             $table->unsignedBigInteger('broadcaster_id');
             $table->unsignedBigInteger('creator_id');
