@@ -1,5 +1,9 @@
 import { AppTopbar } from './app-topbar';
 
-export function AppHeader() {
-    return <AppTopbar />;
+interface AppHeaderProps {
+    isIsland?: boolean;
+}
+
+export function AppHeader({ isIsland }: AppHeaderProps) {
+    return <AppTopbar isIsland={isIsland} />;
 }

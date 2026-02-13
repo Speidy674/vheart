@@ -1,6 +1,6 @@
 import { store } from '@/actions/App/Http/Controllers/ClipVoteController';
 import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
-import ReportButton, { ReportableItem } from '@/components/reports/report-button';
+import ReportButton from '@/components/reports/report-button';
 import SpaceBackground from '@/components/spacebackground';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
 import { PublicClip } from '@/types';
@@ -30,7 +30,7 @@ export default function EvaluateClips() {
     }, [props.clip]);
 
     return (
-        <AppHeaderLayout>
+        <AppHeaderLayout isIsland={false}>
             <Head title={t('page_title')} />
             <SpaceBackground />
 
