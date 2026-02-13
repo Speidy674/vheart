@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Models\Category;
+use App\Models\Clip;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
@@ -133,6 +134,15 @@ class SubmitClipRequest extends FormRequest
                     $validator->errors()->add('clip_url', __('sendinclip.errors.category_blocked'));
 
                     return;
+                }
+
+                // Check if clip already exists
+                $clipAlreadyExists = Clip::query()
+                    ->where('twitch_id', $this->clipInfo->id)
+                    ->exists();
+
+                if ($clipAlreadyExists) {
+                    $validator->errors()->add('clip_url', __('sendinclip.errors.clip_already_known'));
                 }
             },
         ];
