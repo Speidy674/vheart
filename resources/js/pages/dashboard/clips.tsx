@@ -1,60 +1,55 @@
+import { ClipPreview } from '@/components/clip-preview';
 import { StreamerSection } from '@/components/sidebar/streamer-section';
 import StaticSpaceBackground from '@/components/spacebackground';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
-import { PublicUser, type BreadcrumbItem } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-    {
-        title: 'Clips',
-        href: dashboard().url,
-    },
-];
+import { clips as dashboardClips, main } from '@/routes/dashboard';
+import { PublicClip, PublicUser, type BreadcrumbItem } from '@/types';
+import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 
 type PageProps = {
-    streamer: PublicUser;
+    selectedStreamer: PublicUser;
+    clips?: {
+        data: PublicClip[];
+    };
 };
 
 export default function clips() {
     const { props } = usePage<PageProps>();
-    console.dir(props);
+    console.log('Dashboard/clips', props);
+
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: main(props.selectedStreamer.id).url,
+        },
+        {
+            title: 'Clips',
+            href: dashboardClips(props.selectedStreamer.id).url,
+        },
+    ];
 
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
             sidebarContent={<StreamerSection />}
         >
-            <Head title="Dashboard" />
+            <Head title={'Dashboard Clips - ' + props.selectedStreamer.name} />
             <StaticSpaceBackground />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                <InfiniteScroll data="clips" preserveUrl buffer={100}>
+                    <div className="grid auto-rows-min gap-4 md:grid-cols-1">
+                        {props.clips?.data?.map((clip) => (
+                            <div className="relative max-h-32 rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-2 ring-1 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0">
+                                <div
+                                    key={'clip' + clip.id}
+                                    className="aspect-video h-full overflow-hidden rounded-md"
+                                >
+                                    <ClipPreview clip={clip} />
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
+                </InfiniteScroll>
             </div>
         </AppLayout>
     );

@@ -14,19 +14,19 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type PageProps = {
-    streamer: PublicUser;
+    selectedStreamer: PublicUser;
 };
 
 export default function Dashboard() {
     const { props } = usePage<PageProps>();
-    console.dir(props);
+    console.log('Dashboard', props);
 
     return (
         <AppLayout
             breadcrumbs={breadcrumbs}
             sidebarContent={<StreamerSection />}
         >
-            <Head title="Dashboard" />
+            <Head title={'Dashboard - ' + props.selectedStreamer.name} />
             <StaticSpaceBackground />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
