@@ -66,7 +66,7 @@ return [
         'clip_not_found' => 'Clip not found',
         'clip_already_known' => 'This clip has already been submitted',
         'broadcaster_not_allowed' => 'The broadcaster has not allowed clip submissions',
-        'game_blocked' => 'Clips from this game are not allowed',
+        'category_blocked' => 'Clips from this Category/Game are not allowed',
         'user_not_allowed_for_broadcaster' => 'You are not allowed to submit clips for this broadcaster',
         'clip_url_required' => 'Please enter a clip URL',
         'cannot_submit' => 'This clip cannot be submitted.',
