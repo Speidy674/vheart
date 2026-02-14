@@ -81,7 +81,6 @@ export default function Start() {
                     </CardContent>
                 </Card>
             </div>
-
             {openClip && (
                 <ClipModal clip={openClip} onClose={() => setOpenClip(null)} />
             )}

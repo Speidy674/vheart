@@ -73,7 +73,7 @@ export default function Welcome({
                     <CardFooter className="flex flex-col space-y-6">
                         {kannRegistrieren && (
                             <a
-                                href='/auth/twitch'
+                                href="/auth/twitch"
                                 className="group relative w-full"
                                 aria-label={t('connect_button_aria')}
                             >
@@ -110,6 +110,7 @@ export default function Welcome({
                     </p>
                 </div>
             </main>
+            <Footer isIsland={true} />
         </div>
     );
 }

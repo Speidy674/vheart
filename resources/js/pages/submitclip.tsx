@@ -74,10 +74,10 @@ export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
 
     const clipId = useMemo(() => {
         const clipMatch = debouncedClipUrl.match(
-            /https?:\/\/(?:www|clips)?\.?(?:twitch\.tv\/)(?:embed\?clip=|[\w/]+\/clip\/)?([\w_-]+)/,
+            /([A-Z][a-zA-Z0-9]*-[a-zA-Z0-9_-]+)/,
         );
 
-        return clipMatch ? clipMatch[1] : null;
+        return clipMatch ? clipMatch[0] : null;
     }, [debouncedClipUrl]);
 
     const showLoading = hasInput && !clipId;
@@ -117,7 +117,7 @@ export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
     }
 
     return (
-        <AppHeaderLayout>
+        <AppHeaderLayout isIsland={false}>
             <Head title={t('page_title')} />
 
             <div className="container mx-auto px-4 py-8">
