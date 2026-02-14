@@ -24,6 +24,12 @@ return new class extends Migration
             $table->primary(['role_id', 'user_id']);
             $table->unique(['user_id', 'role_id']);
         });
+
+        Schema::create('role_permissions', function (Blueprint $table) {
+            $table->foreignId('role_id')->constrained()->cascadeOnDelete();
+            $table->string('permission');
+            $table->unique(['role_id', 'permission']);
+        });
     }
 
     /**
