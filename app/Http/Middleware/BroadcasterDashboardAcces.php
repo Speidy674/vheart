@@ -39,6 +39,10 @@ class BroadcasterDashboardAcces
             return $next($request);
         }
 
+        if (! $broadcaster->clip_permission) {
+            return Redirect::route('home');
+        }
+
         if ($this->twitchService->asUser($authUser, session()?->get('twitch_access_token'))->isModeratorFor($broadcaster)) {
             return $next($request);
         }
