@@ -195,8 +195,15 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // TODO: Implement canAccessPanel() method.
-        return true;
+        return $this->canAny([
+            Permission::ViewAnyFaqEntry,
+            Permission::ViewAnyClip,
+            Permission::ViewAnyRole,
+            Permission::ViewAnyUser,
+            Permission::ViewAnyCategory,
+            Permission::ViewAnyReport,
+            Permission::ViewAnyCompilation,
+        ]);
     }
 
     /**
