@@ -29,6 +29,7 @@ class RoleForm
                 TextInput::make('weight')
                     ->label('admin/resources/roles.form.weight')
                     ->translateLabel()
+                    ->maxValue(fn () => (auth()->user()->getRole()?->weight ?? 0) - 1)
                     ->required()
                     ->numeric()
                     ->default(0),
