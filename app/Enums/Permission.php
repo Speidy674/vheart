@@ -68,9 +68,17 @@ enum Permission: string implements HasLabel
     case UpdateAnyRole = 'update_any_role';
     case DeleteAnyRole = 'delete_any_role';
 
+    // Clips
+    case ViewAnyClip = 'view_any_clip';
+    case ViewClip = 'view_clip';
+    case CreateClip = 'create_clip';
+    case UpdateAnyClip = 'update_any_clip';
+    case DeleteAnyClip = 'delete_any_clip';
+    case RestoreAnyClip = 'restore_any_clip';
+    case ForceDeleteAnyClip = 'force_delete_any_clip';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
-
 
     // Roles with that Permission ignore any weight based permissions
     case IgnoreRoleWeight = 'ignore_role_weight';
