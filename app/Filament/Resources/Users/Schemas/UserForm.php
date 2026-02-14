@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
@@ -13,11 +15,17 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Collection;
 
 class UserForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $userWeight = auth()->user()->getRole()?->weight ?? 0;
+        $canIgnoreWeight = auth()->user()->can(Permission::IgnoreRoleWeight);
+        /** @var Collection<array<int, int>> $roleWeights */
+        $roleWeights = Role::pluck('weight', 'id');
+
         return $schema
             ->components([
                 Section::make()
@@ -27,7 +35,21 @@ class UserForm
                             ->prefixIcon(Heroicon::User)
                             ->disabled(),
                         Select::make('roles')
-                            ->relationship('roles', 'name')
+                            ->relationship(
+                                name: 'roles',
+                                titleAttribute: 'name',
+                                modifyQueryUsing: fn ($query) => $query->orderByDesc('weight')
+                            )
+                            // Even though they are visible and selectable, make sure only roles below the user weight are mutable
+                            ->saveRelationshipsUsing(function (User $record, $state) use ($canIgnoreWeight, $userWeight, $roleWeights) {
+                                $immutableRoles = $roleWeights
+                                    ->filter(fn (int $weight) => ! $canIgnoreWeight && $weight >= $userWeight)
+                                    ->keys();
+                                $existingRoleIds = $record->roles()->pluck('id');
+                                $rolesToKeep = $existingRoleIds->intersect($immutableRoles);
+                                $mutableRoles = collect($state)->diff($immutableRoles);
+                                $record->roles()->sync($rolesToKeep->merge($mutableRoles));
+                            })
                             ->label('Roles')
                             ->multiple()
                             ->prefixIcon(Heroicon::ShieldCheck)
