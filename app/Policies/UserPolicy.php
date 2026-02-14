@@ -55,7 +55,7 @@ class UserPolicy
         }
 
         if ($user->getRole()?->weight <= $model->getRole()?->weight) {
-            return $user->can(Permission::IgnoreRoleWeight);
+            return $user->getRole()?->id === 0;
         }
 
         return $user->can(Permission::UpdateAnyUser);
@@ -75,7 +75,7 @@ class UserPolicy
         }
 
         if (
-            $user->cannot(Permission::IgnoreRoleWeight) &&
+            $user->getRole()?->id !== 0 &&
             $user->getRole()?->weight <= $model->getRole()?->weight
         ) {
             return $this->deny('Cannot delete users with higher weight');
@@ -110,7 +110,7 @@ class UserPolicy
         }
 
         if ($user->getRole()?->weight <= $model->getRole()?->weight) {
-            return $user->can(Permission::IgnoreRoleWeight);
+            return $user->getRole()?->id === 0;
         }
 
         return $user->can(Permission::ForceDeleteAnyUser);

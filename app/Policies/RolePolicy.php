@@ -46,7 +46,7 @@ class RolePolicy
         }
 
         if ($role->weight >= $user->getRole()?->weight) {
-            return $user->can(Permission::IgnoreRoleWeight);
+            return $user->getRole()?->id === 0;
         }
 
         return $user->can(Permission::UpdateAnyRole);
@@ -62,7 +62,7 @@ class RolePolicy
         }
 
         if ($role->weight >= $user->getRole()?->weight) {
-            return $user->can(Permission::IgnoreRoleWeight);
+            return $user->getRole()?->id === 0;
         }
 
         return $user->can(Permission::DeleteAnyRole);

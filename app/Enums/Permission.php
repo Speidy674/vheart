@@ -79,7 +79,4 @@ enum Permission: string implements HasLabel
 
     // Non-Model stuff
     case JuryVote = 'jury_vote';
-
-    // Roles with that Permission ignore any weight based permissions
-    case IgnoreRoleWeight = 'ignore_role_weight';
 }

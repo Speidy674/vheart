@@ -22,7 +22,7 @@ class UserForm
     public static function configure(Schema $schema): Schema
     {
         $userWeight = auth()->user()->getRole()?->weight ?? 0;
-        $canIgnoreWeight = auth()->user()->can(Permission::IgnoreRoleWeight);
+        $canIgnoreWeight = auth()->user()->getRole()?->id === 0;
         /** @var Collection<array<int, int>> $roleWeights */
         $roleWeights = Role::pluck('weight', 'id');
 
