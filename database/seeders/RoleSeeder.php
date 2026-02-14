@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
             ['id' => 0],
             [
                 'name' => 'Super Admin',
-                'weight' => 99999999999,
+                'weight' => 2147483646,
                 'public' => false,
                 'desc' => 'The Role to Role them all',
             ]
