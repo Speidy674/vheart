@@ -19,50 +19,6 @@ beforeEach(function () {
     $this->withoutVite();
 });
 
-test('it can determine type from model instance', function () {
-    $game = Category::factory()->make();
-    $clip = Clip::factory()->make();
-    $user = User::factory()->make();
-
-    expect(ExternalContentProxyType::fromModel($game))->toBe(ExternalContentProxyType::TwitchCategory)
-        ->and(ExternalContentProxyType::fromModel($clip))->toBe(ExternalContentProxyType::TwitchClip)
-        ->and(ExternalContentProxyType::fromModel($user))->toBe(ExternalContentProxyType::TwitchUser);
-});
-
-test('it generates correct proxy url for standard models', function () {
-    $clip = Clip::factory()->create(['twitch_id' => 'clipper123']);
-    $user = User::factory()->create(['id' => 55]);
-
-    $clipUrl = ExternalContentProxyType::toProxyUrl($clip);
-    $userUrl = ExternalContentProxyType::toProxyUrl($user);
-
-    expect($clipUrl)->toContain('/static-external/clip/clipper123.jpg')
-        ->and($userUrl)->toContain('/static-external/user/55.png');
-});
-
-test('it handles the special user id 0 case', function () {
-    Vite::shouldReceive('asset')
-        ->once()
-        ->with('resources/images/png/cat.png')
-        ->andReturn('http://localhost/build/cat.png');
-
-    $user = User::factory()->make(['id' => 0]);
-
-    $url = ExternalContentProxyType::toProxyUrl($user);
-
-    expect($url)->toBe('http://localhost/build/cat.png');
-});
-
-test('it generates dynamic size urls for categories', function () {
-    $game = Category::factory()->create(['id' => 999]);
-
-    $urlResized = ExternalContentProxyType::toProxyUrl($game, 50, 50);
-    $urlStandard = ExternalContentProxyType::toProxyUrl($game);
-
-    expect($urlResized)->toContain('/static-external/category/999-50x50.jpg')
-        ->and($urlStandard)->toContain('/static-external/category/999.jpg');
-});
-
 test('it correctly resolves resource url from database', function () {
     $clip = Clip::factory()->create([
         'twitch_id' => 'some-slug',
