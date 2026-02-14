@@ -62,6 +62,8 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
 
     protected $rememberTokenName = null;
 
+    protected ?Role $importantRoleCache = null;
+
     /** @var array<int,Permission>|null */
     protected ?array $permissionCache = null;
 
@@ -105,6 +107,7 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         $this->roles()->attach($role);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function roles(): BelongsToMany
@@ -117,12 +120,18 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
      */
     public function getRole(): ?Role
     {
-        // Use already cached state if possible
-        if ($this->relationLoaded('roles')) {
-            return $this->roles->sortByDesc('weight')->first();
+        if ($this->importantRoleCache) {
+            return $this->importantRoleCache;
         }
 
-        return $this->roles()->orderByDesc('weight')->first();
+        // Use already cached state if possible
+        if ($this->relationLoaded('roles')) {
+            $this->importantRoleCache = $this->roles->sortByDesc('weight')->first();
+        } else {
+            $this->importantRoleCache = $this->roles()->orderByDesc('weight')->first();
+        }
+
+        return $this->importantRoleCache;
     }
 
     /**
@@ -132,11 +141,13 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         $this->roles()->sync($roles);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function refresh(): self
     {
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
 
         return parent::refresh();
     }
@@ -148,6 +159,7 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         if ($relation === 'roles') {
             $this->permissionCache = null;
+            $this->importantRoleCache = null;
         }
 
         return parent::setRelation($relation, $value);
