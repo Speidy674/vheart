@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Actions\ImportClipAction;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
@@ -18,6 +19,8 @@ use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Exception;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InitialEpisodeSeeder extends Seeder
@@ -500,6 +503,9 @@ class InitialEpisodeSeeder extends Seeder
                 'updated_at' => now(),
             ]);
 
+            /**
+             * @var Collection $clips
+             */
             $clips = Clip::query()
                 ->withoutGlobalScope(ClipPermissionScope::class)
                 ->whereIn('twitch_id', $episodeData['clips'])
@@ -514,6 +520,10 @@ class InitialEpisodeSeeder extends Seeder
                 });
 
             $compilation->clips()->sync($clips);
+
+            $clips->each(function (array $clip) {
+                DB::table('clips')->where('id',$clip['clip_id'])->update(['status' => ClipStatus::Approved]);
+            });
 
             $compilation->comments()->create([
                 'body' => "Compilation with {$clips->count()} clips has been imported.",
