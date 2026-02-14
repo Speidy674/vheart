@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,14 +35,15 @@ use Kirschbaum\Commentions\HasComments;
 class User extends Authenticatable implements Commentable, Commenter, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
 {
     use HasComments;
+
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
+
     use InteractsWithAppAuthentication;
     use InteractsWithAppAuthenticationRecovery;
     use Notifiable;
     use Reportable;
     use SoftDeletes;
-
-    /** @use HasFactory<UserFactory> */
-    use HasFactory;
 
     public $incrementing = false;
 
@@ -110,6 +110,19 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    /**
+     * The role with the highest weight on this user
+     */
+    public function getRole(): ?Role
+    {
+        // Use already cached state if possible
+        if ($this->relationLoaded('roles')) {
+            return $this->roles->sortByDesc('weight')->first();
+        }
+
+        return $this->roles()->orderByDesc('weight')->first();
     }
 
     /**
