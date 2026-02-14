@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\HttpFoundation\Response;
 
-class BroadcasterDashboardAcces
+class BroadcasterDashboard
 {
     private TwitchService $twitchService;
 
@@ -31,8 +31,9 @@ class BroadcasterDashboardAcces
     {
         $authUser = $request->user();
         $broadcaster = $request->route('user');
+
         if (empty($broadcaster)) {
-            return Redirect::route('home');
+            return Redirect::route('dashboard');
         }
 
         if ($broadcaster->id === $authUser->id) {
@@ -40,13 +41,13 @@ class BroadcasterDashboardAcces
         }
 
         if (! $broadcaster->clip_permission) {
-            return Redirect::route('home');
+            return Redirect::route('dashboard');
         }
 
         if ($this->twitchService->asUser($authUser, session()?->get('twitch_access_token'))->isModeratorFor($broadcaster)) {
             return $next($request);
         }
 
-        return Redirect::route('home');
+        return Redirect::route('dashboard');
     }
 }
