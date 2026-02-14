@@ -36,5 +36,5 @@ interface ExternalProxyable
     /**
      * Get the route to the external proxy for this content
      */
-    public function toProxyUrl(?int $width = null, ?int $height = null): ?string;
+    public function proxiedContentUrl(?int $width = null, ?int $height = null): ?string;
 }

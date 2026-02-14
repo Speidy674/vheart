@@ -16,7 +16,7 @@ trait HasExternalProxy
         return 'id';
     }
 
-    public function toProxyUrl(?int $width = null, ?int $height = null): ?string
+    public function proxiedContentUrl(?int $width = null, ?int $height = null): ?string
     {
         // We are just the contract placeholder in case we have custom logic for a model
         return $this->generateExternalProxyUrl($width, $height);

@@ -208,7 +208,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return null;
     }
 
-    public function toProxyUrl(?int $width = null, ?int $height = null): ?string
+    public function proxiedContentUrl(?int $width = null, ?int $height = null): ?string
     {
         if (! $this->exists || $this->id === 0) {
             return Vite::asset('resources/images/png/cat.png');

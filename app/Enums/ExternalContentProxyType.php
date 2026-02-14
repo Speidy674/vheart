@@ -31,7 +31,7 @@ enum ExternalContentProxyType: string
             return null;
         }
 
-        return $model instanceof ExternalProxyable ? $model->toProxyUrl($width, $height) : null;
+        return $model instanceof ExternalProxyable ? $model->proxiedContentUrl($width, $height) : null;
     }
 
     /**
