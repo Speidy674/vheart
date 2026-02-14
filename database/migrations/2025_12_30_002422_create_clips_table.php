@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,18 +15,18 @@ return new class extends Migration
     {
         Schema::create('clips', function (Blueprint $table) {
             $table->id();
-            $table->string('twitch_id');
+            $table->string('twitch_id')->index();
             $table->string('title');
             $table->string('url')->nullable();
             $table->string('thumbnail_url')->nullable();
-            $table->unsignedBigInteger('broadcaster_id');
+            $table->unsignedBigInteger('broadcaster_id')->index();
             $table->unsignedBigInteger('creator_id');
-            $table->unsignedBigInteger('submitter_id');
-            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('submitter_id')->index();
+            $table->unsignedBigInteger('category_id')->index()->nullable();
             $table->unsignedBigInteger('vod_id')->nullable();
             $table->unsignedBigInteger('vod_offset')->nullable();
             $table->float('duration');
-            $table->unsignedTinyInteger('status')->default(0)->index(); // für flag feature
+            $table->unsignedTinyInteger('status')->default(0)->index();
             $table->string('language')->nullable();
             $table->boolean('is_anonymous');
             $table->timestamp('date');
