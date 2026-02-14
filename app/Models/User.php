@@ -140,14 +140,9 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
         return parent::setRelation($relation, $value);
     }
 
-    public function broadcasterUserFilter(): MorphToMany
+    public function broadcasterFilter(): HasMany
     {
-        return $this->morphedByMany(self::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
-    }
-
-    public function broadcasterCategoryFilter(): MorphToMany
-    {
-        return $this->morphedByMany(Category::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
+        return $this->hasMany(BroadcasterFilter::class, 'broadcaster_id');
     }
 
     public function getFilamentAvatarUrl(): ?string
