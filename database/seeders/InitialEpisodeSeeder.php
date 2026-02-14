@@ -379,7 +379,7 @@ class InitialEpisodeSeeder extends Seeder
             'status' => CompilationStatus::Published,
             'created_at' => '2026-02-13 16:00:00',
             'clips' => [
-                // Clip 0:00 missing?
+                'BlushingProductiveNikudonDoubleRainbow-_HBL_ULg-G4xiKXx',
                 'CarelessDullOrangeEleGiggle-ZEpTZ0eTJy3hO_Di',
                 'ArtisticHandsomeNightingaleMrDestructoid-M0Ee2o2KEmXchsRO',
                 'SpeedyCarefulFinchPJSugar-vu5thW7trthlGLmh',
