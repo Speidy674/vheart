@@ -123,7 +123,7 @@ Route::middleware(['guest'])->group(function () {
             Inertia::flash('showTwitchPermissionsPrompt', true);
 
             if (User::query()->whereNot('id', 0)->count() === 1) {
-                $user->syncRoles([1]);
+                $user->syncRoles([0]);
             }
         }
 

@@ -15,11 +15,25 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        if (Role::count() > 0) {
+        $roleCount = Role::count();
+
+        $superadmin = Role::firstOrCreate(
+            ['id' => 0],
+            [
+                'name' => 'Super Admin',
+                'weight' => 0,
+                'public' => false,
+                'desc' => 'The Role to Role them all',
+            ]
+        );
+        $superadmin->permissions()
+            ->createMany(collect(Permission::cases())->map(fn (Permission $p) => ['permission' => $p->value])->toArray());
+
+        if ($roleCount > 0) {
             return;
         }
 
-        $admin = Role::firstOrCreate(
+        Role::firstOrCreate(
             [
                 'name' => 'Administrator',
             ],
@@ -28,9 +42,6 @@ class RoleSeeder extends Seeder
                 'public' => true,
             ]
         );
-
-        $admin->permissions()
-            ->createMany(collect(Permission::cases())->map(fn (Permission $p) => ['permission' => $p->value])->toArray());
 
         Role::firstOrCreate(
             [
