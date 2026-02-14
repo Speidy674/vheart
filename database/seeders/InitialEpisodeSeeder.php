@@ -514,6 +514,12 @@ class InitialEpisodeSeeder extends Seeder
                 });
 
             $compilation->clips()->sync($clips);
+
+            $compilation->comments()->create([
+                'body' => "Compilation with {$clips->count()} clips has been imported.",
+                'author_id' => $systemUser->getKey(),
+                'author_type' => $systemUser->getMorphClass(),
+            ]);
         }
 
         // Force-run the import Job because we are lazy
