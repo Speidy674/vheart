@@ -54,6 +54,10 @@ class UserPolicy
             return false;
         }
 
+        if ($user->getRole()?->weight <= $model->getRole()?->weight) {
+            return $user->can(Permission::IgnoreRoleWeight);
+        }
+
         return $user->can(Permission::UpdateAnyUser);
     }
 
@@ -68,6 +72,13 @@ class UserPolicy
 
         if ($user->is($model)) {
             return $this->deny('Cannot delete own user');
+        }
+
+        if (
+            $user->cannot(Permission::IgnoreRoleWeight) &&
+            $user->getRole()?->weight <= $model->getRole()?->weight
+        ) {
+            return $this->deny('Cannot delete users with higher weight');
         }
 
         if ($user->can(Permission::DeleteAnyUser)) {
@@ -96,6 +107,10 @@ class UserPolicy
     {
         if ($model->id === self::SystemUser) {
             return false;
+        }
+
+        if ($user->getRole()?->weight <= $model->getRole()?->weight) {
+            return $user->can(Permission::IgnoreRoleWeight);
         }
 
         return $user->can(Permission::ForceDeleteAnyUser);
