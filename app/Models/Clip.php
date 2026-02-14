@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Http\Resources\PublicClipResource;
@@ -88,6 +89,13 @@ class Clip extends Model implements Commentable
     public function getReportableTitleAttribute(): string
     {
         return 'title';
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'status' => ClipStatus::class,
+        ];
     }
 
     /**

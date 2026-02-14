@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('vod_id')->nullable();
             $table->unsignedBigInteger('vod_offset')->nullable();
             $table->float('duration');
-            $table->string('status')->nullable(); // für flag feature
+            $table->unsignedTinyInteger('status')->default(0)->index(); // für flag feature
             $table->string('language')->nullable();
             $table->boolean('is_anonymous');
             $table->timestamp('date');

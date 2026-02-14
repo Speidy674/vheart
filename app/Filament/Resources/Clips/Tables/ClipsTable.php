@@ -96,6 +96,13 @@ class ClipsTable
                                 ->sortable()
                                 ->badge()
                                 ->color('success'),
+                            TextColumn::make('status')
+                                ->label('admin/resources/clips.table.columns.status')
+                                ->tooltip(__('admin/resources/clips.table.columns.status'))
+                                ->size(TextSize::Medium)
+                                ->icon(Heroicon::Clipboard)
+                                ->badge()
+                                ->translateLabel(),
                         ])->grow(false),
                     ])->space(),
 
