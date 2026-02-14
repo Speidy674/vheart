@@ -84,19 +84,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
 
-    Route::get('/team', TeamController::class)->name('team');
-
-    Route::get('/about-us', function () {
-        $settings = [
-            'donationUrl' => 'https://www.betterplace.org/de/fundraising-events/55712-vheart-fuerdiesuessmaeuse',
-            'partnerIcon' => null,
-        ];
-
-        return Inertia::render('about', $settings);
-    })->name('about');
-
     Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
 });
+
+Route::get('/team', TeamController::class)->name('team');
+
+Route::get('/about-us', function () {
+    $settings = [
+        'donationUrl' => 'https://www.betterplace.org/de/fundraising-events/55712-vheart-fuerdiesuessmaeuse',
+        'partnerIcon' => null,
+    ];
+
+    return Inertia::render('about', $settings);
+})->name('about');
 
 Route::get('/locales/{lang}', static function (Request $request, $lang) {
     if (! array_key_exists($lang, Config::get('app.locales'))) {

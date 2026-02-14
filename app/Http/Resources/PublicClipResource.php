@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\ExternalContentProxyType;
 use App\Models\Clip;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\URL;
 
 /**
  * @mixin Clip
@@ -25,25 +25,25 @@ class PublicClipResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->twitch_id,
             'title' => $this->title,
-            'thumbnail_url' => URL::signedRoute('image-proxy', ['url' => $this->thumbnail_url]),
+            'thumbnail_url' => ExternalContentProxyType::toProxyUrl($this->getModel()),
             'clip_url' => $this->getClipUrl(),
 
             'broadcaster' => $this->whenLoaded('broadcaster', [
                 'id' => $this->broadcaster_id,
                 'name' => $this->broadcaster->name,
-                'avatar' => URL::signedRoute('image-proxy', ['url' => $this->broadcaster->avatar_url]),
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->broadcaster),
             ]),
 
             'clipper' => $this->whenHas('creator', [
                 'id' => $this->creator_id,
                 'name' => $this->creator?->name,
-                'avatar' => URL::signedRoute('image-proxy', ['url' => $this->creator?->avatar_url]),
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->creator),
             ]),
 
             'submitter' => $this->whenHas('submitter', [
                 'id' => $this->submitter_id,
                 'name' => $this->submitter?->name,
-                'avatar' => URL::signedRoute('image-proxy', ['url' => $this->submitter?->avatar_url]),
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->submitter),
             ]),
 
             'category' => $this->whenLoaded('category', $this->category->toResource()),
