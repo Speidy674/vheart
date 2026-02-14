@@ -136,6 +136,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-1',
             'youtube_url' => 'https://www.youtube.com/watch?v=D9PHIxhU_MM',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-16 16:00:00',
             'clips' => [
                 'GenerousBoxySwanFloof-HM_jprvcQDR7WnwR',
                 'PlausibleSavorySwordCurseLit-y9LZMS1ERrSSq4N4',
@@ -199,6 +200,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-2',
             'youtube_url' => 'https://www.youtube.com/watch?v=2tQbOkXfdGc',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-23 16:00:00',
             'clips' => [
                 'PerfectCallousApeNotLikeThis-FmdLIDFMAJ4Rjze5',
                 'SplendidPiercingPuddingArsonNoSexy-OMj5X6TA1lxCedfq',
@@ -255,6 +257,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-3',
             'youtube_url' => 'https://www.youtube.com/watch?v=-BX7qzTCt3U',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-30 16:00:00',
             'clips' => [
                 'PhilanthropicAstuteRamenMau5-iHpoNwR2ay55Rt6f',
                 'AnimatedGoldenLaptopRitzMitz-DKPrbIj7lJzFyyK7',
@@ -309,6 +312,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-4',
             'youtube_url' => 'https://www.youtube.com/watch?v=AC9bdrzWiOo',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-02-06 16:00:00',
             'clips' => [
                 'AnimatedRoughTapirJonCarnage-3LsA-0wcV8jH42mi',
                 'PoliteThankfulCrabAsianGlow-f8MWSZp93alqkU3i',
