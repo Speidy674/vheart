@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Clip;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\User;
-use Deprecated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -17,22 +16,6 @@ enum ExternalContentProxyType: string
     case TwitchClip = 'clip';
     case TwitchUser = 'user';
     case TwitchCategory = 'category';
-
-    #[Deprecated]
-    public static function fromModel(Model $model): ?self
-    {
-        return $model instanceof ExternalProxyable ? $model->getProxyType() : null;
-    }
-
-    #[Deprecated]
-    public static function toProxyUrl(?Model $model, ?int $width = null, ?int $height = null): ?string
-    {
-        if (! $model) {
-            return null;
-        }
-
-        return $model instanceof ExternalProxyable ? $model->proxiedContentUrl($width, $height) : null;
-    }
 
     /**
      * @return class-string<Model&ExternalProxyable>
