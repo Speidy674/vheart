@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\Enums\ExternalContentProxyType;
+use App\Models\Contracts\ExternalProxyable;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -17,7 +18,7 @@ class ContentProxyRequest extends FormRequest
 
     public function rules(): array
     {
-        return []; // validation done via route and below
+        return [];
     }
 
     public function withValidator(Validator $validator): void
@@ -25,9 +26,17 @@ class ContentProxyRequest extends FormRequest
         $validator->after(function (Validator $validator) {
             /** @var ExternalContentProxyType|null $type */
             $type = $this->route('type');
+
+            if (! $type instanceof ExternalContentProxyType) {
+                return;
+            }
+
             $extension = $this->route('extension');
 
-            if ($type instanceof ExternalContentProxyType && $extension !== $type->extension()) {
+            /** @var class-string<ExternalProxyable> $modelClass */
+            $modelClass = $type->modelClass();
+
+            if ($extension !== $modelClass::getProxyExtension()) {
                 abort(404);
             }
         });

@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\ExternalContentProxyType;
 use App\Enums\Permission;
+use App\Models\Contracts\ExternalProxyable;
+use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\UserPolicy;
 use Database\Factories\UserFactory;
@@ -21,11 +24,11 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Vite;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\HasComments;
@@ -33,17 +36,18 @@ use Kirschbaum\Commentions\HasComments;
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements Commentable, Commenter, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
+class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
 {
     use HasComments;
+    use HasExternalProxy;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
     use InteractsWithAppAuthentication;
     use InteractsWithAppAuthenticationRecovery;
     use Notifiable;
     use Reportable;
-    use SoftDeletes;
 
-    /** @use HasFactory<UserFactory> */
-    use HasFactory;
+    use SoftDeletes;
 
     public $incrementing = false;
 
@@ -64,6 +68,16 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
 
     /** @var array<int,Permission>|null */
     protected ?array $permissionCache = null;
+
+    public static function getProxyUrlColumn(): string
+    {
+        return 'avatar_url';
+    }
+
+    public static function getProxyExtension(): string
+    {
+        return 'png';
+    }
 
     /**
      * @return array<int, Permission>
@@ -192,6 +206,20 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     public function getPasswordAttribute(): ?string
     {
         return null;
+    }
+
+    public function toProxyUrl(?int $width = null, ?int $height = null): ?string
+    {
+        if (! $this->exists || $this->id === 0) {
+            return Vite::asset('resources/images/png/cat.png');
+        }
+
+        return $this->generateExternalProxyUrl($width, $height);
+    }
+
+    public function getProxyType(): ExternalContentProxyType
+    {
+        return ExternalContentProxyType::TwitchUser;
     }
 
     /**
