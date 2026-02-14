@@ -21,6 +21,9 @@ use SocialiteProviders\Manager\OAuth2\AbstractProvider as AbstractSocialiteProvi
 
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
+    ->beforeEach(function () {
+        $this->withoutVite();
+    })
     ->in('Feature');
 
 /*

@@ -2,11 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\ImageProxyController;
+use App\Http\Controllers\ExternalContentProxyController;
 
-Route::get('/static/proxy', ImageProxyController::class)
-    ->middleware([
-        'signed',
-        'throttle:image-proxy',
-    ])
-    ->name('image-proxy');
+Route::get('/static-external/{type}/{identifier}.{extension}', ExternalContentProxyController::class)
+    ->middleware(['throttle:image-proxy'])
+    ->name('static-external');
