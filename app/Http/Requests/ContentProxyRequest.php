@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use App\Enums\ExternalContentProxyType;
 use App\Models\Contracts\ExternalProxyable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -33,7 +34,7 @@ class ContentProxyRequest extends FormRequest
 
             $extension = $this->route('extension');
 
-            /** @var class-string<ExternalProxyable> $modelClass */
+            /** @var class-string<Model&ExternalProxyable> $modelClass */
             $modelClass = $type->modelClass();
 
             if ($extension !== $modelClass::getProxyExtension()) {
