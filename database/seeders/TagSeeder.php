@@ -30,7 +30,6 @@ class TagSeeder extends Seeder
             'Tech Fail',
             'Bug',
             'Kreativ',
-            'Epic Win',
             'Sprachfehler',
             'Chat Interaktion',
             'Weisheiten',
