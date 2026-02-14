@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use App\Enums\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -26,8 +27,15 @@ class RoleSeeder extends Seeder
                 'desc' => 'The Role to Role them all',
             ]
         );
-        $superadmin->permissions()
-            ->createMany(collect(Permission::cases())->map(fn (Permission $p) => ['permission' => $p->value])->toArray());
+
+        $allPermissions = collect(Permission::cases())->pluck('value');
+
+        DB::table('role_permissions')->insertOrIgnore(
+            $allPermissions->map(fn (string $permission) => [
+                'role_id' => $superadmin->id,
+                'permission' => $permission,
+            ])->toArray()
+        );
 
         if ($roleCount > 0) {
             return;
