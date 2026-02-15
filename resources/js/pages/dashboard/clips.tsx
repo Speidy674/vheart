@@ -2,7 +2,7 @@ import { ClipPreview } from '@/components/clip-preview';
 import { StreamerSection } from '@/components/sidebar/streamer-section';
 import StaticSpaceBackground from '@/components/spacebackground';
 import AppLayout from '@/layouts/app-layout';
-import { clips as dashboardClips, main } from '@/routes/dashboard';
+import { clips, main } from '@/routes/dashboard';
 import { PublicClip, PublicUser, type BreadcrumbItem } from '@/types';
 import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 
@@ -13,9 +13,8 @@ type PageProps = {
     };
 };
 
-export default function clips() {
+export default function DashboardClips() {
     const { props } = usePage<PageProps>();
-    console.log('Dashboard/clips', props);
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -24,7 +23,7 @@ export default function clips() {
         },
         {
             title: 'Clips',
-            href: dashboardClips(props.selectedStreamer.id).url,
+            href: clips(props.selectedStreamer.id).url,
         },
     ];
 

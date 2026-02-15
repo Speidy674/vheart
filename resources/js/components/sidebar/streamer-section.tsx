@@ -34,9 +34,13 @@ export function StreamerSection() {
     const currentPath = window.location.pathname;
 
     const navItems = [
-        { key: 'main', href: main(props.selectedStreamer.id), icon: HomeIcon },
         {
-            key: 'clip',
+            key: 'streamerSidebar.dashboard',
+            href: main(props.selectedStreamer.id),
+            icon: HomeIcon,
+        },
+        {
+            key: 'streamerSidebar.clips',
             href: clips(props.selectedStreamer.id),
             icon: ClapperboardIcon,
         },
@@ -146,7 +150,7 @@ export function StreamerSection() {
                     <Link href={item.href}>
                         {item.icon && <item.icon className="h-4 w-4" />}
                         <T
-                            ns="streamerSidebar"
+                            ns="navigation"
                             k={item.key}
                             loadingSkeleton={true}
                         />

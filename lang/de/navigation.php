@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Main navigation items
     'dashboard' => 'Dashboard',
@@ -20,4 +22,9 @@ return [
 
     // Logo alt text
     'logo_alt' => 'VHeart Logo',
+
+    'streamerSidebar' => [
+        'dashboard' => 'Dashboard',
+        'clips' => 'Clips',
+    ],
 ];
