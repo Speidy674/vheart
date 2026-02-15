@@ -22,7 +22,6 @@ class ClipFactory extends Factory
         return [
             'twitch_id' => fake()->uuid(),
             'title' => fake()->sentence(),
-            'url' => fake()->url(),
             'broadcaster_id' => User::factory(),
             'creator_id' => User::factory(),
             'submitter_id' => User::factory(),

@@ -31,7 +31,7 @@ class ViewClip extends ViewRecord
                 ->label(__('admin/resources/clips.actions.view_on_twitch'))
                 ->icon(Heroicon::Link)
                 ->url(function (Clip $clip) {
-                    return $clip->url;
+                    return $clip->getClipUrl();
                 })
                 ->openUrlInNewTab(),
             EditAction::make(),
