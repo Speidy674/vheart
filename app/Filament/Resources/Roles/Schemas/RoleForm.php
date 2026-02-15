@@ -20,6 +20,7 @@ class RoleForm
             ->components([
                 TextInput::make('name')
                     ->label('admin/resources/roles.form.name')
+                    ->unique()
                     ->translateLabel()
                     ->required(),
                 TextInput::make('desc')
@@ -28,6 +29,7 @@ class RoleForm
                 TextInput::make('weight')
                     ->label('admin/resources/roles.form.weight')
                     ->translateLabel()
+                    ->maxValue(fn () => (auth()->user()->getRole()?->weight ?? 0) - 1)
                     ->required()
                     ->numeric()
                     ->default(0),
@@ -44,24 +46,37 @@ class RoleForm
                             ->dehydrated(false)
                             ->options(Permission::class)
                             ->formatStateUsing(function ($record) {
-                                $rawPermissions = DB::table('role_permissions')
+                                return DB::table('role_permissions')
                                     ->where('role_id', $record->id)
-                                    ->pluck('permission');
-
-                                return $rawPermissions
-                                    ->map(fn ($perm) => Permission::tryFrom($perm))
-                                    ->filter()
-                                    ->values()
+                                    ->pluck('permission')
                                     ->toArray();
                             })
                             ->saveRelationshipsUsing(function ($record, $state) {
-                                $rows = collect($state)->map(fn ($permission) => [
+                                $currentUser = auth()->user();
+                                $submittedPermissions = collect($state)
+                                    ->map(fn ($p) => $p instanceof Permission ? $p->value : $p);
+                                $immutablePermissions = collect(Permission::cases())
+                                    ->filter(fn (Permission $p) => ! $currentUser->can($p->value))
+                                    ->map(fn (Permission $p) => $p->value);
+
+                                $existingRolePermissions = DB::table('role_permissions')
+                                    ->where('role_id', $record->id)
+                                    ->pluck('permission');
+
+                                $keepRestricted = $existingRolePermissions->intersect($immutablePermissions);
+                                $mutablePermissions = $submittedPermissions->diff($immutablePermissions);
+                                $finalPermissions = $keepRestricted->merge($mutablePermissions)->unique();
+
+                                $rows = $finalPermissions->map(fn ($permission) => [
                                     'role_id' => $record->id,
                                     'permission' => $permission,
                                 ])->toArray();
 
                                 $record->permissions()->delete();
-                                $record->permissions()->createMany($rows);
+
+                                if (! empty($rows)) {
+                                    $record->permissions()->createMany($rows);
+                                }
                             })
                             ->columns()
                             ->gridDirection('row'),

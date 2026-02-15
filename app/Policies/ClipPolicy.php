@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use App\Enums\Permission;
 use App\Models\Clip;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ClipPolicy
 {
@@ -13,7 +15,7 @@ class ClipPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can(Permission::ViewAnyClip);
     }
 
     /**
@@ -21,7 +23,7 @@ class ClipPolicy
      */
     public function view(User $user, Clip $clip): bool
     {
-        return true;
+        return $user->can(Permission::ViewClip);
     }
 
     /**
@@ -29,7 +31,7 @@ class ClipPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can(Permission::CreateClip);
     }
 
     /**
@@ -37,7 +39,7 @@ class ClipPolicy
      */
     public function update(User $user, Clip $clip): bool
     {
-        return true;
+        return $user->can(Permission::UpdateAnyClip);
     }
 
     /**
@@ -45,7 +47,7 @@ class ClipPolicy
      */
     public function delete(User $user, Clip $clip): bool
     {
-        return true;
+        return $user->can(Permission::DeleteAnyClip);
     }
 
     /**
@@ -53,7 +55,7 @@ class ClipPolicy
      */
     public function restore(User $user, Clip $clip): bool
     {
-        return true;
+        return $user->can(Permission::RestoreAnyClip);
     }
 
     /**
@@ -61,11 +63,11 @@ class ClipPolicy
      */
     public function forceDelete(User $user, Clip $clip): bool
     {
-        return true;
+        return $user->can(Permission::ForceDeleteAnyClip);
     }
 
     public function submit(User $user, ?Clip $clip = null): bool
     {
-        return empty($user->deleted_at); 
+        return empty($user->deleted_at);
     }
 }
