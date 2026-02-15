@@ -15,6 +15,7 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
@@ -38,6 +39,7 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
      */
     public function handle(TwitchService $twitchService, ImportCategoryAction $importCategoryAction): void
     {
+        /** @var Collection $missingCategories */
         $missingCategories = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
             ->withoutGlobalScope(ClipWithoutBannedCategoryScope::class)
@@ -60,13 +62,17 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
                 'id' => $chunk->values()->toArray(),
             ]);
 
-            collect($categories)->each(function (GameDto $game) use ($importCategoryAction) {
+            foreach ($categories as $game) {
+                /** @var GameDto $game */
                 $importCategoryAction->execute($game);
-            });
+            }
 
             Log::debug('Fetched Batch of Categories from Twitch', [
                 'count' => count($categories),
             ]);
+
+            // Let twitch breath to prevent 429
+            sleep(1);
         });
     }
 }

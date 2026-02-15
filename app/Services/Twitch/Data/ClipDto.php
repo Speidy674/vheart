@@ -69,7 +69,6 @@ readonly class ClipDto implements TwitchDtoInterface
         return array_merge([
             'twitch_id' => $this->id,
             'title' => $this->title,
-            'url' => $this->url,
             'thumbnail_url' => $this->thumbnail_url,
             'broadcaster_id' => $this->broadcaster_id,
             'creator_id' => $this->creator_id,
