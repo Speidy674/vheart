@@ -31,7 +31,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Woher kam die Idee, einen Clip Kanal zu erstellen, der für den guten Zwecke Spenden sammelt?',
             ],
             'body' => [
-                'de' => "Die Idee entstand aus dem Wunsch, **gemeinsam ein eigenes Clip-Compilation-Projekt** umzusetzen.\n\n Alleine ist so ein Projekt jedoch kaum zu stemmen, deshalb haben wir uns zusammengeschlossen und VHeart gegründet. Die Idee, daraus zusätzlich eine Spendenaktion zu machen, entstand durch **Meyn**, der Projekte grundsätzlich gerne mit einem guten Zweck verbindet. Durch **SilentPandaVT's** Kontakt zum **<a href=\"https://erlebnishof-gerhardsbrunn.de\" target=\"_blank\">Erlebnishof Gerhardsbrunn</a>** lag es nahe, Unterhaltung und Tierschutz miteinander zu kombinieren. So wurde aus einer einfachen Idee ein **Charity-Projekt.**\n\n Wir sammeln Clips, unterhalten die Zuschauer und helfen gleichzeitig Tieren.",
+                'de' => "Die Idee entstand aus dem Wunsch, **gemeinsam ein eigenes Clip-Compilation-Projekt** umzusetzen.\n\n Alleine ist so ein Projekt jedoch kaum zu stemmen, deshalb haben wir uns zusammengeschlossen und VHeart gegründet. Die Idee, daraus zusätzlich eine Spendenaktion zu machen, entstand durch **Meyn**, der Projekte grundsätzlich gerne mit einem guten Zweck verbindet. Durch **SilentPandaVT's** Kontakt zum [Erlebnishof Gerhardsbrunn](https://erlebnishof-gerhardsbrunn.de) lag es nahe, Unterhaltung und Tierschutz miteinander zu kombinieren. So wurde aus einer einfachen Idee ein **Charity-Projekt.**\n\n Wir sammeln Clips, unterhalten die Zuschauer und helfen gleichzeitig Tieren.",
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
