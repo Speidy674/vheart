@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\BroadcasterDashboard;
-use App\Http\Resources\UserResource;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
@@ -24,39 +23,20 @@ Route::middleware('auth')->group(function () {
         return Redirect::route('dashboard.main', $request->user()->id);
     })->name('dashboard');
 
-    Route::get('/dashboard/{user}', function (User $user, Request $request) use ($twitchService) {
+    Route::get('/dashboard/{user}', function (User $user, Request $request) {
         $localUser = $request->user();
 
-        return Inertia::render('dashboard', [
-            'selectedStreamer' => $user->toResource(UserResource::class),
-            'streamers' => Inertia::once(function () use ($localUser, $twitchService) {
-                $moderatedChanels = $twitchService->asUser($localUser, session()?->get('twitch_access_token'))->getModeratedChannels();
-                $moderatedChanelIds = array_map(fn ($item) => $item['broadcaster_id'], $moderatedChanels);
-
-                $channels = User::query()->whereClipPermission(true)->findMany($moderatedChanelIds);
-
-                return $channels->toResourceCollection(UserResource::class);
-            }),
-        ]);
+        return Inertia::render('dashboard');
 
     })->middleware(BroadcasterDashboard::class)
         ->missing(function () {
             return Redirect::route('home');
         })->name('dashboard.main');
 
-    Route::get('/dashboard/{user}/clips', function (User $user, Request $request) use ($twitchService) {
+    Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
         $localUser = $request->user();
 
         return Inertia::render('dashboard/clips', [
-            'selectedStreamer' => $user->toResource(UserResource::class),
-            'streamers' => Inertia::once(function () use ($localUser, $twitchService) {
-                $moderatedChanels = $twitchService->asUser($localUser, session()?->get('twitch_access_token'))->getModeratedChannels();
-                $moderatedChanelIds = array_map(fn ($item) => $item['broadcaster_id'], $moderatedChanels);
-
-                $channels = User::query()->whereClipPermission(true)->findMany($moderatedChanelIds);
-
-                return $channels->toResourceCollection(UserResource::class);
-            }),
             'clips' => Inertia::scroll(static function () use ($user) {
                 $clip = Clip::query()
                     ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
