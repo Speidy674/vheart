@@ -2,7 +2,31 @@ import { wayfinder } from '@laravel/vite-plugin-wayfinder';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
-import { defineConfig } from 'vite';
+import { defineConfig, PluginOption } from 'vite';
+import { exec } from 'node:child_process';
+
+// update language files in real time on dev
+const i18nHotReload = () => ({
+    name: 'i18n-hot-reload',
+    apply: 'serve',
+    buildStart() {
+        exec('php artisan translations:export', (error) => {
+            if (error) console.error(`i18n initial export failed: ${error}`);
+        });
+    },
+    handleHotUpdate({ file }) {
+        if (file.includes('/lang/') && file.endsWith('.php')) {
+            console.log(`language file changed: ${file}`);
+
+            exec('php artisan translations:export', (error) => {
+                if (error) {
+                    console.error(`i18n export failed: ${error}`);
+                    return;
+                }
+            });
+        }
+    },
+} satisfies PluginOption);
 
 export default defineConfig({
     plugins: [
@@ -24,6 +48,7 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
+        i18nHotReload(),
     ],
     build: {
         rollupOptions: {

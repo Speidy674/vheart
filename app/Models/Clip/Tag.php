@@ -18,6 +18,9 @@ class Tag extends Model
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 
+    /** @var bool $timestamps */
+    public $timestamps = false;
+
     public function clips(): BelongsToMany
     {
         return $this->belongsToMany(Clip::class, 'clip_tags');

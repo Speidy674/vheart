@@ -1,19 +1,18 @@
 import i18n from 'i18next';
 import I18nextBrowserLanguageDetector from 'i18next-browser-languagedetector';
-import I18NextHttpBackend from 'i18next-http-backend';
-import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 import { initReactI18next } from 'react-i18next';
+import I18NextHttpBackend from 'i18next-http-backend';
 
 console.log(import.meta);
 const hash = import.meta.env.DEV ? Date.now().toString(16) : '';
 
-i18n.use(I18NextMultiloadBackendAdapter)
-    .use(initReactI18next)
+i18n.use(I18NextHttpBackend)
     .use(I18nextBrowserLanguageDetector)
+    .use(initReactI18next)
     .init({
         load: 'languageOnly',
-        preload: ['en', 'de'],
-        ns: ['strings'],
+        preload: ['en'],
+        ns: [],
         react: {
             //useSuspense: false,
         },
@@ -26,14 +25,9 @@ i18n.use(I18NextMultiloadBackendAdapter)
         fallbackLng: 'en',
         keySeparator: '.',
         backend: {
-            backend: I18NextHttpBackend,
-            backendOption: {
-                loadPath:
-                    '/locales.json?locale={{lng}}&namespace={{ns}}',
-                queryStringParams: import.meta.env.DEV ? { hash } : null, // only add cache buster in dev mode
-                allowMultiLoading: true,
-                cache: 'default',
-            },
+            loadPath: '/locales/{{lng}}/{{ns}}.json',
+            queryStringParams: import.meta.env.DEV ? { hash } : null, // only add cache buster in dev mode
+            allowMultiLoading: true,
         },
         interpolation: {
             // Per i18n-react documentation: this is not needed since React is already
