@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/sidebar';
 import { cn, isSameUrl } from '@/lib/utils';
 import { clips, main } from '@/routes/dashboard';
-import { Auth, PublicUser } from '@/types';
+import { DashboardData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Separator } from '@radix-ui/react-separator';
 import { ChevronDown, ClapperboardIcon, HomeIcon } from 'lucide-react';
@@ -22,12 +22,6 @@ import {
     DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 
-type StreamerSelectProps = {
-    selectedStreamer: PublicUser;
-    streamers: PublicUser[];
-    auth: Auth;
-};
-
 /**
  * Streamer selection section for the sidebar.
  * Shows a collapsible list of streamers the user manages.
@@ -36,8 +30,7 @@ export function StreamerSection() {
     const { state } = useSidebar();
     const { t } = useTranslation('navigation');
     const isCollapsed = state === 'collapsed';
-    const { props } = usePage<StreamerSelectProps>();
-    console.log('StreamerSection', props);
+    const { props } = usePage<DashboardData>();
     const currentPath = window.location.pathname;
 
     const navItems = [

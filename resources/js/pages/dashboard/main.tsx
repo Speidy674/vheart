@@ -2,24 +2,18 @@ import { StreamerSection } from '@/components/sidebar/streamer-section';
 import StaticSpaceBackground from '@/components/spacebackground';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
-import { dashboard } from '@/routes';
-import { PublicUser, type BreadcrumbItem } from '@/types';
+import { main } from '@/routes/dashboard';
+import { DashboardData, type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard().url,
-    },
-];
-
-type PageProps = {
-    selectedStreamer: PublicUser;
-};
-
-export default function Dashboard() {
-    const { props } = usePage<PageProps>();
-    console.log('Dashboard', props);
+export default function DashboardMain() {
+    const { props } = usePage<DashboardData>();
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: main(props.selectedStreamer.id).url,
+        },
+    ];
 
     return (
         <AppLayout

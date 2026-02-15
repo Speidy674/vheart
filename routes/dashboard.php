@@ -24,18 +24,13 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('/dashboard/{user}', function (User $user, Request $request) {
-        $localUser = $request->user();
-
-        return Inertia::render('dashboard');
-
+        return Inertia::render('dashboard/main');
     })->middleware(BroadcasterDashboard::class)
         ->missing(function () {
             return Redirect::route('home');
         })->name('dashboard.main');
 
     Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
-        $localUser = $request->user();
-
         return Inertia::render('dashboard/clips', [
             'clips' => Inertia::scroll(static function () use ($user) {
                 $clip = Clip::query()
