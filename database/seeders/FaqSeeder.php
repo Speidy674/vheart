@@ -64,7 +64,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Wird es eine Webseite geben?',
             ],
             'body' => [
-                'de' => 'Ja, eine Website ist **geplant**.<br><br> Da wir den Druck für die Entwickler in unserem Team gering halten möchten, haben wir vorübergehend das **Einsenden der Clips über unseren <a href="https://discord.gg/ThVZHqvXnD" target="_blank">Discord-Server</a>** eingeführt. So bekommt ihr bereits regelmäßig Content, während wir parallel an der Website arbeiten.<br><br> Unser Ziel ist es, euch später die bestmögliche Erfahrung über die Website zu bieten, zum Clips einzusenden und zu bewerten.',
+                'de' => 'Ja, eine Website ist **geplant**.<br><br> Da wir den Druck für die Entwickler in unserem Team gering halten möchten, haben wir vorübergehend das **Einsenden der Clips über unseren [Discord-Server](https://discord.gg/ThVZHqvXnD)** eingeführt. So bekommt ihr bereits regelmäßig Content, während wir parallel an der Website arbeiten.<br><br> Unser Ziel ist es, euch später die bestmögliche Erfahrung über die Website zu bieten, zum Clips einzusenden und zu bewerten.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -75,7 +75,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Derzeitiger Ablauf zum Einreichen der Clips',
             ],
             'body' => [
-                'de' => 'Jede Woche könnt ihr von **Freitag 12:00 Uhr bis Sonntag 20:00 Uhr** eure Lieblingsclips im dafür vorgesehenen Channel **auf unserem <a href="https://discord.gg/ThVZHqvXnD" target="_blank">Discord-Server</a> einreichen**, egal ob eigene Clips oder von euren Lieblings-Streamer.<br><br> Nach Ablauf der Einsendefrist werden die Clips zuerst vom Moderationsteam gesichtet und in eine engere Auswahl gebracht. Diese Auswahl geht anschließend an die Cutter weiter. Die Cutter schauen sich die Clips erneut an und wählen daraus die aus, die sie am besten umsetzen und bearbeiten können. Aus diesen bearbeiteten Clips entsteht am Ende die fertige Compilation.',
+                'de' => 'Jede Woche könnt ihr von **Freitag 12:00 Uhr bis Sonntag 20:00 Uhr** eure Lieblingsclips im dafür vorgesehenen Channel **auf unserem [Discord-Server](https://discord.gg/ThVZHqvXnD) einreichen**, egal ob eigene Clips oder von euren Lieblings-Streamer.<br><br> Nach Ablauf der Einsendefrist werden die Clips zuerst vom Moderationsteam gesichtet und in eine engere Auswahl gebracht. Diese Auswahl geht anschließend an die Cutter weiter. Die Cutter schauen sich die Clips erneut an und wählen daraus die aus, die sie am besten umsetzen und bearbeiten können. Aus diesen bearbeiteten Clips entsteht am Ende die fertige Compilation.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -97,7 +97,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Kann ich, als Zuschauer, einreichen?',
             ],
             'body' => [
-                'de' => 'Ja! Auch als Zuschauer kannst du Clips einreichen.<br><br> Aktuell ist das jedoch nur über unseren **<a href="https://discord.gg/ThVZHqvXnD" target="_blank">Discord-Server</a>** möglich, da dort die Einsendungen gesammelt und sortiert werden.',
+                'de' => 'Ja! Auch als Zuschauer kannst du Clips einreichen.<br><br> Aktuell ist das jedoch nur über unseren **[Discord-Server](https://discord.gg/ThVZHqvXnD)** möglich, da dort die Einsendungen gesammelt und sortiert werden.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -141,7 +141,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Kann ich mich dem Team Anschließen?',
             ],
             'body' => [
-                'de' => 'Ja, über den **<a href="https://discord.gg/ThVZHqvXnD" target="_blank">Discord-Server</a>** im Support Channel kannst du auch sehen welche Bewerbungsphasen gerade offen sind. Bewerben kannst du dich als:<br><ul><li>Cutter</li><li>Moderator</li><li>Später als Jury</li></ul>',
+                'de' => 'Ja, über den **[Discord-Server](https://discord.gg/ThVZHqvXnD)** im Support Channel kannst du auch sehen welche Bewerbungsphasen gerade offen sind. Bewerben kannst du dich als:<br><ul><li>Cutter</li><li>Moderator</li><li>Später als Jury</li></ul>',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -196,7 +196,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Für wen oder was werden die Spenden gesammelt?',
             ],
             'body' => [
-                'de' => 'Wir sammeln Spenden für dem **<a href="https://erlebnishof-gerhardsbrunn.de" target="_blank">Erlebnishof Gerhardsbrunn</a>**.<br><br>Der Hof wurde im Jahr 2020 von Janne Bach und Tierarzt Ingmar Meth gegründet. Er dient als Zufluchtsort für Tiere, die aus schlechten Haltungen, Vernachlässigung oder anderen schwierigen Umständen kommen und ein dauerhaftes Zuhause brauchen. Neben der Versorgung und Pflege der Tiere ist der Hof auch ein Begegnungsort für Menschen. Besucher können dort zur Ruhe kommen, den respektvollen Umgang mit Tieren erleben und eine Verbindung zu ihnen aufbauen.<br><br>Mit den Spenden werden unter anderem **Futter, medizinische Versorgung, Unterhalt der Anlagen sowie die tägliche Betreuung der Tiere finanziert**. Jede Unterstützung hilft direkt dabei, den Tieren langfristig ein sicheres Leben zu ermöglichen.',
+                'de' => 'Wir sammeln Spenden für dem **[Erlebnishof Gerhardsbrunn](https://erlebnishof-gerhardsbrunn.de)**.<br><br>Der Hof wurde im Jahr 2020 von Janne Bach und Tierarzt Ingmar Meth gegründet. Er dient als Zufluchtsort für Tiere, die aus schlechten Haltungen, Vernachlässigung oder anderen schwierigen Umständen kommen und ein dauerhaftes Zuhause brauchen. Neben der Versorgung und Pflege der Tiere ist der Hof auch ein Begegnungsort für Menschen. Besucher können dort zur Ruhe kommen, den respektvollen Umgang mit Tieren erleben und eine Verbindung zu ihnen aufbauen.<br><br>Mit den Spenden werden unter anderem **Futter, medizinische Versorgung, Unterhalt der Anlagen sowie die tägliche Betreuung der Tiere finanziert**. Jede Unterstützung hilft direkt dabei, den Tieren langfristig ein sicheres Leben zu ermöglichen.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -207,7 +207,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Wird der YouTube Kanal monetarisiert?',
             ],
             'body' => [
-                'de' => 'Ja. Die Einnahmen des **<a href="https://www.youtube.com/@vheartclips" target="_blank">YouTube-Kanals</a>** werden vollständig gespendet und gehen zu 100 % an den **<a href="https://erlebnishof-gerhardsbrunn.de" target="_blank">Erlebnishof Gerhardsbrunn</a>.**',
+                'de' => 'Ja. Die Einnahmen des **[YouTube-Kanals](https://www.youtube.com/@vheartclips)** werden vollständig gespendet und gehen zu 100 % an den **[Erlebnishof Gerhardsbrunn](https://erlebnishof-gerhardsbrunn.de).**',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -218,7 +218,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Wie wird sichergestellt, dass die Spenden wirklich an den Erlebnishof gesendet werden?',
             ],
             'body' => [
-                'de' => 'Die Spendenabwicklung erfolgt über die Plattform **<a href="https://go.vheart.net/spenden" target="_blank">Betterplace</a>** und wurde in Absprache mit dem **<a href="https://erlebnishof-gerhardsbrunn.de" target="_blank">Erlebnishof Gerhardsbrunn</a>** eingerichtet.<br><br>Dadurch wird sichergestellt, dass die Gelder transparent und direkt an den Hof weitergeleitet werden, **ohne dass wir vom Team das Geld anfassen können.**',
+                'de' => 'Die Spendenabwicklung erfolgt über die Plattform **[Betterplace](https://go.vheart.net/spenden)** und wurde in Absprache mit dem **[Erlebnishof Gerhardsbrunn](https://erlebnishof-gerhardsbrunn.de)** eingerichtet.<br><br>Dadurch wird sichergestellt, dass die Gelder transparent und direkt an den Hof weitergeleitet werden, **ohne dass wir vom Team das Geld anfassen können.**',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -229,7 +229,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Kann ich ein Event machen, wo ich direkt für VHeart spenden sammel?',
             ],
             'body' => [
-                'de' => 'Grundsätzlich ja, wir freuen uns sehr über jede Unterstützung!<br><br>Damit alles korrekt zugeordnet werden kann, bitten wir euch jedoch, solche Aktionen **vorher kurz mit uns abzusprechen und unseren <a href="https://go.vheart.net/spenden" target="_blank">offiziellen Spendenlink</a> zu verwenden.** So stellen wir sicher, dass das Geld auch wirklich beim Projekt und den Tieren ankommt.',
+                'de' => 'Grundsätzlich ja, wir freuen uns sehr über jede Unterstützung!<br><br>Damit alles korrekt zugeordnet werden kann, bitten wir euch jedoch, solche Aktionen **vorher kurz mit uns abzusprechen und unseren [offiziellen Spendenlink](https://go.vheart.net/spenden) zu verwenden.** So stellen wir sicher, dass das Geld auch wirklich beim Projekt und den Tieren ankommt.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -262,7 +262,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Wann darf ich reagieren?',
             ],
             'body' => [
-                'de' => 'Du darfst **jederzeit** auf unsere Videos reagieren, es gibt keine zeitlichen Einschränkungen.<br><br>Wir würden uns lediglich freuen, wenn dabei der Video-Link im Stream sichtbar ist oder der **<a href="https://go.vheart.net/spenden" target="_blank">Spendenlink</a>** hervorgehoben wird, damit Zuschauer direkt zum Projekt finden können.',
+                'de' => 'Du darfst **jederzeit** auf unsere Videos reagieren, es gibt keine zeitlichen Einschränkungen.<br><br>Wir würden uns lediglich freuen, wenn dabei der Video-Link im Stream sichtbar ist oder der **[Spendenlink](https://go.vheart.net/spenden)** hervorgehoben wird, damit Zuschauer direkt zum Projekt finden können.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
