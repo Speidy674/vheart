@@ -26,7 +26,7 @@ class PublicClipResource extends JsonResource
             'slug' => $this->twitch_id,
             'title' => $this->title,
             'thumbnail_url' => $this->proxiedContentUrl(),
-            'clip_url' => $this->url,
+            'clip_url' => $this->getClipUrl(),
 
             'broadcaster' => $this->whenLoaded('broadcaster', [
                 'id' => $this->broadcaster_id,

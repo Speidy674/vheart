@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Log;
 
 class InitialEpisodeSeeder extends Seeder
 {
+    // Regex to replace full urls with Slugs: 'http.+/([A-Z][a-zA-Z0-9]*-[a-zA-Z0-9_-]+)',
+    // Replace with: '$1',
+
     // Only raw clip ids pls
     protected const array Clips = [
         // Episode 1
@@ -49,7 +52,6 @@ class InitialEpisodeSeeder extends Seeder
         'PrettyAmazingMochaRalpherZ-3jvM5cgcwxiec6hs',
         'ClumsyGloriousNightingaleTooSpicy-0U-EAoDIXzzKB9rS',
         'CleverFaithfulWatercressTF2John-cu8rRTahL8ATnnMA',
-        'TenuousSparklingWeaselBCWarrior-Pu9ggzbJZxDEd8wd',
         'SpookyProductivePhoneSwiftRage-3J7WJVEn-vypPHdx',
         'CreativeTalentedAniseTBTacoRight--zmezpz1T3vNI1Z8',
         'AgitatedWrongMartenAMPEnergyCherry-QtACzJvoGLjV7baP',
@@ -86,7 +88,6 @@ class InitialEpisodeSeeder extends Seeder
         'AmusedAliveRamenTBCheesePull-YbpQkgs36gSvnIfQ',
         'EntertainingDeafCrabsYouDontSay-xtPD-UPufRlb0Wus',
         'AntsyThoughtfulDiscSSSsss-kXiWTMseykD53Gc_',
-        'SuccessfulConsideratePorcupineWholeWheat-cjDlwC3cEH-xWLpx',
         'PrettyInterestingCoyoteKappaPride-neXiGp39m6znQvPq',
         'ShinyUglySpiderPartyTime-jtK5Rw_GOE87AqYD',
         // Episode 4
@@ -127,6 +128,23 @@ class InitialEpisodeSeeder extends Seeder
         'AmericanFragileStarYee-rRhitio2lORaJRTx',
         'SpookyArtsyMarjoramThisIsSparta-EFUe_l-sq1ZkQgeA',
         'UglyAwkwardPheasantSmoocherZ-A0qQYHlawSjYqtba',
+        // Episode 5
+        'SingleColorfulSageWoofer-cfuIJ102ziUciuwZ', // icyhime
+        'ShyEndearingWafflePupper-mM5X2QVQWSmeYNkd', // chiino
+        'MoldyCleverOctopusPanicVis-POKv0owfNwQk3r5R', // zhenganu
+        'BlushingScrumptiousWormLitty-Fx3l2GrN9Ekd3jvJ', // mauwchi
+        'BashfulEnticingDogHeyGirl-WEFlAqtJUIZfp_oq', // re4lblacky
+        'RudeRepletePhonePJSalt-csVP-PFuuwSHyxxq', // everylunaever
+        'AnimatedGenerousCatLitty-Lp5bHStot4BmMgpx', // yutoxsenpai
+        'SmellyCleanReindeerPanicBasket-x2l3wyk91-BDh1dl', // frechelexi
+        'BeautifulSpikyPotDerp-zFf0g2ST16KVvz2f', // jen_tsukase
+        'HumbleHonestCaterpillarPanicBasket-7uSaGMZLuiC6oA6A', // leanorar
+        'ProductiveCrowdedLeopardM4xHeh-lddJY9UPqdEwuUYl', // nyrellia
+        'RealGloriousCheetahBigBrother-M0k4McoSUC3ZAw4J', // xblackievt
+        'BadThirstyPepperoniStinkyCheese-N0jJ3nHB9opNZpJI', // ponyu94
+        'HungryBlightedDootPMSTwin-ZgVfoVCOJhC11UHt', // tryhanji
+        'CoySuccessfulSpiderTooSpicy-UiVreGYnOfOsNnn9', // jeymarzanna
+        'BenevolentAbstemiousOrcaBrokeBack-_efVdJHmK0KCHYHB', // lunariamoonvt
     ];
 
     protected const array Episodes = [
@@ -136,6 +154,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-1',
             'youtube_url' => 'https://www.youtube.com/watch?v=D9PHIxhU_MM',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-16 16:00:00',
             'clips' => [
                 'GenerousBoxySwanFloof-HM_jprvcQDR7WnwR',
                 'PlausibleSavorySwordCurseLit-y9LZMS1ERrSSq4N4',
@@ -152,7 +171,6 @@ class InitialEpisodeSeeder extends Seeder
                 'CooperativeAmericanPheasantMingLee-5FXZZ91UFu9b-8T3',
                 'HeadstrongOnerousParrotDogFace-Pzk4pAjq0Ws-AuY5',
                 'IgnorantMuddyLocustAMPEnergy-VUBWoHLFCEteN3C_',
-                'AbnegateSlipperyBulgogiUnSane-uWS1v7mESK2e_6MQ',
                 'SuccessfulResourcefulPlumPartyTime-iPGxDnmhkiYcc1p7',
                 'CharmingSquareLyrebirdCoolStoryBob-Di5d7-2Ju-O_0VWW',
                 'AverageAgilePancakeKevinTurtle-MI4eLE8P2oPOsoKs',
@@ -181,7 +199,6 @@ class InitialEpisodeSeeder extends Seeder
                 'CulturedAverageWerewolfCharlieBitMe-5SdXIxXzpiI9Qt2y',
                 'StupidHumbleBeeResidentSleeper-nP9QXjKx26XY9k_D',
                 'BelovedPowerfulHumanVoteYea-JA2ieqE2dTp7Bfdw',
-                'DifferentSpikyLlamaTheTarFu-UK8RRfYhb_A2XFpQ',
                 'FaintBoringButterSuperVinlin-PcB6n7v1YFpgvpSe',
                 'ScrumptiousDaintyCocoaBrokeBack-nZJf9zZ-OAIc6LS6',
                 'CleverKnottyUdonPRChase-N_zw9BP7soQFegFG',
@@ -199,6 +216,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-2',
             'youtube_url' => 'https://www.youtube.com/watch?v=2tQbOkXfdGc',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-23 16:00:00',
             'clips' => [
                 'PerfectCallousApeNotLikeThis-FmdLIDFMAJ4Rjze5',
                 'SplendidPiercingPuddingArsonNoSexy-OMj5X6TA1lxCedfq',
@@ -255,6 +273,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-3',
             'youtube_url' => 'https://www.youtube.com/watch?v=-BX7qzTCt3U',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-01-30 16:00:00',
             'clips' => [
                 'PhilanthropicAstuteRamenMau5-iHpoNwR2ay55Rt6f',
                 'AnimatedGoldenLaptopRitzMitz-DKPrbIj7lJzFyyK7',
@@ -309,6 +328,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-4',
             'youtube_url' => 'https://www.youtube.com/watch?v=AC9bdrzWiOo',
             'status' => CompilationStatus::Published,
+            'created_at' => '2026-02-06 16:00:00',
             'clips' => [
                 'AnimatedRoughTapirJonCarnage-3LsA-0wcV8jH42mi',
                 'PoliteThankfulCrabAsianGlow-f8MWSZp93alqkU3i',
@@ -349,6 +369,61 @@ class InitialEpisodeSeeder extends Seeder
                 'CooperativePricklyGooseSaltBae-v9qjwG25wYFn0n3q',
                 'LivelyDiligentGorillaJKanStyle-9sW9dY5oPvOYuMNO',
                 'HumbleWonderfulFerretM4xHeh-gfSzPjyNlXRKM-0G',
+            ],
+        ],
+        [
+            'user_id' => 0,
+            'title' => 'Episode 5',
+            'slug' => 'episode-5',
+            'youtube_url' => 'https://www.youtube.com/watch?v=jvuk243L8z4',
+            'status' => CompilationStatus::Published,
+            'created_at' => '2026-02-13 16:00:00',
+            'clips' => [
+                'BlushingProductiveNikudonDoubleRainbow-_HBL_ULg-G4xiKXx',
+                'CarelessDullOrangeEleGiggle-ZEpTZ0eTJy3hO_Di',
+                'ArtisticHandsomeNightingaleMrDestructoid-M0Ee2o2KEmXchsRO',
+                'SpeedyCarefulFinchPJSugar-vu5thW7trthlGLmh',
+                'TenaciousAstuteTeaTriHard-Earv5baovT2GEgU6',
+                'SoftTolerantFlyLeeroyJenkins-Ky_gnEC0m-vqwgmF',
+                'PlumpEasyBeanCoolStoryBob-ieWXP9YUqdMbKedt',
+                'ImpartialCrispyYamPartyTime-HXXWk0ELpQH2-nHC',
+                'IcyGleamingCucumberKeyboardCat-9m3T8q-AwMSWUBMh',
+                'QuaintEnergeticSkirretBleedPurple-NIuoKf7Ogrx_oUwo',
+                'DepressedLivelyRutabagaWTRuck-Az3AEfecJJge5UeY',
+                'HeartlessInquisitiveSandstormCclamChamp-oAqWhb6bG08H3QG2',
+                'SuccessfulConsideratePorcupineWholeWheat-cjDlwC3cEH-xWLpx',
+                'PoliteGrotesqueWasabiYouWHY-igQgMRUbKr6xwu6d',
+                'HardZanyButterflyDerp-hNw2oGqAUecSsKmY',
+                'NaiveSuspiciousCucumberHassaanChop-bgvd2rVUvrcjn7P-',
+                'GoodSinglePeachRickroll-y2G1CsUBLsV-62zC',
+                'SteamyBillowingNarwhalThisIsSparta-Nt0_pyBIZ7UNe9fS',
+                'ExquisitePeacefulElephantVoHiYo-MexS3jZ5GpfsM95_',
+                'CourteousSourSalsifyHassanChop-pOClTvFPH1ybKAi0',
+                'DifferentSpikyLlamaTheTarFu-UK8RRfYhb_A2XFpQ',
+                'PerfectAntsyScorpionPartyTime-a5IoajGm7muZeQiM',
+                'AcceptableBlightedOryxPicoMause-Hk7iYPlgshqQAyyf',
+                'AliveIronicSheepDancingBanana-5tSYgNh_7S5x58mh',
+                'DistinctCooperativeOkapiImGlitch-og2-CvYwYMYGDVWv',
+                'GorgeousPiercingKiwiBIRB-Zw2r1WoSnfrqtWG3',
+                'StrangePlacidGiraffeDxAbomb-u9nQKeTXrnnwbUU8',
+                'PluckyPrettyLobsterHassanChop-kHM3uJJ7q79uqOOZ',
+                'PrettyAmazingMochaRalpherZ-3jvM5cgcwxiec6hs',
+                'ModernOutstandingMonkeyCurseLit-3h5mnLd7sZJJDMLN',
+                'HealthyDistinctGalagoShadyLulu-IfdAv852nQmdVuKZ',
+                'FaintFragileRaccoonStoneLightning-hvofOmPssdMod6aR',
+                'DeliciousEnergeticZucchiniPJSalt-D_6dc9fkfgTi6tsS',
+                'BeautifulPiliableTubersPupper-W-tYmUe0II7QmGU1',
+                'TenuousSparklingWeaselBCWarrior-Pu9ggzbJZxDEd8wd',
+                'SpunkyCulturedWasabiSwiftRage-EkCDH401E6AmugzV',
+                'TallPreciousMuleDatSheffy-iCERvDNtgryrJv-r',
+                'SmoothBlitheDogeGOWSkull-EQtQGXmjnIRV7uho',
+                'ColdOptimisticGullRlyTho--5xmA5Bs_CGFYBSu',
+                'TiredObeseTermiteMingLee-etWvZnM-e4jQFBvp',
+                'IntelligentRefinedKeyboardCoolStoryBro-iNW1LXlr8a_fQbfp',
+                'SpotlessVastMosquitoANELE-KjIE1q5nR2exBqRO',
+                'SuaveSuccessfulHippoTooSpicy-EGC-fUu-NuzsOJyb',
+                'AbnegateSlipperyBulgogiUnSane-uWS1v7mESK2e_6MQ',
+                'GenerousTemperedRamenBudBlast-RTVHu1SXRYzMn87k',
             ],
         ],
     ];
@@ -439,6 +514,12 @@ class InitialEpisodeSeeder extends Seeder
                 });
 
             $compilation->clips()->sync($clips);
+
+            $compilation->comments()->create([
+                'body' => "Compilation with {$clips->count()} clips has been imported.",
+                'author_id' => $systemUser->getKey(),
+                'author_type' => $systemUser->getMorphClass(),
+            ]);
         }
 
         // Force-run the import Job because we are lazy
