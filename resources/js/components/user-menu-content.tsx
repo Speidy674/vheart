@@ -12,7 +12,6 @@ import { type User } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Appearance_dropdown } from './appearence_dropdown';
 
 interface UserMenuContentProps {
     user: User;
@@ -48,10 +47,6 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                         {t('title')}
                     </Link>
                 </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuGroup>
-                <Appearance_dropdown />
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
