@@ -46,6 +46,15 @@ class Clip extends Model implements Commentable
             ->withDefault(['name' => 'N/A', 'avatar_url' => Vite::asset('resources/images/png/cat.png')]);
     }
 
+    /**
+     * Returns the Twitch Clip Url for Twitch
+     */
+    public function getClipUrl(): string
+    {
+        // old ui, but less buggy
+        return "https://clips.twitch.tv/{$this->twitch_id}";
+    }
+
     public function creator(): BelongsTo
     {
         return $this->BelongsTo(User::class)->withTrashed();
