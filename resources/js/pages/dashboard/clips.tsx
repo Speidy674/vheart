@@ -39,7 +39,10 @@ export default function clips() {
                 <InfiniteScroll data="clips" preserveUrl buffer={100}>
                     <div className="grid auto-rows-min gap-4 md:grid-cols-1">
                         {props.clips?.data?.map((clip) => (
-                            <div className="relative max-h-32 rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-2 ring-1 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0">
+                            <div
+                                key={'clip' + clip.id}
+                                className="relative max-h-32 rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-2 ring-1 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0"
+                            >
                                 <div
                                     key={'clip' + clip.id}
                                     className="aspect-video h-full overflow-hidden rounded-md"

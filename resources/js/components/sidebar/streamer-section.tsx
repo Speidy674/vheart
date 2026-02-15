@@ -79,7 +79,9 @@ export function StreamerSection() {
                             </SidebarMenuButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56" align="start">
-                            <DropdownMenuGroup>
+                            <DropdownMenuGroup
+                                key={'streamerSelect' + props.auth.user.id}
+                            >
                                 <DropdownMenuItem asChild>
                                     <Link
                                         className="block w-full"
@@ -106,7 +108,9 @@ export function StreamerSection() {
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                             {props.streamers.map((item) => (
-                                <DropdownMenuGroup>
+                                <DropdownMenuGroup
+                                    key={'streamerSelect' + item.id}
+                                >
                                     <DropdownMenuItem asChild>
                                         <Link
                                             className="block w-full"
@@ -138,6 +142,7 @@ export function StreamerSection() {
             <Separator className="my-6 lg:hidden" />
             {navItems.map((item) => (
                 <SidebarMenuButton
+                    key={'streamerSidebar' + item.key}
                     size="sm"
                     variant="outline"
                     asChild
