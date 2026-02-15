@@ -33,7 +33,7 @@ export default function clips() {
             breadcrumbs={breadcrumbs}
             sidebarContent={<StreamerSection />}
         >
-            <Head title={'Dashboard Clips - ' + props.selectedStreamer.name} />
+            <Head title={props.selectedStreamer.name + ' Dashboard Clips'} />
             <StaticSpaceBackground />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <InfiniteScroll data="clips" preserveUrl buffer={100}>
