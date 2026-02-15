@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models\Scopes;
+
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Scope;
+
+/**
+ * Hide clips that have banned categories or where the category is missing
+ */
+class ClipWithoutBannedCategoryScope implements Scope
+{
+    public function apply(Builder $builder, Model $model): void
+    {
+        if (Filament::isServing()) {
+            return;
+        }
+
+        $builder->where(function ($query) {
+            return $query->whereHas('category', function (Builder $builder) {
+                $builder->where('is_banned', false);
+            })->orWhereDoesntHave('category', function (Builder $builder) {
+                $builder->where('is_banned', true);
+            });
+        });
+    }
+}

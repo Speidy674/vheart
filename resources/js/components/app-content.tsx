@@ -15,7 +15,7 @@ export function AppContent({
     }
 
     return (
-        <main className="relative flex min-h-screen flex-col" {...props}>
+        <main className="relative flex min-h-full flex-col" {...props}>
             {children}
         </main>
     );

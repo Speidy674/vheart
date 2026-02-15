@@ -1,17 +1,22 @@
 import { AppContent } from '@/components/app-content';
 import { AppHeader } from '@/components/app-header';
 import { AppShell } from '@/components/app-shell';
-import { type BreadcrumbItem } from '@/types';
 import type { PropsWithChildren } from 'react';
+import Footer from '@/components/footer/footer';
+
+type AppHeaderLayoutProps = PropsWithChildren<{
+    isIsland?: boolean;
+}>;
 
 export default function AppHeaderLayout({
     children,
-    breadcrumbs,
-}: PropsWithChildren<{ breadcrumbs?: BreadcrumbItem[] }>) {
+    isIsland
+}: AppHeaderLayoutProps) {
     return (
         <AppShell>
-            <AppHeader breadcrumbs={breadcrumbs} />
+            <AppHeader isIsland={isIsland} />
             <AppContent>{children}</AppContent>
+            <Footer isIsland={isIsland} />
         </AppShell>
     );
 }

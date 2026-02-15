@@ -41,10 +41,10 @@ class TwitchService
      */
     public function __construct()
     {
-        $this->clientId = config('services.twitch.client_id');
-        $this->clientSecret = config('services.twitch.client_secret');
+        $this->clientId = config('services.twitch.client_id', '');
+        $this->clientSecret = config('services.twitch.client_secret', '');
 
-        if (empty($this->clientId) || empty($this->clientSecret)) {
+        if ((empty($this->clientId) || empty($this->clientSecret)) && app()->environment(['local', 'staging', 'production'])) {
             throw TwitchApiException::ApplicationClientIdOrSecretNotConfiguredError();
         }
     }
@@ -332,8 +332,8 @@ class TwitchService
      */
     public function parseClipId(string $clipUrl): ?string
     {
-        if (preg_match('/https?:\/\/(?:www|clips)?\.?(?:twitch\.tv\/)(?:embed\?clip=|[\w\/]+\/clip\/)?([\w_-]+)/', $clipUrl, $m)) {
-            return $m[1];
+        if (preg_match('/([A-Z][a-zA-Z0-9]*-[a-zA-Z0-9_-]+)/', $clipUrl, $m)) {
+            return $m[0];
         }
 
         return null;

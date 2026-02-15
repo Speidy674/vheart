@@ -5,12 +5,22 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Enums\Permission;
+use App\Models\BroadcasterFilter;
+use App\Models\Category;
 use App\Models\Clip;
-use App\Models\Game;
+use App\Models\Contracts\FilamentResourceful;
+use App\Models\Clip\Compilation;
+use App\Models\Clip\CompilationClip;
+use App\Models\Faq\FaqEntry;
+use App\Models\Report;
 use App\Models\Role;
+use App\Models\RolePermission;
 use App\Models\User;
+use App\Models\Vote;
 use App\Providers\Socialite\TwitchSocialiteProvider;
+use App\Support\CookieConsent\CustomCookiesManager;
 use Carbon\CarbonImmutable;
+use Filament\Facades\Filament;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +37,11 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Inertia\Inertia;
+use Kirschbaum\Commentions\Comment;
+use Kirschbaum\Commentions\Config;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Spatie\Translatable\Facades\Translatable;
+use Whitecube\LaravelCookieConsent\CookiesManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CookiesManager::class, CustomCookiesManager::class);
     }
 
     /**
@@ -48,7 +61,6 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(static function (SocialiteWasCalled $event) {
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
-
 
         $this->configureRateLimiting();
         $this->configureGates();
@@ -104,10 +116,18 @@ class AppServiceProvider extends ServiceProvider
         DB::prohibitDestructiveCommands(app()->isProduction());
 
         Relation::enforceMorphMap([
-            'user' => User::class,
+            'compilation' => Compilation::class,
+            'compilation_clip' => CompilationClip::class,
+            'tag' => Clip\Tag::class,
+            'faq_entry' => FaqEntry::class,
+            'broadcaster_filter' => BroadcasterFilter::class,
+            'category' => Category::class,
             'clip' => Clip::class,
+            'report' => Report::class,
             'role' => Role::class,
-            'game' => Game::class,
+            'role_permission' => RolePermission::class,
+            'user' => User::class,
+            'vote' => Vote::class,
         ]);
 
         // Some logging for us so we can see if there are issues
@@ -137,6 +157,21 @@ class AppServiceProvider extends ServiceProvider
 
         Translatable::fallback('en');
         JsonResource::withoutWrapping();
+
+        Config::resolveCommentUrlUsing(function (Comment $comment) {
+            $record = $comment->commentable;
+            $page = 'view';
+
+            if (! $record) {
+                return null;
+            }
+
+            if ($record instanceof FilamentResourceful) {
+                $page = $record->filamentResourcePageForCommentNotifications;
+            }
+
+            return Filament::getResourceUrl($record, $page);
+        });
     }
 
     private function configureRateLimiting(): void
@@ -153,6 +188,10 @@ class AppServiceProvider extends ServiceProvider
             $throttleKey = sha1($request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
+        });
+
+        RateLimiter::for('image-proxy', static function (Request $request): Limit {
+            return Limit::perMinute(50)->by($request->user()?->id ?? sha1($request->ip()));
         });
     }
 }

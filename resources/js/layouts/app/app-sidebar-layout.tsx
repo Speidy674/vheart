@@ -5,6 +5,7 @@ import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { AppTopbar } from '@/components/app-topbar';
 import { type BreadcrumbItem } from '@/types';
 import { type PropsWithChildren, type ReactNode } from 'react';
+import Footer from '@/components/footer/footer';
 
 interface AppSidebarLayoutProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -19,7 +20,7 @@ export default function AppSidebarLayout({
 }: PropsWithChildren<AppSidebarLayoutProps>) {
     return (
         <div className="flex min-h-screen flex-col">
-            <AppTopbar />
+            <AppTopbar isIsland={false} />
             <div className="flex flex-1">
                 <AppShell variant="sidebar">
                     <AppSidebar className="top-[calc(4.75rem+var(--app-banner-height,0px))]! h-[calc(100svh-4.75rem-var(--app-banner-height,0px))]! border! border-sidebar-border! transition-[top,height] duration-300 ease-out">
@@ -32,6 +33,7 @@ export default function AppSidebarLayout({
                         <AppSidebarHeader breadcrumbs={breadcrumbs} />
                         {children}
                     </AppContent>
+                    <Footer isIsland={false} />
                 </AppShell>
             </div>
         </div>

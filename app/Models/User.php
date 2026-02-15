@@ -14,25 +14,36 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecover
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
+use Kirschbaum\Commentions\Contracts\Commentable;
+use Kirschbaum\Commentions\Contracts\Commenter;
+use Kirschbaum\Commentions\HasComments;
 
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, MustVerifyEmail
+class User extends Authenticatable implements Commentable, Commenter, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
 {
+    use HasComments;
+
     /** @use HasFactory<UserFactory> */
-    use HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, Notifiable, Reportable, SoftDeletes;
+    use HasFactory;
+
+    use InteractsWithAppAuthentication;
+    use InteractsWithAppAuthenticationRecovery;
+    use Notifiable;
+    use Reportable;
+    use SoftDeletes;
 
     public $incrementing = false;
 
@@ -50,6 +61,8 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     ];
 
     protected $rememberTokenName = null;
+
+    protected ?Role $importantRoleCache = null;
 
     /** @var array<int,Permission>|null */
     protected ?array $permissionCache = null;
@@ -94,11 +107,31 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     {
         $this->roles()->attach($role);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    /**
+     * The role with the highest weight on this user
+     */
+    public function getRole(): ?Role
+    {
+        if ($this->importantRoleCache) {
+            return $this->importantRoleCache;
+        }
+
+        // Use already cached state if possible
+        if ($this->relationLoaded('roles')) {
+            $this->importantRoleCache = $this->roles->sortByDesc('weight')->first();
+        } else {
+            $this->importantRoleCache = $this->roles()->orderByDesc('weight')->first();
+        }
+
+        return $this->importantRoleCache;
     }
 
     /**
@@ -108,11 +141,13 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     {
         $this->roles()->sync($roles);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function refresh(): self
     {
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
 
         return parent::refresh();
     }
@@ -124,19 +159,20 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
     {
         if ($relation === 'roles') {
             $this->permissionCache = null;
+            $this->importantRoleCache = null;
         }
 
         return parent::setRelation($relation, $value);
     }
 
-    public function broadcasterUserFilter(): MorphToMany
+    public function broadcasterFilter(): HasMany
     {
-        return $this->morphedByMany(self::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
+        return $this->hasMany(BroadcasterFilter::class, 'broadcaster_id');
     }
 
-    public function broadcasterGameFilter(): MorphToMany
+    public function getFilamentAvatarUrl(): ?string
     {
-        return $this->morphedByMany(Game::class, 'filter', 'broadcaster_filter', 'broadcaster_id');
+        return $this->avatar_url;
     }
 
     public function votes(): HasMany
@@ -171,8 +207,15 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // TODO: Implement canAccessPanel() method.
-        return true;
+        return $this->canAny([
+            Permission::ViewAnyFaqEntry,
+            Permission::ViewAnyClip,
+            Permission::ViewAnyRole,
+            Permission::ViewAnyUser,
+            Permission::ViewAnyCategory,
+            Permission::ViewAnyReport,
+            Permission::ViewAnyCompilation,
+        ]);
     }
 
     /**

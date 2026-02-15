@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Enums\ExternalContentProxyType;
 use App\Models\Clip;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,28 +25,28 @@ class PublicClipResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->twitch_id,
             'title' => $this->title,
-            'thumbnail_url' => $this->thumbnail_url,
-            'clip_url' => $this->url,
+            'thumbnail_url' => ExternalContentProxyType::toProxyUrl($this->getModel()),
+            'clip_url' => $this->getClipUrl(),
 
             'broadcaster' => $this->whenLoaded('broadcaster', [
                 'id' => $this->broadcaster_id,
                 'name' => $this->broadcaster->name,
-                'avatar' => $this->broadcaster->avatar_url,
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->broadcaster),
             ]),
 
             'clipper' => $this->whenHas('creator', [
                 'id' => $this->creator_id,
                 'name' => $this->creator?->name,
-                'avatar' => $this->creator?->avatar_url,
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->creator),
             ]),
 
             'submitter' => $this->whenHas('submitter', [
                 'id' => $this->submitter_id,
                 'name' => $this->submitter?->name,
-                'avatar' => $this->submitter?->avatar_url,
+                'avatar' => ExternalContentProxyType::toProxyUrl($this->submitter),
             ]),
 
-            'game' => $this->whenLoaded('game', $this->game->toResource()),
+            'category' => $this->whenLoaded('category', $this->category->toResource()),
 
             'vod' => $this->when($this->vod_id, [
                 'id' => $this->vod_id,

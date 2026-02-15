@@ -122,8 +122,8 @@ Route::middleware(['guest'])->group(function () {
         if ($user->wasRecentlyCreated) {
             Inertia::flash('showTwitchPermissionsPrompt', true);
 
-            if (User::count() === 1) {
-                $user->syncRoles([1]);
+            if (User::query()->whereNot('id', 0)->count() === 1) {
+                $user->syncRoles([0]);
             }
         }
 

@@ -1,7 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { home } from '@/routes';
-import { type BreadcrumbItem, PublicClip } from '@/types';
+import { PublicClip } from '@/types';
 import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,7 @@ import {
 import { ClipPreview } from '@/components/clip-preview';
 import { ClipModal } from '@/components/clipModal';
 import SpaceBackground from '@/components/spacebackground';
-import VideoEmb from '@/components/video-emb';
+import YoutubeEmbed from '@/components/embeds/youtube-embed';
 
 type InertiaBaseProps = Record<string, unknown>;
 interface PageProps extends InertiaBaseProps {
@@ -26,14 +25,10 @@ export default function Start() {
     const { t } = useTranslation('homepage');
     const { props } = usePage<PageProps>();
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: t('Homepage'), href: home().url },
-    ];
-
     const [openClip, setOpenClip] = useState<PublicClip | null>(null);
 
     return (
-        <AppHeaderLayout breadcrumbs={breadcrumbs}>
+        <AppHeaderLayout>
             <Head title={t('page_title')} />
             <SpaceBackground />
             <div className="relative z-10 mx-auto w-[90vw] py-5">
@@ -46,11 +41,7 @@ export default function Start() {
                                 </h2>
 
                                 <div className="mx-auto aspect-video w-full max-w-4xl overflow-hidden rounded-xl dark:bg-linear-to-b dark:from-white/10 dark:to-black/40 dark:ring-1 dark:ring-white/10">
-                                    <VideoEmb
-                                        youtubeUrl={
-                                            'https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A'
-                                        }
-                                    />
+                                    <YoutubeEmbed url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A" />
                                 </div>
                             </section>
 
@@ -90,7 +81,6 @@ export default function Start() {
                     </CardContent>
                 </Card>
             </div>
-
             {openClip && (
                 <ClipModal clip={openClip} onClose={() => setOpenClip(null)} />
             )}

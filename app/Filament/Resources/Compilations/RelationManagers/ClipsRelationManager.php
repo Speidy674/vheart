@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Compilations\RelationManagers;
 
 use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Permission;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
@@ -18,12 +19,12 @@ use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
@@ -34,7 +35,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 use Livewire\Component;
 
 class ClipsRelationManager extends RelationManager
@@ -47,7 +50,7 @@ class ClipsRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->with([
-                'game',
+                'category',
                 'broadcaster',
                 'creator',
                 'submitter',
@@ -142,17 +145,17 @@ class ClipsRelationManager extends RelationManager
                             ->color('gray'),
 
                         Split::make([
-                            ImageColumn::make('game.box_art')
+                            ImageColumn::make('category.box_art')
                                 ->imageHeight(40)
                                 ->alignCenter()
                                 ->getStateUsing(function (Clip $record) {
-                                    return $record->game?->getBoxArt();
+                                    return $record->category?->getBoxArt();
                                 })
                                 ->extraImgAttributes([
                                     'class' => 'object-cover rounded-md aspect-[3/4]',
                                 ])
                                 ->grow(false),
-                            TextColumn::make('game.title')
+                            TextColumn::make('category.title')
                                 ->label('admin/resources/clips.table.columns.category')
                                 ->translateLabel()
                                 ->weight('medium')
@@ -243,13 +246,13 @@ class ClipsRelationManager extends RelationManager
                             }
                         });
                     }),
-                SelectFilter::make('game')
-                    ->relationship('game', 'title',
-                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('game_id')))
+                SelectFilter::make('category')
+                    ->relationship('category', 'title',
+                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('category_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.game')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.category')
                     ->translateLabel(),
 
                 TernaryFilter::make('was_removed')
@@ -288,6 +291,12 @@ class ClipsRelationManager extends RelationManager
                     ]),
             ])
             ->recordActions([
+                CommentsAction::make()
+                    ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
+                    ->hidden(fn () => ! auth()->user()->can(Permission::ViewAnyComment))
+                    ->perPage(4)
+                    ->loadMoreIncrementsBy(8)
+                    ->modalWidth(Width::SevenExtraLarge),
                 ActionGroup::make([
                     Action::make('claim')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.claim')
@@ -406,7 +415,7 @@ class ClipsRelationManager extends RelationManager
                         ->action(function (Clip $clip, $livewire) {
                             $title = Str::limit($clip->title, 50, '');
 
-                            $filename = "[{$clip->id}] {$clip->broadcaster->name} - {$clip->game->title} - {$title}.mp4";
+                            $filename = "[{$clip->id}] {$clip->broadcaster->name} - {$clip->category->title} - {$title}.mp4";
                             $livewire->js("window.navigator.clipboard.writeText('{$filename}');");
 
                             Notification::make()

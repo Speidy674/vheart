@@ -22,6 +22,8 @@ return [
         'telescope*',
         'horizon*',
         '_boost/browser-logs',
+        'up',
+        'cookie-consent/*',
     ],
 
     /*
@@ -226,7 +228,7 @@ return [
     |
     */
 
-    'remote_sites_path' => env('DEBUGBAR_REMOTE_SITES_PATH'),
+    'remote_sites_path' => env('DEBUGBAR_REMOTE_SITES_PATH', '/var/www/html'),
     'local_sites_path' => env('DEBUGBAR_LOCAL_SITES_PATH', env('IGNITION_LOCAL_SITES_PATH')),
 
     /*
@@ -249,7 +251,7 @@ return [
     'storage' => [
         'enabled'    => env('DEBUGBAR_STORAGE_ENABLED', true),
         'open'       => env('DEBUGBAR_OPEN_STORAGE'), // bool/callback.
-        'driver'     => env('DEBUGBAR_STORAGE_DRIVER', 'file'), // redis, file, sqlite, pdo, custom
+        'driver'     => env('DEBUGBAR_STORAGE_DRIVER', 'sqlite'), // redis, file, sqlite, pdo, custom
         'path'       => env('DEBUGBAR_STORAGE_PATH', storage_path('debugbar')), // For file driver
         'connection' => env('DEBUGBAR_STORAGE_CONNECTION'), // Leave null for default connection (Redis/PDO)
         'provider'   => env('DEBUGBAR_STORAGE_PROVIDER', ''), // Instance of StorageInterface for custom driver
@@ -300,7 +302,7 @@ return [
      | Extension, without the server-side code. It uses Debugbar collectors instead.
      |
      */
-    'clockwork' => env('DEBUGBAR_CLOCKWORK', false),
+    'clockwork' => env('DEBUGBAR_CLOCKWORK', true),
 
     /*
      |--------------------------------------------------------------------------
@@ -344,7 +346,7 @@ return [
      | By default Debugbar route served from the same domain that request served.
      | To override default domain, specify it as a non-empty value.
      */
-    'route_domain' => env('DEBUGBAR_ROUTE_DOMAIN'),
+    'route_domain' => env('DEBUGBAR_ROUTE_DOMAIN', 'localhost'),
 
     /*
      |--------------------------------------------------------------------------

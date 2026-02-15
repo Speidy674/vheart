@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('twitch_id');
             $table->string('title');
-            $table->string('url')->nullable();
             $table->string('thumbnail_url')->nullable();
             $table->unsignedBigInteger('broadcaster_id');
             $table->unsignedBigInteger('creator_id');
             $table->unsignedBigInteger('submitter_id');
-            $table->unsignedBigInteger('game_id')->nullable();
+            $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('vod_id')->nullable();
             $table->unsignedBigInteger('vod_offset')->nullable();
             $table->float('duration');

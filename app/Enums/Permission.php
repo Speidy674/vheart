@@ -28,6 +28,7 @@ enum Permission: string implements HasLabel
     case DeleteAnyReport = 'delete_any_report';
     case RestoreAnyReport = 'restore_any_report';
     case ForceDeleteAnyReport = 'force_delete_any_report';
+
     // Compilation
     case ViewAnyCompilation = 'view_any_compilation';
     case ViewCompilation = 'view_compilation';
@@ -37,17 +38,45 @@ enum Permission: string implements HasLabel
     case RestoreAnyCompilation = 'restore_any_compilation';
     case ForceDeleteAnyCompilation = 'force_delete_any_compilation';
 
-    // FAQ
-    case ViewAnyFaq = 'view_any_faq';
-    case ViewFaq = 'view_faq';
-    case CreateFaq = 'create_faq';
-    case UpdateAnyFaq = 'update_any_faq';
-    case DeleteAnyFaq = 'delete_any_faq';
-    case RestoreAnyFaq = 'restore_any_faq';
-    case ForceDeleteAnyFaq = 'force_delete_any_faq';
+    // Category
+    case ViewAnyCategory = 'view_any_category';
+    case ViewCategory = 'view_category';
+    case CreateCategory = 'create_category';
+    case UpdateAnyCategory = 'update_any_category';
+    case DeleteAnyCategory = 'delete_any_category';
+    case RestoreAnyCategory = 'restore_any_category';
+    case ForceDeleteAnyCategory = 'force_delete_any_category';
+
+    // Faq Entry
+    case ViewAnyFaqEntry = 'view_any_faq_entry';
+    case ViewFaqEntry = 'view_faq_entry';
+    case CreateFaqEntry = 'create_faq_entry';
+    case UpdateAnyFaqEntry = 'update_any_faq_entry';
+    case DeleteAnyFaqEntry = 'delete_any_faq_entry';
+    case RestoreAnyFaqEntry = 'restore_any_faq_entry';
+    case ForceDeleteAnyFaqEntry = 'force_delete_any_faq_entry';
+
+    // Comments
+    case ViewAnyComment = 'view_any_comment';
+    case CreateComment = 'create_comment';
+    case DeleteAnyComment = 'delete_any_comment';
+
+    // Roles
+    case ViewAnyRole = 'view_any_role';
+    case ViewRole = 'view_role';
+    case CreateRole = 'create_role';
+    case UpdateAnyRole = 'update_any_role';
+    case DeleteAnyRole = 'delete_any_role';
+
+    // Clips
+    case ViewAnyClip = 'view_any_clip';
+    case ViewClip = 'view_clip';
+    case CreateClip = 'create_clip';
+    case UpdateAnyClip = 'update_any_clip';
+    case DeleteAnyClip = 'delete_any_clip';
+    case RestoreAnyClip = 'restore_any_clip';
+    case ForceDeleteAnyClip = 'force_delete_any_clip';
 
     // Non-Model stuff
-
     case JuryVote = 'jury_vote';
-    // empty for now
 }

@@ -6,8 +6,12 @@ namespace Database\Seeders;
 
 use App\Enums\Permission;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,24 +20,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::updateOrCreate([
+            'id' => 0,
+        ], [
+            'name' => 'System',
+            'avatar_url' => 'https://api.dicebear.com/9.x/pixel-art/svg?seed='.Str::random(),
+            'created_at' => Carbon::parse('1970-01-01 00:00:00'),
+        ]);
 
-        // User::firstOrCreate(
-        //    ['email' => 'test@example.com'],
-        //    [
-        //        'name' => 'Test User',
-        //        'password' => 'password',
-        //        'email_verified_at' => now(),
-        //    ]
-        // );
-
-        $this->call([
-            RoleSeeder::class,
-            TagSeeder::class,
-            FaqSeeder::class,
+        // System/Placeholder Category that twitch may return in some cases
+        Category::updateOrCreate([
+            'id' => 0,
+        ], [
+            'title' => 'Unbekannt',
+            'box_art' => Category::PLACEHOLDER_BOX_ART,
+            'is_banned' => false,
+            'created_at' => Carbon::parse('1970-01-01 00:00:00'),
         ]);
 
         // Kindly wipe unused permission pivots on deployment
         DB::table('role_permissions')->whereNotIn('permission', Permission::cases())->delete();
+
+        $this->call([
+            RoleSeeder::class,
+            TagSeeder::class,
+            InitialEpisodeSeeder::class,
+            FaqSeeder::class,
+        ]);
     }
 }

@@ -96,7 +96,7 @@ export interface PublicClip {
     broadcaster?: PublicUser;
     clipper?: PublicUser;
     submitter?: PublicUser;
-    game?: CategoryResource;
+    category?: CategoryResource;
     vod?: [id: number, offset: number];
     votes?: number;
     clip_duration: number;
