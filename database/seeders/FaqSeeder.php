@@ -108,7 +108,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Warum öffnet sich der Channel und schließt sich wieder?',
             ],
             'body' => [
-                'de' => 'Der Einsende-Channel ist bewusst nur zeitweise geöffnet, damit wir die große Menge an Clips sauber und fair sichten können.\n\nDa wir die Sichtung komplett **händisch** durchführen, wäre es sehr unübersichtlich, den Channel **dauerhaft offen** zu lassen. Mit der Zeit würden sich zu viele Clips ansammeln und wir könnten nicht mehr garantieren, dass jede Einsendung berücksichtigt wird.\n\n Durch die festen Zeitfenster können wir:\n<ul>- jede Einsendung wirklich anschauen\n- die Arbeitslast für Moderation und Cutter planbar halten\n- regelmäßig neue Compilations veröffentlichen\n- lange Wartezeiten vermeiden\n</ul>So stellen wir sicher, dass Qualität und Fairness für alle erhalten bleiben.',
+                'de' => 'Der Einsende-Channel ist bewusst nur zeitweise geöffnet, damit wir die große Menge an Clips sauber und fair sichten können.\n\nDa wir die Sichtung komplett **händisch** durchführen, wäre es sehr unübersichtlich, den Channel **dauerhaft offen** zu lassen. Mit der Zeit würden sich zu viele Clips ansammeln und wir könnten nicht mehr garantieren, dass jede Einsendung berücksichtigt wird.\n\n Durch die festen Zeitfenster können wir:\n- jede Einsendung wirklich anschauen\n- die Arbeitslast für Moderation und Cutter planbar halten\n- regelmäßig neue Compilations veröffentlichen\n- lange Wartezeiten vermeiden\nSo stellen wir sicher, dass Qualität und Fairness für alle erhalten bleiben.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -141,7 +141,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Kann ich mich dem Team Anschließen?',
             ],
             'body' => [
-                'de' => 'Ja, über den **[Discord-Server](https://discord.gg/ThVZHqvXnD)** im Support Channel kannst du auch sehen welche Bewerbungsphasen gerade offen sind. Bewerben kannst du dich als:\n<ul>- Cutter\n- Moderator\n- Später als Jury\n</ul>',
+                'de' => 'Ja, über den **[Discord-Server](https://discord.gg/ThVZHqvXnD)** im Support Channel kannst du auch sehen welche Bewerbungsphasen gerade offen sind. Bewerben kannst du dich als:\n- Cutter\n- Moderator\n- Später als Jury\n',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -174,7 +174,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Wieso wurde mein Clip nicht genommen?',
             ],
             'body' => [
-                'de' => 'Es kann viele Gründe geben, warum ein Clip nicht in der Compilation landet, **das bedeutet nicht automatisch, dass dein Clip schlecht ist.**\n\nTypische Gründe können zum Beispiel sein:\n<ul>- Zu sehr aus dem Kontext gerissen oder nur mit Insiderwissen verständlich\n- Im Clip passiert zu wenig oder es fehlt ein klarer Moment\n- Starke Sexualisierung oder verletzende Inhalte\n- Fokus auf Tierverletzung oder problematische Situationen\n- Copyright-Inhalte\n- Einsatz von AI-Bildern oder -Modellen\n- Der Creator würde dadurch in ein schlechtes Licht gerückt werden\n- Fehlendes Einverständnis des Streamers\n- Der Clip bietet für die Cutter keine sinnvolle Bearbeitungsmöglichkeit\n</ul>Da wir sehr viele Einsendungen erhalten (teilweise über 700 Clips), können wir nur einen kleinen Teil verwenden, dein Clip kann also trotzdem gut gewesen sein.',
+                'de' => 'Es kann viele Gründe geben, warum ein Clip nicht in der Compilation landet, **das bedeutet nicht automatisch, dass dein Clip schlecht ist.**\n\nTypische Gründe können zum Beispiel sein:\n- Zu sehr aus dem Kontext gerissen oder nur mit Insiderwissen verständlich\n- Im Clip passiert zu wenig oder es fehlt ein klarer Moment\n- Starke Sexualisierung oder verletzende Inhalte\n- Fokus auf Tierverletzung oder problematische Situationen\n- Copyright-Inhalte\n- Einsatz von AI-Bildern oder -Modellen\n- Der Creator würde dadurch in ein schlechtes Licht gerückt werden\n- Fehlendes Einverständnis des Streamers\n- Der Clip bietet für die Cutter keine sinnvolle Bearbeitungsmöglichkeit\nDa wir sehr viele Einsendungen erhalten (teilweise über 700 Clips), können wir nur einen kleinen Teil verwenden, dein Clip kann also trotzdem gut gewesen sein.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
@@ -185,7 +185,7 @@ class FaqSeeder extends Seeder
                 'de' => 'Holt ihr euch das Einverständnis der Streamer?',
             ],
             'body' => [
-                'de' => 'Ja, wir holen uns die Bestätigung bei **jedem einzelnen Streamer.**\n\nDer Ablauf ist ganz einfach, wenn du als Streamer selbst deinen Clip einsendest, gilt das automatisch als Zustimmung, dass wir diesen Clip verwenden dürfen.\n\nWird ein Clip von Zuschauern eingesendet und kommt in die **engere Auswahl**, kontaktieren wir den jeweiligen Creator vorher und holen eine Erlaubnis ein.\n\nDer Creator kann dabei entscheiden:\n<ul>- Seine Clips generell verwendet werden dürfen\n- Nur dieser eine Clip freigegeben wird\n- Er den Clip vorher immer prüfen möchte\n- Die Nutzung komplett abgelehnt wird\n</ul>Eine erteilte Zustimmung kann jederzeit für zukünftige Inhalte widerrufen werden. Auf Wunsch können auch bereits veröffentlichte Stellen entfernt werden, bitte gebt dafür die Folge sowie den genauen Timestamp an.',
+                'de' => 'Ja, wir holen uns die Bestätigung bei **jedem einzelnen Streamer.**\n\nDer Ablauf ist ganz einfach, wenn du als Streamer selbst deinen Clip einsendest, gilt das automatisch als Zustimmung, dass wir diesen Clip verwenden dürfen.\n\nWird ein Clip von Zuschauern eingesendet und kommt in die **engere Auswahl**, kontaktieren wir den jeweiligen Creator vorher und holen eine Erlaubnis ein.\n\nDer Creator kann dabei entscheiden:\n- Seine Clips generell verwendet werden dürfen\n- Nur dieser eine Clip freigegeben wird\n- Er den Clip vorher immer prüfen möchte\n- Die Nutzung komplett abgelehnt wird\nEine erteilte Zustimmung kann jederzeit für zukünftige Inhalte widerrufen werden. Auf Wunsch können auch bereits veröffentlichte Stellen entfernt werden, bitte gebt dafür die Folge sowie den genauen Timestamp an.',
             ],
             'published_at' => now(),
             'order' => FaqEntry::count() + 1,
