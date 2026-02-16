@@ -1,11 +1,35 @@
 <x-layout title="VHeart Startseite">
 
     <div class="p-4 gap-4 grid grid-cols-2 w-full max-w-7xl m-auto">
-        <x-embeds.generic url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A"/>
+        <div>
+            <x-embeds.generic url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A"/>
+            <div class="flex items-center justify-between text-xs font-mono">
+                x-embeds.generic url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A"
+            </div>
+        </div>
 
-        <x-embeds.twitch
-            clip="HelpfulAmericanPeachDxCat-2gczKKTlc6MGYrPt"
-        />
+        <div>
+            <x-embeds.twitch
+                clip="HelpfulAmericanPeachDxCat-2gczKKTlc6MGYrPt"
+            />
+            <div class="flex items-center justify-between text-xs font-mono">
+                x-embeds.twitch clip="HelpfulAmericanPeachDxCat-2gczKKTlc6MGYrPt"
+            </div>
+        </div>
+
+        <div>
+            <x-embeds.youtube url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A" />
+            <div class="flex items-center justify-between text-xs font-mono">
+                x-embeds.youtube url="https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A"
+            </div>
+        </div>
+
+        <div>
+            <x-embeds.youtube yid="jvuk243L8z4" />
+            <div class="flex items-center justify-between text-xs font-mono">
+                x-embeds.youtube yid="jvuk243L8z4"
+            </div>
+        </div>
 
         <div
             x-data="{
