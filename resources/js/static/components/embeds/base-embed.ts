@@ -37,12 +37,7 @@ export default (
         this.$watch('url', () => {
             this.isLoading = true;
 
-            if (!this.url) {
-                this.isValidUrl = false;
-                return;
-            }
-
-            if (this.url.length === 0) {
+            if (!this.url || this.url.length === 0) {
                 this.isValidUrl = false;
                 return;
             }
