@@ -14,7 +14,7 @@
     <template x-if="isValidUrl && url">
         <div class="h-full w-full">
 
-            <template x-if="!hasConsent">
+            <template x-if="!hasConsent()">
                 <div class="absolute inset-0 z-20 h-full w-full bg-black">
                     <div class="flex h-full flex-col items-center justify-center space-y-4 p-6 text-center text-white">
                         <p class="text-base font-medium text-balance text-zinc-400">
@@ -42,7 +42,7 @@
                 </div>
             </template>
 
-            <template x-if="hasConsent">
+            <template x-if="hasConsent()">
                 <div class="h-full w-full relative">
 
                     <div x-show="isLoading" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black text-gray-500">

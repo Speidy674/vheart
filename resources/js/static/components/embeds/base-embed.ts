@@ -15,7 +15,7 @@ export interface GenericEmbedData {
     isLoading: boolean;
     hasConsentGiven: boolean;
     isValidUrl: boolean;
-    readonly hasConsent: boolean;
+    hasConsent(): boolean;
     hasCookie(name: string): boolean;
     accept(): void;
     handleIframeLoad(): void;
@@ -60,7 +60,7 @@ export default (
         console.debug('Embed data initialized for ' + this.url);
     },
 
-    get hasConsent() {
+    hasConsent() {
         return (
             !this.cookieName ||
             this.hasCookie(this.cookieName) ||
