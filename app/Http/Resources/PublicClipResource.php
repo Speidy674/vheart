@@ -25,25 +25,25 @@ class PublicClipResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->twitch_id,
             'title' => $this->title,
-            'thumbnail_url' => ExternalContentProxyType::toProxyUrl($this->getModel()),
+            'thumbnail_url' => $this->proxiedContentUrl(),
             'clip_url' => $this->getClipUrl(),
 
             'broadcaster' => $this->whenLoaded('broadcaster', [
                 'id' => $this->broadcaster_id,
                 'name' => $this->broadcaster->name,
-                'avatar' => ExternalContentProxyType::toProxyUrl($this->broadcaster),
+                'avatar' => $this->broadcaster->proxiedContentUrl(),
             ]),
 
             'clipper' => $this->whenHas('creator', [
                 'id' => $this->creator_id,
                 'name' => $this->creator?->name,
-                'avatar' => ExternalContentProxyType::toProxyUrl($this->creator),
+                'avatar' => $this->creator?->proxiedContentUrl(),
             ]),
 
             'submitter' => $this->whenHas('submitter', [
                 'id' => $this->submitter_id,
                 'name' => $this->submitter?->name,
-                'avatar' => ExternalContentProxyType::toProxyUrl($this->submitter),
+                'avatar' => $this->submitter?->proxiedContentUrl(),
             ]),
 
             'category' => $this->whenLoaded('category', $this->category->toResource()),

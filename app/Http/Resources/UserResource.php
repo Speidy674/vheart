@@ -2,11 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\ExternalContentProxyType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Vite;
 
 /**
  * Public User Data
@@ -23,7 +21,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'avatar' => ExternalContentProxyType::toProxyUrl($this->getModel()),
+            'avatar' => $this->proxiedContentUrl(),
         ];
     }
 }

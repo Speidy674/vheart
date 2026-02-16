@@ -6,12 +6,15 @@ namespace App\Models;
 
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
+use App\Enums\ExternalContentProxyType;
 use App\Http\Resources\PublicClipResource;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Clip\Tag;
+use App\Models\Contracts\ExternalProxyable;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
+use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
 use Database\Factories\ClipFactory;
@@ -34,10 +37,10 @@ use Kirschbaum\Commentions\HasComments;
 #[ScopedBy(ClipWithoutBannedCategoryScope::class)]
 #[UseResource(PublicClipResource::class)]
 #[UsePolicy(ClipPolicy::class)]
-class Clip extends Model implements Commentable
+class Clip extends Model implements Commentable, ExternalProxyable
 {
     /** @use HasFactory<ClipFactory> */
-    use HasComments, HasFactory, Reportable;
+    use HasComments, HasExternalProxy, HasFactory, Reportable;
 
     public function broadcaster(): BelongsTo
     {
@@ -238,5 +241,25 @@ class Clip extends Model implements Commentable
         return $query
             ->withJuryVoteCount()
             ->withPublicVoteCount();
+    }
+
+    public static function getProxyIdentifierColumn(): string
+    {
+        return 'twitch_id';
+    }
+
+    public static function getProxyUrlColumn(): string
+    {
+        return 'thumbnail_url';
+    }
+
+    public static function getProxyExtension(): string
+    {
+        return 'jpg';
+    }
+
+    public function getProxyType(): ExternalContentProxyType
+    {
+        return ExternalContentProxyType::TwitchClip;
     }
 }
