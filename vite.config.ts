@@ -35,7 +35,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.tsx',
                 'resources/css/filament/admin.css',
-                'resources/js/static/app.js',
+                'resources/js/static/app.ts',
             ],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
