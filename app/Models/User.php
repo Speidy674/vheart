@@ -21,7 +21,6 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -36,14 +35,15 @@ use Kirschbaum\Commentions\HasComments;
 class User extends Authenticatable implements Commentable, Commenter, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
 {
     use HasComments;
+
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
+
     use InteractsWithAppAuthentication;
     use InteractsWithAppAuthenticationRecovery;
     use Notifiable;
     use Reportable;
     use SoftDeletes;
-
-    /** @use HasFactory<UserFactory> */
-    use HasFactory;
 
     public $incrementing = false;
 
@@ -61,6 +61,8 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     ];
 
     protected $rememberTokenName = null;
+
+    protected ?Role $importantRoleCache = null;
 
     /** @var array<int,Permission>|null */
     protected ?array $permissionCache = null;
@@ -105,11 +107,31 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         $this->roles()->attach($role);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    /**
+     * The role with the highest weight on this user
+     */
+    public function getRole(): ?Role
+    {
+        if ($this->importantRoleCache) {
+            return $this->importantRoleCache;
+        }
+
+        // Use already cached state if possible
+        if ($this->relationLoaded('roles')) {
+            $this->importantRoleCache = $this->roles->sortByDesc('weight')->first();
+        } else {
+            $this->importantRoleCache = $this->roles()->orderByDesc('weight')->first();
+        }
+
+        return $this->importantRoleCache;
     }
 
     /**
@@ -119,11 +141,13 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         $this->roles()->sync($roles);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function refresh(): self
     {
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
 
         return parent::refresh();
     }
@@ -135,6 +159,7 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
     {
         if ($relation === 'roles') {
             $this->permissionCache = null;
+            $this->importantRoleCache = null;
         }
 
         return parent::setRelation($relation, $value);
@@ -182,8 +207,15 @@ class User extends Authenticatable implements Commentable, Commenter, FilamentUs
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // TODO: Implement canAccessPanel() method.
-        return true;
+        return $this->canAny([
+            Permission::ViewAnyFaqEntry,
+            Permission::ViewAnyClip,
+            Permission::ViewAnyRole,
+            Permission::ViewAnyUser,
+            Permission::ViewAnyCategory,
+            Permission::ViewAnyReport,
+            Permission::ViewAnyCompilation,
+        ]);
     }
 
     /**

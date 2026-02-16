@@ -24,6 +24,9 @@ php /app/artisan view:cache
 echo "[Init] Optimize..."
 php /app/artisan optimize
 
+echo "[Init] Export translation files..."
+php /app/artisan translations:export
+
 echo "[Init] Restarting Queue Signal..."
 php /app/artisan queue:restart
 

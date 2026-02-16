@@ -1,19 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use App\Enums\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class RolePolicy
 {
+    public static int $SuperAdminRole = 0;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->can(Permission::ViewAnyRole);
     }
 
     /**
@@ -21,7 +25,7 @@ class RolePolicy
      */
     public function view(User $user, Role $role): bool
     {
-        return true;
+        return $user->can(Permission::ViewRole);
     }
 
     /**
@@ -29,7 +33,7 @@ class RolePolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->can(Permission::CreateRole);
     }
 
     /**
@@ -37,7 +41,15 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        return true;
+        if ($role->id === self::$SuperAdminRole) {
+            return false;
+        }
+
+        if ($role->weight >= $user->getRole()?->weight) {
+            return $user->getRole()?->id === 0;
+        }
+
+        return $user->can(Permission::UpdateAnyRole);
     }
 
     /**
@@ -45,7 +57,15 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        return true;
+        if ($role->id === self::$SuperAdminRole) {
+            return false;
+        }
+
+        if ($role->weight >= $user->getRole()?->weight) {
+            return $user->getRole()?->id === 0;
+        }
+
+        return $user->can(Permission::DeleteAnyRole);
     }
 
     /**
@@ -53,7 +73,7 @@ class RolePolicy
      */
     public function restore(User $user, Role $role): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -61,6 +81,6 @@ class RolePolicy
      */
     public function forceDelete(User $user, Role $role): bool
     {
-        return true;
+        return false;
     }
 }
