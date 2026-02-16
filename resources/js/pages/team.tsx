@@ -5,21 +5,9 @@ import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import cat from '/resources/images/png/cat.png';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-interface TeamMember {
-    name: string;
-    avatar?: string;
-}
-
-interface TeamRole {
-    name: string;
-    members: TeamMember[];
-}
-
-interface TeamPageProps {
-    roles: TeamRole[];
-}
+import { PublicUser, RoleUserListResource, SharedData } from '@/types';
 
 function getInitials(name: string): string {
     const cleaned = String(name).trim();
@@ -30,8 +18,8 @@ function getInitials(name: string): string {
     return (first + second).toUpperCase() || '?';
 }
 
-function TeamMemberCard({ member }: { member: TeamMember }) {
-    const { name, avatar } = member;
+function TeamMemberCard({ user }: { user: PublicUser }) {
+    const { name, avatar } = user;
 
     return (
             <div
@@ -65,53 +53,71 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
     );
 }
 
-function RoleSection({ role }: { role: TeamRole }) {
+function RoleSection({ role }: { role: RoleUserListResource }) {
     const { t } = useTranslation('team');
-    const { name, members } = role;
+    const { name, users } = role;
 
     return (
-            <section className="space-y-8">
-                <div className="flex items-center gap-4">
-                    <Badge
-                        variant="outline"
-                        className={cn(
-                            'border-2 px-6 py-2 text-sm font-bold backdrop-blur-md',
-                            'border-purple-100 bg-white text-purple-900 shadow-sm',
-                            'dark:border-purple-500/30 dark:bg-zinc-900/60 dark:text-purple-300',
-                        )}
-                    >
-                        {name}
-                    </Badge>
-                    <div className="h-[2px] flex-1 bg-gradient-to-r from-purple-100 via-transparent to-transparent dark:from-white/10" />
-                    <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase dark:text-white/30">
-                        {members.length}{' '}
-                        {members.length === 1 ? t('member') : t('members')}
-                    </span>
-                </div>
+        <section className="space-y-8">
+            <div className="flex items-center gap-4">
+                <Badge
+                    variant="outline"
+                    className={cn(
+                        'border-2 px-6 py-2 text-sm font-bold backdrop-blur-md',
+                        'border-purple-100 bg-white text-purple-900 shadow-sm',
+                        'dark:border-purple-500/30 dark:bg-zinc-900/60 dark:text-purple-300',
+                    )}
+                >
+                    {name}
+                </Badge>
+                <div className="h-[2px] flex-1 bg-gradient-to-r from-purple-100 via-transparent to-transparent dark:from-white/10" />
+                <span className="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase dark:text-white/30">
+                    {users.length}{' '}
+                    {users.length === 1 ? t('member') : t('members')}
+                </span>
+            </div>
 
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {members.map((member, index) => (
-                        <TeamMemberCard
-                            key={`${name}-${member.name}-${index}`}
-                            member={member}
-                        />
-                    ))}
-                </div>
-            </section>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {users.map((user, index) => (
+                    <TeamMemberCard
+                        key={`${name}-${user.name}-${index}`}
+                        user={user}
+                    />
+                ))}
+            </div>
+        </section>
     );
 }
 
-export default function TeamPage({ roles = [] }: TeamPageProps) {
-    const { t } = useTranslation('team');
+interface PageProps extends SharedData {
+    roles: RoleUserListResource[],
+    total_members: number
+}
 
-    const totalMembers = useMemo(
-        () =>
-            roles.reduce(
-                (total, role) => total + (role.members?.length || 0),
-                0,
-            ),
-        [roles],
-    );
+export default function TeamPage() {
+    const { t } = useTranslation('team');
+    const { props } = usePage<PageProps>()
+
+    const memberList = useMemo(() => {
+        return (
+            <>
+                {props.roles?.length > 0 ? (
+                    props.roles.map((role) => (
+                        <RoleSection key={role.name} role={role} />
+                    ))
+                ) : (
+                    <div className="flex h-64 flex-col items-center justify-center rounded-3xl border-2 border-dashed border-purple-100 bg-white/50 backdrop-blur-xl dark:border-white/5 dark:bg-white/5">
+                        <h3 className="text-xl font-bold tracking-widest text-zinc-400 uppercase dark:text-white/40">
+                            {t('no_team_data')}
+                        </h3>
+                        <p className="mt-2 text-sm text-zinc-500 dark:text-white/30">
+                            {t('no_team_description')}
+                        </p>
+                    </div>
+                )}
+            </>
+        );
+    }, [props.roles, t]);
 
     return (
         <AppHeaderLayout>
@@ -134,24 +140,11 @@ export default function TeamPage({ roles = [] }: TeamPageProps) {
                         </h1>
                         <div className="mx-auto h-1.5 w-24 rounded-full bg-gradient-to-r from-purple-500 to-cyan-500" />
                         <p className="mt-8 text-sm font-bold tracking-[0.3em] text-purple-600 uppercase dark:text-cyan-400">
-                            {t('total_members', { count: totalMembers })}
+                            {t('total_members', { count: props.total_members })}
                         </p>
                     </header>
                     <main className="mx-auto max-w-7xl space-y-32">
-                        {roles.length > 0 ? (
-                            roles.map((role) => (
-                                <RoleSection key={role.name} role={role} />
-                            ))
-                        ) : (
-                            <div className="flex h-64 flex-col items-center justify-center rounded-3xl border-2 border-dashed border-purple-100 bg-white/50 backdrop-blur-xl dark:border-white/5 dark:bg-white/5">
-                                <h3 className="text-xl font-bold tracking-widest text-zinc-400 uppercase dark:text-white/40">
-                                    {t('no_team_data')}
-                                </h3>
-                                <p className="mt-2 text-sm text-zinc-500 dark:text-white/30">
-                                    {t('no_team_description')}
-                                </p>
-                            </div>
-                        )}
+                        {memberList}
                     </main>
                 </div>
             </div>

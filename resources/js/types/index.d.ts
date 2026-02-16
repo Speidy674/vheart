@@ -53,6 +53,14 @@ export interface FaqEntryResource {
     order: number;
 }
 
+
+export interface RoleUserListResource {
+    id: number;
+    name: string;
+    weight: number;
+    users: PublicUser[]
+}
+
 export interface RoleResource {
     id: number;
     name: string;
@@ -61,7 +69,10 @@ export interface RoleResource {
     created_at: string;
     updated_at: string;
 }
-export type MinimalRoleResource = Pick<RoleResource, 'id' | 'name'>;
+export type MinimalRoleResource = Pick<
+    RoleResource | RoleUserListResource,
+    'id' | 'name'
+>;
 
 export interface TagResource {
     id: number;

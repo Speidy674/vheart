@@ -66,6 +66,8 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     protected $rememberTokenName = null;
 
+    protected ?Role $importantRoleCache = null;
+
     /** @var array<int,Permission>|null */
     protected ?array $permissionCache = null;
 
@@ -119,11 +121,31 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     {
         $this->roles()->attach($role);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles');
+    }
+
+    /**
+     * The role with the highest weight on this user
+     */
+    public function getRole(): ?Role
+    {
+        if ($this->importantRoleCache) {
+            return $this->importantRoleCache;
+        }
+
+        // Use already cached state if possible
+        if ($this->relationLoaded('roles')) {
+            $this->importantRoleCache = $this->roles->sortByDesc('weight')->first();
+        } else {
+            $this->importantRoleCache = $this->roles()->orderByDesc('weight')->first();
+        }
+
+        return $this->importantRoleCache;
     }
 
     /**
@@ -133,11 +155,13 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     {
         $this->roles()->sync($roles);
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
     }
 
     public function refresh(): self
     {
         $this->permissionCache = null;
+        $this->importantRoleCache = null;
 
         return parent::refresh();
     }
@@ -149,6 +173,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     {
         if ($relation === 'roles') {
             $this->permissionCache = null;
+            $this->importantRoleCache = null;
         }
 
         return parent::setRelation($relation, $value);
@@ -196,8 +221,15 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // TODO: Implement canAccessPanel() method.
-        return true;
+        return $this->canAny([
+            Permission::ViewAnyFaqEntry,
+            Permission::ViewAnyClip,
+            Permission::ViewAnyRole,
+            Permission::ViewAnyUser,
+            Permission::ViewAnyCategory,
+            Permission::ViewAnyReport,
+            Permission::ViewAnyCompilation,
+        ]);
     }
 
     /**
