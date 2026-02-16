@@ -7,14 +7,14 @@ use App\Models\Faq\FaqEntry;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class FaqPolicy
+class FaqEntryPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return $user->can(Permission::ViewAnyFaq);
+        return $user->can(Permission::ViewAnyFaqEntry);
     }
 
     /**
@@ -22,7 +22,7 @@ class FaqPolicy
      */
     public function view(User $user, FaqEntry $faqEntry): bool
     {
-        return $user->can(Permission::ViewAnyFaq);
+        return $user->can(Permission::ViewFaqEntry);
     }
 
     /**
@@ -30,7 +30,7 @@ class FaqPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can(Permission::CreateFaq);
+        return $user->can(Permission::CreateFaqEntry);
     }
 
     /**
@@ -38,7 +38,7 @@ class FaqPolicy
      */
     public function update(User $user, FaqEntry $faqEntry): bool
     {
-        return $user->can(Permission::UpdateAnyFaq);
+        return $user->can(Permission::UpdateAnyFaqEntry);
     }
 
     /**
@@ -46,7 +46,7 @@ class FaqPolicy
      */
     public function delete(User $user, FaqEntry $faqEntry): bool
     {
-        return $user->can(Permission::DeleteAnyFaq);
+        return $user->can(Permission::DeleteAnyFaqEntry);
     }
 
     /**
@@ -54,7 +54,7 @@ class FaqPolicy
      */
     public function restore(User $user, FaqEntry $faqEntry): bool
     {
-        return $user->can(Permission::RestoreAnyFaq);
+        return $user->can(Permission::RestoreAnyFaqEntry);
     }
 
     /**
@@ -62,6 +62,6 @@ class FaqPolicy
      */
     public function forceDelete(User $user, FaqEntry $faqEntry): bool
     {
-        return $user->can(Permission::ForceDeleteAnyFaq);
+        return $user->can(Permission::ForceDeleteAnyFaqEntry);
     }
 }

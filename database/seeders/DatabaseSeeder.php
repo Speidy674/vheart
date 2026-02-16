@@ -38,14 +38,14 @@ class DatabaseSeeder extends Seeder
             'created_at' => Carbon::parse('1970-01-01 00:00:00'),
         ]);
 
+        // Kindly wipe unused permission pivots on deployment
+        DB::table('role_permissions')->whereNotIn('permission', Permission::cases())->delete();
+
         $this->call([
             RoleSeeder::class,
             TagSeeder::class,
             InitialEpisodeSeeder::class,
             FaqSeeder::class,
         ]);
-
-        // Kindly wipe unused permission pivots on deployment
-        DB::table('role_permissions')->whereNotIn('permission', Permission::cases())->delete();
     }
 }

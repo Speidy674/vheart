@@ -47,14 +47,14 @@ enum Permission: string implements HasLabel
     case RestoreAnyCategory = 'restore_any_category';
     case ForceDeleteAnyCategory = 'force_delete_any_category';
 
-    // FAQ
-    case ViewAnyFaq = 'view_any_faq';
-    case ViewFaq = 'view_faq';
-    case CreateFaq = 'create_faq';
-    case UpdateAnyFaq = 'update_any_faq';
-    case DeleteAnyFaq = 'delete_any_faq';
-    case RestoreAnyFaq = 'restore_any_faq';
-    case ForceDeleteAnyFaq = 'force_delete_any_faq';
+    // Faq Entry
+    case ViewAnyFaqEntry = 'view_any_faq_entry';
+    case ViewFaqEntry = 'view_faq_entry';
+    case CreateFaqEntry = 'create_faq_entry';
+    case UpdateAnyFaqEntry = 'update_any_faq_entry';
+    case DeleteAnyFaqEntry = 'delete_any_faq_entry';
+    case RestoreAnyFaqEntry = 'restore_any_faq_entry';
+    case ForceDeleteAnyFaqEntry = 'force_delete_any_faq_entry';
 
     // Comments
     case ViewAnyComment = 'view_any_comment';
@@ -67,6 +67,22 @@ enum Permission: string implements HasLabel
     case CreateTag = 'create_tag';
     case UpdateAnyTag = 'update_any_tag';
     case DeleteAnyTag = 'delete_any_tag';
+  
+    // Roles
+    case ViewAnyRole = 'view_any_role';
+    case ViewRole = 'view_role';
+    case CreateRole = 'create_role';
+    case UpdateAnyRole = 'update_any_role';
+    case DeleteAnyRole = 'delete_any_role';
+
+    // Clips
+    case ViewAnyClip = 'view_any_clip';
+    case ViewClip = 'view_clip';
+    case CreateClip = 'create_clip';
+    case UpdateAnyClip = 'update_any_clip';
+    case DeleteAnyClip = 'delete_any_clip';
+    case RestoreAnyClip = 'restore_any_clip';
+    case ForceDeleteAnyClip = 'force_delete_any_clip';
 
     // Non-Model stuff
     case JuryVote = 'jury_vote';
