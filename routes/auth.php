@@ -23,7 +23,7 @@ Route::prefix('auth')
             ->name('challenge.submit');
 
         Route::get('/twitch', RedirectToAuthProviderController::class)
-            ->name('twitch');
+            ->name('redirect');
 
         Route::get('/twitch/callback', HandleAuthProviderCallbackController::class)
             ->name('callback');
