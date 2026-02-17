@@ -7,10 +7,9 @@ namespace App\Http\Requests\Auth;
 use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
-class TwoFactorSubmitRequest extends FormRequest
+class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
 {
     public function authorize(): bool
     {
@@ -26,11 +25,6 @@ class TwoFactorSubmitRequest extends FormRequest
             'code' => ['sometimes', 'numeric', 'max_digits:6', 'min_digits:6'],
             'recovery_code' => ['sometimes', 'string'],
         ];
-    }
-
-    public function getChallengedUserId(): int
-    {
-        return (int) $this->session()->get('auth.2fa.id', false);
     }
 
     /**
