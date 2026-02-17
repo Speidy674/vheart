@@ -1,32 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\TwoFactor;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\TwoFactorChallengeRequest;
 use App\Http\Requests\Auth\TwoFactorSubmitRequest;
 use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-class TwoFactorController extends Controller
+
+/**
+ * Verifies the 2FA input is valid and authenticates the user if so
+ */
+class TwoFactorVerificationController extends Controller
 {
-    public function index(TwoFactorChallengeRequest $request, AppAuthentication $mfa): InertiaResponse|RedirectResponse
-    {
-        $userId = $request->getChallengedUserId();
-        $user = User::query()->find($userId);
-
-        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
-            return to_route('login');
-        }
-
-        return Inertia::render('auth/challenge');
-    }
-
-    public function store(TwoFactorSubmitRequest $request, AppAuthentication $mfa): SymfonyResponse
+    public function __invoke(TwoFactorSubmitRequest $request, AppAuthentication $mfa): SymfonyResponse
     {
         $userId = $request->getChallengedUserId();
         $user = User::query()->find($userId);

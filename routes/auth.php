@@ -6,14 +6,15 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\Email\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\Email\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\Email\EmailVerificationController;
-use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Controllers\Auth\TwoFactor\TwoFactorPromptController;
+use App\Http\Controllers\Auth\TwoFactor\TwoFactorVerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->group(function () {
-    Route::get('auth/challenge', [TwoFactorController::class, 'index'])
+    Route::get('auth/challenge', TwoFactorPromptController::class)
         ->name('auth.challenge');
 
-    Route::post('auth/challenge', [TwoFactorController::class, 'store'])
+    Route::post('auth/challenge', TwoFactorVerificationController::class)
         ->middleware(['throttle:two-factor'])
         ->name('auth.challenge.submit');
 
