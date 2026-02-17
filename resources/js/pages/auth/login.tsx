@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import Logo from '/resources/images/svg/logo-dark.svg';
 import LogoLight from '/resources/images/svg/logo-light.svg';
+import auth from '@/routes/auth';
 
 export default function Welcome({
     kannRegistrieren = true,
@@ -73,7 +74,7 @@ export default function Welcome({
                     <CardFooter className="flex flex-col space-y-6">
                         {kannRegistrieren && (
                             <a
-                                href="/auth/twitch"
+                                href={ auth.redirect().url }
                                 className="group relative w-full"
                                 aria-label={t('connect_button_aria')}
                             >
