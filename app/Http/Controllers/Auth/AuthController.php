@@ -37,22 +37,25 @@ class AuthController extends Controller
             ->redirect();
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, AppAuthentication $mfa): RedirectResponse
     {
         try {
             $twitchUser = Socialite::driver('twitch')->user();
         } catch (Exception) {
-            return to_route('login')->with('error', __('auth.oauth_error_try_again'));
+            return to_route('login')
+                ->with('error', __('auth.oauth_error_try_again'));
         }
 
         $userCreatedAt = Date::parse($twitchUser->user['created_at']);
         $userAgeMinimum = CarbonInterval::fromString(config('auth.required_account_age'));
 
         if ($userCreatedAt->add($userAgeMinimum)->isFuture()) {
-            return to_route('login')->withErrors(['login' => __('auth.account_created_too_early')]);
+            return to_route('login')
+                ->withErrors(['login' => __('auth.account_created_too_early')]);
         }
 
-        $user = User::updateOrCreate([
+        /** @var User $user */
+        $user = User::withTrashed()->updateOrCreate([
             'id' => $twitchUser->getId(),
         ],
             [
@@ -61,11 +64,10 @@ class AuthController extends Controller
                 'twitch_refresh_token' => $twitchUser->refreshToken,
             ]);
 
-        if ($user->deleted_at) {
-            return to_route('login')->withErrors(['login' => __('user.disabled')]);
+        if ($user->trashed()) {
+            return to_route('login')
+                ->withErrors(['login' => __('user.disabled')]);
         }
-
-        $mfa = app(AppAuthentication::class);
 
         $request->session()->regenerate();
         $request->session()->put('twitch_access_token', $twitchUser->token);
@@ -91,7 +93,7 @@ class AuthController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        auth()->logout();
+        Auth::logout();
 
         if ($request->hasSession()) {
             $request->session()->invalidate();
