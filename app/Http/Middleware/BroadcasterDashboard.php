@@ -18,9 +18,9 @@ class BroadcasterDashboard
 {
     private TwitchService $twitchService;
 
-    public function __construct()
+    public function __construct(TwitchService $twitchService)
     {
-        $this->twitchService = new TwitchService;
+        $this->twitchService = $twitchService;
         $this->twitchService->onUserTokenRefresh(function ($token) {
             session()->put('twitch_access_token', $token);
         });

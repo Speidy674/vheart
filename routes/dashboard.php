@@ -6,18 +6,12 @@ use App\Http\Middleware\BroadcasterDashboard;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
-use App\Services\Twitch\TwitchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
-
-    $twitchService = new TwitchService;
-    $twitchService->onUserTokenRefresh(function ($token) {
-        session()->put('twitch_access_token', $token);
-    });
 
     Route::get('/dashboard', function (Request $request) {
         return Redirect::route('dashboard.main', $request->user()->id);
@@ -31,6 +25,7 @@ Route::middleware('auth')->group(function () {
         })->name('dashboard.main');
 
     Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
+
         return Inertia::render('dashboard/clips', [
             'clips' => Inertia::scroll(static function () use ($user) {
                 $clip = Clip::query()
