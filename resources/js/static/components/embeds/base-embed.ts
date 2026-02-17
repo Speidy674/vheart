@@ -5,6 +5,7 @@ export interface GenericEmbedConfig {
     link?: string;
     cookieName?: string;
     title?: string;
+    thumbnailUrl?: string;
 }
 
 export interface GenericEmbedData {
@@ -15,6 +16,7 @@ export interface GenericEmbedData {
     isLoading: boolean;
     hasConsentGiven: boolean;
     isValidUrl: boolean;
+    thumbnailUrl: string | null;
     hasConsent(): boolean;
     hasCookie(name: string): boolean;
     accept(): void;
@@ -29,6 +31,7 @@ export default (
     link: config.link || null,
     cookieName: config.cookieName || null,
     title: config.title || 'Embed',
+    thumbnailUrl: config.thumbnailUrl || null,
     isLoading: true,
     hasConsentGiven: false,
     isValidUrl: true,
