@@ -54,19 +54,33 @@ class AuthController extends Controller
                 ->withErrors(['login' => __('auth.account_created_too_early')]);
         }
 
-        /** @var User $user */
-        $user = User::withTrashed()->updateOrCreate([
-            'id' => $twitchUser->getId(),
-        ],
-            [
-                'name' => $twitchUser->getName(),
-                'avatar_url' => $twitchUser->getAvatar(),
-                'twitch_refresh_token' => $twitchUser->refreshToken,
-            ]);
+        /** @var ?User $user */
+        $user = User::withTrashed()->find($twitchUser->getId());
 
-        if ($user->trashed()) {
+        if ($user?->trashed()) {
+            if ($user->twitch_refresh_token !== null) {
+                $user->update([
+                    'twitch_refresh_token' => null,
+                ]);
+            }
+
             return to_route('login')
                 ->withErrors(['login' => __('user.disabled')]);
+        }
+
+        $updateAttributes = [
+            'name' => $twitchUser->getName(),
+            'avatar_url' => $twitchUser->getAvatar(),
+            'twitch_refresh_token' => $twitchUser->refreshToken,
+        ];
+
+        if ($user) {
+            $user->update($updateAttributes);
+        } else {
+            $user = User::create([
+                'id' => $twitchUser->getId(),
+                ...$updateAttributes,
+            ]);
         }
 
         $request->session()->regenerate();
