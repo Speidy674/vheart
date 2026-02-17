@@ -46,6 +46,7 @@ class AuthController extends Controller
                 ->with('error', __('auth.oauth_error_try_again'));
         }
 
+        // Deny access if twitch account is too fresh for us
         $userCreatedAt = Date::parse($twitchUser->user['created_at']);
         $userAgeMinimum = CarbonInterval::fromString(config('auth.required_account_age'));
 
@@ -57,6 +58,7 @@ class AuthController extends Controller
         /** @var ?User $user */
         $user = User::withTrashed()->find($twitchUser->getId());
 
+        // If the user was "banned" (soft deleted) clear out refresh token and deny access
         if ($user?->trashed()) {
             if ($user->twitch_refresh_token !== null) {
                 $user->update([
@@ -68,6 +70,7 @@ class AuthController extends Controller
                 ->withErrors(['login' => __('user.disabled')]);
         }
 
+        // Otherwise update (or create) the user
         $updateAttributes = [
             'name' => $twitchUser->getName(),
             'avatar_url' => $twitchUser->getAvatar(),
@@ -83,6 +86,7 @@ class AuthController extends Controller
             ]);
         }
 
+        // Authenticate the user
         $request->session()->regenerate();
         $request->session()->put('twitch_access_token', $twitchUser->token);
 
