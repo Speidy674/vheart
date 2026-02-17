@@ -21,7 +21,7 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard, home, login } from '@/routes';
+import { home, login, manage_clips } from '@/routes';
 import submitclip from '@/routes/submitclip';
 import { type SharedData as BaseSharedData } from '@/types';
 
@@ -43,7 +43,7 @@ const TwitchPermissionsBanner = lazy(
 );
 
 const NAVIGATION_ITEMS = [
-    { key: 'dashboard', href: dashboard(), icon: LayoutGrid },
+    { key: 'dashboard', href: manage_clips(), icon: LayoutGrid },
     { key: 'submit_clips', href: submitclip.create(), icon: Send },
     {
         key: 'evaluate_clips',
@@ -229,12 +229,14 @@ export function AppTopbar({ isIsland = true }: AppTopbarProps) {
                                                 {getInitials(auth.user.name)}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <span className="hidden text-sm font-medium lg:inline">
+
+                                        <span className="hidden text-sm font-medium xl:inline">
                                             {auth.user.name}
                                         </span>
                                         <ChevronDown className="hidden size-4 opacity-70 lg:block" />
                                     </Button>
                                 </DropdownMenuTrigger>
+
                                 <DropdownMenuContent
                                     className="mt-2 w-56 rounded-xl border border-gray-200 bg-white/95 shadow-2xl backdrop-blur-lg dark:border-white/10 dark:bg-black/90"
                                     align="end"

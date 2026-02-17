@@ -1,24 +1,48 @@
+import { Dashboard_items } from '@/components/sidebar/dashboard_items';
+import { SettingsSection } from '@/components/sidebar/settings-section';
+import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
+type SidebarVariant = 'none' | 'creator_dashboard' | 'personal_settings';
+
 interface AppLayoutProps {
     children: ReactNode;
     breadcrumbs?: BreadcrumbItem[];
-    sidebarContent?: ReactNode;
+    sidebarVariant?: SidebarVariant;
 }
 
-export default ({
+export default function AppLayout({
     children,
     breadcrumbs,
-    sidebarContent,
+    sidebarVariant = 'none',
     ...props
-}: AppLayoutProps) => (
-    <AppLayoutTemplate
-        breadcrumbs={breadcrumbs}
-        sidebarContent={sidebarContent}
-        {...props}
-    >
-        {children}
-    </AppLayoutTemplate>
-);
+}: AppLayoutProps) {
+    const sidebarContent =
+        sidebarVariant === 'none' ? null : (
+            <SidebarMenu>
+                {sidebarVariant === 'creator_dashboard' && (
+                    <>
+                        <Dashboard_items />
+                    </>
+                )}
+
+                {sidebarVariant === 'personal_settings' && (
+                    <>
+                        <SettingsSection />
+                    </>
+                )}
+            </SidebarMenu>
+        );
+
+    return (
+        <AppLayoutTemplate
+            breadcrumbs={breadcrumbs}
+            sidebarContent={sidebarContent}
+            {...props}
+        >
+            {children}
+        </AppLayoutTemplate>
+    );
+}

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // Main navigation items
     'dashboard' => 'Dashboard',
@@ -11,7 +13,7 @@ return [
     'about' => 'Über uns',
 
     // Sidebar
-    'streamer' => 'Streamer',
+    'streamer' => 'Streamer auswählen',
     'no_streamers_yet' => 'Keine Streamer vorhanden',
 
     // Search

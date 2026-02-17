@@ -76,6 +76,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    Route::get('manage_clips', function () {
+        return Inertia::render('dashboard/manage_clips');
+    })->name('manage_clips');
+
+    Route::get('manage_permissions', function () {
+        return Inertia::render('dashboard/manage_permissions');
+    })->name('manage_permissions');
+
     Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
 
     Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
