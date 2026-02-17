@@ -19,18 +19,18 @@ Route::middleware(['guest'])->group(function () {
         ->middleware(['throttle:two-factor'])
         ->name('auth.challenge.submit');
 
-    Route::get('login', [AuthController::class, 'index'])
+    Route::get('login', [AuthController::class, 'login'])
         ->name('login');
 
-    Route::get('/auth/twitch', [AuthController::class, 'create'])
+    Route::get('/auth/twitch', [AuthController::class, 'redirect'])
         ->name('auth.twitch');
 
-    Route::get('/auth/twitch/callback', [AuthController::class, 'store'])
+    Route::get('/auth/twitch/callback', [AuthController::class, 'callback'])
         ->middleware(['throttle:login'])
         ->name('auth.callback');
 });
 
-Route::post('logout', [AuthController::class, 'destroy'])
+Route::post('logout', [AuthController::class, 'logout'])
     ->middleware(['auth:web'])
     ->name('logout');
 

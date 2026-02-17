@@ -19,14 +19,14 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function index(Request $request): Response
+    public function login(Request $request): Response
     {
         return Inertia::render('auth/login', [
             'status' => $request->session()->get('status'),
         ]);
     }
 
-    public function create(): RedirectResponse
+    public function redirect(): RedirectResponse
     {
         return Socialite::driver('twitch')
             ->scopes([
@@ -37,7 +37,7 @@ class AuthController extends Controller
             ->redirect();
     }
 
-    public function store(Request $request, AppAuthentication $mfa): RedirectResponse
+    public function callback(Request $request, AppAuthentication $mfa): RedirectResponse
     {
         try {
             $twitchUser = Socialite::driver('twitch')->user();
@@ -91,7 +91,7 @@ class AuthController extends Controller
         return redirect()->intended(route('dashboard'));
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
 
