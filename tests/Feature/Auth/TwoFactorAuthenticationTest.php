@@ -123,8 +123,13 @@ describe('2FA Submission', function () {
         expect(auth()->check())->toBeFalse();
     });
 
-    it('redirects to login if user identifier is missing from session', function () {
-        $this->post(route('auth.challenge.submit'), ['code' => '123456'])
+    it('redirects to login if user identifier is missing from session on challenge view', function () {
+        $this->get(route('auth.challenge'))
             ->assertRedirect(route('login'));
+    });
+
+    it('denies with access forbidden if user identifier is missing from session on challenge submit', function () {
+        $this->post(route('auth.challenge.submit'), ['code' => '123456'])
+            ->assertForbidden();
     });
 });
