@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\TwoFactorSubmitRequest;
 use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class TwoFactorController extends Controller
 {
@@ -27,38 +30,23 @@ class TwoFactorController extends Controller
         return Inertia::render('auth/challenge');
     }
 
-    public function store(Request $request)
+    public function store(TwoFactorSubmitRequest $request)
     {
-        $request->validate([
-            'code' => 'sometimes|numeric|max_digits:6|min_digits:6',
-            'recovery_code' => 'sometimes|string',
-        ]);
-
-        $userId = $request->session()->get('auth.2fa.id', false);
+        $userId = $request->getChallengedUserId();
         $user = User::query()->find($userId);
 
         $mfa = app(AppAuthentication::class);
 
-        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
+        if (! $user || ! $mfa->isEnabled($user)) {
             return to_route('login');
         }
 
-        if (
-            $mfa->verifyCode($request->input('code', ''), $user->app_authentication_secret)
-            || $mfa->verifyRecoveryCode($request->input('recovery_code', ''), $user)
-        ) {
-            $request->session()->forget(['auth.2fa.id']);
-            $request->session()->regenerate();
-            Auth::login($user);
+        $request->ensureCodeIsValid($user);
+        $request->session()->regenerate();
+        Auth::login($user);
 
-            $url = $request->session()->pull('url.intended', route('home'));
+        $url = $request->session()->pull('url.intended', route('home'));
 
-            return Inertia::location($url);
-        }
-
-        throw ValidationException::withMessages([
-            'code' => 'Incorrect code',
-            'recovery_code' => 'Incorrect code',
-        ]);
+        return Inertia::location($url);
     }
 }
