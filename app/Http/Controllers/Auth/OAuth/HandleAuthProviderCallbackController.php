@@ -11,6 +11,7 @@ use Exception;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Inertia\Inertia;
@@ -21,7 +22,7 @@ use Laravel\Socialite\Facades\Socialite;
  *
  *  Name is neutral as we may allow other providers in the future
  */
-class HandleAuthProviderCallbackController extends Controller
+class HandleAuthProviderCallbackController extends Controller implements HasMiddleware
 {
     public function __invoke(Request $request, AppAuthentication $mfa): RedirectResponse
     {
@@ -93,5 +94,13 @@ class HandleAuthProviderCallbackController extends Controller
         }
 
         return redirect()->intended(route('dashboard'));
+    }
+
+    public static function middleware(): array
+    {
+        return [
+            'guest',
+            'throttle:login',
+        ];
     }
 }

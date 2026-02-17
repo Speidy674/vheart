@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Auth\OAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Laravel\Socialite\Facades\Socialite;
 
 /**
@@ -14,7 +15,7 @@ use Laravel\Socialite\Facades\Socialite;
  *
  * Name is neutral as we may allow other providers in the future
  */
-class RedirectToAuthProviderController extends Controller
+class RedirectToAuthProviderController extends Controller implements HasMiddleware
 {
     public function __invoke(Request $request): RedirectResponse
     {
@@ -25,5 +26,10 @@ class RedirectToAuthProviderController extends Controller
                 'channel:manage:clips', // Required to allow the VHeart team to download clips for processing
             ])
             ->redirect();
+    }
+
+    public static function middleware(): array
+    {
+        return ['guest'];
     }
 }
