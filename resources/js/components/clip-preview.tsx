@@ -1,6 +1,8 @@
+import useInstantInView from '@/hooks/use-instant-in-view';
 import { PublicClip } from '@/types';
 import { Clock, Heart, Image as ImageIcon, ImageOff } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 type ClipPreviewProps = {
     clip: PublicClip;
@@ -18,6 +20,15 @@ type ImageStatus = 'loading' | 'loaded' | 'error';
 export function ClipPreview({ clip, onClick }: ClipPreviewProps) {
     const [imageStatus, setImageStatus] = useState<ImageStatus>('loading');
     const imgRef = useRef<HTMLImageElement>(null);
+    const { isMountedInView, ref: viewportRef } = useInstantInView(100);
+
+    const { ref: observerRef, inView } = useInView({
+        triggerOnce: true,
+        rootMargin: '100px',
+        skip: isMountedInView,
+    });
+
+    const shouldRender = isMountedInView || inView;
 
     useEffect(() => {
         const img = imgRef.current;
@@ -33,10 +44,35 @@ export function ClipPreview({ clip, onClick }: ClipPreviewProps) {
                 void updateState('error');
             }
         }
-    }, []);
+    }, [shouldRender]);
+
+    const thumbnail = useMemo(() => {
+        if (!shouldRender) {
+            return null;
+        }
+
+        return (
+            <img
+                ref={imgRef}
+                src={clip.thumbnail_url}
+                alt={clip.title}
+                className={`h-full w-full object-cover ${
+                    imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setImageStatus('loaded')}
+                onError={() => setImageStatus('error')}
+            />
+        );
+    }, [clip.thumbnail_url, clip.title, imageStatus, shouldRender]);
 
     return (
         <button
+            ref={(node) => {
+                observerRef(node);
+                viewportRef.current = node;
+            }}
             type="button"
             onClick={onClick}
             aria-label={`Clip öffnen: ${clip.title}`}
@@ -57,18 +93,7 @@ export function ClipPreview({ clip, onClick }: ClipPreviewProps) {
             )}
 
             {/* Image */}
-            <img
-                ref={imgRef}
-                src={clip.thumbnail_url}
-                alt={clip.title}
-                className={`h-full w-full object-cover ${
-                    imageStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
-                }`}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => setImageStatus('loaded')}
-                onError={() => setImageStatus('error')}
-            />
+            {thumbnail}
 
             {/* Länge */}
             <div className="absolute top-2 left-2 flex items-center gap-1 rounded-lg bg-black/60 px-1.5 py-0.5 text-white backdrop-blur-[2px] transition-colors group-hover:bg-black/85 sm:px-2 sm:py-1 sm:text-xs">

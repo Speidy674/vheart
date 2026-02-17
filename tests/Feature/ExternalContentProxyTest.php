@@ -133,3 +133,25 @@ test('it successfully proxies if the local clip exists and broadcaster gave perm
     $response->assertHeader('Content-Type', 'image/png');
     $response->assertHeader('Cache-Control', 'immutable, max-age=31536000, public, s-maxage=31536000');
 });
+
+
+test('it generates correct proxy url for standard models', function () {
+    $clip = Clip::factory()->create(['twitch_id' => 'clipper123']);
+    $user = User::factory()->create(['id' => 55]);
+
+    $clipUrl = $clip->proxiedContentUrl();
+    $userUrl = $user->proxiedContentUrl();
+
+    expect($clipUrl)->toContain('/static-external/clip/clipper123.jpg')
+        ->and($userUrl)->toContain('/static-external/user/55.png');
+});
+
+test('it generates dynamic size urls for categories', function () {
+    $game = Category::factory()->create(['id' => 999]);
+
+    $urlResized = $game->proxiedContentUrl(50, 50);
+    $urlStandard = $game->proxiedContentUrl();
+
+    expect($urlResized)->toContain('/static-external/category/999-50x50.jpg')
+        ->and($urlStandard)->toContain('/static-external/category/999.jpg');
+});

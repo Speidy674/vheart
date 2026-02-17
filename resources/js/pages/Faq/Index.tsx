@@ -26,9 +26,11 @@ const FaqItem = ({ item }: { item: FaqEntryResource }) => (
                 <span className="font-bold text-emerald-600 dark:text-emerald-400">
                     A
                 </span>
-                <p className="flex-1 text-center whitespace-pre-line text-gray-700 dark:text-gray-300">
-                    {item.body}
-                </p>
+                {/* the HTML we get from backend is parsed Markdown and stripped from unsafe things */}
+                <p
+                    className="flex-1 text-center whitespace-pre-line text-gray-700 dark:text-gray-300"
+                    dangerouslySetInnerHTML={{ __html: item.body }}
+                ></p>
             </div>
         </div>
     </details>

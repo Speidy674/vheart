@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\ExternalContentProxyType;
+use App\Http\Resources\CategoryResource;
+use App\Models\Contracts\ExternalProxyable;
+use App\Models\Traits\HasExternalProxy;
 use App\Policies\CategoryPolicy;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,8 +18,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[UsePolicy(CategoryPolicy::class)]
 #[UseResource(CategoryResource::class)]
-class Category extends Model
+class Category extends Model implements ExternalProxyable
 {
+    use HasExternalProxy;
+
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
 
@@ -30,6 +35,21 @@ class Category extends Model
 
     public $incrementing = false;
 
+    public static function getProxyUrlColumn(): string
+    {
+        return 'box_art';
+    }
+
+    public static function getProxyExtension(): string
+    {
+        return 'jpg';
+    }
+
+    public static function supportsProxyDynamicSize(): bool
+    {
+        return true;
+    }
+
     public function clips(): HasMany
     {
         return $this->hasMany(Clip::class, 'category_id', 'id');
@@ -40,5 +60,10 @@ class Category extends Model
         $boxArtUrl = $this->box_art ?? self::PLACEHOLDER_BOX_ART;
 
         return str_replace(['{width}', '{height}'], [$width, $height], $boxArtUrl);
+    }
+
+    public function getProxyType(): ExternalContentProxyType
+    {
+        return ExternalContentProxyType::TwitchCategory;
     }
 }

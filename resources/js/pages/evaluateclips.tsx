@@ -7,7 +7,7 @@ import { PublicClip } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import clsx from 'clsx';
 import { CircleX, Heart } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type PageProps = {
@@ -18,6 +18,23 @@ export default function EvaluateClips() {
     const { t } = useTranslation('evaluateclips');
 
     const { props } = usePage<PageProps>();
+
+    const [timeLeft, setTimeLeft] = useState(5);
+    const [prevClipId, setPrevClipId] = useState(props.clip?.id);
+
+    if (props.clip?.id !== prevClipId) {
+        setPrevClipId(props.clip?.id);
+        setTimeLeft(5);
+    }
+
+    useEffect(() => {
+        if (timeLeft > 0) {
+            const timer = setTimeout(() => {
+                setTimeLeft(timeLeft - 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        }
+    }, [timeLeft]);
 
     const getClip = () => {
         router.reload({ only: ['clip'] });
@@ -71,67 +88,77 @@ export default function EvaluateClips() {
 
                             {/* ACTION BAR */}
                             <div className="flex shrink-0 items-center justify-center gap-3 py-2 sm:gap-4 sm:py-3">
-                                {/* Like */}
-                                <Link
-                                    disabled={!props.clip}
-                                    type="button"
-                                    href={store()}
-                                    data={{
-                                        clip: props.clip?.id,
-                                        voted: true,
-                                    }}
-                                    className={clsx(
-                                        'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
-                                        'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
-                                    )}
-                                    preserveState
-                                    onSuccess={() => {
-                                        getClip();
-                                    }}
-                                >
-                                    <Heart
-                                        className={clsx(
-                                            'h-4 w-4 sm:h-5 sm:w-5',
-                                            'text-white',
-                                        )}
-                                    />
-                                </Link>
+                                {timeLeft > 0 ? (
+                                    <div className="flex size-9 items-center justify-center rounded-full bg-black ring-1 ring-white/10 sm:size-11">
+                                        <span className="text-sm font-bold text-white sm:text-base">
+                                            {timeLeft}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Like */}
+                                        <Link
+                                            disabled={!props.clip}
+                                            type="button"
+                                            href={store()}
+                                            data={{
+                                                clip: props.clip?.id,
+                                                voted: true,
+                                            }}
+                                            className={clsx(
+                                                'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
+                                                'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
+                                            )}
+                                            preserveState
+                                            onSuccess={() => {
+                                                getClip();
+                                            }}
+                                        >
+                                            <Heart
+                                                className={clsx(
+                                                    'h-4 w-4 sm:h-5 sm:w-5',
+                                                    'text-white',
+                                                )}
+                                            />
+                                        </Link>
 
-                                {/* Skip */}
-                                <Link
-                                    disabled={!props.clip}
-                                    type="button"
-                                    href={store()}
-                                    data={{
-                                        clip: props.clip?.id,
-                                        voted: false,
-                                    }}
-                                    className={clsx(
-                                        'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
-                                        'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
-                                    )}
-                                    preserveState
-                                    onSuccess={() => {
-                                        getClip();
-                                    }}
-                                >
-                                    <CircleX
-                                        className={clsx(
-                                            'h-4 w-4 sm:h-5 sm:w-5',
-                                            'text-white',
-                                        )}
-                                    />
-                                </Link>
+                                        {/* Skip */}
+                                        <Link
+                                            disabled={!props.clip}
+                                            type="button"
+                                            href={store()}
+                                            data={{
+                                                clip: props.clip?.id,
+                                                voted: false,
+                                            }}
+                                            className={clsx(
+                                                'grid size-9 place-items-center rounded-full bg-black ring-1 ring-white/10 disabled:cursor-not-allowed disabled:opacity-50 sm:size-11',
+                                                'transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110',
+                                            )}
+                                            preserveState
+                                            onSuccess={() => {
+                                                getClip();
+                                            }}
+                                        >
+                                            <CircleX
+                                                className={clsx(
+                                                    'h-4 w-4 sm:h-5 sm:w-5',
+                                                    'text-white',
+                                                )}
+                                            />
+                                        </Link>
 
-                                <ReportButton
-                                    disabled={!props.clip}
-                                    items={[
-                                        {
-                                            type: 'clip',
-                                            id: props.clip?.id ?? -1,
-                                        }
-                                    ]}
-                                />
+                                        <ReportButton
+                                            disabled={!props.clip}
+                                            items={[
+                                                {
+                                                    type: 'clip',
+                                                    id: props.clip?.id ?? -1,
+                                                },
+                                            ]}
+                                        />
+                                    </>
+                                )}
                             </div>
                         </section>
                     </div>

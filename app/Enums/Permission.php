@@ -61,6 +61,13 @@ enum Permission: string implements HasLabel
     case CreateComment = 'create_comment';
     case DeleteAnyComment = 'delete_any_comment';
 
+    // Tag
+    case ViewAnyTag = 'view_any_tag';
+    case ViewTag = 'view_tag';
+    case CreateTag = 'create_tag';
+    case UpdateAnyTag = 'update_any_tag';
+    case DeleteAnyTag = 'delete_any_tag';
+  
     // Roles
     case ViewAnyRole = 'view_any_role';
     case ViewRole = 'view_role';

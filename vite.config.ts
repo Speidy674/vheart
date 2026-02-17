@@ -69,4 +69,7 @@ export default defineConfig({
     esbuild: {
         jsx: 'automatic',
     },
+    build: {
+        target: 'baseline-widely-available',
+    },
 });
