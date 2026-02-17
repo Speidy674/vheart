@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth\OAuth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -14,30 +14,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Inertia\Inertia;
-use Inertia\Response;
 use Laravel\Socialite\Facades\Socialite;
 
-class AuthController extends Controller
+/**
+ * Handle the response from the OAuth Provider.
+ *
+ *  Name is neutral as we may allow other providers in the future
+ */
+class HandleAuthProviderCallbackController extends Controller
 {
-    public function login(Request $request): Response
-    {
-        return Inertia::render('auth/login', [
-            'status' => $request->session()->get('status'),
-        ]);
-    }
-
-    public function redirect(): RedirectResponse
-    {
-        return Socialite::driver('twitch')
-            ->scopes([
-                'channel:read:vips', // Required to access VIP list
-                'user:read:moderated_channels', // Required to see who a user moderates for
-                'channel:manage:clips', // Required to allow the VHeart team to download clips for processing
-            ])
-            ->redirect();
-    }
-
-    public function callback(Request $request, AppAuthentication $mfa): RedirectResponse
+    public function __invoke(Request $request, AppAuthentication $mfa): RedirectResponse
     {
         try {
             $twitchUser = Socialite::driver('twitch')->user();
@@ -107,17 +93,5 @@ class AuthController extends Controller
         }
 
         return redirect()->intended(route('dashboard'));
-    }
-
-    public function logout(Request $request): RedirectResponse
-    {
-        Auth::logout();
-
-        if ($request->hasSession()) {
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-        }
-
-        return to_route('home');
     }
 }
