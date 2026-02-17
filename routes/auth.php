@@ -13,20 +13,24 @@ use App\Http\Controllers\Auth\TwoFactor\TwoFactorPromptController;
 use App\Http\Controllers\Auth\TwoFactor\TwoFactorVerificationController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('auth/challenge', TwoFactorPromptController::class)
-    ->name('auth.challenge');
+Route::prefix('auth')
+    ->name('auth.')
+    ->group(function () {
+        Route::get('2fa/challenge', TwoFactorPromptController::class)
+            ->name('challenge');
 
-Route::post('auth/challenge', TwoFactorVerificationController::class)
-    ->name('auth.challenge.submit');
+        Route::post('2fa/challenge', TwoFactorVerificationController::class)
+            ->name('challenge.submit');
+
+        Route::get('/twitch', RedirectToAuthProviderController::class)
+            ->name('twitch');
+
+        Route::get('/twitch/callback', HandleAuthProviderCallbackController::class)
+            ->name('callback');
+    });
 
 Route::get('login', CreateAuthenticatedSessionController::class)
     ->name('login');
-
-Route::get('/auth/twitch', RedirectToAuthProviderController::class)
-    ->name('auth.twitch');
-
-Route::get('/auth/twitch/callback', HandleAuthProviderCallbackController::class)
-    ->name('auth.callback');
 
 Route::post('logout', DestroyAuthenticatedSessionController::class)
     ->name('logout');
