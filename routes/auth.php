@@ -3,13 +3,11 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\Email\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\Email\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\Email\EmailVerificationController;
 use App\Http\Controllers\Auth\TwoFactorController;
-use App\Http\Requests\Auth\VerifyEmailRequest;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::middleware(['guest'])->group(function () {
     Route::get('auth/challenge', [TwoFactorController::class, 'index'])
@@ -38,43 +36,14 @@ Route::middleware(['auth:web'])
     ->prefix('email')
     ->name('verification.')
     ->group(function () {
-        Route::get('verify', static function (Request $request) {
-            if ($request->user()->email === null || $request->user()->hasVerifiedEmail()) {
-                return redirect()->intended(route('dashboard'));
-            }
-
-            return Inertia::render('auth/verify-email');
-        })
+        Route::get('verify', EmailVerificationPromptController::class)
             ->name('notice');
 
-        Route::get('verify/{id}/{hash}', static function (VerifyEmailRequest $request) {
-            if ($request->user()->hasVerifiedEmail()) {
-                return redirect()->intended(route('dashboard', ['verified' => true]));
-            }
-
-            if ($request->user()->markEmailAsVerified()) {
-                event(new Verified($request->user()));
-            }
-
-            return redirect()->intended(route('dashboard', ['verified' => true]));
-        })
+        Route::get('verify/{id}/{hash}', EmailVerificationController::class)
             ->middleware(['signed', 'throttle:6,1'])
             ->name('verify');
 
-        Route::post('verification-notification', static function (Request $request) {
-            if ($request->user()->hasVerifiedEmail()) {
-                return $request->wantsJson()
-                    ? new JsonResponse(status: 204)
-                    : redirect()->intended(route('dashboard'));
-            }
-
-            $request->user()->sendEmailVerificationNotification();
-
-            return $request->wantsJson()
-                ? new JsonResponse(status: 202)
-                : back()->with('status', __('auth.verification.sent'));
-
-        })
+        Route::post('verification-notification', EmailVerificationNotificationController::class)
             ->middleware(['throttle:6,1'])
             ->name('send');
     });
