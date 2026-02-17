@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Auth\TwoFactorController;
 use App\Http\Requests\Auth\VerifyEmailRequest;
 use App\Models\User;
 use Carbon\CarbonInterval;
@@ -11,55 +12,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 Route::middleware(['guest'])->group(function () {
-    Route::get('auth/challenge', static function (Request $request) {
-        $userId = $request->session()->get('auth.2fa.id', false);
-        $user = User::query()->find($userId);
-        $mfa = app(AppAuthentication::class);
+    Route::get('auth/challenge', [TwoFactorController::class, 'index'])
+        ->name('auth.challenge');
 
-        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
-            return to_route('login');
-        }
-
-        return Inertia::render('auth/challenge');
-    })->name('auth.challenge');
-
-    Route::post('auth/challenge', static function (Request $request) {
-        $request->validate([
-            'code' => 'sometimes|numeric|max_digits:6|min_digits:6',
-            'recovery_code' => 'sometimes|string',
-        ]);
-
-        $userId = $request->session()->get('auth.2fa.id', false);
-        $user = User::query()->find($userId);
-
-        $mfa = app(AppAuthentication::class);
-
-        if (! $userId || ! $user || ! $mfa->isEnabled($user)) {
-            return to_route('login');
-        }
-
-        if (
-            $mfa->verifyCode($request->input('code', ''), $user->app_authentication_secret)
-            || $mfa->verifyRecoveryCode($request->input('recovery_code', ''), $user)
-        ) {
-            $request->session()->forget(['auth.2fa.id']);
-            $request->session()->regenerate();
-            Auth::login($user);
-
-            $url = $request->session()->pull('url.intended', route('home'));
-
-            return Inertia::location($url);
-        }
-
-        throw ValidationException::withMessages([
-            'code' => 'Incorrect code',
-            'recovery_code' => 'Incorrect code',
-        ]);
-    })
+    Route::post('auth/challenge', [TwoFactorController::class, 'store'])
         ->middleware(['throttle:two-factor'])
         ->name('auth.challenge.submit');
 
