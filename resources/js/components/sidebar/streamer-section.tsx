@@ -3,7 +3,6 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    useSidebar,
 } from '@/components/ui/sidebar';
 import { cn, isSameUrl } from '@/lib/utils';
 import { clips, main } from '@/routes/dashboard';
@@ -12,22 +11,28 @@ import { Link, usePage } from '@inertiajs/react';
 import { Separator } from '@radix-ui/react-separator';
 import { ChevronDown, ClapperboardIcon, HomeIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import T from '../t';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+
+import type { SharedData } from '@/types';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 
-/**
- * Streamer selection section for the sidebar.
- * Shows a collapsible list of streamers the user manages.
- */
+type Streamer = {
+    id: number | string;
+    name: string;
+    avatar: string | null;
+};
+
+type PageProps = SharedData & {
+    streamers?: Streamer[];
+};
+
 export function StreamerSection() {
-    const { state } = useSidebar();
     const { t } = useTranslation('navigation');
     const isCollapsed = state === 'collapsed';
     const { props } = usePage<DashboardData>();

@@ -1,4 +1,3 @@
-import { StreamerSection } from '@/components/sidebar/streamer-section';
 import StaticSpaceBackground from '@/components/spacebackground';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
@@ -16,10 +15,7 @@ export default function DashboardMain() {
     ];
 
     return (
-        <AppLayout
-            breadcrumbs={breadcrumbs}
-            sidebarContent={<StreamerSection />}
-        >
+        <AppLayout breadcrumbs={breadcrumbs} sidebarVariant="creator_dashboard">
             <Head title={props.selectedStreamer.name + ' Dashboard'} />
             <StaticSpaceBackground />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">

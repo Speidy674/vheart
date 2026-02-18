@@ -31,7 +31,7 @@ export default function Profile({
     const { auth } = usePage<SharedData>().props;
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} sidebarVariant="personal_settings">
             <Head title="Profile settings" />
 
             <SettingsLayout>

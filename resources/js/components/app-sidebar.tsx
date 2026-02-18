@@ -2,7 +2,6 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
-    SidebarHeader,
     SidebarMenu,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
@@ -13,7 +12,6 @@ interface AppSidebarProps {
 }
 
 export function AppSidebar({ className, children }: AppSidebarProps) {
-
     useEffect(() => {
         const updateSidebarPadding = () => {
             const footerHeight = getComputedStyle(document.documentElement)
@@ -48,16 +46,12 @@ export function AppSidebar({ className, children }: AppSidebarProps) {
             }}
             data-sidebar="true"
         >
-            {/* Sidebar Header - receives custom content via children */}
-            {children && <SidebarHeader>{children}</SidebarHeader>}
-
-            {/* Main content area - empty for now, can be extended later */}
-            <SidebarContent />
+            {/* Main content area  */}
+            {children && <SidebarContent>{children}</SidebarContent>}
 
             {/* Footer navigation */}
             <SidebarFooter>
-                <SidebarMenu className="mt-auto">
-                </SidebarMenu>
+                <SidebarMenu className="mt-auto"></SidebarMenu>
 
                 {/* Sidebar collapse toggle */}
                 <SidebarTrigger />

@@ -13,7 +13,7 @@ return [
     'about' => 'Über uns',
 
     // Sidebar
-    'streamer' => 'Streamer',
+    'streamer' => 'Streamer auswählen',
     'no_streamers_yet' => 'Keine Streamer vorhanden',
 
     // Search
