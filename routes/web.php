@@ -37,7 +37,7 @@ Route::get('/', static function () {
 })
     ->name('home');
 
-Route::get('/test', static function () {
+Route::get('/static', static function () {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
@@ -57,7 +57,7 @@ Route::get('/test', static function () {
         'discover' => $discover,
     ]);
 })
-    ->name('home2');
+    ->name('static');
 
 Route::get('/about-us', static function () {
     $settings = [
