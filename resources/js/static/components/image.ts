@@ -1,4 +1,5 @@
 import { AlpineComponent } from 'alpinejs';
+import { checkInView } from '@/lib/utils';
 
 export type ImageStatus = 'loading' | 'loaded' | 'error';
 
@@ -24,11 +25,7 @@ export default (config: ImageConfig): AlpineComponent<ImageData> => ({
         const el = this.$el as HTMLImageElement;
         this.checkCached(el);
 
-        const rect = el.getBoundingClientRect();
-
-        const inView =
-            rect.top < window.innerHeight + this.viewBuffer &&
-            rect.bottom >= 0 - this.viewBuffer;
+        const inView = checkInView(el, this.viewBuffer);
 
         if (this.isCached || inView) {
             this.shown = true;
