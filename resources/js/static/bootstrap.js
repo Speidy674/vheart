@@ -1,3 +1,5 @@
+// This file is setting up everything, except for the glob everything is pretty much default setup
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the

@@ -14,6 +14,7 @@ import image from '@/static/components/image';
 
 Alpine.plugin(intersect);
 
+// Register alpine based components here, they can be used with `x-data="name({ ...config })"` in html
 Alpine.data('exampleComponent', exampleComponent);
 Alpine.data('baseEmbed', baseEmbed);
 Alpine.data('twitchEmbed', twitchEmbed);
