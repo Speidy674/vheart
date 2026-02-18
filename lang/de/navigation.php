@@ -22,9 +22,4 @@ return [
 
     // Logo alt text
     'logo_alt' => 'VHeart Logo',
-
-    'streamerSidebar' => [
-        'dashboard' => 'Dashboard',
-        'clips' => 'Clips',
-    ],
 ];

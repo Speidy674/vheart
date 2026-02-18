@@ -1,167 +1,102 @@
-import { Collapsible } from '@/components/ui/collapsible';
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import { cn, isSameUrl } from '@/lib/utils';
-import { clips, main } from '@/routes/dashboard';
+import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { main } from '@/routes/dashboard';
 import { DashboardData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Separator } from '@radix-ui/react-separator';
-import { ChevronDown, ClapperboardIcon, HomeIcon } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-import type { SharedData } from '@/types';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-type Streamer = {
-    id: number | string;
-    name: string;
-    avatar: string | null;
-};
-
-type PageProps = SharedData & {
-    streamers?: Streamer[];
-};
-
 export function StreamerSection() {
     const { t } = useTranslation('navigation');
-    const isCollapsed = state === 'collapsed';
     const { props } = usePage<DashboardData>();
-    const currentPath = window.location.pathname;
-
-    const navItems = [
-        {
-            key: 'streamerSidebar.dashboard',
-            href: main(props.selectedStreamer.id),
-            icon: HomeIcon,
-        },
-        {
-            key: 'streamerSidebar.clips',
-            href: clips(props.selectedStreamer.id),
-            icon: ClapperboardIcon,
-        },
-    ];
 
     return (
-        <SidebarMenu>
-            <Collapsible
-                open={isCollapsed ? false : undefined}
-                defaultOpen
-                className="group/collapsible"
-            >
-                <SidebarMenuItem>
-                    <DropdownMenu modal={false}>
-                        <DropdownMenuTrigger asChild disabled={isCollapsed}>
-                            <SidebarMenuButton className="hover:cursor-pointer hover:bg-transparent focus:bg-transparent active:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent">
+        <SidebarMenuItem>
+            <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton className="hover:cursor-pointer hover:bg-transparent focus:bg-transparent active:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent">
+                        <Avatar className="size-7 overflow-hidden rounded-full">
+                            <AvatarImage
+                                src={props.selectedStreamer.avatar}
+                                alt={props.selectedStreamer.name}
+                            />
+                            <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                {props.selectedStreamer.name.substring(0, 1)}
+                            </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">
+                            {props.selectedStreamer.name}
+                        </span>
+                        <ChevronDown className="ml-auto size-4 shrink-0 opacity-80" />
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                    className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                    align="start"
+                >
+                    <DropdownMenuGroup
+                        key={'streamerSelect' + props.auth.user.id}
+                    >
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                            {t('streamer')}
+                        </div>
+                        <DropdownMenuItem asChild>
+                            <Link
+                                className="block w-full"
+                                href={main(props.auth.user.id)}
+                                as="button"
+                                prefetch
+                            >
                                 <Avatar className="size-7 overflow-hidden rounded-full">
                                     <AvatarImage
-                                        src={props.selectedStreamer.avatar}
-                                        alt={props.selectedStreamer.name}
+                                        src={props.auth.user.avatar}
+                                        alt={props.auth.user.name}
                                     />
                                     <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
-                                        {props.selectedStreamer.name.substring(
-                                            0,
-                                            1,
-                                        )}
+                                        {props.auth.user.name.substring(0, 1)}
                                     </AvatarFallback>
                                 </Avatar>
                                 <span className="font-medium">
-                                    {props.selectedStreamer.name}
+                                    {props.auth.user.name}
                                 </span>
-                                <ChevronDown className="ml-auto size-4 transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                            </SidebarMenuButton>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="start">
-                            <DropdownMenuGroup
-                                key={'streamerSelect' + props.auth.user.id}
-                            >
-                                <DropdownMenuItem asChild>
-                                    <Link
-                                        className="block w-full"
-                                        href={main(props.auth.user.id)}
-                                        as="button"
-                                        prefetch
-                                    >
-                                        <Avatar className="size-7 overflow-hidden rounded-full">
-                                            <AvatarImage
-                                                src={props.auth.user.avatar}
-                                                alt={props.auth.user.name}
-                                            />
-                                            <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
-                                                {props.auth.user.name.substring(
-                                                    0,
-                                                    1,
-                                                )}
-                                            </AvatarFallback>
-                                        </Avatar>
-                                        <span className="font-medium">
-                                            {props.auth.user.name}
-                                        </span>
-                                    </Link>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            {props.streamers.map((item) => (
-                                <DropdownMenuGroup
-                                    key={'streamerSelect' + item.id}
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    {props.streamers.map((item) => (
+                        <DropdownMenuGroup key={'streamerSelect' + item.id}>
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    className="block w-full"
+                                    href={main(item.id)}
+                                    as="button"
+                                    prefetch
                                 >
-                                    <DropdownMenuItem asChild>
-                                        <Link
-                                            className="block w-full"
-                                            href={main(item.id)}
-                                            as="button"
-                                            prefetch
-                                        >
-                                            <Avatar className="size-7 overflow-hidden rounded-full">
-                                                <AvatarImage
-                                                    src={item.avatar}
-                                                    alt={item.name}
-                                                />
-                                                <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
-                                                    {item.name.substring(0, 1)}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <span className="font-medium">
-                                                {item.name}
-                                            </span>
-                                        </Link>
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                            ))}
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </SidebarMenuItem>
-            </Collapsible>
-
-            <Separator className="my-6 lg:hidden" />
-            {navItems.map((item) => (
-                <SidebarMenuButton
-                    key={'streamerSidebar' + item.key}
-                    size="sm"
-                    variant="outline"
-                    asChild
-                    className={cn('w-full justify-start', {
-                        'bg-muted': isSameUrl(currentPath, item.href),
-                    })}
-                >
-                    <Link href={item.href}>
-                        {item.icon && <item.icon className="h-4 w-4" />}
-                        <T
-                            ns="navigation"
-                            k={item.key}
-                            loadingSkeleton={true}
-                        />
-                    </Link>
-                </SidebarMenuButton>
-            ))}
-        </SidebarMenu>
+                                    <Avatar className="size-7 overflow-hidden rounded-full">
+                                        <AvatarImage
+                                            src={item.avatar}
+                                            alt={item.name}
+                                        />
+                                        <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                            {item.name.substring(0, 1)}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium">
+                                        {item.name}
+                                    </span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                    ))}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </SidebarMenuItem>
     );
 }

@@ -21,7 +21,7 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { home, login, manage_clips } from '@/routes';
+import { dashboard, home, login } from '@/routes';
 import submitclip from '@/routes/submitclip';
 import { type SharedData as BaseSharedData } from '@/types';
 
@@ -43,7 +43,7 @@ const TwitchPermissionsBanner = lazy(
 );
 
 const NAVIGATION_ITEMS = [
-    { key: 'dashboard', href: manage_clips(), icon: LayoutGrid },
+    { key: 'dashboard', href: dashboard(), icon: LayoutGrid },
     { key: 'submit_clips', href: submitclip.create(), icon: Send },
     {
         key: 'evaluate_clips',

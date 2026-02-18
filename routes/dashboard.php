@@ -42,4 +42,11 @@ Route::middleware('auth')->group(function () {
         ->missing(function () {
             return Redirect::route('home');
         })->name('dashboard.clips');
+
+    Route::get('/dashboard/{user}/permissions', function (User $user, Request $request) {
+        return Inertia::render('dashboard/permissions');
+    })->middleware(BroadcasterDashboard::class)
+        ->missing(function () {
+            return Redirect::route('home');
+        })->name('dashboard.permissions');
 });
