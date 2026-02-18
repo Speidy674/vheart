@@ -1,4 +1,5 @@
 <div
+    x-intersect.margin.100px.once="setVisible"
     {{ $attributes->merge(['class' => "relative isolate overflow-hidden aspect-video rounded-lg bg-black dark:border-black"]) }}
 >
     {{-- later we can add some fallback stuff so this can technically work with no javascript in a very basic way but for now this is enough --}}
@@ -52,7 +53,7 @@
                 </div>
             </template>
 
-            <template x-if="hasConsent()">
+            <template x-if="hasConsent() && isVisible">
                 <div class="h-full w-full relative">
 
                     <div x-show="isLoading" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black text-gray-500">

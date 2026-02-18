@@ -1,4 +1,7 @@
 import { AlpineComponent } from 'alpinejs';
+import { checkInView } from '@/lib/utils';
+
+const ViewportBuffer = 100;
 
 export interface GenericEmbedConfig {
     url?: string;
@@ -17,11 +20,13 @@ export interface GenericEmbedData {
     hasConsentGiven: boolean;
     isValidUrl: boolean;
     thumbnailUrl: string | null;
+    isVisible: boolean;
     hasConsent(): boolean;
     hasCookie(name: string): boolean;
     accept(): void;
     handleIframeLoad(): void;
     init(): void;
+    setVisible(): void;
 }
 
 export default (
@@ -35,8 +40,15 @@ export default (
     isLoading: true,
     hasConsentGiven: false,
     isValidUrl: true,
+    isVisible: false,
 
     init() {
+        const el = this.$el as HTMLImageElement;
+
+        if (checkInView(el, ViewportBuffer)) {
+            this.isVisible = true;
+        }
+
         this.$watch('url', () => {
             this.isLoading = true;
 
@@ -54,8 +66,6 @@ export default (
                 this.isValidUrl = false;
             }
         });
-
-        console.debug('Embed data initialized for ' + this.url);
     },
 
     hasConsent() {
@@ -81,7 +91,9 @@ export default (
             document.cookie = `${this.cookieName}=1; expires=${date.toUTCString()}; path=/`;
         }
     },
-
+    setVisible() {
+        this.isVisible = true;
+    },
     handleIframeLoad() {
         this.isLoading = false;
     },
