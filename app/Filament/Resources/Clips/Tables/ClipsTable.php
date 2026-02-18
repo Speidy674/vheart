@@ -208,11 +208,11 @@ class ClipsTable
                     ->translateLabel(),
 
                 TernaryFilter::make('status_visibility')
-                    ->label('admin/resources/clips.filters.status_visibility')
+                    ->label('admin/resources/clips.filters.status_visibility.label')
                     ->translateLabel()
-                    ->placeholder('Approved Only')
-                    ->trueLabel('Blocked Only')
-                    ->falseLabel('All')
+                    ->placeholder(__('admin/resources/clips.filters.status_visibility.placeholder'))
+                    ->trueLabel(__('admin/resources/clips.filters.status_visibility.true'))
+                    ->falseLabel(__('admin/resources/clips.filters.status_visibility.false'))
                     ->queries(
                         true: fn (Builder $query) => $query->whereIn('status', [ClipStatus::Blocked, ClipStatus::NeedApproval]),
                         false: fn (Builder $query) => $query,
