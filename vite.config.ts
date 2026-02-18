@@ -51,6 +51,7 @@ export default defineConfig({
         i18nHotReload(),
     ],
     build: {
+        target: 'baseline-widely-available',
         rollupOptions: {
             output: {
                 manualChunks(id) {
@@ -68,8 +69,5 @@ export default defineConfig({
     },
     esbuild: {
         jsx: 'automatic',
-    },
-    build: {
-        target: 'baseline-widely-available',
     },
 });
