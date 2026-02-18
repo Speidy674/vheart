@@ -109,8 +109,8 @@ class ClipsRelationManager extends RelationManager
                                 ->color('success'),
 
                             TextColumn::make('status')
-                                ->label('admin/resources/clips.table.columns.status')
-                                ->tooltip(__('admin/resources/clips.table.columns.status'))
+                                ->label('admin/resources/compilations.relation_managers.clips.columns.status_moderation')
+                                ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_moderation'))
                                 ->size(TextSize::Medium)
                                 ->icon(Heroicon::Clipboard)
                                 ->badge()
@@ -184,8 +184,8 @@ class ClipsRelationManager extends RelationManager
                             ->icon(Heroicon::Check)
                             ->color('gray'),
                         TextColumn::make('pivot.status')
-                            ->label('admin/resources/compilations.relation_managers.clips.columns.status')
-                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status'))
+                            ->label('admin/resources/compilations.relation_managers.clips.columns.status_cutter')
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_cutter'))
                             ->badge()
                             ->icon(Heroicon::Clipboard)
                             ->translateLabel(),
