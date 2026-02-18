@@ -10,6 +10,7 @@
     "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.4",
+        "blade-ui-kit/blade-icons": "^1.8",
         "filament/filament": "^4.0",
         "inertiajs/inertia-laravel": "^2.0",
         "kirschbaum-development/commentions": "^0.7.8",
@@ -18,6 +19,7 @@
         "laravel/octane": "^2.13",
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
+        "mallardduck/blade-lucide-icons": "^1.26",
         "sentry/sentry-laravel": "^4.20",
         "socialiteproviders/twitch": "^5.4",
         "spatie/laravel-translatable": "^6.12",
