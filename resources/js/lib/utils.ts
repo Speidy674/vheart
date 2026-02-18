@@ -28,6 +28,13 @@ export function checkInView(el: HTMLElement, viewBuffer: number) {
 
     const rect = el.getBoundingClientRect();
 
-    return rect.top < window.innerHeight + viewBuffer &&
-            rect.bottom >= 0 - viewBuffer;
+    const isVisibleVertically =
+        rect.top < window.innerHeight + viewBuffer &&
+        rect.bottom >= 0 - viewBuffer;
+
+    const isVisibleHorizontally =
+        rect.left < window.innerWidth + viewBuffer &&
+        rect.right >= 0 - viewBuffer;
+
+    return isVisibleVertically && isVisibleHorizontally;
 }
