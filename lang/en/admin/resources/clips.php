@@ -55,6 +55,13 @@ return [
             'only_with_compilation' => 'Clips with Compilation',
             'with_compilation' => 'All Clips',
         ],
+        'status' => 'Status',
+        'status_visibility' => [
+            'label' => 'Status',
+            'placeholder' => 'Approved Only',
+            'true' => 'Blocked Only',
+            'false' => 'All',
+        ],
     ],
     'edit' => [
         'title' => 'Edit :label by :broadcaster',
