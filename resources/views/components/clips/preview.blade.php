@@ -4,7 +4,7 @@
     target="_blank"
     class="group focus-visible:ring-primary-500 relative aspect-video w-full overflow-hidden rounded-md bg-gray-200 outline-none focus-visible:ring-2 dark:bg-gray-800"
 >
-    <x-image src="{{ $clip->thumbnail_url }}" class="aspect-video" />
+    <x-image src="{{ $clip->proxiedContentUrl() }}" class="aspect-video" />
 
     <div class="absolute top-2 left-2 flex items-center gap-1 rounded-lg bg-black/60 px-1.5 py-0.5 text-white backdrop-blur-[2px] transition-colors group-hover:bg-black/85 sm:px-2 sm:py-1 sm:text-xs">
 {{--        <Clock--}}
