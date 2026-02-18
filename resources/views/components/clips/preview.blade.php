@@ -13,7 +13,7 @@
 {{--        />--}}
         <p class="sr-only">Länge</p>
         <span class="font-mono text-sm">
-         {{ $clip->duration }}
+         {{ round($clip->duration) }}
         </span>
     </div>
 
