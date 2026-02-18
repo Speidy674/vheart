@@ -6,8 +6,8 @@
     <noscript>
         <div class="absolute inset-0 z-20 h-full w-full bg-black">
             <div class="flex h-full flex-row items-center justify-center gap-4 p-6 text-center text-white">
-                {{-- TODO: use icon stuff later --}}
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-12 text-destructive"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <x-lucide-info class="size-12 text-destructive" aria-hidden="true" defer />
+
                 <p>{{ __('embeds.generic.noscript.text') }}</p>
             </div>
         </div>
@@ -16,8 +16,7 @@
     <template x-if="!isValidUrl">
         <div class="absolute inset-0 z-20 h-full w-full bg-black">
             <div class="flex h-full flex-row items-center justify-center gap-4 p-6 text-center text-white">
-                {{-- TODO: use icon stuff later --}}
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-12 text-destructive"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <x-lucide-info class="size-12 text-destructive" aria-hidden="true" defer />
                 <p>{{ __('embeds.generic.invalid.text') }}</p>
             </div>
         </div>
@@ -57,8 +56,7 @@
                 <div class="h-full w-full relative">
 
                     <div x-show="isLoading" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black text-gray-500">
-                        {{-- TODO: use icon stuff later --}}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-12 animate-spin opacity-75"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                        <x-lucide-loader-circle class="size-12 animate-spin opacity-75" aria-hidden="true" defer />
                     </div>
 
                     <iframe
