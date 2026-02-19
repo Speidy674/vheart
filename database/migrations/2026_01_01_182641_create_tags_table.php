@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table): void {
             $table->id();
-            $table->string('name')->unique();
+            $table->jsonb('name');
         });
 
         Schema::create('clip_tags', function (Blueprint $table) {

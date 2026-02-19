@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Tags\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Livewire\Component;
 
 class TagForm
 {
@@ -17,7 +18,11 @@ class TagForm
                     ->required()
                     ->maxLength(20)
                     ->minLength(2)
-                    ->unique(),
+                    ->unique(
+                        table: 'tags',
+                        column: fn (Component $livewire) => 'name->'.$livewire->activeLocale,
+                        ignoreRecord: true
+                    ),
             ])->columns(1);
     }
 }

@@ -17,30 +17,30 @@ class TagSeeder extends Seeder
         }
 
         $tags = [
-            'Comedy Gold',
-            'Lost Moment',
-            'Epic Fail',
-            'Perfect Timing',
-            'Epic Win',
-            'Rage-Mode',
-            'Skilled Moment',
-            'Jumpscare',
-            'Wholesome',
-            'Realtalk',
-            'Tech Fail',
-            'Bug',
-            'Kreativ',
-            'Sprachfehler',
-            'Chat Interaktion',
-            'Weisheiten',
-            'Storytime',
-            'Was passiert gerade?',
-            'Musik',
+            ['Comedy Gold', 'Comedy Gold'],
+            ['Lost Moment', 'Lost Moment'],
+            ['Epic Fail', 'Epic Fail'],
+            ['Perfect Timing', 'Perfect Timing'],
+            ['Epic Win', 'Epic Win'],
+            ['Rage-Mode', 'Rage-Mode'],
+            ['Skilled Moment', 'Skilled Moment'],
+            ['Jumpscare', 'Jumpscare'],
+            ['Wholesome', 'Wholesome'],
+            ['Realtalk', 'Realtalk'],
+            ['Tech Fail', 'Tech Fail'],
+            ['Bug', 'Bug'],
+            ['Kreativ', 'Creative'],
+            ['Sprachfehler', 'Speech errors'],
+            ['Chat Interaktion', 'Chat Interaction'],
+            ['Weisheiten', 'Wisdom'],
+            ['Storytime', 'Storytime'],
+            ['Was passiert gerade?', 'What\'s happening right now?'],
+            ['Musik', 'Music'],
         ];
 
         foreach ($tags as $tag) {
             Tag::create([
-                'name' => $tag,
+                'name' => ['de' => $tag[0], 'en' => $tag[1]],
             ]);
         }
     }
