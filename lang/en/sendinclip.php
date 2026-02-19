@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'page_title' => 'Submit clip',
     'breadcrumb' => 'Submit clip',
@@ -22,8 +24,6 @@ return [
         'tags_no_results' => 'No tags found.',
         'tags_max_error' => 'You can select up to :max tags.',
         'tags_remove_label' => 'Remove tag :tag',
-        'anonymous' => 'Submit anonymously',
-        'anonymous_hint' => '(Your name will not be shown publicly)',
         'cta' => 'Submit clip',
     ],
 
