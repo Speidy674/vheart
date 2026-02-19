@@ -17,7 +17,9 @@ class ClipSubmitController extends Controller
 {
     public function create(): Response
     {
-        $tags = Tag::all();
+        $tags = Tag::query()
+            ->whereLocale('name', app()->getLocale())
+            ->get();
 
         return Inertia::render('submitclip', [
             'tags' => $tags->toResourceCollection(),
