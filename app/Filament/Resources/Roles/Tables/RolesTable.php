@@ -9,9 +9,12 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Pages\ListRecords\Concerns\Translatable;
 
 class RolesTable
 {
+    use Translatable;
+
     public static function configure(Table $table): Table
     {
         return $table
