@@ -15,13 +15,12 @@ use App\Services\Twitch\Data\ClipDto;
  */
 class ImportClipAction
 {
-    public function execute(ClipDto $clip, ?User $user = null, ?bool $isAnonymous = false, ?array $tags = null): Clip
+    public function execute(ClipDto $clip, ?User $user = null, ?array $tags = null): Clip
     {
         $clipModel = Clip::firstOrCreate([
             'twitch_id' => $clip->id,
         ], $clip->toModel([
             'submitter_id' => $user?->id,
-            'is_anonymous' => $isAnonymous,
         ]));
 
         if (is_array($tags)) {
@@ -32,7 +31,7 @@ class ImportClipAction
             // some time to breath for other submissions, take as many as possible.
             ->delay(now()->addSeconds(5));
 
-        ClipSubmitted::dispatch($clipModel, $user, $isAnonymous, $tags);
+        ClipSubmitted::dispatch($clipModel, $user, $tags);
 
         return $clipModel;
     }

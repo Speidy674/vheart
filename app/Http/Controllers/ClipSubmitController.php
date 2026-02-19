@@ -39,7 +39,6 @@ class ClipSubmitController extends Controller
         $importClipAction->execute(
             $clipInfo,
             $request->user(),
-            ($request->validated('is_anonymous') ?? 'off') === 'on',
             $request->validated('tags') ?? []
         );
 

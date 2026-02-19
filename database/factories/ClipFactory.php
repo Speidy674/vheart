@@ -28,7 +28,6 @@ class ClipFactory extends Factory
             'category_id' => Category::factory(),
             'duration' => fake()->randomFloat(2, 5, 30),
             'date' => fake()->dateTimeBetween('-1 year'),
-            'is_anonymous' => fake()->boolean(),
         ];
     }
 }
