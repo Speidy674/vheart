@@ -21,7 +21,7 @@ class RoleSeeder extends Seeder
         $superadmin = Role::firstOrCreate(
             ['id' => 0],
             [
-                'name' => 'Super Admin',
+                'name' => ['de' => 'Super Admin', 'en' => 'Super Admin'],
                 'weight' => 2147483646,
                 'public' => false,
                 'desc' => 'The Role to Role them all',
@@ -41,57 +41,45 @@ class RoleSeeder extends Seeder
             return;
         }
 
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'Administrator',
-            ],
-            [
+                'name' => ['de' => 'Administrator', 'en' => 'Administrator'],
                 'weight' => 100,
                 'public' => true,
             ]
         );
 
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'Community Manager',
-            ],
-            [
+                'name' => ['de' => 'Community Manager', 'en' => 'Community Manager'],
                 'weight' => 90,
                 'public' => true,
             ]
         );
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'Moderator',
-            ],
-            [
+                'name' => ['de' => 'Moderator', 'en' => 'Moderator'],
                 'weight' => 80,
                 'public' => true,
             ]
         );
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'Cutter',
-            ],
-            [
+                'name' => ['de' => 'Cutter', 'en' => 'Cutter'],
                 'weight' => 70,
                 'public' => true,
             ]
         );
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'IT',
-            ],
-            [
+                'name' => ['de' => 'IT', 'en' => 'IT'],
                 'weight' => 60,
                 'public' => true,
             ]
         );
-        Role::firstOrCreate(
+        Role::create(
             [
-                'name' => 'Jury',
-            ],
-            [
+                'name' => ['de' => 'Jury', 'en' => 'Jury'],
                 'weight' => 50,
                 'public' => true,
             ]
