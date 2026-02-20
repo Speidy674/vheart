@@ -18,10 +18,13 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
 
 class RoleResource extends Resource
 {
+    use Translatable;
+
     protected static ?string $model = Role::class;
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Administration;

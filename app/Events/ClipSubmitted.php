@@ -23,14 +23,12 @@ class ClipSubmitted
     public function __construct(
         public Clip $clip,
         public ?User $user = null,
-        public ?bool $isAnonymous = false,
         public ?array $tags = []
     ) {
         Log::debug('Clip has been Submitted', [
             'clip_id' => $this->clip->id,
             'clip_slug' => $this->clip->twitch_id,
             'user_id' => $this->user?->id,
-            'is_anonymous' => $this->isAnonymous,
             'tags' => $this->tags,
         ]);
     }

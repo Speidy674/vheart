@@ -15,16 +15,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { TagSelect } from '@/components/ui/tag-select';
 import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 
-import { TagResource } from '@/types';
 import TwitchClipEmbed from '@/components/embeds/twitch-clip-embed';
-
+import { TagResource } from '@/types';
 
 type InertiaBaseProps = Record<string, unknown>;
 
@@ -153,7 +151,9 @@ export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
                                     <div className="space-y-4">
                                         <div className="aspect-video overflow-hidden rounded-lg bg-black">
                                             {clipId ? (
-                                                <TwitchClipEmbed slug={clipId} />
+                                                <TwitchClipEmbed
+                                                    slug={clipId}
+                                                />
                                             ) : (
                                                 <div className="flex h-full w-full items-center justify-center text-center text-muted-foreground">
                                                     {showLoading ? (
@@ -275,26 +275,6 @@ export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
                                         />
 
                                         <Separator />
-
-                                        <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="is_anonymous"
-                                                name="is_anonymous"
-                                            />
-                                            <Label
-                                                htmlFor="is_anonymous"
-                                                className="cursor-pointer"
-                                            >
-                                                {t('submit.anonymous')}
-                                                <span className="ml-1 text-xs text-muted-foreground">
-                                                    {t('submit.anonymous_hint')}
-                                                </span>
-                                            </Label>
-                                            <InputError
-                                                className="mt-2"
-                                                message={errors.is_anonymous}
-                                            />
-                                        </div>
 
                                         <Button
                                             type="submit"

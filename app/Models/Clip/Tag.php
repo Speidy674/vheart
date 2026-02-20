@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Translatable\HasTranslations;
 
 #[UsePolicy(TagPolicy::class)]
 #[UseResource(TagResource::class)]
@@ -21,11 +22,24 @@ class Tag extends Model
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 
-    /** @var bool $timestamps */
+    use HasTranslations;
+
+    /** @var bool */
     public $timestamps = false;
+
+    public array $translatable = [
+        'name',
+    ];
 
     public function clips(): BelongsToMany
     {
         return $this->belongsToMany(Clip::class, 'clip_tags');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'name' => 'json:unicode',
+        ];
     }
 }

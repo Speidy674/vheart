@@ -17,7 +17,9 @@ class ClipSubmitController extends Controller
 {
     public function create(): Response
     {
-        $tags = Tag::all();
+        $tags = Tag::query()
+            ->whereLocale('name', app()->getLocale())
+            ->get();
 
         return Inertia::render('submitclip', [
             'tags' => $tags->toResourceCollection(),
@@ -39,7 +41,6 @@ class ClipSubmitController extends Controller
         $importClipAction->execute(
             $clipInfo,
             $request->user(),
-            ($request->validated('is_anonymous') ?? 'off') === 'on',
             $request->validated('tags') ?? []
         );
 

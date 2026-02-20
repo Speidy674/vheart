@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Roles\Schemas;
 
 use App\Enums\Permission;
+use App\Models\Role;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class RoleForm
 {
@@ -20,7 +22,11 @@ class RoleForm
             ->components([
                 TextInput::make('name')
                     ->label('admin/resources/roles.form.name')
-                    ->unique()
+                    ->unique(
+                        table: 'roles',
+                        column: fn (Component $livewire) => 'name->'.$livewire->activeLocale,
+                        ignoreRecord: true
+                    )
                     ->translateLabel()
                     ->required(),
                 TextInput::make('desc')
@@ -45,9 +51,9 @@ class RoleForm
                             ->translateLabel()
                             ->dehydrated(false)
                             ->options(Permission::class)
-                            ->formatStateUsing(function ($record) {
+                            ->formatStateUsing(function (?Role $record) {
                                 return DB::table('role_permissions')
-                                    ->where('role_id', $record->id)
+                                    ->where('role_id', $record?->id)
                                     ->pluck('permission')
                                     ->toArray();
                             })
