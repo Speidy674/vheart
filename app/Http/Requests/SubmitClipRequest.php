@@ -51,7 +51,6 @@ class SubmitClipRequest extends FormRequest
             'clip_url' => ['bail', 'required', 'string', 'url'],
             'tags' => ['bail', 'required', 'array', 'min:1', 'max:3'],
             'tags.*' => ['integer', 'exists:tags,id'],
-            'is_anonymous' => ['sometimes', 'accepted'],
         ];
     }
 

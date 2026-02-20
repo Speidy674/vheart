@@ -482,7 +482,7 @@ class InitialEpisodeSeeder extends Seeder
         });
 
         $twitchClips->each(function (ClipDto $clip) use ($systemUser, $importClipAction) {
-            $importClipAction->execute($clip, $systemUser, true);
+            $importClipAction->execute($clip, $systemUser);
         });
 
         Log::notice("{$twitchClips->count()} Clips have been imported.");
