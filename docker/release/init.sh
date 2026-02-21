@@ -24,6 +24,9 @@ php /app/artisan view:cache
 echo "[Init] Optimize..."
 php /app/artisan optimize
 
+echo "[Init] Setup Storage"
+php /app/artisan storage:link --force
+
 echo "[Init] Export translation files..."
 php /app/artisan translations:export
 
