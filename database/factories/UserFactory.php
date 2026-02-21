@@ -26,11 +26,14 @@ class UserFactory extends Factory
             'id' => $id,
             'name' => fake()->name(),
             'email' => null,
-            'clip_permission' => false,
             'avatar_url' => 'https://api.dicebear.com/9.x/pixel-art/svg?seed='.$id,
             'email_verified_at' => null,
+            'clip_permission' => false,
+            'twitch_refresh_token' => null,
+            'rules' => null,
             'app_authentication_secret' => null,
             'app_authentication_recovery_codes' => null,
+            'has_email_authentication' => false,
         ];
     }
 
@@ -68,6 +71,7 @@ class UserFactory extends Factory
             'email_verified_at' => null,
         ]);
     }
+
     public function withClipPermission(?bool $value = true): static
     {
         return $this->state(fn (array $attributes) => [

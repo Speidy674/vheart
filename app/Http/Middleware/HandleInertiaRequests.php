@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user()->toResource(AuthUserResource::class),
+                'user' => $request->user()?->toResource(AuthUserResource::class),
                 'permissions' => $request->user()?->permissions(),
             ],
             'reportOptions' => Inertia::optional(static fn () => [
