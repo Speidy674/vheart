@@ -8,13 +8,13 @@ import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
-import { type User } from '@/types';
+import { type AuthenticatedUser } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface UserMenuContentProps {
-    user: User;
+    user: AuthenticatedUser;
 }
 
 export function UserMenuContent({ user }: UserMenuContentProps) {

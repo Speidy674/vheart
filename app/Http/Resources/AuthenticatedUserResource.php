@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Public User Data
+ * Auth User Data
  *
  * @mixin User
  */
-class AuthUserResource extends JsonResource
+class AuthenticatedUserResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -28,8 +28,6 @@ class AuthUserResource extends JsonResource
             'avatar' => $this->proxiedContentUrl(),
             'clip_permission' => $this->clip_permission,
             'rules' => $this->rules,
-            'app_authentication_secret' => $this->app_authentication_secret,
-            'app_authentication_recovery_codes' => $this->app_authentication_recovery_codes,
             'has_email_authentication' => $this->has_email_authentication,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
