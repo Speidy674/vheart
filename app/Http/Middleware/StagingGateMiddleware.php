@@ -43,7 +43,6 @@ class StagingGateMiddleware
         if ($request->is('auth/twitch/callback')) {
             try {
                 $twitchUser = Socialite::driver('twitch')->stateless()->user();
-                debug($twitchUser);
             } catch (Exception) {
                 return Socialite::driver('twitch')->redirect();
             }
