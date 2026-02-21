@@ -1,17 +1,15 @@
 import { Card, CardContent } from '@/components/ui/card';
 import AppHeaderLayout from '@/layouts/app/app-header-layout';
-import { PublicClip } from '@/types';
+import { PublicClip, SharedData } from '@/types';
 import { Head, InfiniteScroll, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-    BestRatedSlider,
-} from '@/components/bestRatedSlider';
+import { BestRatedSlider } from '@/components/bestRatedSlider';
 import { ClipPreview } from '@/components/clip-preview';
 import { ClipModal } from '@/components/clipModal';
-import SpaceBackground from '@/components/spacebackground';
 import YoutubeEmbed from '@/components/embeds/youtube-embed';
+import SpaceBackground from '@/components/spacebackground';
 
 type InertiaBaseProps = Record<string, unknown>;
 interface PageProps extends InertiaBaseProps {
@@ -24,7 +22,7 @@ interface PageProps extends InertiaBaseProps {
 export default function Start() {
     const { t } = useTranslation('homepage');
     const { props } = usePage<PageProps>();
-
+    console.log(usePage<SharedData>());
     const [openClip, setOpenClip] = useState<PublicClip | null>(null);
 
     return (

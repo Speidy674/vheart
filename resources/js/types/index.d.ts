@@ -2,7 +2,8 @@ import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
-    user: User;
+    user: AuthenticatedUser | null;
+    permissions: String[] | null;
 }
 
 export interface BreadcrumbItem {
@@ -30,7 +31,7 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
-export interface User {
+export interface AuthenticatedUser {
     id: number;
     name: string;
     email: string | null;
@@ -38,12 +39,9 @@ export interface User {
     avatar?: string;
     clip_permission?: boolean;
     rules: string[];
-    app_authentication_secret?: string;
-    app_authentication_recovery_codes?: string[];
     has_email_authentication: boolean;
     created_at: string;
     updated_at: string;
-    [key: string]: unknown; // This allows for additional properties...
 }
 
 export interface FaqEntryResource {
