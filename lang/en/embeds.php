@@ -7,6 +7,12 @@ return [
             'button' => 'Accept & Load Content',
             'link-text' => 'Open in new Tab',
         ],
+        'invalid' => [
+            'text' => 'Invalid Embed Link',
+        ],
+        'noscript' => [
+            'text' => 'Javascript is required to see this content.',
+        ],
     ],
     'youtube' => [
         'consent' => [

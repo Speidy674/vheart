@@ -52,11 +52,20 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     @viteReactRefresh
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/static/app.ts'])
     @cookieconsentscripts
 </head>
 <body class="font-inter antialiased">
-{{ $slot }}
-@cookieconsentview
+    {{ $slot }}
+
+    {{-- BladeUI puts deferred SVG icons in this placeholder which gets used via id "pointers" --}}
+    {{-- especially useful for icons that get used a ton like the clock or similar --}}
+    {{-- this reduces the size of the page and the time to parse the DOM as many SVGs can create very deep structures --}}
+    {{-- @see https://github.com/driesvints/blade-icons?tab=readme-ov-file#deferring-icons --}}
+    <svg hidden class="hidden">
+        @stack('bladeicons')
+    </svg>
+
+    @cookieconsentview
 </body>
 </html>
