@@ -41,7 +41,7 @@ export function Dashboard_items() {
 
             {navItems.map((item) => {
                 return (
-                    <SidebarMenuItem key={item.href}>
+                    <SidebarMenuItem key={item.href.url}>
                         <SidebarMenuButton
                             asChild
                             isActive={isSameUrl(currentPath, item.href)}

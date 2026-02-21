@@ -36,7 +36,7 @@ export default function DashboardClips() {
                         {props.clips?.data?.map((clip) => (
                             <div
                                 key={'clip' + clip.id}
-                                className="relative max-h-32 rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-2 ring-1 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0"
+                                className="relative max-h-32 rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-2 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent"
                             >
                                 <div
                                     key={'clip' + clip.id}
