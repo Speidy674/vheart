@@ -1,10 +1,10 @@
 #!/bin/sh
 
-echo "[Init] Clearing old caches..."
-php /app/artisan optimize:clear
-
 echo "[Init] Running Migrations..."
 php /app/artisan migrate --force
+
+echo "[Init] Clearing old caches..."
+php /app/artisan optimize:clear
 
 echo "[Init] Seeding Database..."
 php /app/artisan db:seed --force
