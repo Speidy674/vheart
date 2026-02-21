@@ -94,7 +94,6 @@ describe('input validation', function () {
             ->with(
                 Mockery::on(fn ($arg) => $arg->id === $dto->id),
                 Mockery::on(fn ($arg) => $arg->id === $this->submitter->id),
-                false,
                 Mockery::type('array')
             );
 
@@ -232,7 +231,6 @@ describe('website requirements', function () {
             ->create(
                 $this->clipDto->toModel([
                     'submitter_id' => $this->broadcasterWithoutPermission->id,
-                    'is_anonymous' => false,
                 ])
             );
 
@@ -246,7 +244,6 @@ describe('website requirements', function () {
             ->with(
                 Mockery::on(fn (ClipDto $arg) => $arg->id === $this->clipDto->id),
                 Mockery::on(fn (User $arg) => $arg->id === $this->submitter->id),
-                true,
                 Mockery::type('array')
             );
 
@@ -285,7 +282,6 @@ test('should allow submission if everything is ok', function () {
         ->with(
             Mockery::on(fn ($arg) => $arg->id === $this->clipDto->id),
             Mockery::on(fn ($arg) => $arg->id === $this->submitter->id),
-            true,
             Mockery::type('array')
         );
 
@@ -293,7 +289,6 @@ test('should allow submission if everything is ok', function () {
         ->post(route('submitclip.store'), [
             'clip_url' => $this->clipUrl,
             'tags' => [$this->tags->first()->id],
-            'is_anonymous' => 'on',
         ])
         ->assertSessionHasNoErrors()
         ->assertInertia(fn (AssertableInertia $page) => $page

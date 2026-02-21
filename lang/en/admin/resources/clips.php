@@ -34,7 +34,6 @@ return [
             'category' => 'Category',
             'duration' => 'Duration',
             'status' => 'Status',
-            'is_anonymous' => 'Anonymous',
             'votes_jury' => 'Jury Votes',
             'votes_public' => 'Public Votes',
             'submitted_at' => 'Submitted At',

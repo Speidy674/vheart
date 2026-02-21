@@ -27,7 +27,6 @@ return new class extends Migration
             $table->float('duration');
             $table->unsignedTinyInteger('status')->default(0)->index();
             $table->string('language')->nullable();
-            $table->boolean('is_anonymous');
             $table->timestamp('date');
             $table->timestamps();
             $table->softDeletes();

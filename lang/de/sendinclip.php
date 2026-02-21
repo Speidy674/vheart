@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'page_title' => 'Clip einreichen',
     'breadcrumb' => 'Clip einreichen',
@@ -22,8 +24,6 @@ return [
         'tags_no_results' => 'Keine Tags gefunden.',
         'tags_max_error' => 'Maximal :max Tags auswählbar.',
         'tags_remove_label' => 'Tag :tag entfernen',
-        'anonymous' => 'Anonym einreichen',
-        'anonymous_hint' => '(Dein Name wird nicht öffentlich angezeigt)',
         'cta' => 'Clip einreichen',
     ],
 
