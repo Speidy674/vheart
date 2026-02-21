@@ -38,6 +38,7 @@ class UsersTable
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')->square(),
                 TextColumn::make('name')
+                    ->searchable()
                     ->label('Name'),
                 TextColumn::make('roles.name')->label('Roles')->toggleable()->badge(),
             ])
