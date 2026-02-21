@@ -17,36 +17,32 @@ Route::middleware('auth')->group(function () {
         return Redirect::route('dashboard.main', $request->user()->id);
     })->name('dashboard');
 
-    Route::get('/dashboard/{user}', function (User $user, Request $request) {
-        return Inertia::render('dashboard/main');
-    })->middleware(BroadcasterDashboard::class)
+    Route::middleware(BroadcasterDashboard::class)
         ->missing(function () {
             return Redirect::route('home');
-        })->name('dashboard.main');
+        })->group(function () {
+            Route::get('/dashboard/{user}', function (User $user, Request $request) {
+                return Inertia::render('dashboard/main');
+            })->name('dashboard.main');
 
-    Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
+            Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
 
-        return Inertia::render('dashboard/clips', [
-            'clips' => Inertia::scroll(static function () use ($user) {
-                $clip = Clip::query()
-                    ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
-                    ->orderByDesc('id')
-                    ->where('broadcaster_id', $user->id)
-                    ->withoutGlobalScope(ClipPermissionScope::class)
-                    ->cursorPaginate();
+                return Inertia::render('dashboard/clips', [
+                    'clips' => Inertia::scroll(static function () use ($user) {
+                        $clip = Clip::query()
+                            ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
+                            ->orderByDesc('id')
+                            ->where('broadcaster_id', $user->id)
+                            ->withoutGlobalScope(ClipPermissionScope::class)
+                            ->cursorPaginate();
 
-                return $clip->toResourceCollection();
-            }),
-        ]);
-    })->middleware(BroadcasterDashboard::class)
-        ->missing(function () {
-            return Redirect::route('home');
-        })->name('dashboard.clips');
+                        return $clip->toResourceCollection();
+                    }),
+                ]);
+            })->name('dashboard.clips');
 
-    Route::get('/dashboard/{user}/permissions', function (User $user, Request $request) {
-        return Inertia::render('dashboard/permissions');
-    })->middleware(BroadcasterDashboard::class)
-        ->missing(function () {
-            return Redirect::route('home');
-        })->name('dashboard.permissions');
+            Route::get('/dashboard/{user}/permissions', function (User $user, Request $request) {
+                return Inertia::render('dashboard/permissions');
+            })->name('dashboard.permissions');
+        });
 });
