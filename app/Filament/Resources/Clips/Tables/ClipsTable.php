@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
@@ -96,6 +97,13 @@ class ClipsTable
                                 ->sortable()
                                 ->badge()
                                 ->color('success'),
+                            TextColumn::make('status')
+                                ->label('admin/resources/clips.table.columns.status')
+                                ->tooltip(__('admin/resources/clips.table.columns.status'))
+                                ->size(TextSize::Medium)
+                                ->icon(Heroicon::Clipboard)
+                                ->badge()
+                                ->translateLabel(),
                         ])->grow(false),
                     ])->space(),
 
@@ -192,6 +200,25 @@ class ClipsTable
                     ->multiple()
                     ->label('admin/resources/clips.filters.category')
                     ->translateLabel(),
+
+                SelectFilter::make('status')
+                    ->options(ClipStatus::class)
+                    ->searchable()
+                    ->label('admin/resources/clips.filters.status')
+                    ->translateLabel(),
+
+                TernaryFilter::make('status_visibility')
+                    ->label('admin/resources/clips.filters.status_visibility.label')
+                    ->translateLabel()
+                    ->placeholder(__('admin/resources/clips.filters.status_visibility.placeholder'))
+                    ->trueLabel(__('admin/resources/clips.filters.status_visibility.true'))
+                    ->falseLabel(__('admin/resources/clips.filters.status_visibility.false'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereIn('status', [ClipStatus::Blocked, ClipStatus::NeedApproval]),
+                        false: fn (Builder $query) => $query,
+                        blank: fn (Builder $query) => $query->whereNotIn('status', [ClipStatus::Blocked, ClipStatus::NeedApproval]),
+                    ),
+
                 SelectFilter::make('tags')
                     ->relationship('tags', 'name')
                     ->searchable()

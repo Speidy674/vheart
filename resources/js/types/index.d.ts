@@ -114,3 +114,9 @@ export interface PublicClip {
     clipped_at: string;
     submitted_at: string;
 }
+
+/** default Page Data for Dashboard */
+export interface DashboardData extends SharedData {
+    selectedStreamer: PublicUser;
+    streamers: PublicUser[];
+}

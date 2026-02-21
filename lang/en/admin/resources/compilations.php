@@ -31,7 +31,8 @@ return [
         'clips' => [
             'columns' => [
                 'claimer' => 'Claimer',
-                'status' => 'Status',
+                'status_cutter' => 'Cutter Status',
+                'status_moderation' => 'Moderation Status',
                 'removed_at' => 'Removed At',
             ],
             'filters' => [

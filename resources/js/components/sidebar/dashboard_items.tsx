@@ -5,21 +5,30 @@ import {
     SidebarSeparator,
 } from '@/components/ui/sidebar';
 import { isSameUrl } from '@/lib/utils';
-import { manage_clips, manage_permissions } from '@/routes';
+import { clips, main, permissions } from '@/routes/dashboard';
+import { DashboardData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Scissors, ShieldCheck } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { ClapperboardIcon, HomeIcon, ShieldCheck } from 'lucide-react';
+import T from '../t';
 
 export function Dashboard_items() {
-    const { t } = useTranslation('dashboard');
-    const { url } = usePage();
+    const { url, props } = usePage<DashboardData>();
     const currentPath = url.split('?')[0];
 
-    const items = [
-        { title: 'nav.manage_clips', href: manage_clips().url, icon: Scissors },
+    const navItems = [
         {
-            title: 'nav.permissions',
-            href: manage_permissions().url,
+            key: 'dashboard',
+            href: main(props.selectedStreamer.id),
+            icon: HomeIcon,
+        },
+        {
+            key: 'clips',
+            href: clips(props.selectedStreamer.id),
+            icon: ClapperboardIcon,
+        },
+        {
+            key: 'permissions',
+            href: permissions(props.selectedStreamer.id),
             icon: ShieldCheck,
         },
     ];
@@ -30,20 +39,25 @@ export function Dashboard_items() {
 
             <SidebarSeparator />
 
-            {items.map((item) => {
-                const active = isSameUrl(currentPath, item.href);
-                const Icon = item.icon;
-
+            {navItems.map((item) => {
                 return (
-                    <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton asChild isActive={active}>
+                    <SidebarMenuItem key={item.href.url}>
+                        <SidebarMenuButton
+                            asChild
+                            isActive={isSameUrl(currentPath, item.href)}
+                        >
                             <Link
                                 href={item.href}
                                 className="flex items-center"
                             >
-                                <Icon className="size-4 shrink-0" />
-                                <span className="group-data-[collapsible=icon]:hidden">
-                                    {t(item.title)}
+                                {item.icon && (
+                                    <item.icon className="size-4 shrink-0" />
+                                )}
+                                <span>
+                                    <T
+                                        ns="dashboard/navigation"
+                                        k={item.key}
+                                    ></T>
                                 </span>
                             </Link>
                         </SidebarMenuButton>

@@ -1,118 +1,100 @@
-import { usePage } from '@inertiajs/react';
-import { Check, ChevronDown } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { main } from '@/routes/dashboard';
+import { DashboardData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-import type { SharedData } from '@/types';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     DropdownMenu,
     DropdownMenuContent,
+    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-
-type Streamer = {
-    id: number | string;
-    name: string;
-    avatar: string | null;
-};
-
-type PageProps = SharedData & {
-    streamers?: Streamer[];
-};
 
 export function StreamerSection() {
     const { t } = useTranslation('navigation');
-
-    const page = usePage<PageProps>();
-    const { auth, streamers: streamersFromProps } = page.props;
-
-    const me = useMemo<Streamer>(
-        () => ({
-            id: auth.user.id,
-            name: auth.user.name,
-            avatar: auth.user.avatar ?? null,
-        }),
-        [auth.user.id, auth.user.name, auth.user.avatar],
-    );
-
-    const streamers = useMemo<Streamer[]>(() => {
-        const provided = Array.isArray(streamersFromProps)
-            ? streamersFromProps
-            : [];
-        return provided.length > 0 ? provided : [me];
-    }, [streamersFromProps, me]);
-
-    const [activeStreamer, setActiveStreamer] = useState<Streamer>(() => {
-        return streamers.find((s) => s.id === me.id) ?? streamers[0];
-    });
+    const { props } = usePage<DashboardData>();
 
     return (
         <SidebarMenuItem>
             <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton className="hover:bg-transparent">
-                        <Avatar className="size-4">
+                    <SidebarMenuButton className="hover:cursor-pointer hover:bg-transparent focus:bg-transparent active:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent">
+                        <Avatar className="size-7 overflow-hidden rounded-full">
                             <AvatarImage
-                                src={activeStreamer.avatar ?? undefined}
+                                src={props.selectedStreamer.avatar}
+                                alt={props.selectedStreamer.name}
                             />
-                            <AvatarFallback>
-                                {activeStreamer.name.slice(0, 1)}
+                            <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                {props.selectedStreamer.name.substring(0, 1)}
                             </AvatarFallback>
                         </Avatar>
-
-                        <span className="truncate font-medium group-data-[collapsible=icon]:hidden">
-                            {activeStreamer.name}
+                        <span className="font-medium">
+                            {props.selectedStreamer.name}
                         </span>
-
                         <ChevronDown className="ml-auto size-4 shrink-0 opacity-80" />
                     </SidebarMenuButton>
                 </DropdownMenuTrigger>
-
                 <DropdownMenuContent
-                    align="start"
                     className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
+                    align="start"
                 >
-                    <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                        {t('streamer')}
-                    </div>
-
-                    {streamers.map((streamer) => {
-                        const isActive = streamer.id === activeStreamer.id;
-
-                        return (
-                            <DropdownMenuItem
-                                key={String(streamer.id)}
-                                onSelect={(e) => {
-                                    e.preventDefault();
-                                    setActiveStreamer(streamer);
-                                }}
-                                className={isActive ? 'font-medium' : ''}
+                    <DropdownMenuGroup
+                        key={'streamerSelect' + props.auth.user.id}
+                    >
+                        <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                            {t('streamer')}
+                        </div>
+                        <DropdownMenuItem asChild>
+                            <Link
+                                className="block w-full"
+                                href={main(props.auth.user.id)}
+                                as="button"
+                                prefetch
                             >
-                                <div className="flex w-full items-center gap-2">
-                                    <Avatar className="size-4">
+                                <Avatar className="size-7 overflow-hidden rounded-full">
+                                    <AvatarImage
+                                        src={props.auth.user.avatar}
+                                        alt={props.auth.user.name}
+                                    />
+                                    <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                        {props.auth.user.name.substring(0, 1)}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <span className="font-medium">
+                                    {props.auth.user.name}
+                                </span>
+                            </Link>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    {props.streamers.map((item) => (
+                        <DropdownMenuGroup key={'streamerSelect' + item.id}>
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    className="block w-full"
+                                    href={main(item.id)}
+                                    as="button"
+                                    prefetch
+                                >
+                                    <Avatar className="size-7 overflow-hidden rounded-full">
                                         <AvatarImage
-                                            src={streamer.avatar ?? undefined}
+                                            src={item.avatar}
+                                            alt={item.name}
                                         />
-                                        <AvatarFallback>
-                                            {streamer.name.slice(0, 1)}
+                                        <AvatarFallback className="rounded-full bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                            {item.name.substring(0, 1)}
                                         </AvatarFallback>
                                     </Avatar>
-
-                                    <span className="truncate">
-                                        {streamer.name}
+                                    <span className="font-medium">
+                                        {item.name}
                                     </span>
-
-                                    {isActive && (
-                                        <Check className="ml-auto size-3 text-muted-foreground" />
-                                    )}
-                                </div>
+                                </Link>
                             </DropdownMenuItem>
-                        );
-                    })}
+                        </DropdownMenuGroup>
+                    ))}
                 </DropdownMenuContent>
             </DropdownMenu>
         </SidebarMenuItem>
