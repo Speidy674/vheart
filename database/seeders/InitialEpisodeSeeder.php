@@ -464,6 +464,7 @@ class InitialEpisodeSeeder extends Seeder
                 'EmpathicCoweringCroissantEagleEye-wQ8LO6CYfaj4gExY',
                 'SuspiciousIronicRhinocerosJonCarnage-xBwNgbHoISEW7wTS',
                 'HealthyYawningClintmullinsHeyGirl-oZiNYq3z4zcURPeP',
+                'CoySuccessfulSpiderTooSpicy-UiVreGYnOfOsNnn9',
                 'StormyMistyPorcupineSMOrc-jX9S7pz1fezPaKy8',
                 'RefinedJazzyStarlingJonCarnage-VJVqWbUGIAeu_heU',
                 'BloodyMiniatureJuicePartyTime-oyalmZF13wWeK3Xq',
