@@ -8,9 +8,9 @@ use App\Enums\Permission;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
-use App\Models\Contracts\FilamentResourceful;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
+use App\Models\Contracts\FilamentResourceful;
 use App\Models\Faq\FaqEntry;
 use App\Models\Report;
 use App\Models\Role;
@@ -36,6 +36,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\ComponentAttributeBag;
 use Inertia\Inertia;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Config;
@@ -176,6 +177,24 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return Filament::getResourceUrl($record, $page);
+        });
+
+        /**
+         * Merge Tailwind classes with TailwindMerge to remove tags that cause conflicts with each other
+         *
+         * Should be the same as twMerge in react.
+         *
+         * @see https://github.com/tales-from-a-dev/tailwind-merge-php/blob/main/docs/index.md#usage
+         */
+        ComponentAttributeBag::macro('twMerge', function (...$defaultClasses): ComponentAttributeBag {
+            $mergedClasses = app(TailwindMerge::class)->merge([
+                ...$defaultClasses,
+                $this->get('class', ''),
+            ]);
+
+            return new ComponentAttributeBag(
+                array_merge($this->getAttributes(), ['class' => $mergedClasses])
+            );
         });
     }
 
