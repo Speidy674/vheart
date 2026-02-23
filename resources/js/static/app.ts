@@ -7,6 +7,7 @@ import './bootstrap';
 import Alpine from 'alpinejs';
 import AsyncAlpine from 'async-alpine';
 import intersect from '@alpinejs/intersect';
+import anchor from '@alpinejs/anchor';
 
 import image from '@/static/components/image';
 import baseEmbed from './components/embeds/base-embed';
@@ -15,6 +16,7 @@ import youtubeEmbed from '@/static/components/embeds/youtube-embed';
 
 Alpine.plugin(AsyncAlpine);
 Alpine.plugin(intersect);
+Alpine.plugin(anchor)
 
 // Register alpine based components here, they can be used with `x-data="name({ ...config })"` in html
 Alpine.data('image', image);
