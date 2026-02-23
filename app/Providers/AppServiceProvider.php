@@ -41,6 +41,7 @@ use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Config;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 use Spatie\Translatable\Facades\Translatable;
+use TalesFromADev\TailwindMerge\TailwindMerge;
 use Whitecube\LaravelCookieConsent\CookiesManager;
 
 class AppServiceProvider extends ServiceProvider
@@ -51,6 +52,10 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CookiesManager::class, CustomCookiesManager::class);
+
+        $this->app->singleton(TailwindMerge::class, function ($app) {
+            return new TailwindMerge(cache: $app->make('cache.store'));
+        });
     }
 
     /**
