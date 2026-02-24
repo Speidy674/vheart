@@ -13,6 +13,7 @@ import image from '@/static/components/image';
 import baseEmbed from './components/embeds/base-embed';
 import twitchEmbed from './components/embeds/twitch-embed';
 import youtubeEmbed from '@/static/components/embeds/youtube-embed';
+import reportButton from '@/static/components/ui/report/button';
 
 Alpine.plugin(AsyncAlpine);
 Alpine.plugin(intersect);
@@ -23,6 +24,7 @@ Alpine.data('image', image);
 Alpine.data('baseEmbed', baseEmbed);
 Alpine.data('twitchEmbed', twitchEmbed);
 Alpine.data('youtubeEmbed', youtubeEmbed);
+Alpine.data('reportButton', reportButton);
 
 // These Components (and their dependencies) will be bundled on their own and only
 // get loaded if they get used (or with very low prefetch priority)
@@ -30,6 +32,7 @@ Alpine.data('youtubeEmbed', youtubeEmbed);
 // @see https://async-alpine.dev/docs/
 const asyncComponents: [string, () => Promise<unknown>][] = [
     ['modal', () => import('@/static/components/ui/modal')],
+    ['reportModal', () => import('@/static/components/ui/report/modal')],
 ];
 
 asyncComponents.forEach(([componentName, importFn]) => {
