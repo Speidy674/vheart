@@ -1,4 +1,3 @@
-@use(TalesFromADev\TailwindMerge\TailwindMerge)
 {{-- basically a 1:1 copy of the radix button, just a bit optimized for blade --}}
 @props(['variant' => 'default', 'size' => 'default', 'as' => 'button'])
 @php
@@ -24,15 +23,8 @@
         'icon' => 'size-9',
     ];
 
-    $mergedClasses = app(TailwindMerge::class)->merge(
-        $buttonBaseClass,
-        $buttonVariants[$variant ?? 'default'] ?? $buttonVariants['default'],
-        $buttonSizes[$size ?? 'default'] ?? $buttonSizes['default'],
-        $attributes->get('class')
-    );
-
     $tag = $as ?? ($attributes->has('href') ? 'a' : 'button');
 @endphp
-<{{ $tag }} {{ $attributes->except('class') }} class="{{ $mergedClasses }}" data-slot="button">
+<{{ $tag }} {{ $attributes->twMerge($buttonBaseClass, $buttonVariants[$variant ?? 'default'] ?? $buttonVariants['default'], $buttonSizes[$size ?? 'default'] ?? $buttonSizes['default']) }} data-slot="button">
 {{ $slot }}
 </{{ $tag }}>

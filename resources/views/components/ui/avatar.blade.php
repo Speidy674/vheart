@@ -1,6 +1,6 @@
 @props(['src' => null, 'name' => 'Guest', 'force' => false])
 
-<div {{ $attributes->merge(['class' => 'relative flex shrink-0 overflow-hidden rounded-full border border-gray-200 dark:border-white/10']) }}>
+<div {{ $attributes->twMerge('relative flex shrink-0 overflow-hidden rounded-full border border-gray-200 dark:border-white/10') }}>
     @if($src)
         <x-image :src="$src" :alt="$name" class="aspect-square h-full w-full object-cover bg-white dark:bg-black" :force="$force" />
     @else
