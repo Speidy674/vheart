@@ -29,7 +29,7 @@ Alpine.data('youtubeEmbed', youtubeEmbed);
 // Make sure they use the x-load attribute to tell alpine that they are lazy/async
 // @see https://async-alpine.dev/docs/
 const asyncComponents: [string, () => Promise<unknown>][] = [
-    ['example', () => import('@/static/components/example-component.js')],
+    ['modal', () => import('@/static/components/ui/modal')],
 ];
 
 asyncComponents.forEach(([componentName, importFn]) => {
