@@ -12,6 +12,7 @@ return [
     // Footer navigation
     'team' => 'Team',
     'about' => 'About us',
+    'our-social' => 'Our :label',
 
     // Sidebar
     'streamer' => 'Streamers',

@@ -11,6 +11,7 @@ return [
     // Footer navigation
     'team' => 'Team',
     'about' => 'Über uns',
+    'our-social' => 'Unser :label',
 
     // Sidebar
     'streamer' => 'Streamer auswählen',

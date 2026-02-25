@@ -63,6 +63,7 @@
             {{ $slot }}
         </main>
 
+        <x-layout.footer />
     </div>
 
     {{-- use `@pushonce('elements', 'unique identifier') ... @endpushonce` to insert elements we may need only once per page (e.g. modals) --}}
