@@ -58,6 +58,11 @@
 <body class="font-inter antialiased">
     {{ $slot }}
 
+    {{-- use `@pushonce('elements', 'unique identifier') ... @endpushonce` to insert elements we may need only once per page (e.g. modals) --}}
+    {{-- otherwise, loops on them will explode the page in size lol --}}
+    {{-- @see https://laravel.com/docs/12.x/blade#the-once-directive --}}
+    @stack('elements')
+
     {{-- BladeUI puts deferred SVG icons in this placeholder which gets used via id "pointers" --}}
     {{-- especially useful for icons that get used a ton like the clock or similar --}}
     {{-- this reduces the size of the page and the time to parse the DOM as many SVGs can create very deep structures --}}
