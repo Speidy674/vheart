@@ -8,9 +8,15 @@
         <div class="size-5 sm:size-4 *:size-full shrink-0 transition-transform duration-200 group-hover:scale-110 group-data-[active=true]:scale-110">
             {{ $icon }}
         </div>
-    @endif
 
-    <span class="hidden lg:inline">
-        {{ $slot }}
-    </span>
+        @if($slot->hasActualContent())
+            <span class="hidden lg:inline">
+                {{ $slot }}
+            </span>
+        @endif
+    @else
+        <span>
+            {{ $slot }}
+        </span>
+    @endif
 </a>
