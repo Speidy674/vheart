@@ -38,7 +38,6 @@ return new class extends Migration
             $table->foreignId('claimed_by')->nullable()->references('id')->on('users');
             $table->timestamp('claimed_at')->nullable();
 
-
             $table->unsignedInteger('status')->index(); // CompilationClipStatus
 
             // This Clip has been removed after publishing the video, we still need to keep track of it.

@@ -43,6 +43,21 @@ class Clip extends Model implements Commentable, ExternalProxyable
     /** @use HasFactory<ClipFactory> */
     use HasComments, HasExternalProxy, HasFactory, Reportable;
 
+    public static function getProxyIdentifierColumn(): string
+    {
+        return 'twitch_id';
+    }
+
+    public static function getProxyUrlColumn(): string
+    {
+        return 'thumbnail_url';
+    }
+
+    public static function getProxyExtension(): string
+    {
+        return 'jpg';
+    }
+
     public function broadcaster(): BelongsTo
     {
         return $this->BelongsTo(User::class)
@@ -101,6 +116,11 @@ class Clip extends Model implements Commentable, ExternalProxyable
     public function getReportableTitleAttribute(): string
     {
         return 'title';
+    }
+
+    public function getProxyType(): ExternalContentProxyType
+    {
+        return ExternalContentProxyType::TwitchClip;
     }
 
     protected function casts(): array
@@ -249,25 +269,5 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return $query
             ->withJuryVoteCount()
             ->withPublicVoteCount();
-    }
-
-    public static function getProxyIdentifierColumn(): string
-    {
-        return 'twitch_id';
-    }
-
-    public static function getProxyUrlColumn(): string
-    {
-        return 'thumbnail_url';
-    }
-
-    public static function getProxyExtension(): string
-    {
-        return 'jpg';
-    }
-
-    public function getProxyType(): ExternalContentProxyType
-    {
-        return ExternalContentProxyType::TwitchClip;
     }
 }

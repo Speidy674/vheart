@@ -62,6 +62,19 @@ readonly class ClipDto implements TwitchDtoInterface
     }
 
     /**
+     * @return array<int, ClipDto>
+     */
+    public static function fromArray(array $dataList): array
+    {
+        $result = [];
+        foreach ($dataList['data'] as $clip) {
+            $result[] = self::from($clip);
+        }
+
+        return $result;
+    }
+
+    /**
      * Convert this DTO to a Model compatible structure
      */
     public function toModel(?array $data = null): array
@@ -79,18 +92,5 @@ readonly class ClipDto implements TwitchDtoInterface
             'language' => $this->language,
             'date' => $this->created_at,
         ], $data ?? []);
-    }
-
-    /**
-     * @return  array<int, ClipDto>
-     */
-    public static function fromArray(array $dataList): array
-    {
-        $result = [];
-        foreach ($dataList['data'] as $clip) {
-            $result[] = self::from($clip);
-        }
-
-        return $result;
     }
 }

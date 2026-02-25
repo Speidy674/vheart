@@ -40,6 +40,7 @@ class FetchMissingUsersCommand extends Command
 
         if ($missingIds->isEmpty()) {
             $this->info('No missing users found.');
+
             return;
         }
 

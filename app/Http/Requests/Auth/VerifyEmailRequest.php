@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -14,6 +16,7 @@ class VerifyEmailRequest extends FormRequest
         if (! hash_equals((string) $this->user()->getKey(), (string) $this->route('id'))) {
             return false;
         }
+
         return hash_equals(sha1((string) $this->user()->getEmailForVerification()), (string) $this->route('hash'));
     }
 

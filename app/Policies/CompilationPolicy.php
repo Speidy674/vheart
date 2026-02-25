@@ -33,6 +33,7 @@ class CompilationPolicy
         if ($user->can(Permission::ViewAnyCompilation)) {
             return true;
         }
+
         return (bool) $this->denyAsNotFound();
     }
 

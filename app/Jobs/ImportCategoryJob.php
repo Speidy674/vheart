@@ -15,7 +15,6 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\Middleware\WithoutOverlapping;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue

@@ -14,7 +14,6 @@ use Filament\Schemas\Schema;
 
 class ClipForm
 {
-
     public static function configure(Schema $schema): Schema
     {
         return $schema

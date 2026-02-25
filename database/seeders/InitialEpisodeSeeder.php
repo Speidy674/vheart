@@ -577,7 +577,7 @@ class InitialEpisodeSeeder extends Seeder
                 ->withoutGlobalScope(ClipPermissionScope::class)
                 ->whereIn('twitch_id', $episodeData['clips'])
                 ->pluck('id')
-                ->map(fn(int $id): array => [
+                ->map(fn (int $id): array => [
                     'clip_id' => $id,
                     'claimed_by' => 0,
                     'claimed_at' => now(),
