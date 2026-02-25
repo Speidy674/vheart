@@ -58,6 +58,11 @@
 <body class="font-inter antialiased">
     {{ $slot }}
 
+        <main>
+            {{ $slot }}
+        </main>
+
+
     {{-- use `@pushonce('elements', 'unique identifier') ... @endpushonce` to insert elements we may need only once per page (e.g. modals) --}}
     {{-- otherwise, loops on them will explode the page in size lol --}}
     {{-- @see https://laravel.com/docs/12.x/blade#the-once-directive --}}
