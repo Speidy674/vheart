@@ -28,7 +28,7 @@ class CategoryFactory extends Factory
 
     public function isBanned(?bool $value = true): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn (array $attributes): array => [
             'is_banned' => $value,
         ]);
     }

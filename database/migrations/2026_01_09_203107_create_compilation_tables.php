@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compilations', function (Blueprint $table) {
+        Schema::create('compilations', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
 
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('clip_compilation', function (Blueprint $table) {
+        Schema::create('clip_compilation', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('clip_id')->constrained();
             $table->foreignId('compilation_id')->constrained()->cascadeOnDelete();

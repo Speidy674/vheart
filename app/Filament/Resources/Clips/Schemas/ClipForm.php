@@ -42,7 +42,7 @@ class ClipForm
                         TextEntry::make('duration')
                             ->label('admin/resources/clips.form.duration')
                             ->translateLabel()
-                            ->formatStateUsing(function ($state) {
+                            ->formatStateUsing(function ($state): string {
                                 $totalSeconds = (int) round($state);
 
                                 $minutes = intdiv($totalSeconds, 60);

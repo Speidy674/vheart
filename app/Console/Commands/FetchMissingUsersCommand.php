@@ -46,12 +46,12 @@ class FetchMissingUsersCommand extends Command
         $totalBatches = ceil($missingIds->count() / 100);
         $currentBatch = 1;
 
-        $missingIds->chunk(100)->each(function (Collection $chunk) use ($twitchService, &$currentBatch, &$totalBatches) {
+        $missingIds->chunk(100)->each(function (Collection $chunk) use ($twitchService, &$currentBatch, &$totalBatches): void {
             $users = $twitchService->get(TwitchEndpoints::GetUsers, [
                 'id' => $chunk->values()->toArray(),
             ]);
 
-            $fetchedIds = collect($users)->map(function (UserDto $user) {
+            $fetchedIds = collect($users)->map(function (UserDto $user): string {
                 User::firstOrCreate([
                     'id' => $user->id,
                 ], $user->toModel());
@@ -59,7 +59,7 @@ class FetchMissingUsersCommand extends Command
                 return $user->id;
             });
 
-            $chunk->diff($fetchedIds)->each(function (int $id) {
+            $chunk->diff($fetchedIds)->each(function (int $id): void {
                 $this->warn("User {$id} got removed or banned from twitch, using placeholder values.");
 
                 $user = User::firstOrCreate([

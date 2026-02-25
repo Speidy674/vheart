@@ -8,9 +8,9 @@ use App\Enums\Permission;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
-use App\Models\Contracts\FilamentResourceful;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
+use App\Models\Contracts\FilamentResourceful;
 use App\Models\Faq\FaqEntry;
 use App\Models\Report;
 use App\Models\Role;
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(static function (SocialiteWasCalled $event) {
+        Event::listen(static function (SocialiteWasCalled $event): void {
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
 
@@ -149,7 +149,7 @@ class AppServiceProvider extends ServiceProvider
 
     private function configureOther(): void
     {
-        if (app()->isProduction() || str_starts_with(config('app.url'), 'https://')) {
+        if (app()->isProduction() || str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceHttps();
         }
 
@@ -176,22 +176,16 @@ class AppServiceProvider extends ServiceProvider
 
     private function configureRateLimiting(): void
     {
-        RateLimiter::for('locales', static function (Request $request): Limit {
-            return Limit::perMinute(30)->by($request->user()?->id ?? sha1($request->ip()));
-        });
+        RateLimiter::for('locales', static fn (Request $request): Limit => Limit::perMinute(30)->by($request->user()?->id ?? sha1((string) $request->ip())));
 
-        RateLimiter::for('two-factor', static function (Request $request): Limit {
-            return Limit::perMinute(5)->by($request->user()?->id ?? sha1($request->ip()));
-        });
+        RateLimiter::for('two-factor', static fn (Request $request): Limit => Limit::perMinute(5)->by($request->user()?->id ?? sha1((string) $request->ip())));
 
         RateLimiter::for('login', static function (Request $request): Limit {
-            $throttleKey = sha1($request->ip());
+            $throttleKey = sha1((string) $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
 
-        RateLimiter::for('image-proxy', static function (Request $request): Limit {
-            return Limit::perMinute(50)->by($request->user()?->id ?? sha1($request->ip()));
-        });
+        RateLimiter::for('image-proxy', static fn (Request $request): Limit => Limit::perMinute(50)->by($request->user()?->id ?? sha1((string) $request->ip())));
     }
 }

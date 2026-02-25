@@ -37,7 +37,7 @@ readonly class ClipDto implements TwitchDtoInterface
     public static function from(array $data): static
     {
         // Twitch returns an empty string "" for video_id if unavailable
-        $video_id = ! empty($data['video_id']) ? (int) $data['video_id'] : null;
+        $video_id = empty($data['video_id']) ? null : (int) $data['video_id'];
         $created_at = Carbon::parse($data['created_at']);
 
         return new static(

@@ -156,7 +156,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereNotPublished(Builder $query): Builder
     {
-        return $query->whereDoesntHave('compilations', function (Builder $q) {
+        return $query->whereDoesntHave('compilations', function (Builder $q): void {
             $q->whereIn('compilations.status', array_merge(
                 CompilationStatus::getPublicCases(),
                 [CompilationStatus::Scheduled]
@@ -216,7 +216,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     {
         return $query->withCount(
             [
-                'votes as public_votes' => function (Builder $query) {
+                'votes as public_votes' => function (Builder $query): void {
                     $query->where('type', ClipVoteType::Public);
                 },
             ]
@@ -231,7 +231,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     {
         return $query->withCount(
             [
-                'votes as jury_votes' => function (Builder $query) {
+                'votes as jury_votes' => function (Builder $query): void {
                     $query->where('type', ClipVoteType::Jury);
                 },
             ]
