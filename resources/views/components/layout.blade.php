@@ -5,28 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
-        (function () {
-            const stored = '{{ $appearance ?? "system" }}';
-            const mql = window.matchMedia('(prefers-color-scheme: dark)');
+        const mediaQuery = window?.matchMedia('(prefers-color-scheme: dark)');
 
-            function apply(mode) {
-                const isDark = mode === 'dark' || (mode === 'system' && mql.matches);
-                document.documentElement.classList.toggle('dark', isDark);
-            }
+        function applyAppearance() {
+            const cookieMatch = document.cookie.match(/(?:^|; )appearance=([^;]*)/);
+            const appearance = localStorage.getItem('appearance') || (cookieMatch ? cookieMatch[1] : null) || '{{ $appearance ?? "system" }}';
+            const isDark = appearance === 'dark' || (appearance === 'system' && mediaQuery?.matches);
 
-            apply(stored);
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 
-            if (stored === 'system') {
-                const onChange = () => apply('system');
-                if (mql.addEventListener) mql.addEventListener('change', onChange);
-                else mql.addListener(onChange);
-            }
+            window.dispatchEvent(new CustomEvent('appearanceChanged', {
+                detail: { appearance, isDark }
+            }));
+        }
 
-            window.addEventListener('storage', (e) => {
-                if (e.key !== 'appearance') return;
-                const next = e.newValue || 'system';
-                apply(next);
-            });
+        (function() {
+            applyAppearance();
+
+            mediaQuery?.addEventListener('change', applyAppearance);
+            window?.addEventListener('storage', applyAppearance);
+            window?.cookieStore?.addEventListener('change', applyAppearance);
         })();
     </script>
 
