@@ -57,11 +57,13 @@
 </head>
 <body class="font-inter antialiased">
     {{ $slot }}
+    <div class="flex flex-col m-auto min-h-screen">
 
-        <main>
+        <main class="grow">
             {{ $slot }}
         </main>
 
+    </div>
 
     {{-- use `@pushonce('elements', 'unique identifier') ... @endpushonce` to insert elements we may need only once per page (e.g. modals) --}}
     {{-- otherwise, loops on them will explode the page in size lol --}}
