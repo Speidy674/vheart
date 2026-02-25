@@ -23,4 +23,8 @@ return [
 
     // Logo alt text
     'logo_alt' => 'VHeart Logo',
+
+    // User Dropdown
+    'settings' => 'Settings',
+    'logout' => 'Logout',
 ];

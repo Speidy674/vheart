@@ -57,6 +57,7 @@
 </head>
 <body class="font-inter antialiased">
     <div class="flex flex-col m-auto max-w-480 min-h-screen">
+        <x-layout.header />
 
         <main class="grow">
             {{ $slot }}
