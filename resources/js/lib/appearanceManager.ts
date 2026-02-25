@@ -5,18 +5,9 @@ export type Appearance = 'light' | 'dark' | 'system';
 export class AppearanceManager {
     private cookieManager: CookieManager;
 
-    constructor(setupListener?: boolean) {
+    constructor() {
         this.cookieManager = new CookieManager('appearance');
         this.applyAppearance();
-
-        if (setupListener) {
-            this.getMediaQuery()?.addEventListener(
-                'change',
-                this.applyAppearance,
-            );
-
-            window.cookieStore?.addEventListener('change', this.applyAppearance);
-        }
     }
 
     public applyAppearance() {

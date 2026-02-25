@@ -65,7 +65,7 @@
                 <div class="flex items-center gap-2 rounded-xl bg-black/5 p-1.5 dark:bg-white/5">
                     <x-ui.language.selector />
                     <div class="h-4 w-px bg-gray-300 dark:bg-white/10"></div>
-                    <div>Theme</div>
+                    <x-ui.appearance.slider />
                 </div>
             </div>
         </details>
@@ -102,6 +102,7 @@
 
                 <div class="flex items-center gap-1">
                     <x-ui.language.selector />
+                    <x-ui.appearance.slider />
                 </div>
             </div>
         </div>
