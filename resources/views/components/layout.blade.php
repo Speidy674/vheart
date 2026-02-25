@@ -56,8 +56,6 @@
     @cookieconsentscripts
 </head>
 <body class="font-inter antialiased">
-    {{ $slot }}
-    <div class="flex flex-col m-auto min-h-screen">
     <div class="flex flex-col m-auto max-w-480 min-h-screen">
 
         <main class="grow">
