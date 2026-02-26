@@ -37,20 +37,31 @@ Route::get('/', static function () {
 })
     ->name('home');
 
-Route::get('/static', static function () {
+Route::get('/static', static function (Request $request) {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
         ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
+        ->with('tags')
         ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
         ->orderByDesc('votes_count')
         ->limit(10)
         ->get();
 
     $discover = Clip::query()
+        ->with('tags')
         ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
         ->orderByDesc('created_at')
-        ->cursorPaginate();
+        ->orderByDesc('id')
+        ->cursorPaginate(perPage: 42);
+
+    if ($request->ajax()) {
+        return response(
+            view('components.clips.preview-list', ['clips' => $discover])->render(),
+            headers: [
+                'X-Next-Page' => $discover->nextPageUrl(),
+            ]);
+    }
 
     return view('index', [
         'bestRated' => $bestRated,
