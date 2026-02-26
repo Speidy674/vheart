@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <div class="flex flex-col m-auto max-w-480 min-h-screen">
+    <div class="flex flex-col m-auto min-h-screen w-[98svw] max-w-480">
         <x-layout.header />
 
         <main class="grow">
