@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
         "mallardduck/blade-lucide-icons": "^1.26",
+        "outhebox/blade-flags": "^1.6",
         "sentry/sentry-laravel": "^4.20",
         "socialiteproviders/twitch": "^5.4",
         "spatie/laravel-translatable": "^6.12",
