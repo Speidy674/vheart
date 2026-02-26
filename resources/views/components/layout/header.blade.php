@@ -1,4 +1,4 @@
-<nav class="sticky top-0 my-2 z-100">
+<nav class="sticky top-0 md:top-2 my-2 z-100">
     <header
         class="flex items-center h-14 w-full px-3 sm:px-4    text-gray-900 dark:text-white/85   bg-white/75 dark:bg-black/80    border border-gray-200 dark:border-white/20    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none"
     >

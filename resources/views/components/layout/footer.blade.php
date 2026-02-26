@@ -18,7 +18,7 @@
     ];
 @endphp
 
-<div class="sticky bottom-0 my-2 z-100">
+<div class="sticky bottom-0 md:bottom-2 my-2 z-100">
     <footer class="w-full    text-gray-900 dark:text-white/85   bg-white/75 dark:bg-black/80    border border-gray-200 dark:border-white/20    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none    transition-all">
         <details class="group xl:hidden w-full">
             <summary class=" grid grid-cols-[auto_auto_1fr] gap-1 md:gap-3 xl:gap-6 items-center h-14 px-1 md:px-2 xl:px-4 rounded-lg cursor-pointer outline-none hover:bg-gray-50 dark:hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-blue-500/50 transition-colors [&::-webkit-details-marker]:hidden">
