@@ -9,7 +9,7 @@
     </x-ui.dropdown.trigger>
     <x-ui.dropdown.content>
         @foreach(config('app.locales') as $locale => $config)
-            <x-ui.dropdown.item class="justify-between">
+            <x-ui.dropdown.item class="justify-between" href="{{ route('locales', ['locale' => $locale]) }}">
                 <span>{{ $config['name'] }}</span>
                 @if($locale === app()->getLocale())
                     <x-lucide-check defer class="size-4" />
