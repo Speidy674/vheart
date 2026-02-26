@@ -55,6 +55,19 @@
     @cookieconsentscripts
 </head>
 <body class="font-inter antialiased">
+    <div class="pointer-events-none">
+        <div class="absolute inset-0 dark:block hidden"
+             style="background: radial-gradient(circle at 20% 30%, rgba(145, 70, 255, 0.20) 0%, rgba(10,10,26,0) 45%),
+                                radial-gradient(circle at 80% 70%, rgba(0, 174, 255, 0.14) 0%, rgba(10,10,26,0) 50%),
+                                #0a0a1a;">
+        </div>
+        <div class="absolute inset-0 dark:hidden"
+             style="background: radial-gradient(circle at 20% 30%, rgba(145, 70, 255, 0.15) 0%, rgba(255,255,255,0) 45%),
+                                radial-gradient(circle at 80% 70%, rgba(0, 174, 255, 0.15) 0%, rgba(255,255,255,0) 50%),
+                                #ffffff;">
+        </div>
+    </div>
+
     <div class="flex flex-col m-auto max-w-480 min-h-screen">
         <x-layout.header />
 
