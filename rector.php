@@ -13,6 +13,7 @@ return RectorConfig::configure()
     ])
     ->withSkip([
         Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector::class,
+        Rector\Php85\Rector\Property\AddOverrideAttributeToOverriddenPropertiesRector::class,
     ])
     ->withPreparedSets(
         deadCode: true,
