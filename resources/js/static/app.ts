@@ -34,6 +34,7 @@ const asyncComponents: [string, () => Promise<unknown>][] = [
     ['modal', () => import('@/static/components/ui/modal')],
     ['reportModal', () => import('@/static/components/ui/report/modal')],
     ['appearanceSlider', () => import('@/static/components/appearance-slider')],
+    ['clipsSlider', () => import('@/static/components/index/clips-slider')],
 ];
 
 asyncComponents.forEach(([componentName, importFn]) => {
