@@ -13,6 +13,7 @@ return [
     'team' => 'Team',
     'about' => 'About us',
     'our-social' => 'Our :label',
+    'manage-cookies' => 'Manage cookie consent',
 
     // Sidebar
     'streamer' => 'Streamers',
