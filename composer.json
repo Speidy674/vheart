@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.4",
         "blade-ui-kit/blade-icons": "^1.8",
+        "davidhsianturi/blade-bootstrap-icons": "^2.1",
         "filament/filament": "^4.0",
         "inertiajs/inertia-laravel": "^2.0",
         "kirschbaum-development/commentions": "^0.7.8",
