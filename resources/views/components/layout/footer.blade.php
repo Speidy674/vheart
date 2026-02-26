@@ -21,10 +21,14 @@
 <div class="sticky bottom-0 my-2 z-100">
     <footer class="w-full    text-gray-900 dark:text-white/85   bg-white/75 dark:bg-black/80    border border-gray-200 dark:border-white/20    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none    transition-all">
         <details class="group xl:hidden w-full">
-            <summary class="grid grid-cols-[auto_auto_1fr] gap-6 items-center h-14 px-4 rounded-lg cursor-pointer outline-none hover:bg-gray-50 dark:hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-blue-500/50 transition-colors [&::-webkit-details-marker]:hidden">
-                <span class="text-sm text-gray-600 dark:text-white/70">
-                    <span class="whitespace-nowrap">© 2026 VHeart</span>
-                    <span class="hidden group-open:inline ml-1">{{ __('footer.all_rights_reserved') }}</span>
+            <summary class=" grid grid-cols-[auto_auto_1fr] gap-1 md:gap-3 xl:gap-6 items-center h-14 px-1 md:px-2 xl:px-4 rounded-lg cursor-pointer outline-none hover:bg-gray-50 dark:hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-blue-500/50 transition-colors [&::-webkit-details-marker]:hidden">
+                <span class="text-sm text-gray-600 dark:text-white/70 items-center group-open:p-2">
+                    <span class="whitespace-nowrap items-center flex gap-1 text-foreground">
+                        <x-lucide-copyright defer class="size-4 inline" />
+                        2026
+                        <span class="hidden group-open:inline sm:inline">VHeart</span>
+                    </span>
+                    <span class="hidden group-open:inline text-muted-foreground">{{ __('footer.all_rights_reserved') }}</span>
                 </span>
 
                 <div class="flex items-center gap-1 sm:gap-4 text-sm group-open:hidden">
@@ -38,7 +42,7 @@
                 </div>
                 <div class="hidden group-open:block"></div>
 
-                <x-lucide-chevron-up defer class="size-5 text-gray-500 dark:text-white/70 transition-transform duration-300 group-open:rotate-180 justify-self-end" />
+                <x-lucide-chevron-up defer class="size-4 md:size-5 text-gray-500 dark:text-white/70 transition-transform duration-300 group-open:rotate-180 justify-self-end" />
             </summary>
 
             <div class="flex flex-col items-center gap-6 border-t border-gray-200 dark:border-white/5 px-6 py-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
@@ -73,9 +77,12 @@
         </details>
 
         <div class="hidden xl:grid w-full grid-cols-[auto_auto_auto] 2xl:grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 h-14">
-            <div class="truncate text-sm font-medium text-gray-600 dark:text-white/70">
-                © 2026 VHeart
-                <span class="hidden opacity-50 2xl:inline">{{ __('footer.all_rights_reserved') }}</span>
+            <div class="truncate text-sm font-medium text-gray-600 dark:text-white/70 items-center flex gap-1">
+                <x-lucide-copyright defer class="size-4 inline" />
+                <span>
+                    <span class="text-foreground">2026 VHeart</span>
+                    <span class="hidden text-muted-foreground 2xl:inline">{{ __('footer.all_rights_reserved') }}</span>
+                </span>
             </div>
 
             <nav class="flex flex-wrap justify-center gap-x-1 2xl:gap-x-4 gap-y-2">
