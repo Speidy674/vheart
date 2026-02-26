@@ -1,12 +1,12 @@
 @php
     static $socials = [
-        ['label' => 'Github', 'href' => 'https://github.com/VHeart-Clips', 'light' => '#181717', 'dark' => '#FFFFFF', 'icon' => 'lucide-info'],
-        ['label' => 'Discord', 'href' => 'https://discord.gg/vheart', 'light' => '#5865F2', 'dark' => '#5865F2', 'icon' => 'lucide-info'],
-        ['label' => 'Youtube', 'href' => 'https://www.youtube.com/@vheartclips', 'light' => '#FF0000', 'dark' => '#FF0000', 'icon' => 'lucide-info'],
-        ['label' => 'Twitch', 'href' => 'https://www.twitch.tv/vheartclips', 'light' => '#9146FF', 'dark' => '#9146FF', 'icon' => 'lucide-info'],
-        ['label' => 'Twitter / X', 'href' => 'https://x.com/VHeartClips', 'light' => '#000000', 'dark' => '#FFFFFF', 'icon' => 'lucide-info'],
-        ['label' => 'Reddit', 'href' => 'https://www.reddit.com/r/VHeartClips/', 'light' => '#FF4500', 'dark' => '#FF4500', 'icon' => 'lucide-info'],
-        ['label' => 'Bluesky', 'href' => 'https://bsky.app/profile/vheart.net', 'light' => '#1185FE', 'dark' => '#1185FE', 'icon' => 'lucide-info'],
+        ['label' => 'Github', 'href' => 'https://github.com/VHeart-Clips', 'light' => '#181717', 'dark' => '#FFFFFF', 'icon' => 'bi-github'],
+        ['label' => 'Discord', 'href' => 'https://discord.gg/vheart', 'light' => '#5865F2', 'dark' => '#5865F2', 'icon' => 'bi-discord'],
+        ['label' => 'Youtube', 'href' => 'https://www.youtube.com/@vheartclips', 'light' => '#FF0000', 'dark' => '#FF0000', 'icon' => 'bi-youtube'],
+        ['label' => 'Twitch', 'href' => 'https://www.twitch.tv/vheartclips', 'light' => '#9146FF', 'dark' => '#9146FF', 'icon' => 'bi-twitch'],
+        ['label' => 'Twitter / X', 'href' => 'https://x.com/VHeartClips', 'light' => '#000000', 'dark' => '#FFFFFF', 'icon' => 'bi-twitter-x'],
+        ['label' => 'Reddit', 'href' => 'https://www.reddit.com/r/VHeartClips/', 'light' => '#FF4500', 'dark' => '#FF4500', 'icon' => 'bi-reddit'],
+        ['label' => 'Bluesky', 'href' => 'https://bsky.app/profile/vheart.net', 'light' => '#1185FE', 'dark' => '#1185FE', 'icon' => 'bi-bluesky'],
     ];
 
     static $navs = [
