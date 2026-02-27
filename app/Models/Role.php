@@ -8,6 +8,7 @@ use App\Http\Resources\Role\RoleResource;
 use App\Policies\RolePolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,7 @@ use Spatie\Translatable\HasTranslations;
 #[UsePolicy(RolePolicy::class)]
 class Role extends Model
 {
+    use HasFactory;
     use HasTranslations;
 
     public array $translatable = [
