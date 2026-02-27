@@ -15,6 +15,10 @@ Deutschland
 **E-Mail:** [meynhero@gmail.com](mailto:meynhero@gmail.com)
 **Telefon:** [-------](tel:-------)
 
+## Wie setzen wir Cookies ein?
+
+<x-legal.cookie-list description-label="Beschreibung" duration-label="Speicherdauer" />
+
 ## Technische Zugriffsdaten (Server-Logs)
 
 Beim Aufruf dieser Website können durch den Hosting-Anbieter automatisch technische Daten in sogenannten Server-Logfiles verarbeitet werden

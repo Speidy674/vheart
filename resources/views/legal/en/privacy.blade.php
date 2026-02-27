@@ -14,6 +14,10 @@ Germany
 **Email:** [meynhero@gmail.com](mailto:meynhero@gmail.com)
 **Phone:** [-------](tel:-------)
 
+## How do we use cookies?
+
+<x-legal.cookie-list />
+
 ## Technical access data (server logs)
 
 When you access this website, our hosting provider may automatically process technical data
