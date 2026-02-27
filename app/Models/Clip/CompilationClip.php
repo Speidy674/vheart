@@ -33,6 +33,9 @@ class CompilationClip extends Pivot
         ];
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function claimer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'claimed_by');

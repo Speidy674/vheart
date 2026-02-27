@@ -12,6 +12,9 @@ class BroadcasterFilter extends Model
 {
     public $timestamps = false;
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function broadcaster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'broadcaster_id');
