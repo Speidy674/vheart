@@ -13,31 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', static function () {
-
-    $bestRated = Clip::query()
-        ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
-        ->orderByDesc('votes_count')
-        ->limit(10)
-        ->get();
-
-    return Inertia::render('start', [
-        'bestRated' => $bestRated->toResourceCollection(),
-        'discover' => Inertia::scroll(static function () {
-            $discover = Clip::query()
-                ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
-                ->orderByDesc('created_at')
-                ->cursorPaginate();
-
-            return $discover->toResourceCollection();
-        }),
-    ]);
-})
-    ->name('home');
-
-Route::get('/static', static function (Request $request) {
+Route::get('/', static function (Request $request) {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
@@ -68,7 +44,7 @@ Route::get('/static', static function (Request $request) {
         'discover' => $discover,
     ]);
 })
-    ->name('static');
+    ->name('home');
 
 Route::get('/about-us', static function () {
     $settings = [
