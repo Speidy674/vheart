@@ -14,14 +14,14 @@ class FaqController extends Controller
     public function index(Request $request): View
     {
         $questions = FaqEntry::query()
-            ->when($request->filled('search'), function (Builder $query) use ($request) {
+            ->when($request->filled('search'), function (Builder $query) use ($request): void {
                 $locale = app()->getLocale();
                 $searchTerm = '%'.$request->input('search').'%';
 
                 // search via database may give a different result than pure clientside one because database will
                 // return anything that contains searchTerm, not just visible text.
                 // but this is good enough as a fallback method
-                $query->where(function (Builder $q) use ($locale, $searchTerm) {
+                $query->where(function (Builder $q) use ($locale, $searchTerm): void {
                     $q->whereLike('title->'.$locale, $searchTerm)
                         ->orWhereLike('body->'.$locale, $searchTerm);
                 });
