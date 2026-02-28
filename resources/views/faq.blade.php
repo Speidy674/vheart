@@ -25,18 +25,21 @@
             }"
             class="space-y-6"
         >
-            @if($questions->isNotEmpty())
-                <div class="relative " title="{{ __('faq.search-no-javascript') }}" :title="''">
-                    <x-lucide-search class="size-5 text-muted-foreground pointer-events-none absolute inset-y-0 left-4 self-center" aria-hidden="true"/>
-                    <x-ui.input
-                        type="search"
-                        x-model.debounce.250ms="search"
-                        placeholder="{{ __('faq.search-placeholder') }}"
-                        aria-label="{{ __('faq.search-placeholder') }}"
-                        disabled :disabled="false"
-                        class="block w-full h-full rounded-xl py-3 pl-11 pr-4"
-                    />
-                </div>
+            @if($questions->isNotEmpty() || request('search') !== null)
+                <form method="GET" @submit.prevent>
+                    <div class="relative">
+                        <x-lucide-search class="size-5 text-muted-foreground pointer-events-none absolute inset-y-0 left-4 self-center" aria-hidden="true"/>
+                        <x-ui.input
+                            type="search"
+                            name="search"
+                            value="{{ request('search') }}"
+                            x-model.debounce.250ms="search"
+                            placeholder="{{ __('faq.search-placeholder') }}"
+                            aria-label="{{ __('faq.search-placeholder') }}"
+                            class="block w-full h-full rounded-xl py-3 pl-11 pr-4"
+                        />
+                    </div>
+                </form>
             @endif
 
             <div class="space-y-2">
@@ -53,7 +56,7 @@
                     </p>
                 @endforelse
 
-                @if($questions->isNotEmpty())
+                @if($questions->isNotEmpty() && request('search') === null)
                     <template x-if="matches < 1 && search.trim().length > 0">
                         <p class="text-center">
                             {{ __('faq.search-no-result') }}
