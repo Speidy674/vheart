@@ -70,7 +70,7 @@
     <div class="flex flex-col m-auto min-h-screen w-[95svw] md:w-[98svw] max-w-480">
         <x-layout.header />
 
-        <main class="grow">
+        <main {{ $attributes->twMerge("grow") }}>
             {{ $slot }}
         </main>
 
