@@ -147,7 +147,7 @@ describe('broadcaster requirements', function () {
                 'clip_url' => $invalidDto->url,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.broadcaster_not_allowed')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.broadcaster_not_allowed')]);
     });
 
     test('fails if the broadcaster gave no permission for clips', function () {
@@ -162,7 +162,7 @@ describe('broadcaster requirements', function () {
                 'clip_url' => $disallowedDto->url,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.broadcaster_not_allowed')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.broadcaster_not_allowed')]);
     });
 
     test('fails if user is blacklisted by broadcaster', function () {
@@ -184,7 +184,7 @@ describe('broadcaster requirements', function () {
                 'clip_url' => $this->clipUrl,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.user_not_allowed_for_broadcaster')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.user_not_allowed_for_broadcaster')]);
     });
 
     test('fails if category is blacklisted by broadcaster', function () {
@@ -206,7 +206,7 @@ describe('broadcaster requirements', function () {
                 'clip_url' => $this->clipUrl,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.category_blocked')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.category_blocked')]);
     });
 });
 
@@ -223,7 +223,7 @@ describe('website requirements', function () {
                 'clip_url' => $dto->url,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.category_blocked')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.category_blocked')]);
     });
 
     test('fails if clip is already known to us', function () {
@@ -252,7 +252,7 @@ describe('website requirements', function () {
                 'clip_url' => $this->clipUrl,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.clip_already_known')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.clip_already_known')]);
     });
 
     test('fails if clip does not exist on twitch', function () {
@@ -267,7 +267,7 @@ describe('website requirements', function () {
                 'clip_url' => $this->clipUrl,
                 'tags' => [$this->tags->first()->id],
             ])
-            ->assertSessionHasErrors(['clip_url' => __('sendinclip.errors.clip_not_found')]);
+            ->assertSessionHasErrors(['clip_url' => __('clips.errors.clip_not_found')]);
     });
 });
 
@@ -294,7 +294,7 @@ test('should allow submission if everything is ok', function () {
         ->assertInertia(fn (AssertableInertia $page) => $page
             ->component('submitclip')
             ->where('submit_ok', true)
-            ->where('submit_message', __('sendinclip.flash.submitted'))
+            ->where('submit_message', __('clips.flash.submitted'))
         );
 });
 

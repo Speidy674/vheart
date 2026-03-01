@@ -42,7 +42,7 @@ interface PageProps extends InertiaBaseProps {
 }
 
 export default function SubmitClipPage({ tags = [] }: { tags: TagResource[] }) {
-    const { t } = useTranslation('sendinclip');
+    const { t } = useTranslation('clips');
     const { props } = usePage<PageProps>();
     const { errors } = props;
     const user = props.auth?.user || null;

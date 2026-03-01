@@ -46,6 +46,6 @@ class ClipSubmitController extends Controller
 
         return $this->create()
             ->with('submit_ok', true)
-            ->with('submit_message', __('sendinclip.flash.submitted'));
+            ->with('submit_message', __('clips.flash.submitted'));
     }
 }
