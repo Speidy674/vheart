@@ -9,21 +9,19 @@ use App\Http\Requests\SubmitClipRequest;
 use App\Models\Clip;
 use App\Models\Clip\Tag;
 use App\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class ClipSubmitController extends Controller
 {
-    public function create(): Response
+    public function create(): View
     {
         $tags = Tag::query()
             ->whereLocale('name', app()->getLocale())
             ->get();
 
-        return Inertia::render('submitclip', [
-            'tags' => $tags->toResourceCollection(),
-        ]);
+        return view('clips.submit', ['tags' => $tags]);
     }
 
     public function store(SubmitClipRequest $request, ImportClipAction $importClipAction): Response
