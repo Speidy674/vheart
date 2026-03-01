@@ -10,7 +10,6 @@ use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Http;
-use Inertia\Testing\AssertableInertia;
 use Mockery\MockInterface;
 
 beforeEach(function () {
@@ -291,11 +290,9 @@ test('should allow submission if everything is ok', function () {
             'tags' => [$this->tags->first()->id],
         ])
         ->assertSessionHasNoErrors()
-        ->assertInertia(fn (AssertableInertia $page) => $page
-            ->component('submitclip')
-            ->where('submit_ok', true)
-            ->where('submit_message', __('clips.flash.submitted'))
-        );
+        ->assertRedirect(route('submitclip.create'))
+        ->assertSessionHas('submit_ok', true)
+        ->assertSessionHas('submit_message', __('clips.flash.submitted'));
 });
 
 function mockTwitchService(?ClipDto $dto = null): MockInterface
