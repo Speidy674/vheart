@@ -18,6 +18,7 @@ return [
                 'tags' => [
                     'label' => 'Tags',
                     'placeholder' => 'Select tags...',
+                    'description' => 'Select up to 3 tags (minimum 1).',
                     'filter_placeholder' => 'Filter tags…',
                     'selected_count' => ':count of :max selected',
                     'no_results' => 'No tags found.',
