@@ -30,7 +30,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\PaginationMode;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -58,7 +57,6 @@ class ClipsRelationManager extends RelationManager
             ]))
             ->recordTitleAttribute('title')
             ->columns([
-
                 Split::make([
                     Stack::make([
                         ImageColumn::make('thumbnail_url')
@@ -465,7 +463,7 @@ class ClipsRelationManager extends RelationManager
                     DetachBulkAction::make(),
                 ]),
             ])
-            ->paginationMode(PaginationMode::Cursor)
+            ->paginated(false)
             ->openRecordUrlInNewTab();
     }
 }
