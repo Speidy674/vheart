@@ -44,7 +44,7 @@ return [
     ],
     'filters' => [
         'broadcaster' => 'Broadcaster',
-        'creator' => 'Creator',
+        'creator' => 'Clip Creator',
         'submitter' => 'Submitter',
         'category' => 'Category',
         'tags' => 'Tags',
