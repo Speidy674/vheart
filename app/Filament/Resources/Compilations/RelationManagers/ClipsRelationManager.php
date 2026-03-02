@@ -187,7 +187,7 @@ class ClipsRelationManager extends RelationManager
                             ->weight('bold')
                             ->icon(Heroicon::Check)
                             ->color('gray'),
-                        TextColumn::make('pivot.status')
+                        TextColumn::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status_cutter')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_cutter'))
                             ->badge()

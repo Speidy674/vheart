@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class CompilationClip extends Pivot
 {
     use HasFactory;
+
     public $incrementing = true;
 
     /**
@@ -29,7 +30,7 @@ class CompilationClip extends Pivot
         return [
             'id',
             'claimed_by',
-            'status',
+            'status as claim_status', // TODO: rename at migration level?
             'claimed_at',
             'removed_at',
         ];
@@ -46,7 +47,7 @@ class CompilationClip extends Pivot
     protected function casts(): array
     {
         return [
-            'status' => CompilationClipStatus::class,
+            'claim_status' => CompilationClipStatus::class,
             'claimed_at' => 'datetime',
             'removed_at' => 'datetime',
         ];
