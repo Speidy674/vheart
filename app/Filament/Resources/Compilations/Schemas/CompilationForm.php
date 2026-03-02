@@ -8,8 +8,8 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
 use App\Models\Clip\Compilation;
 use Filament\Actions\Action;
+use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -50,7 +50,7 @@ class CompilationForm
                                 //    $set('slug', $get('title').toLowerCase().replaceAll(' ', '-'))
                                 // JS)
                             ),
-                        Textarea::make('description')
+                        MarkdownEditor::make('description')
                             ->label('admin/resources/compilations.form.description')
                             ->translateLabel()
                             ->columnSpanFull(),
