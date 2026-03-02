@@ -280,12 +280,10 @@ class ClipsRelationManager extends RelationManager
                         blank: fn (Builder $query): Builder => $query,
                     ),
 
-                // TODO: either remove this or check why it just doesnt want to work, needs more attention
-                SelectFilter::make('pivot.status')
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.status')
+                SelectFilter::make('clip_compilation.status')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.cutter_status')
                     ->translateLabel()
                     ->multiple()
-                    ->hidden()
                     ->options(CompilationClipStatus::class),
             ])
             ->filtersFormColumns(2)
