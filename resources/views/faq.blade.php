@@ -1,5 +1,12 @@
 <x-layout :title="__('faq.title')">
     <x-ui.card>
+        <x-ui.card.header>
+            <x-ui.card.title>
+                <h1 class="text-center text-3xl font-bold">
+                    <span class="bg-linear-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-transparent dark:from-purple-300 dark:via-white dark:to-cyan-300">{{ __('faq.title') }}</span>
+                </h1>
+            </x-ui.card.title>
+        </x-ui.card.header>
         <x-ui.card.content
             x-data="{
                 search: '',
