@@ -6,6 +6,9 @@ namespace App\Filament\Resources\Compilations\RelationManagers;
 
 use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Permission;
+use App\Events\Admin\Compilations\CompilationClipClaimed;
+use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
+use App\Events\Admin\Compilations\CompilationClipUnclaimed;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
@@ -315,10 +318,12 @@ class ClipsRelationManager extends RelationManager
                         ->modalDescription(fn (Clip $record): string|array|null => $record->pivot->claimed_by
                             ? __('admin/resources/compilations.relation_managers.clips.actions.claim_override.description')
                             : null)
-                        ->action(function (Clip $clip): true {
+                        ->action(function (Clip\Compilation $compilation, Clip $clip): true {
                             $clip->pivot->update([
                                 'claimed_by' => auth()->id(),
                             ]);
+
+                            CompilationClipClaimed::dispatch($compilation, auth()->user(), $clip);
 
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.claimed.title'))
@@ -344,10 +349,14 @@ class ClipsRelationManager extends RelationManager
                                 ->default(CompilationClipStatus::Pending)
                                 ->required(),
                         ])
-                        ->action(function (Clip $clip, array $data): void {
+                        ->action(function (Clip\Compilation $compilation, Clip $clip, array $data): void {
+                            $oldStatus = $clip->pivot->status;
+
                             $clip->pivot->update([
                                 'status' => $data['status'],
                             ]);
+
+                            CompilationClipStatusUpdated::dispatch($compilation, auth()->user(), $clip, $oldStatus, $data['status']);
 
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.status_updated'))
@@ -435,7 +444,7 @@ class ClipsRelationManager extends RelationManager
                         ->icon(Heroicon::LockOpen)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->requiresConfirmation()
-                        ->action(function (Clip $clip): void {
+                        ->action(function (Clip\Compilation $compilation, Clip $clip): void {
                             if ($clip->pivot->claimed_by !== auth()->id()) {
                                 Notification::make()
                                     ->title(__('admin/resources/compilations.relation_managers.clips.actions.unclaim_failed.title'))
@@ -449,6 +458,8 @@ class ClipsRelationManager extends RelationManager
                             $clip->pivot->update([
                                 'claimed_by' => null,
                             ]);
+
+                            CompilationClipUnclaimed::dispatch($compilation, auth()->user(), $clip);
 
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.unclaimed_title'))
