@@ -8,28 +8,7 @@
             </x-ui.card.title>
         </x-ui.card.header>
         <x-ui.card.content
-            x-data="{
-                search: '',
-                matches: 0,
-                init() {
-                    this.$watch('search', () => {
-                        this.matches = 0;
-                    });
-                },
-                isVisible(id) {
-                    if (this.search.trim() === '') return true;
-                    const search = this.search.trim().toLowerCase();
-                    const element = document.getElementById(id);
-                    if (!element) return false;
-
-                    const result = element.textContent.toLowerCase().includes(search);
-                    if(result) {
-                        this.matches++;
-                        return true;
-                    }
-                    return false;
-                }
-            }"
+            x-data="faqSearch"
             class="space-y-6"
         >
             @if($questions->isNotEmpty() || request('search') !== null)
@@ -73,4 +52,33 @@
             </div>
         </x-ui.card.content>
     </x-ui.card>
+
+    @push('elements')
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('faqSearch', () => ({
+                    search: '',
+                    matches: 0,
+                    init() {
+                        this.$watch('search', () => {
+                            this.matches = 0;
+                        });
+                    },
+                    isVisible(id) {
+                        if (this.search.trim() === '') return true;
+                        const search = this.search.trim().toLowerCase();
+                        const element = document.getElementById(id);
+                        if (!element) return false;
+
+                        const result = element.textContent.toLowerCase().includes(search);
+                        if(result) {
+                            this.matches++;
+                            return true;
+                        }
+                        return false;
+                    }
+                }));
+            })
+        </script>
+    @endpush
 </x-layout>
