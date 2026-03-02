@@ -142,7 +142,7 @@ class ClipsRelationManager extends RelationManager
                             ->dateTime()
                             ->sortable()
                             ->color('gray'),
-                        TextColumn::make('created_at')
+                        TextColumn::make('clips.created_at')
                             ->label(__('admin/resources/clips.table.columns.submitted_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
                             ->icon(Heroicon::Calendar)
