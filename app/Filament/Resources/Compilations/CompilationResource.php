@@ -7,8 +7,10 @@ namespace App\Filament\Resources\Compilations;
 use App\Filament\Resources\Compilations\Pages\CreateCompilation;
 use App\Filament\Resources\Compilations\Pages\EditCompilation;
 use App\Filament\Resources\Compilations\Pages\ListCompilations;
+use App\Filament\Resources\Compilations\Pages\ViewCompilation;
 use App\Filament\Resources\Compilations\RelationManagers\ClipsRelationManager;
 use App\Filament\Resources\Compilations\Schemas\CompilationForm;
+use App\Filament\Resources\Compilations\Schemas\CompilationInfoList;
 use App\Filament\Resources\Compilations\Tables\CompilationsTable;
 use App\Models\Clip\Compilation;
 use BackedEnum;
@@ -32,6 +34,11 @@ class CompilationResource extends Resource
         return CompilationForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return CompilationInfoList::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return CompilationsTable::configure($table);
@@ -49,6 +56,7 @@ class CompilationResource extends Resource
         return [
             'index' => ListCompilations::route('/'),
             'create' => CreateCompilation::route('/create'),
+            'view' => ViewCompilation::route('/{record}'),
             'edit' => EditCompilation::route('/{record}/edit'),
         ];
     }
