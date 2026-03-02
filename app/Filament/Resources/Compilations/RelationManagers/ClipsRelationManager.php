@@ -144,6 +144,7 @@ class ClipsRelationManager extends RelationManager
 
                     Stack::make([
                         TextColumn::make('clips.date')
+                            ->getStateUsing(fn (Clip $clip) => $clip->date)
                             ->label(__('admin/resources/clips.table.columns.created_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.created_at'))
                             ->icon(Heroicon::Calendar)
@@ -151,6 +152,7 @@ class ClipsRelationManager extends RelationManager
                             ->sortable()
                             ->color('gray'),
                         TextColumn::make('clips.created_at')
+                            ->getStateUsing(fn (Clip $clip) => $clip->created_at)
                             ->label(__('admin/resources/clips.table.columns.submitted_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
                             ->icon(Heroicon::Calendar)
