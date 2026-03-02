@@ -142,7 +142,7 @@ class ClipsRelationManager extends RelationManager
                         ->space(1),
 
                     Stack::make([
-                        TextColumn::make('date')
+                        TextColumn::make('clips.date')
                             ->label(__('admin/resources/clips.table.columns.created_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.created_at'))
                             ->icon(Heroicon::Calendar)
