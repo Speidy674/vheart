@@ -163,9 +163,10 @@ class ClipsRelationManager extends RelationManager
                             ImageColumn::make('category.box_art')
                                 ->imageHeight(40)
                                 ->alignCenter()
-                                ->getStateUsing(fn (Clip $record) => $record->category?->getBoxArt())
+                                ->getStateUsing(fn (Clip $record) => $record->category?->proxiedContentUrl())
                                 ->extraImgAttributes([
                                     'class' => 'object-cover rounded-md aspect-[3/4]',
+                                    'loading' => 'lazy',
                                 ])
                                 ->grow(false),
                             TextColumn::make('category.title')
