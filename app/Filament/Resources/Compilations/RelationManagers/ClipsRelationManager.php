@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Compilations\RelationManagers;
 
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipStatus;
 use App\Enums\Permission;
 use App\Events\Admin\Compilations\CompilationClipClaimed;
@@ -285,6 +286,12 @@ class ClipsRelationManager extends RelationManager
                     ->translateLabel()
                     ->multiple()
                     ->options(CompilationClipStatus::class),
+
+                SelectFilter::make('clips.status')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.clip_status')
+                    ->translateLabel()
+                    ->multiple()
+                    ->options(ClipStatus::class),
             ])
             ->filtersFormColumns(2)
             ->headerActions([
