@@ -105,6 +105,10 @@ class ClipsTable
                                 ->badge()
                                 ->translateLabel(),
                         ])->grow(false),
+
+                        TextColumn::make('tags.name')
+                            ->color('gray')
+                            ->badge(),
                     ])->space(),
 
                     Stack::make([
