@@ -35,13 +35,11 @@ class InitialEpisodeSeeder extends Seeder
         'EnticingLongNuggetsCurseLit-1LUi7d9JzNhMZ2Rx',
         'EndearingCrazyPepperoniEagleEye-DKddR1AmIcTylJAe',
         'AntediluvianUnsightlyKimchiKappaWealth-uRvVzUsNDG8MYR0K',
-        'DeafIcyAmazonJonCarnage-HNKpsG0CfnVHbo83',
         'ElatedCuriousPepperoniFloof-emscHxhWG5Pav1gB',
         'OddBlindingPuffinAliens-oQ97t1DQIK7DtnfX',
         'ArbitraryMuddyTomatoVoteYea-URKp4wkFAxFXh6jq',
         'DeterminedWittyEggplantKappaClaus-i6lhKvoXjXD5wVMh',
         'JollyUnusualKuduBudBlast-rCtPoY1KJJsVd-2_',
-        'SlipperyCallousAsteriskHoneyBadger-Ih993Pbrme0Yxp1d',
         'BitterAlertGoatKappaClaus-Ijl-kmTL-oO1Gm4u',
         'LazyAliveCroissantAMPTropPunch-UosBLCxh8lpIyHwg',
         'BlatantCleverLemurKappaRoss-YjqBo02ib6rIUgFj',
@@ -56,7 +54,6 @@ class InitialEpisodeSeeder extends Seeder
         'SpookyProductivePhoneSwiftRage-3J7WJVEn-vypPHdx',
         'CreativeTalentedAniseTBTacoRight--zmezpz1T3vNI1Z8',
         'AgitatedWrongMartenAMPEnergyCherry-QtACzJvoGLjV7baP',
-        'AmericanRudeTeaTinyFace-hTVT-gthooViMrYF',
         'HardDreamyMilkRuleFive-1HqkB9C9ccszgUMC',
         'SpotlessAcceptableLionDancingBanana-2IvjUPPoasjB3Psa',
         'HorribleAdventurousRavenPeteZaroll-sbI3t7oKgy_beI_h',
@@ -140,36 +137,30 @@ class InitialEpisodeSeeder extends Seeder
         'UglyAwkwardPheasantSmoocherZ-A0qQYHlawSjYqtba',
         'LaconicEndearingKimchiDansGame--ys2b-0FNysKu7Mn',
         // Episode 5
-        'SingleColorfulSageWoofer-cfuIJ102ziUciuwZ', // icyhime
-        'ShyEndearingWafflePupper-mM5X2QVQWSmeYNkd', // chiino
-        'MoldyCleverOctopusPanicVis-POKv0owfNwQk3r5R', // zhenganu
-        'BlushingScrumptiousWormLitty-Fx3l2GrN9Ekd3jvJ', // mauwchi
-        'BashfulEnticingDogHeyGirl-WEFlAqtJUIZfp_oq', // re4lblacky
-        'AnimatedGenerousCatLitty-Lp5bHStot4BmMgpx', // yutoxsenpai
-        'SmellyCleanReindeerPanicBasket-x2l3wyk91-BDh1dl', // frechelexi
-        'BeautifulSpikyPotDerp-zFf0g2ST16KVvz2f', // jen_tsukase
-        'HumbleHonestCaterpillarPanicBasket-7uSaGMZLuiC6oA6A', // leanorar
-        'ProductiveCrowdedLeopardM4xHeh-lddJY9UPqdEwuUYl', // nyrellia
-        'BadThirstyPepperoniStinkyCheese-N0jJ3nHB9opNZpJI', // ponyu94
-        'CoySuccessfulSpiderTooSpicy-UiVreGYnOfOsNnn9', // jeymarzanna
-        'BenevolentAbstemiousOrcaBrokeBack-_efVdJHmK0KCHYHB', // lunariamoonvt
+        'SingleColorfulSageWoofer-cfuIJ102ziUciuwZ',
+        'MoldyCleverOctopusPanicVis-POKv0owfNwQk3r5R',
+        'BlushingScrumptiousWormLitty-Fx3l2GrN9Ekd3jvJ',
+        'BashfulEnticingDogHeyGirl-WEFlAqtJUIZfp_oq',
+        'AnimatedGenerousCatLitty-Lp5bHStot4BmMgpx',
+        'SmellyCleanReindeerPanicBasket-x2l3wyk91-BDh1dl',
+        'BeautifulSpikyPotDerp-zFf0g2ST16KVvz2f',
+        'HumbleHonestCaterpillarPanicBasket-7uSaGMZLuiC6oA6A',
+        'ProductiveCrowdedLeopardM4xHeh-lddJY9UPqdEwuUYl',
+        'BadThirstyPepperoniStinkyCheese-N0jJ3nHB9opNZpJI',
+        'CoySuccessfulSpiderTooSpicy-UiVreGYnOfOsNnn9',
         // Episode 6
         'BlightedSavoryMeerkatBIRB-LSEP1jOaf7cWGgQT',
         'SpoopyBovineCrocodileVoteNay-0sG5ByX6omW8lrFQ',
-        'HeadstrongAdorableKeyboardChefFrank-HF1dEi8Vl48ku9G4',
         'CarelessKnottyTriangleFailFish-OvYXBGZw3T2ntD_1',
         'PuzzledDependablePlumageCharlieBitMe-HjUtTcu4L0mlmlob',
         'NurturingIronicDumplingsAllenHuhu-FH0RKCXKs6iVeDy4',
         'NiceHomelySmoothieHeyGuys-mgKOicnKq0cr4A_O',
         'ShortNeighborlyCobraSpicyBoy-GjJy22pqUox_op3C',
-        'BoringPuzzledGiraffeOpieOP-3ORdDhR5F2vU4Nra',
         'SmellyBloodyPeanutEagleEye-Nm1UjzNSKF0YQko0',
         'TawdryGlutenFreeSandwichAMPTropPunch-ajfXxeXgy_tn2sOD',
         'ArtsyApatheticGoldfishPunchTrees-lyfC66CC3qbfqprM',
         'FaithfulBravePhoneBIRB-iEkIYRAvYMnQnPfU',
         'CharmingFineZebraWutFace-owiIdQnnlUwtWJhI',
-        'ZanySquareEndiveEagleEye-QprkHuuVCLqFywm6',
-        'PiliableRoundPidgeonPeteZaroll-nV1qBW6IFhhjF473',
         'BombasticAbrasivePastaRaccAttack-o9ireLA9xruq8Cxb',
         'PeppyEasyVampirePeoplesChamp-KOT5IZvfnLfhPrP7',
         'EsteemedEnjoyableEmuOpieOP-bTukpp5c6YWu4grG',
