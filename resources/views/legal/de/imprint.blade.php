@@ -11,7 +11,7 @@ Amtstraße 22
 44575 Castrop-Rauxel
 Deutschland
 
-**E-Mail:** [meynhero@gmail.com](mailto:meynhero@gmail.com)
+**E-Mail:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
 **Telefon:** [-------](tel:-------)
 
 ## Haftung für Inhalte

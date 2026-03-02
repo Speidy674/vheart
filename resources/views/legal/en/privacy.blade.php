@@ -11,7 +11,7 @@ Amtstraße 22
 44575 Castrop-Rauxel
 Germany
 
-**Email:** [meynhero@gmail.com](mailto:meynhero@gmail.com)
+**Email:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
 **Phone:** [-------](tel:-------)
 
 ## How do we use cookies?
