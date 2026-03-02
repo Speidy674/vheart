@@ -63,9 +63,7 @@ class ClipsRelationManager extends RelationManager
                 Split::make([
                     Stack::make([
                         ImageColumn::make('thumbnail_url')
-                            ->getStateUsing(function (Clip $clip) {
-                                return $clip->proxiedContentUrl();
-                            })
+                            ->getStateUsing(fn (Clip $clip): ?string => $clip->proxiedContentUrl())
                             ->extraImgAttributes([
                                 'loading' => 'lazy',
                             ])
