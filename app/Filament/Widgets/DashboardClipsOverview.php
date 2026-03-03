@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
+use App\Enums\ClipVoteType;
 use App\Enums\Permission;
 use App\Models\Clip;
+use App\Models\Vote;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -26,6 +28,23 @@ class DashboardClipsOverview extends StatsOverviewWidget
         $totalClipsThisWeek = Clip::where('created_at', '>=', now()->startOfWeek())->count();
         $totalClipsThisMonth = Clip::where('created_at', '>=', now()->startOfMonth())->count();
 
+        $averageDuration = Clip::avg('duration') ?? 0;
+        $clipsLast30Days = Clip::where('created_at', '>=', now()->subDays(30))->count();
+        $averageClipsPerDay = $clipsLast30Days / 30;
+
+        $totalVotes = Vote::where('type', ClipVoteType::Public)
+            ->where('voted', true)
+            ->count();
+        $averageVotesPerClip = $totalClips > 0 ? ($totalVotes / $totalClips) : 0;
+
+        $totalJuryVotes = Vote::where('type', ClipVoteType::Jury)
+            ->where('voted', true)
+            ->count();
+        $averageJuryVotesPerClip = $totalClips > 0 ? ($totalJuryVotes / $totalClips) : 0;
+
+        $totalSkips = Vote::where('voted', false)->count();
+        $averageSkipsPerClip = $totalClips > 0 ? ($totalSkips / $totalClips) : 0;
+
         return [
             Stat::make('Total Clips Submitted', number_format($totalClips))
                 ->icon(Heroicon::VideoCamera),
@@ -35,6 +54,18 @@ class DashboardClipsOverview extends StatsOverviewWidget
                 ->icon(Heroicon::VideoCamera),
             Stat::make('Clips Submitted This Month', number_format($totalClipsThisMonth))
                 ->icon(Heroicon::VideoCamera),
+
+            Stat::make('Avg. Clip Duration', number_format($averageDuration).'s')
+                ->icon(Heroicon::Clock),
+            Stat::make('Avg. Daily Submissions (30 Days)', number_format($averageClipsPerDay))
+                ->icon(Heroicon::ChartBar),
+
+            Stat::make('Average Public Votes per Clip', number_format($averageVotesPerClip))
+                ->icon(Heroicon::HandThumbUp),
+            Stat::make('Average Jury Votes per Clip', number_format($averageJuryVotesPerClip))
+                ->icon(Heroicon::Star),
+            Stat::make('Average Skips per Clip', number_format($averageSkipsPerClip))
+                ->icon(Heroicon::NoSymbol),
         ];
     }
 }
