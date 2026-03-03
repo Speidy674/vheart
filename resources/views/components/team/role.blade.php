@@ -6,7 +6,7 @@
         </x-ui.badge>
         <div class="h-0.5 flex-1 bg-linear-to-r from-purple-100 via-transparent to-transparent dark:from-white/10"></div>
         <span class="font-mono text-[10px] font-bold tracking-[0.2em] text-zinc-400 uppercase dark:text-white/30">
-            {{ __('team.members') }}
+            {{ trans_choice('team.members', count($role->users), ['value' => count($role->users)]) }}
         </span>
     </div>
 
