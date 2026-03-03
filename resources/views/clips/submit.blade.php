@@ -1,5 +1,5 @@
 <x-layout :title="__('clips.submit.page_title')">
-    <div class="max-w-7xl mx-auto" x-data="clipPreview()">
+    <div class="max-w-7xl mx-auto py-8" x-data="clipPreview()">
         @if(session('submit_ok') && session('submit_message'))
             <x-ui.alert variant="success" class="mb-6">
                 <x-lucide-check-circle defer class="shrink-0 mt-0.5 mr-3"/>
