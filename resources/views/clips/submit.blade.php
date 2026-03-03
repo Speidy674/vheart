@@ -38,8 +38,7 @@
                                     {{ __('clips.submit.form.fields.clip_url.label') }}
                                 </label>
 
-                                {{-- TODO: use x-input when avaiable --}}
-                                <input
+                                <x-ui.input
                                     type="url"
                                     id="clip_url"
                                     name="clip_url"
@@ -49,10 +48,10 @@
                                     required
                                     placeholder="{{ __('clips.submit.form.fields.clip_url.placeholder') }}"
                                     autocomplete="off"
-                                    class="w-full border border-accent/10 bg-destructive/10 animate-pulse"
                                 />
+
                                 @error('clip_url')
-                                    <p class="text-sm font-medium text-destructive mt-2">{{ $message }}</p>
+                                <p class="text-sm font-medium text-destructive mt-2">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -91,7 +90,7 @@
                                 </div>
 
                                 @error('tags')
-                                    <p class="text-sm font-medium text-destructive mt-2">{{ $message }}</p>
+                                <p class="text-sm font-medium text-destructive mt-2">{{ $message }}</p>
                                 @enderror
                             </div>
 
