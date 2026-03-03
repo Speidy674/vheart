@@ -317,7 +317,7 @@ class ClipsTable
                                 'last_month' => __($translationPrefixPresets.'options.last_month'),
                             ])
                             ->live()
-                            ->afterStateUpdated(function ($state, Set $set) {
+                            ->afterStateUpdated(function ($state, Set $set): void {
                                 if (! $state) {
                                     return;
                                 }
@@ -350,7 +350,7 @@ class ClipsTable
                                     ->iconButton()
                                     ->icon(Heroicon::XMark)
                                     ->color('gray')
-                                    ->action(function ($set) {
+                                    ->action(function ($set): void {
                                         $set('from', null);
                                     }),
                             ),
@@ -364,7 +364,7 @@ class ClipsTable
                                     ->iconButton()
                                     ->icon(Heroicon::XMark)
                                     ->color('gray')
-                                    ->action(function ($set) {
+                                    ->action(function ($set): void {
                                         $set('to', null);
                                     }),
                             ),
@@ -373,17 +373,15 @@ class ClipsTable
             ])
             ->columns(2)
             ->columnSpanFull()
-            ->query(function (Builder $query, array $data) use ($column): Builder {
-                return $query
-                    ->when(
-                        $data['from'],
-                        fn (Builder $query, $date): Builder => $query->whereDate($column, '>=', $date),
-                    )
-                    ->when(
-                        $data['to'],
-                        fn (Builder $query, $date): Builder => $query->whereDate($column, '<=', $date),
-                    );
-            })
+            ->query(fn (Builder $query, array $data): Builder => $query
+                ->when(
+                    $data['from'],
+                    fn (Builder $query, $date): Builder => $query->whereDate($column, '>=', $date),
+                )
+                ->when(
+                    $data['to'],
+                    fn (Builder $query, $date): Builder => $query->whereDate($column, '<=', $date),
+                ))
             ->indicateUsing(function (array $data) use ($name, $translationPrefix): array {
                 $indicators = [];
                 if ($data['from'] ?? null) {
