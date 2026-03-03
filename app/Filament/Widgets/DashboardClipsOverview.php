@@ -32,18 +32,20 @@ class DashboardClipsOverview extends StatsOverviewWidget
         $clipsLast30Days = Clip::where('created_at', '>=', now()->subDays(30))->count();
         $averageClipsPerDay = $clipsLast30Days / 30;
 
+        $totalVotedClips = Clip::whereHas('votes')->count();
+
         $totalVotes = Vote::where('type', ClipVoteType::Public)
             ->where('voted', true)
             ->count();
-        $averageVotesPerClip = $totalClips > 0 ? ($totalVotes / $totalClips) : 0;
+        $averageVotesPerClip = $totalVotedClips > 0 ? ($totalVotes / $totalVotedClips) : 0;
 
         $totalJuryVotes = Vote::where('type', ClipVoteType::Jury)
             ->where('voted', true)
             ->count();
-        $averageJuryVotesPerClip = $totalClips > 0 ? ($totalJuryVotes / $totalClips) : 0;
+        $averageJuryVotesPerClip = $totalVotedClips > 0 ? ($totalJuryVotes / $totalVotedClips) : 0;
 
         $totalSkips = Vote::where('voted', false)->count();
-        $averageSkipsPerClip = $totalClips > 0 ? ($totalSkips / $totalClips) : 0;
+        $averageSkipsPerClip = $totalVotedClips > 0 ? ($totalSkips / $totalVotedClips) : 0;
 
         return [
             Stat::make('Total Clips Submitted', number_format($totalClips))
