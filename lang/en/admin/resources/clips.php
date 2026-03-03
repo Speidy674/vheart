@@ -12,6 +12,7 @@ return [
         'submitted_by' => 'Submitted By',
         'category' => 'Category',
         'created_at' => 'Clip Created At',
+        'tags' => 'Tags',
     ],
     'infolist' => [
         'title' => 'Title',
