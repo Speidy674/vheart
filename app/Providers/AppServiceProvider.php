@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Enums\FeatureFlag;
 use App\Enums\Permission;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
@@ -19,6 +20,7 @@ use App\Models\User;
 use App\Models\Vote;
 use App\Providers\Socialite\TwitchSocialiteProvider;
 use App\Support\CookieConsent\CustomCookiesManager;
+use App\Support\FeatureFlag\Feature;
 use Carbon\CarbonImmutable;
 use Filament\Facades\Filament;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -27,6 +29,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -176,6 +179,8 @@ class AppServiceProvider extends ServiceProvider
 
             return Filament::getResourceUrl($record, $page);
         });
+
+        Blade::if('feature', static fn (FeatureFlag $feature): bool => Feature::isActive($feature));
 
         /**
          * Merge Tailwind classes with TailwindMerge to remove tags that cause conflicts with each other
