@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use App\Enums\FeatureFlag;
 use App\Enums\Permission;
+use App\Http\Middleware\FeatureFlagGuard;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
@@ -36,6 +37,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -181,6 +183,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Blade::if('feature', static fn (FeatureFlag $feature): bool => Feature::isActive($feature));
+        Route::macro('feature', function (FeatureFlag $feature) {
+            /** @var \Illuminate\Routing\Route $this */
+            return $this->middleware(FeatureFlagGuard::of($feature));
+        });
 
         /**
          * Merge Tailwind classes with TailwindMerge to remove tags that cause conflicts with each other
