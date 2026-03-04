@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Enums\FeatureFlag;
 use App\Enums\Permission;
-use App\Http\Middleware\FeatureFlagGuard;
 use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
@@ -21,7 +19,6 @@ use App\Models\User;
 use App\Models\Vote;
 use App\Providers\Socialite\TwitchSocialiteProvider;
 use App\Support\CookieConsent\CustomCookiesManager;
-use App\Support\FeatureFlag\Feature;
 use Carbon\CarbonImmutable;
 use Filament\Facades\Filament;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -30,14 +27,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
@@ -180,12 +175,6 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return Filament::getResourceUrl($record, $page);
-        });
-
-        Blade::if('feature', static fn (FeatureFlag $feature): bool => Feature::isActive($feature));
-        Route::macro('feature', function (FeatureFlag $feature) {
-            /** @var \Illuminate\Routing\Route $this */
-            return $this->middleware(FeatureFlagGuard::of($feature));
         });
 
         /**
