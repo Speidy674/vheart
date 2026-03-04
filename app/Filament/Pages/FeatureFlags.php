@@ -138,7 +138,7 @@ class FeatureFlags extends Page
                                 DB::table('feature_flags')->upsert(
                                     $upsertData,
                                     ['name'],
-                                    ['enabled', 'updated_at']
+                                    ['enabled']
                                 );
                             }
 
