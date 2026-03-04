@@ -8,7 +8,6 @@ use App\Enums\Traits\FeatureFlagMagic;
 use App\Enums\Traits\HasHeadlineLabel;
 use App\Support\FeatureFlag\Attributes\DefaultFeatureFlagState;
 use App\Support\FeatureFlag\Attributes\Description;
-use App\Support\FeatureFlag\Attributes\Issue;
 use Filament\Support\Contracts\HasLabel;
 
 enum FeatureFlag: string implements HasLabel
@@ -16,10 +15,15 @@ enum FeatureFlag: string implements HasLabel
     use FeatureFlagMagic;
     use HasHeadlineLabel;
 
-    #[Description('Example Feature Flag')]
-    #[Issue(1)]
-    case PlaceHolder = 'placeholder';
-
+    #[Description('Controls the Clip Submission feature')]
     #[DefaultFeatureFlagState(true)]
-    case DefaultEnabledFlag = 'default_enabled_flag';
+    case ClipSubmission = 'clip_submission';
+
+    #[Description('Controls the Clip Voting feature')]
+    #[DefaultFeatureFlagState(true)]
+    case ClipVoting = 'clip_voting';
+
+    #[Description('Controls the Reporting feature')]
+    #[DefaultFeatureFlagState(true)]
+    case Reports = 'reporting';
 }
