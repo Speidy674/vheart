@@ -116,7 +116,6 @@ class FeatureFlags extends Page
                 ->label('Save')
                 ->action(function () {
                     $state = $this->getSchema('form')->getState();
-                    $now = now();
                     $upsertData = [];
                     $deleteNames = [];
 
@@ -129,7 +128,6 @@ class FeatureFlags extends Page
                             $upsertData[] = [
                                 'name' => $name,
                                 'enabled' => $enabled,
-                                'updated_at' => $now,
                             ];
                         }
                     }

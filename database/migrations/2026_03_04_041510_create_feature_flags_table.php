@@ -13,7 +13,6 @@ return new class extends Migration
         Schema::create('feature_flags', function (Blueprint $table) {
             $table->string('name')->unique()->primary();
             $table->boolean('enabled')->default(false);
-            $table->timestamps();
         });
     }
 };
