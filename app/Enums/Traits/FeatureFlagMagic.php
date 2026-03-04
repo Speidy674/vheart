@@ -49,7 +49,7 @@ trait FeatureFlagMagic
         $reflection = new ReflectionClassConstant(self::class, $this->name);
         $attributes = $reflection->getAttributes(DefaultFeatureFlagState::class);
 
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return $cache[$this->name] = false;
         }
 
@@ -71,7 +71,7 @@ trait FeatureFlagMagic
         $reflection = new ReflectionClassConstant(self::class, $this->name);
         $attributes = $reflection->getAttributes(Description::class);
 
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return $cache[$this->name] = null;
         }
 
@@ -93,7 +93,7 @@ trait FeatureFlagMagic
         $reflection = new ReflectionClassConstant(self::class, $this->name);
         $attributes = $reflection->getAttributes(Issue::class);
 
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return $cache[$this->name] = null;
         }
 

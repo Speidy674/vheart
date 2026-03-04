@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('feature_flags', function (Blueprint $table) {
+        Schema::create('feature_flags', function (Blueprint $table): void {
             $table->string('name')->unique()->primary();
             $table->boolean('enabled')->default(false);
         });

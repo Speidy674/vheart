@@ -114,7 +114,7 @@ class FeatureFlags extends Page
             Action::make('save')
                 ->requiresConfirmation()
                 ->label('Save')
-                ->action(function () {
+                ->action(function (): void {
                     $state = $this->getSchema('form')->getState();
                     $upsertData = [];
                     $deleteNames = [];
@@ -133,8 +133,8 @@ class FeatureFlags extends Page
                     }
 
                     try {
-                        DB::transaction(static function () use ($upsertData, $deleteNames, $state) {
-                            if (! empty($upsertData)) {
+                        DB::transaction(static function () use ($upsertData, $deleteNames, $state): void {
+                            if ($upsertData !== []) {
                                 DB::table('feature_flags')->upsert(
                                     $upsertData,
                                     ['name'],
@@ -142,7 +142,7 @@ class FeatureFlags extends Page
                                 );
                             }
 
-                            if (! empty($deleteNames)) {
+                            if ($deleteNames !== []) {
                                 DB::table('feature_flags')->whereIn('name', $deleteNames)->delete();
                             }
 

@@ -13,7 +13,7 @@ class FeatureFlagSeeder extends Seeder
 {
     public function run(): void
     {
-        $features = array_map(static fn ($case) => $case->value, FeatureFlag::cases());
+        $features = array_map(static fn (FeatureFlag $case) => $case->value, FeatureFlag::cases());
 
         $unusedFlags = DB::table('feature_flags')
             ->whereNotIn('name', $features)

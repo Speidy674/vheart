@@ -22,10 +22,10 @@ class Feature
             return (bool) $envValue;
         }
 
-        return Cache::rememberForever($feature->cacheIdentifier(), static function () use ($feature) {
+        return Cache::rememberForever($feature->cacheIdentifier(), static function () use ($feature): bool {
             $flag = DB::table('feature_flags')->where('name', $feature->value)->first();
 
-            if (! $flag && $feature->getDefaultState() === true) {
+            if (! $flag && $feature->getDefaultState()) {
                 return true;
             }
 
