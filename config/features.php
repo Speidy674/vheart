@@ -9,4 +9,7 @@ return [
      */
 
     'placeholder' => env('FEATURE_PLACEHOLDER', null),
+    'clip_submission' => env('FEATURE_CLIP_SUBMISSION', null),
+    'clip_voting' => env('FEATURE_CLIP_VOTING', null),
+    'reporting' => env('FEATURE_REPORTING', null),
 ];
