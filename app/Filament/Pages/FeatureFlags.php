@@ -30,7 +30,7 @@ class FeatureFlags extends Page
 
     protected static string|null|UnitEnum $navigationGroup = NavigationGroup::Administration;
 
-    protected string $view = 'filament.pages.manage-feature-flags';
+    protected string $view = 'filament.pages.feature-flags';
 
     public static function canAccess(): bool
     {
