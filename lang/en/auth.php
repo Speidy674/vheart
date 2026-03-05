@@ -31,5 +31,11 @@ return [
                 ],
             ],
         ],
+
+        'validation' => [
+            'otp' => 'The authentication code must be exactly 6 digits.',
+            'recovery' => 'The recovery code must be exactly 21 characters (including the hyphen).',
+            'incorrect' => 'The provided code is invalid.',
+        ],
     ],
 ];
