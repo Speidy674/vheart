@@ -30,7 +30,7 @@ class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
                 'string',
                 'min:6',
                 'max:21',
-                function (string $attribute, mixed $value, Closure $fail) {
+                function (string $attribute, mixed $value, Closure $fail): void {
                     $this->isOtp = ctype_digit($value);
                     $length = mb_strlen($value);
 
