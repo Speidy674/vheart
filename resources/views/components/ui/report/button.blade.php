@@ -9,9 +9,9 @@
         <button
             type="button"
             disabled
-            class="size-9 rounded-full bg-black ring-1 ring-white/10 transition-transform duration-150 ease-out disabled:opacity-40 sm:size-11 inline-flex items-center justify-center"
+            class="size-9 rounded-full bg-transparent transition-all duration-150 ease-out disabled:opacity-40 sm:size-11 inline-flex items-center justify-center"
         >
-            <x-lucide-flag class="size-6 text-destructive/80" defer/>
+            <x-lucide-flag class="size-6 text-muted-foreground transition-colors" defer/>
         </button>
     </div>
 
@@ -21,9 +21,9 @@
                 <button
                     type="button"
                     @click="report(items[0])"
-                    class="size-9 rounded-full bg-black ring-1 ring-white/10 transition-transform duration-150 ease-out hover:bg-black active:scale-95 disabled:opacity-40 sm:size-11 sm:hover:scale-110 inline-flex items-center justify-center"
+                    class="size-9 rounded-full bg-transparent transition-all duration-150 ease-out active:scale-95 disabled:opacity-40 sm:size-11 hover:bg-accent/25 dark:hover:bg-white/10 sm:hover:scale-110 inline-flex items-center justify-center group"
                 >
-                    <x-lucide-flag class="size-6 text-destructive/80 hover:text-destructive" defer/>
+                    <x-lucide-flag class="size-6 text-muted-foreground group-hover:text-destructive transition-colors" defer/>
                     <span class="sr-only" x-text="getLabel(items[0])"></span>
                 </button>
             </template>
@@ -38,9 +38,9 @@
                     <x-ui.dropdown.trigger>
                         <button
                             type="button"
-                            class="size-9 rounded-full bg-black ring-1 ring-white/10 transition-transform duration-150 ease-out hover:bg-black active:scale-95 disabled:opacity-40 sm:size-11 sm:hover:scale-110 inline-flex items-center justify-center"
+                            class="size-9 rounded-full bg-transparent transition-all duration-150 ease-out active:scale-95 disabled:opacity-40 sm:size-11 hover:bg-accent/25 dark:hover:bg-white/10 sm:hover:scale-110 inline-flex items-center justify-center group"
                         >
-                            <x-lucide-flag class="size-6 text-destructive/80 hover:text-destructive" defer/>
+                            <x-lucide-flag class="size-6 text-muted-foreground group-hover:text-destructive transition-colors" defer/>
                         </button>
                     </x-ui.dropdown.trigger>
                     <x-ui.dropdown.content>
