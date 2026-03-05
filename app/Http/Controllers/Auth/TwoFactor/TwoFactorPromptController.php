@@ -26,6 +26,8 @@ class TwoFactorPromptController extends Controller implements HasMiddleware
             return to_route('login');
         }
 
+        $request->session()->keep(['auth_2fa_id']);
+
         return view('auth.two-factor');
     }
 

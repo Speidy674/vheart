@@ -14,11 +14,6 @@ class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
 {
     protected bool $isOtp = false;
 
-    public function authorize(): bool
-    {
-        return $this->session()->has('auth.2fa.id');
-    }
-
     /**
      * @return array<string, ValidationRule|array|string>
      */
@@ -61,11 +56,10 @@ class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
                 ? $mfa->verifyCode($code, $user->app_authentication_secret)
                 : $mfa->verifyRecoveryCode($code, $user)
         ) {
-            $this->session()->forget(['auth.2fa.id']);
-
             return;
         }
 
+        $this->session()->keep(['auth_2fa_id']);
         throw ValidationException::withMessages([
             'code' => __('auth.two-factor.validation.incorrect'),
         ]);

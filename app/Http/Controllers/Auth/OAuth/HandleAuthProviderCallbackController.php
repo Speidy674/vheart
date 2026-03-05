@@ -78,7 +78,7 @@ class HandleAuthProviderCallbackController extends Controller implements HasMidd
         $request->session()->put('twitch_access_token', $twitchUser->token);
 
         if ($mfa->isEnabled($user)) {
-            $request->session()->put('auth.2fa.id', $user->id);
+            $request->session()->flash('auth_2fa_id', $user->id);
 
             return to_route('auth.challenge');
         }
