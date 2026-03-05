@@ -8,9 +8,10 @@ use App\Enums\ClipVoteType;
 use App\Enums\Permission;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ClipVoteController extends Controller
 {
@@ -21,7 +22,7 @@ class ClipVoteController extends Controller
     /**
      * Show the form for creating the resource.
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $clipIdToVote = $this->getNextClipId($request);
 
@@ -38,7 +39,7 @@ class ClipVoteController extends Controller
     /**
      * Store the newly created resource in storage.
      */
-    public function store(Request $request): Response
+    public function store(Request $request): SymfonyResponse
     {
         $request->validate([
             'voted' => ['required', 'bool'],
