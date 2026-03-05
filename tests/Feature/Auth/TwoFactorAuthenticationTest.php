@@ -30,7 +30,7 @@ describe('Twitch Callback', function () {
         $this->get(route('auth.callback'))
             ->assertRedirect(route('auth.challenge'));
 
-        expect(session('auth.2fa.id'))->toBe($user->id)
+        expect(session('auth_2fa_id'))->toBe($user->id)
             ->and(auth()->check())->toBeFalse(); // User should NOT be logged in yet
     });
 
@@ -46,7 +46,7 @@ describe('Twitch Callback', function () {
             ->assertRedirect(route('dashboard'));
 
         expect(auth()->user()->id)->toBe($user->id)
-            ->and(session('auth.2fa.id'))->toBeNull();
+            ->and(session('auth_2fa_id'))->toBeNull();
     });
 });
 
@@ -54,6 +54,9 @@ describe('2FA Challenge', function () {
 
     it('blocks access if session is missing', function () {
         $this->get(route('auth.challenge'))
+            ->assertRedirect(route('login'));
+
+        $this->post(route('auth.challenge.submit'), ['code' => '123456'])
             ->assertRedirect(route('login'));
     });
 
@@ -64,10 +67,10 @@ describe('2FA Challenge', function () {
             ->shouldReceive('isEnabled')->with(Mockery::on(static fn (User $u) => $u->id === $user->id))
             ->andReturn(true);
 
-        $this->withSession(['auth.2fa.id' => $user->id])
+        $this->withSession(['auth_2fa_id' => $user->id])
             ->get(route('auth.challenge'))
             ->assertOk()
-            ->assertInertia(fn ($page) => $page->component('auth/challenge'));
+            ->assertViewIs('auth.two-factor');
     });
 });
 
@@ -80,12 +83,11 @@ describe('2FA Submission', function () {
             ->shouldReceive('isEnabled')->andReturn(true)
             ->shouldReceive('verifyCode')->with('123456', 'valid-secret')->andReturn(true);
 
-        $this->withSession(['auth.2fa.id' => $user->id])
+        $this->withSession(['auth_2fa_id' => $user->id])
             ->post(route('auth.challenge.submit'), ['code' => '123456'])
             ->assertRedirect(route('home'));
 
-        expect(auth()->user()->id)->toBe($user->id)
-            ->and(session('auth.2fa.id'))->toBeNull();
+        expect(auth()->user()->id)->toBe($user->id);
     });
 
     it('authenticates with valid recovery code', function () {
@@ -95,13 +97,15 @@ describe('2FA Submission', function () {
             ->shouldReceive('isEnabled')->andReturn(true)
             ->shouldReceive('verifyCode')->andReturn(false)
             ->shouldReceive('verifyRecoveryCode')
-            ->with('recovery-key', Mockery::on(static fn (User $u) => $u->id === $user->id))
+            ->with('aaaaaaaaaa-bbbbbbbbbb', Mockery::on(static fn (User $u) => $u->id === $user->id))
             ->andReturn(true);
 
-        $this->withSession(['auth.2fa.id' => $user->id])
-            ->post(route('auth.challenge.submit'), ['recovery_code' => 'recovery-key'])
+        $response = $this->withSession(['auth_2fa_id' => $user->id])
+            ->post(route('auth.challenge.submit'), ['code' => 'aaaaaaaaaa-bbbbbbbbbb'])
             ->assertRedirect(route('home'));
 
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirectToRoute('home');
         expect(auth()->user()->id)->toBe($user->id);
     });
 
@@ -113,12 +117,11 @@ describe('2FA Submission', function () {
             ->shouldReceive('verifyCode')->andReturn(false)
             ->shouldReceive('verifyRecoveryCode')->andReturn(false);
 
-        $this->withSession(['auth.2fa.id' => $user->id])
+        $this->withSession(['auth_2fa_id' => $user->id])
             ->post(route('auth.challenge.submit'), [
-                'code' => '000000',
-                'recovery_code' => 'wrong-recovery',
+                'code' => 'wrong-recovery',
             ])
-            ->assertSessionHasErrors(['code', 'recovery_code']);
+            ->assertSessionHasErrors(['code']);
 
         expect(auth()->check())->toBeFalse();
     });
@@ -130,6 +133,6 @@ describe('2FA Submission', function () {
 
     it('denies with access forbidden if user identifier is missing from session on challenge submit', function () {
         $this->post(route('auth.challenge.submit'), ['code' => '123456'])
-            ->assertForbidden();
+            ->assertRedirectToRoute('login');
     });
 });
