@@ -11,4 +11,25 @@ return [
     'verification' => [
         'sent' => 'Email verification link has been sent to your email address.',
     ],
+    'two-factor' => [
+        'heading' => 'Two-Factor Authentication',
+        'subheading' => 'Enter the authentication code provided by your authenticator application, or use an emergency recovery code.',
+        'form' => [
+            'code' => [
+                'label' => 'Authenticator Code',
+            ],
+            'backup' => [
+                'label' => 'Recovery Code',
+            ],
+            'submit' => 'Continue',
+            'mode-toggle' => [
+                'otp' => [
+                    'label' => 'Use a recovery code',
+                ],
+                'backup' => [
+                    'label' => 'Use an authenticator code',
+                ],
+            ],
+        ],
+    ],
 ];
