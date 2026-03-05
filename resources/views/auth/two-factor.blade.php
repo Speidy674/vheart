@@ -24,7 +24,7 @@
                             type="text"
                             autocomplete="one-time-code"
                             autofocus
-                            class="h-14 text-center font-bold tracking-[0.5em] data-[mode=backup]:tracking-normal"
+                            class="h-14 text-center font-mono font-bold tracking-[0.5em] data-[mode=backup]:tracking-normal"
                             required
 
                             aria-invalid="{{ $errors->has('code') ? 'true' : 'false' }}"
