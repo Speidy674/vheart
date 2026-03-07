@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Compilations\RelationManagers;
 
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\ClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Permission;
+use App\Events\Admin\Compilations\CompilationClipClaimed;
+use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
+use App\Events\Admin\Compilations\CompilationClipUnclaimed;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
@@ -30,7 +34,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\PaginationMode;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -58,10 +61,13 @@ class ClipsRelationManager extends RelationManager
             ]))
             ->recordTitleAttribute('title')
             ->columns([
-
                 Split::make([
                     Stack::make([
                         ImageColumn::make('thumbnail_url')
+                            ->getStateUsing(fn (Clip $clip): ?string => $clip->proxiedContentUrl())
+                            ->extraImgAttributes([
+                                'loading' => 'lazy',
+                            ])
                             ->label('admin/resources/clips.table.columns.thumbnail')
                             ->translateLabel()
                             ->imageHeight(100)
@@ -137,14 +143,16 @@ class ClipsRelationManager extends RelationManager
                         ->space(1),
 
                     Stack::make([
-                        TextColumn::make('date')
+                        TextColumn::make('clips.date')
+                            ->getStateUsing(fn (Clip $clip) => $clip->date)
                             ->label(__('admin/resources/clips.table.columns.created_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.created_at'))
                             ->icon(Heroicon::Calendar)
                             ->dateTime()
                             ->sortable()
                             ->color('gray'),
-                        TextColumn::make('created_at')
+                        TextColumn::make('clips.created_at')
+                            ->getStateUsing(fn (Clip $clip) => $clip->created_at)
                             ->label(__('admin/resources/clips.table.columns.submitted_at'))
                             ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
                             ->icon(Heroicon::Calendar)
@@ -156,9 +164,10 @@ class ClipsRelationManager extends RelationManager
                             ImageColumn::make('category.box_art')
                                 ->imageHeight(40)
                                 ->alignCenter()
-                                ->getStateUsing(fn (Clip $record) => $record->category?->getBoxArt())
+                                ->getStateUsing(fn (Clip $record) => $record->category?->proxiedContentUrl())
                                 ->extraImgAttributes([
                                     'class' => 'object-cover rounded-md aspect-[3/4]',
+                                    'loading' => 'lazy',
                                 ])
                                 ->grow(false),
                             TextColumn::make('category.title')
@@ -181,7 +190,7 @@ class ClipsRelationManager extends RelationManager
                             ->weight('bold')
                             ->icon(Heroicon::Check)
                             ->color('gray'),
-                        TextColumn::make('pivot.status')
+                        TextColumn::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status_cutter')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_cutter'))
                             ->badge()
@@ -274,13 +283,17 @@ class ClipsRelationManager extends RelationManager
                         blank: fn (Builder $query): Builder => $query,
                     ),
 
-                // TODO: either remove this or check why it just doesnt want to work, needs more attention
-                SelectFilter::make('pivot.status')
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.status')
+                SelectFilter::make('clip_compilation.claim_status')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.cutter_status')
                     ->translateLabel()
                     ->multiple()
-                    ->hidden()
-                    ->options(CompilationClipStatus::class),
+                    ->options(CompilationClipClaimStatus::class),
+
+                SelectFilter::make('clips.status')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.clip_status')
+                    ->translateLabel()
+                    ->multiple()
+                    ->options(ClipStatus::class),
             ])
             ->filtersFormColumns(2)
             ->headerActions([
@@ -291,8 +304,8 @@ class ClipsRelationManager extends RelationManager
                         Select::make('status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
-                            ->options(CompilationClipStatus::class)
-                            ->default(CompilationClipStatus::Pending)
+                            ->options(CompilationClipClaimStatus::class)
+                            ->default(CompilationClipClaimStatus::Pending)
                             ->required(),
                     ]),
             ])
@@ -322,6 +335,8 @@ class ClipsRelationManager extends RelationManager
                                 'claimed_by' => auth()->id(),
                             ]);
 
+                            CompilationClipClaimed::dispatch($this->getOwnerRecord(), auth()->user(), $clip);
+
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.claimed.title'))
                                 ->success()
@@ -337,19 +352,23 @@ class ClipsRelationManager extends RelationManager
                         ->icon(Heroicon::Clipboard)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->fillForm(fn (Clip $record): array => [
-                            'status' => $record->pivot->status,
+                            'status' => $record->pivot->claim_status,
                         ])
                         ->schema([
                             Select::make('status')
                                 ->hiddenLabel()
-                                ->options(CompilationClipStatus::class)
-                                ->default(CompilationClipStatus::Pending)
+                                ->options(CompilationClipClaimStatus::class)
+                                ->default(CompilationClipClaimStatus::Pending)
                                 ->required(),
                         ])
                         ->action(function (Clip $clip, array $data): void {
+                            $oldStatus = $clip->pivot->claim_status;
+
                             $clip->pivot->update([
-                                'status' => $data['status'],
+                                'claim_status' => $data['status'],
                             ]);
+
+                            CompilationClipStatusUpdated::dispatch($this->getOwnerRecord(), auth()->user(), $clip, $oldStatus, $data['status']);
 
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.status_updated'))
@@ -452,6 +471,8 @@ class ClipsRelationManager extends RelationManager
                                 'claimed_by' => null,
                             ]);
 
+                            CompilationClipUnclaimed::dispatch($this->getOwnerRecord(), auth()->user(), $clip);
+
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.unclaimed_title'))
                                 ->success()
@@ -465,7 +486,7 @@ class ClipsRelationManager extends RelationManager
                     DetachBulkAction::make(),
                 ]),
             ])
-            ->paginationMode(PaginationMode::Cursor)
+            ->paginated(false)
             ->openRecordUrlInNewTab();
     }
 }

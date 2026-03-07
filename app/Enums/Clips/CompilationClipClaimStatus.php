@@ -8,7 +8,7 @@ use App\Enums\Traits\HasHeadlineLabel;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum CompilationClipStatus: int implements HasColor, HasLabel
+enum CompilationClipClaimStatus: int implements HasColor, HasLabel
 {
     use HasHeadlineLabel;
 

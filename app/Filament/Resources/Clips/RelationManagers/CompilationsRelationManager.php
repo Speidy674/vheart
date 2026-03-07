@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\RelationManagers;
 
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Filament\Resources\Compilations\CompilationResource;
 use Filament\Actions\AttachAction;
 use Filament\Forms\Components\Select;
@@ -61,8 +61,8 @@ class CompilationsRelationManager extends RelationManager
                         Select::make('status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
-                            ->options(CompilationClipStatus::class)
-                            ->default(CompilationClipStatus::Pending)
+                            ->options(CompilationClipClaimStatus::class)
+                            ->default(CompilationClipClaimStatus::Pending)
                             ->required(),
                     ]),
             ]);

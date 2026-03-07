@@ -44,7 +44,8 @@ return [
                 'claimer' => 'Claimer',
                 'claimer_option_none' => 'None / Unclaimed',
                 'category' => 'Category',
-                'status' => 'Status',
+                'cutter_status' => 'Cutter Status',
+                'clip_status' => 'Clip Status',
                 'was_removed' => [
                     'label' => 'Removed',
                     'placeholder' => 'All',

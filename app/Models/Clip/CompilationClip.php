@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Clip;
 
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class CompilationClip extends Pivot
 {
     use HasFactory;
+
     public $incrementing = true;
 
     /**
@@ -29,7 +30,7 @@ class CompilationClip extends Pivot
         return [
             'id',
             'claimed_by',
-            'status',
+            'claim_status',
             'claimed_at',
             'removed_at',
         ];
@@ -46,7 +47,7 @@ class CompilationClip extends Pivot
     protected function casts(): array
     {
         return [
-            'status' => CompilationClipStatus::class,
+            'claim_status' => CompilationClipClaimStatus::class,
             'claimed_at' => 'datetime',
             'removed_at' => 'datetime',
         ];
