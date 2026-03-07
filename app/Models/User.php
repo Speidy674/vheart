@@ -18,6 +18,7 @@ use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasName;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -37,7 +38,7 @@ use Kirschbaum\Commentions\HasComments;
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, MustVerifyEmail
+class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasName, MustVerifyEmail
 {
     use HasComments;
     use HasExternalProxy;
@@ -192,9 +193,14 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return $this->hasMany(BroadcasterFilter::class, 'broadcaster_id');
     }
 
+    public function getFilamentName(): string
+    {
+        return $this->name;
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url;
+        return $this->proxiedContentUrl();
     }
 
     /**

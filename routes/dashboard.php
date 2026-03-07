@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard', function (Request $request) {
+    Route::get('/dashboard2', function (Request $request) {
         return Redirect::route('dashboard.main', $request->user()->id);
     })->name('dashboard');
 
@@ -21,11 +21,11 @@ Route::middleware('auth')->group(function () {
         ->missing(function () {
             return Redirect::route('home');
         })->group(function () {
-            Route::get('/dashboard/{user}', function (User $user, Request $request) {
+            Route::get('/dashboard2/{user}', function (User $user, Request $request) {
                 return Inertia::render('dashboard/main');
             })->name('dashboard.main');
 
-            Route::get('/dashboard/{user}/clips', function (User $user, Request $request) {
+            Route::get('/dashboard2/{user}/clips', function (User $user, Request $request) {
 
                 return Inertia::render('dashboard/clips', [
                     'clips' => Inertia::scroll(static function () use ($user) {
@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
                 ]);
             })->name('dashboard.clips');
 
-            Route::get('/dashboard/{user}/permissions', function (User $user, Request $request) {
+            Route::get('/dashboard2/{user}/permissions', function (User $user, Request $request) {
                 return Inertia::render('dashboard/permissions');
             })->name('dashboard.permissions');
         });
