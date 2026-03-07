@@ -1,5 +1,5 @@
 {{-- basically a 1:1 copy of the radix button, just a bit optimized for blade --}}
-@props(['variant' => 'default', 'size' => 'default', 'as' => 'button'])
+@props(['variant' => 'default', 'size' => 'default', 'as' => null])
 @php
     // using static can be very bad if used wrong with frankenphp worker mode since it will stay in memory until the worker dies,
     // but since they are actually static and we only read from them it makes sense for something like this

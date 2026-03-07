@@ -5,7 +5,7 @@
     >
         <div class="flex min-w-0 flex-1 items-center shrink-0">
             <a
-                href="{{ request()->routeIs('static') ? '#' : route('static') }}"
+                href="{{ request()->routeIs('home') ? '#' : route('home') }}"
                 class="flex items-center hover:opacity-80 h-6 sm:h-8"
                 aria-label="Homepage"
             >

@@ -1,100 +1,127 @@
 <x-layout title="Startseite">
-    <div class="m-auto w-full max-w-7xl space-y-4 p-4">
-        {{-- youtube video duh --}}
-        <x-embeds.youtube url="https://www.youtube-nocookie.com/embed/videoseries?list=PLPwib1xj01i4I_TqtyrRpnrjD2oaUknOn"/>
+    <div class="m-auto px-4 py-8">
+        <section class="shadow-2xl max-w-7xl m-auto">
+            <x-embeds.youtube
+                url="https://www.youtube-nocookie.com/embed/videoseries?list=PLPwib1xj01i4I_TqtyrRpnrjD2oaUknOn"
+            />
+            {{-- we could add some other info here later for a quick overview what we do or something with CTA or links to more resources --}}
+        </section>
 
-        {{-- best rated --}}
-        <div
-            class="flex items-center w-full relative"
-            x-data="{
-                isAnimating: false,
-                next() {
-                    if (this.isAnimating) return;
-                    this.isAnimating = true;
+        {{-- too empty and it kinda breaks the illusion --}}
+        @if($bestRated->isNotEmpty() && $bestRated->count() > 4)
+            <section class="space-y-4 mt-12">
+                <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">{{ __('index.clips.best-rated') }}</h2>
 
-                    const slider = $refs.slider;
-                    const item = slider.firstElementChild;
-                    const itemWidth = item.offsetWidth;
+                <div
+                    class="flex items-center w-full relative"
+                    x-load="visible"
+                    x-data="clipsSlider"
+                >
+                    <button
+                        aria-label="Next Item"
+                        @click="prev()"
+                        x-bind:class="{ 'opacity-0 pointer-events-none': false }"
+                        class="opacity-0 pointer-events-none absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-white/25 p-2 shadow transition-all hover:scale-110 hover:bg-accent active:scale-95 after:absolute after:-inset-2 after:content-['']"
+                    >
+                        <x-lucide-chevron-left class="size-5" defer/>
+                    </button>
 
-                    // technically i dont need to wait for the browser, but this way its consistent with the other way
-                    // and also way nicer for the browser afaik
-                    requestAnimationFrame(() => {
-                        slider.scrollBy({ left: itemWidth, behavior: 'smooth' });
-
-                        slider.addEventListener('scrollend', () => {
-                            slider.appendChild(item);
-                            slider.scrollLeft -= itemWidth;
-                            this.isAnimating = false;
-                        }, { once: true });
-                    });
-                },
-
-                prev() {
-                    if (this.isAnimating) return;
-                    this.isAnimating = true;
-
-                    const slider = $refs.slider;
-                    const lastItem = slider.lastElementChild;
-                    const itemWidth = lastItem.offsetWidth;
-
-                    // we kinda have to use a little hack here to prevent jumping around
-                    slider.style.scrollSnapType = 'none';
-                    slider.style.scrollBehavior = 'auto';
-
-                    slider.prepend(lastItem);
-                    slider.scrollLeft += itemWidth;
-
-                    // in this case we actually have to wait since we modified the DOM
-                    // and triggering that now could cause jumps otherwise (especially if you spam it lol)
-                    requestAnimationFrame(() => {
-                        slider.scrollTo({ left: 0, behavior: 'smooth' });
-
-                        slider.addEventListener('scrollend', () => {
-                            slider.style.scrollSnapType = '';
-                            slider.style.scrollBehavior = '';
-                            this.isAnimating = false;
-                        }, { once: true });
-                    });
-                }
-             }"
-        >
-
-            <button
-                aria-label="Next Item"
-                @click="prev()"
-                {{-- funfact: after:-inset-2 with empty content makes the element a little bit larger than it actually is --}}
-                {{-- in terms of usability very nice for UX as i also get annoyed by clicking 1 pixel too far if stuff is behind that --}}
-                class="absolute top-1/2 left-4 z-10 -translate-y-1/2 rounded-full bg-white/25 p-2 shadow transition-transform hover:scale-110 hover:bg-accent active:scale-95 after:absolute after:-inset-2 after:content-['']"
-            >
-                <x-lucide-chevron-left class="size-5" defer />
-            </button>
-
-            <div
-                x-ref="slider"
-                class="flex w-full overflow-x-hidden snap-x snap-mandatory"
-            >
-                @foreach($bestRated as $clip)
-                    <div class="shrink-0 snap-start w-full sm:w-1/2 lg:w-1/3 p-2">
-                        <x-clips.preview :clip="$clip" class="w-full h-full block" />
+                    <div
+                        x-ref="slider"
+                        class="flex w-full overflow-x-hidden snap-x snap-mandatory"
+                    >
+                        @foreach($bestRated as $clip)
+                            <div class="shrink-0 snap-start w-full sm:w-1/2 lg:w-1/3 p-2"
+                                 id="slider-clip-{{ $clip->twitch_id }}">
+                                <x-clips.preview :clip="$clip" class="w-full h-full"/>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
 
-            <button
-                aria-label="Previous Item"
-                @click="next()"
-                class="absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-white/25 p-2 shadow transition-transform hover:scale-110 hover:bg-accent active:scale-95 after:absolute after:-inset-2 after:content-['']"
-            >
-                {{-- i could have used chevron-right, but we could also reuse the left variant and just rotate it so why not lol --}}
-                <x-lucide-chevron-left class="size-5 rotate-180" defer />
-            </button>
-        </div>
+                    <button
+                        aria-label="Previous Item"
+                        @click="next()"
+                        x-bind:class="{ 'opacity-0 pointer-events-none': false }"
+                        class="opacity-0 pointer-events-none absolute top-1/2 right-4 z-10 -translate-y-1/2 rounded-full bg-white/25 p-2 shadow transition-all hover:scale-110 hover:bg-accent active:scale-95 after:absolute after:-inset-2 after:content-['']"
+                    >
+                        <x-lucide-chevron-left class="size-5 rotate-180" defer/>
+                    </button>
+                </div>
+            </section>
+        @endif
 
-        {{-- discovery --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-            @foreach($discover as $clip)
-                <x-clips.preview :clip="$clip" class="aspect-video hover:scale-105 transition-transform" />
-            @endforeach
-        </div>
+        <section class="space-y-6 mt-12">
+            @if($discover->isNotEmpty())
+                <h2 class="text-2xl font-bold tracking-tight text-center">{{ __('index.clips.submitted') }}</h2>
+                <div x-data="clipsInfiniteLoader()">
+                    <div x-ref="clipsContainer"
+                         class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 md:gap-4 xl:gap-6">
+                        <x-clips.preview-list :clips="$discover"/>
+                    </div>
+
+                    @if($discover->hasMorePages())
+                        <div x-show="hasMore && !isLoading" x-intersect.margin.500px="loadMore"></div>
+
+                        <x-index.discover.loading/>
+                        <x-index.discover.error-loading-clips/>
+                    @endif
+
+                    <x-ui.template x-if="!hasMore" :if="$discover->hasMorePages()">
+                        <x-index.discover.no-more-clips/>
+                    </x-ui.template>
+
+                    <noscript>
+                        <div class="mt-6 border-t pt-6">
+                            {{ $discover->links() }}
+                        </div>
+                    </noscript>
+                </div>
+            @else
+                <x-index.discover.no-clips-found/>
+            @endif
+        </section>
     </div>
+
+
+    @push('elements')
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('clipsInfiniteLoader', () => ({
+                    nextCursor: '{{ $discover->nextPageUrl() }}',
+                    isLoading: false,
+                    isError: false,
+                    hasMore: {{ $discover->hasMorePages() ? 'true' : 'false' }},
+
+                    get loading() {
+                        return this.isLoading && !this.isError;
+                    },
+
+                    loadMore() {
+                        if (this.isLoading || !this.hasMore || !this.nextCursor) return;
+
+                        this.isLoading = true;
+                        this.isError = false;
+
+                        window.axios.get(this.nextCursor)
+                            .then(response => {
+                                const html = response.data;
+                                this.nextCursor = response.headers['x-next-page'];
+
+
+                                requestAnimationFrame(() => {
+                                    this.$refs.clipsContainer.insertAdjacentHTML('beforeend', html);
+                                    this.hasMore = !!this.nextCursor;
+                                    this.isLoading = false;
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error loading clips: ', error);
+                                this.isError = true;
+                                this.isLoading = false;
+                            });
+                    }
+                }));
+            })
+        </script>
+    @endpush
 </x-layout>
