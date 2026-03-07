@@ -88,15 +88,15 @@ class SubmitClipRequest extends FormRequest
                 }
 
                 // Check Limitations
-                if ($this->clipInfo->created_at->add(config('vheart.clips.submission.maximum_age'))->isPast()) {
-                    $validator->errors()->add('clip_url', __('clips.errors.too_old', [
-                        'age' => config('vheart.clips.submission.maximum_age')->forHumans(),
-                    ]));
-                }
-
                 if ($this->clipInfo->duration < config('vheart.clips.submission.minimum_length')) {
                     $validator->errors()->add('clip_url', __('clips.errors.too_short', [
                         'seconds' => config('vheart.clips.submission.minimum_length'),
+                    ]));
+                }
+
+                if ($this->clipInfo->created_at->add(config('vheart.clips.submission.maximum_age'))->isPast()) {
+                    $validator->errors()->add('clip_url', __('clips.errors.too_old', [
+                        'age' => config('vheart.clips.submission.maximum_age')->forHumans(),
                     ]));
                 }
 
