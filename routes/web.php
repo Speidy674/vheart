@@ -9,12 +9,18 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TeamController;
 use App\Models\Clip;
+use App\Support\FeatureFlag\Feature;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', static function (Request $request) {
+
+    // Have to redirect as about us is currently being worked on by someone else
+    if (Feature::isActive(FeatureFlag::AboutUsAsIndex)) {
+        return redirect()->route('about');
+    }
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
