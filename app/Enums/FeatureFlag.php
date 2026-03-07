@@ -26,4 +26,7 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Controls the Reporting feature')]
     #[DefaultFeatureFlagState(true)]
     case Reports = 'reporting';
+
+    #[Description('Shows the about-us page on index (also hides the footer item and route for about us)')]
+    case AboutUsAsIndex = 'about_us_as_index';
 }
