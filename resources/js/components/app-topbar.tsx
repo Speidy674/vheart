@@ -172,8 +172,8 @@ export function AppTopbar({ isIsland = true }: AppTopbarProps) {
                 </div>
 
                 <div className="flex min-w-0 flex-1 items-center justify-start">
-                    <Link
-                        href={home()}
+                    <a
+                        href={home().url}
                         className="flex items-center hover:opacity-80"
                     >
                         <img
@@ -186,7 +186,7 @@ export function AppTopbar({ isIsland = true }: AppTopbarProps) {
                             alt={t('logo_alt')}
                             className="block h-6 sm:h-8 dark:hidden"
                         />
-                    </Link>
+                    </a>
                 </div>
 
                 <div className="hidden flex-none items-center justify-center md:flex md:px-4">
