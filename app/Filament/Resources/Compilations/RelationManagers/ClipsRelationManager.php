@@ -352,7 +352,7 @@ class ClipsRelationManager extends RelationManager
                         ->icon(Heroicon::Clipboard)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->fillForm(fn (Clip $record): array => [
-                            'status' => $record->pivot->status,
+                            'status' => $record->pivot->claim_status,
                         ])
                         ->schema([
                             Select::make('status')
@@ -362,10 +362,10 @@ class ClipsRelationManager extends RelationManager
                                 ->required(),
                         ])
                         ->action(function (Clip $clip, array $data): void {
-                            $oldStatus = $clip->pivot->status;
+                            $oldStatus = $clip->pivot->claim_status;
 
                             $clip->pivot->update([
-                                'status' => $data['status'],
+                                'claim_status' => $data['status'],
                             ]);
 
                             CompilationClipStatusUpdated::dispatch($this->getOwnerRecord(), auth()->user(), $clip, $oldStatus, $data['status']);
