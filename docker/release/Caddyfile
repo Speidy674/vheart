@@ -1,35 +1,70 @@
 {
-    frankenphp
-    order php_server before file_server
+	{$CADDY_GLOBAL_OPTIONS}
 
-    # [PROXY & SECURITY OPTIMIZATION]
-    # Disable Admin API (saves resources, prevents binding timeouts)
-    admin off
-    # Disable Auto HTTPS (Nginx handles SSL)
-    auto_https off
+	frankenphp {
+		worker {
+			file "{$APP_PUBLIC_PATH}/frankenphp-worker.php"
+			{$CADDY_SERVER_WORKER_DIRECTIVE}
+		}
+	}
+	order php_server before file_server
+	auto_https off
+	admin off
 
-    # Trust incoming headers from Nginx/Docker network
-    servers {
-        import trusted_proxies.caddy
-    }
+	servers {
+		import trusted_proxies.caddy
+	}
 }
 
-# Force IPv4 binding to prevent IPv6 lookup timeouts
-:80 {
-    root * /app/public
+{$CADDY_EXTRA_CONFIG}
 
-    # [DISABLED] Compression (Nginx handles this)
-    # encode zstd gzip
+{$CADDY_SERVER_SERVER_NAME} {
+	log {
+		level {$CADDY_SERVER_LOG_LEVEL}
+		format filter {
+			wrap {$CADDY_SERVER_LOGGER}
+			fields {
+				uri query {
+					replace authorization REDACTED
+				}
+			}
+		}
+	}
 
-    # Execute PHP
-    php_server
+	route {
+		root * "{$APP_PUBLIC_PATH}"
 
-    # Serve static files with aggressive caching
-    @static {
-        file
-        path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
-    }
-    header @static Cache-Control "max-age=2592000"
+		header {
+			-Server
+			-X-Powered-By
+			X-Content-Type-Options "nosniff"
+			X-Frame-Options "SAMEORIGIN"
+			X-XSS-Protection "1; mode=block"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		}
 
-    file_server
+		@static {
+			file
+			path *.ico *.css *.js *.gif *.jpg *.jpeg *.png *.svg *.woff *.woff2
+		}
+		header @static Cache-Control "public, max-age=2592000, must-revalidate"
+
+		request_body {
+			max_size 99MB # Cloudflare limits to 100MB
+		}
+
+		# Octane / Mercure Extra Directives
+		{$CADDY_SERVER_EXTRA_DIRECTIVES}
+
+		# FrankenPHP Worker Configuration
+		php_server {
+			index frankenphp-worker.php
+			try_files {path} frankenphp-worker.php
+			resolve_root_symlink
+			file_server off
+		}
+
+		file_server
+	}
 }
