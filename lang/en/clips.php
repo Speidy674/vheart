@@ -49,6 +49,24 @@ return [
         ],
     ],
 
+    'vote' => [
+        'page_title' => 'Vote clips',
+        'form' => [
+            'fields' => [
+                'vote' => [
+                    'label' => 'Vote for this Clip',
+                ],
+                'skip' => [
+                    'label' => 'Skip this Clip',
+                ],
+            ],
+        ],
+        'aside' => [
+            'total_votes' => 'Total votes for this Clip so far',
+            'nothing_left' => 'We can\'t find any Clips for you to vote. Please come back later.',
+        ],
+    ],
+
     'enums' => [
         'clip-status' => [
             'unknown' => 'Unknown',
