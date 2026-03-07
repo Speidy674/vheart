@@ -42,6 +42,16 @@ return Application::configure(basePath: dirname(__DIR__))
             App\Http\Middleware\StagingGateMiddleware::class,
         );
 
+        $middleware->prependToPriorityList(
+            Illuminate\Routing\Middleware\SubstituteBindings::class,
+            App\Http\Middleware\FeatureFlagGuard::class
+        );
+
+        $middleware->prependToPriorityList(
+            StartSession::class,
+            App\Http\Middleware\FeatureFlagGuard::class
+        );
+
         $middleware->group('stateless', [
             Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
