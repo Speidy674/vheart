@@ -87,6 +87,19 @@ class SubmitClipRequest extends FormRequest
                     return;
                 }
 
+                // Check Limitations
+                if ($this->clipInfo->created_at->add(config('vheart.clips.submission.maximum_age'))->isPast()) {
+                    $validator->errors()->add('clip_url', __('clips.errors.too_old', [
+                        'age' => config('vheart.clips.submission.maximum_age')->forHumans(),
+                    ]));
+                }
+
+                if ($this->clipInfo->duration < config('vheart.clips.submission.minimum_length')) {
+                    $validator->errors()->add('clip_url', __('clips.errors.too_short', [
+                        'seconds' => config('vheart.clips.submission.minimum_length'),
+                    ]));
+                }
+
                 // Check if the Category is Site-Banned
                 $isCategoryBanned = Category::query()
                     ->where('is_banned', true)
