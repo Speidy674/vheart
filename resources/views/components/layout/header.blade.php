@@ -62,15 +62,21 @@
                     </x-ui.dropdown.trigger>
 
                     <x-ui.dropdown.content align="right" class="min-w-42">
-                        <x-ui.dropdown.item href="{{ route('dashboard') }}">
-                            {{ __('navigation.dashboard') }}
-                        </x-ui.dropdown.item>
+                        @feature(FeatureFlag::UserDashboard)
+                            <x-ui.dropdown.item href="{{ route('dashboard') }}">
+                                {{ __('navigation.dashboard') }}
+                            </x-ui.dropdown.item>
+                        @endfeature
 
-                        <x-ui.dropdown.item href="{{ route('profile.edit') }}">
-                            {{ __('navigation.settings') }}
-                        </x-ui.dropdown.item>
+                        @feature(FeatureFlag::UserSettings)
+                            <x-ui.dropdown.item href="{{ route('profile.edit') }}">
+                                {{ __('navigation.settings') }}
+                            </x-ui.dropdown.item>
+                        @endfeature
 
-                        <x-ui.dropdown.separator/>
+                        @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings])
+                            <x-ui.dropdown.separator/>
+                        @endfeatureAny
 
                         <form method="POST" action="{{ route('logout') }}">
                             <x-ui.dropdown.item as="button" type="submit" variant="destructive">
