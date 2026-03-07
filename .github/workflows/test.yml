@@ -12,6 +12,11 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # put composer commands here
+        suite: [type-coverage, refactor, unit]
     env:
       DB_CONNECTION: pgsql
       DB_DATABASE: laravel
@@ -82,8 +87,8 @@ jobs:
           DB_PORT: ${{ job.services.postgres.ports['5432'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
 
-      - name: Run PHP Unit Tests
-        run: composer test
+      - name: Run ${{ matrix.suite }}
+        run: composer test:${{ matrix.suite }}
         env:
           DB_PORT: ${{ job.services.postgres.ports['5432'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
