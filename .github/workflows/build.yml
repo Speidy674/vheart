@@ -17,11 +17,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        # put composer commands here
-        suite: [type-coverage, refactor, unit]
     services:
       postgres:
         image: postgres:18-alpine
@@ -68,17 +63,16 @@ jobs:
           npm ci
           npm run build
 
-      - name: Run Composer ${{ matrix.suite }}
+      - name: Run Tests
         run: |
           cp .env.ci .env
           php artisan key:generate
-          composer test:${{ matrix.suite }}
+          composer test
         env:
           DB_PORT: ${{ job.services.postgres.ports['5432'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
 
       - name: Upload Build Artifacts
-        if: matrix.suite == 'unit'
         uses: actions/upload-artifact@v4
         with:
           name: compiled-assets
