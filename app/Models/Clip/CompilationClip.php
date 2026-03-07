@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Clip;
 
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,7 +47,7 @@ class CompilationClip extends Pivot
     protected function casts(): array
     {
         return [
-            'claim_status' => CompilationClipStatus::class,
+            'claim_status' => CompilationClipClaimStatus::class,
             'claimed_at' => 'datetime',
             'removed_at' => 'datetime',
         ];

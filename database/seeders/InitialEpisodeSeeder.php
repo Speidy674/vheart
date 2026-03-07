@@ -6,7 +6,7 @@ namespace Database\Seeders;
 
 use App\Actions\ImportClipAction;
 use App\Enums\Clips\ClipStatus;
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
 use App\Jobs\ImportCategoryJob;
@@ -655,7 +655,7 @@ class InitialEpisodeSeeder extends Seeder
                     'clip_id' => $id,
                     'claimed_by' => 0,
                     'claimed_at' => now(),
-                    'status' => CompilationClipStatus::Completed,
+                    'status' => CompilationClipClaimStatus::Completed,
                 ]);
 
             $compilation->clips()->sync($clips);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Clips\Tables;
 
 use App\Enums\Clips\ClipStatus;
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Models\Clip;
@@ -275,14 +275,14 @@ class ClipsTable
                                         ->disabled(fn (Get $get): bool => $get('claim') !== true)
                                         ->label('admin/resources/clips.actions.attach_to_compilation.status')
                                         ->translateLabel()
-                                        ->options(CompilationClipStatus::class)
-                                        ->default(CompilationClipStatus::Pending)
+                                        ->options(CompilationClipClaimStatus::class)
+                                        ->default(CompilationClipClaimStatus::Pending)
                                         ->required(),
                                 ])->columns(1),
                         ])
                         ->action(function (Clip $record, array $data): void {
                             $record->compilations()->attach($data['compilation_id'], [
-                                'status' => $data['status'] ?? CompilationClipStatus::Pending,
+                                'status' => $data['status'] ?? CompilationClipClaimStatus::Pending,
                                 'claimed_by' => $data['claim'] ? auth()->id() : null,
                             ]);
                         })

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Compilations\RelationManagers;
 
 use App\Enums\Clips\ClipStatus;
-use App\Enums\Clips\CompilationClipStatus;
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Permission;
 use App\Events\Admin\Compilations\CompilationClipClaimed;
 use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
@@ -287,7 +287,7 @@ class ClipsRelationManager extends RelationManager
                     ->label('admin/resources/compilations.relation_managers.clips.filters.cutter_status')
                     ->translateLabel()
                     ->multiple()
-                    ->options(CompilationClipStatus::class),
+                    ->options(CompilationClipClaimStatus::class),
 
                 SelectFilter::make('clips.status')
                     ->label('admin/resources/compilations.relation_managers.clips.filters.clip_status')
@@ -304,8 +304,8 @@ class ClipsRelationManager extends RelationManager
                         Select::make('status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
-                            ->options(CompilationClipStatus::class)
-                            ->default(CompilationClipStatus::Pending)
+                            ->options(CompilationClipClaimStatus::class)
+                            ->default(CompilationClipClaimStatus::Pending)
                             ->required(),
                     ]),
             ])
@@ -357,8 +357,8 @@ class ClipsRelationManager extends RelationManager
                         ->schema([
                             Select::make('status')
                                 ->hiddenLabel()
-                                ->options(CompilationClipStatus::class)
-                                ->default(CompilationClipStatus::Pending)
+                                ->options(CompilationClipClaimStatus::class)
+                                ->default(CompilationClipClaimStatus::Pending)
                                 ->required(),
                         ])
                         ->action(function (Clip\Compilation $compilation, Clip $clip, array $data): void {
