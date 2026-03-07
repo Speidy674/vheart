@@ -81,7 +81,6 @@ class TeamSeeder extends Seeder
         79873057, // https://www.twitch.tv/sejumarnie
         139951429, // https://www.twitch.tv/sleepytawi
         76615709, // https://www.twitch.tv/shuffgy
-
     ];
 
     protected array $contributors = [
@@ -120,7 +119,7 @@ class TeamSeeder extends Seeder
         /** @var UserDto[] $userDtos */
         $userDtos = $twitchService->get(TwitchEndpoints::GetUsers, ['id' => $allUserIds->toArray()]);
 
-        $usersData = collect($userDtos)->map(fn (UserDto $userDto) => [
+        $usersData = collect($userDtos)->map(fn (UserDto $userDto): array => [
             'id' => $userDto->id,
             'name' => $userDto->display_name,
             'avatar_url' => $userDto->profile_image_url,
@@ -134,7 +133,7 @@ class TeamSeeder extends Seeder
 
         foreach ($users as $user) {
             $userRoles = collect($roleMappings)
-                ->filter(fn ($userIds) => in_array($user->id, $userIds, true))
+                ->filter(fn ($userIds): bool => in_array($user->id, $userIds, true))
                 ->keys()
                 ->toArray();
 
