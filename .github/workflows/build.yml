@@ -14,73 +14,9 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  prepare:
+  test:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # php
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.5'
-          tools: composer:v2
-          coverage: none
-
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install PHP Dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader --no-dev
-
-      - name: Prepare the application
-        run: |
-          cp .env.ci .env
-          php artisan key:generate
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      # node
-      - name: Install Node Dependencies
-        run: npm ci
-
-      - name: Build Frontend Assets
-        run: npm run build
-
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-build-artifacts
-          retention-days: 1
-          path: public/build
-
-  tests:
-    needs: prepare
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    env:
-      DB_CONNECTION: pgsql
-      DB_DATABASE: laravel
-      DB_USERNAME: postgres
-      DB_PASSWORD: password
-      BROADCAST_DRIVER: log
-      CACHE_DRIVER: redis
-      QUEUE_CONNECTION: redis
-      SESSION_DRIVER: redis
-
+    timeout-minutes: 15
     services:
       postgres:
         image: postgres:18-alpine
@@ -101,85 +37,69 @@ jobs:
         ports:
           - 6379/tcp
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    strategy:
-      fail-fast: false
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.5'
-          extensions: mbstring, dom, fileinfo, pdo_pgsql
-          #coverage: xdebug # do we need coverage reports? will slow it down
+          extensions: mbstring, dom, fileinfo, pdo_pgsql, redis
           coverage: none
 
-      - name: Get composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Install PHP Dependencies
+        uses: ramsey/composer-install@v3
 
-      - name: Cache composer dependencies
-        uses: actions/cache@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
+          node-version: '24'
+          cache: 'npm'
 
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: app-build-artifacts
-          path: public/build
-
-      - name: Install Composer dependencies
+      - name: Build Assets
         run: |
-          composer install --no-progress --prefer-dist --optimize-autoloader
+          npm ci
+          npm run build
 
-      - name: Restore Permissions
-        run: chmod -R +x vendor/bin
-
-      - name: Prepare the application
+      - name: Run Tests
         run: |
           cp .env.ci .env
           php artisan key:generate
-
-      - name: Clear Config
-        run: php artisan config:clear
-
-      - name: Run Migration
-        run: php artisan migrate:fresh --seed -v
+          composer test
         env:
           DB_PORT: ${{ job.services.postgres.ports['5432'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
 
-      - name: Run PHP Unit Tests
-        run: composer test
-        env:
-          DB_PORT: ${{ job.services.postgres.ports['5432'] }}
-          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-assets
+          path: public/build
+          retention-days: 1
 
   docker-build:
-    needs: [ prepare, tests ]
+    needs: [ test ]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
-          name: app-build-artifacts
+          name: compiled-assets
           path: public/build
 
       - name: Set up Docker BuildX
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -187,7 +107,7 @@ jobs:
 
       - name: Container Metadata
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -196,7 +116,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
 
       - name: Build and Push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: docker/release/Dockerfile
