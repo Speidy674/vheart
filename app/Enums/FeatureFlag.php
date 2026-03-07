@@ -32,4 +32,8 @@ enum FeatureFlag: string implements HasLabel
 
     #[DefaultFeatureFlagState(true)]
     case UserSettings = 'user_settings';
+
+    #[Description('Toggles the user navigation/dropdown in the top navigation, this is only a visual change and does NOT disable the features shown in that dropdown.')]
+    #[DefaultFeatureFlagState(true)]
+    case UserNavigation = 'user_navigation';
 }
