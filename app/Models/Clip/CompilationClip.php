@@ -30,7 +30,7 @@ class CompilationClip extends Pivot
         return [
             'id',
             'claimed_by',
-            'status as claim_status', // TODO: rename at migration level?
+            'claim_status',
             'claimed_at',
             'removed_at',
         ];
