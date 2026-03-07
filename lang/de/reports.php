@@ -16,6 +16,7 @@ return [
             'harassment' => 'Belästigung',
             'hate-speech' => 'Hassrede',
             'ai-content' => 'AI Inhalte',
+            'content-unavailable' => 'Inhalt nicht verfügbar',
         ],
         'resolve-action' => [
             'other' => 'Anderes',
