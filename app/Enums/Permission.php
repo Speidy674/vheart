@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Enums\PermissionGroup as PermissionGroupEnum;
 use App\Enums\Traits\HasHeadlineLabel;
+use App\Support\Attributes\PermissionGroup as PermissionGroupAttribute;
 use Filament\Support\Contracts\HasLabel;
+use ReflectionClassConstant;
 
 enum Permission: string implements HasLabel
 {
@@ -86,4 +89,46 @@ enum Permission: string implements HasLabel
 
     // Non-Model stuff
     case JuryVote = 'jury_vote';
+
+    public function getPermissionGroup(): string
+    {
+        static $cache = [];
+
+        if (array_key_exists($this->name, $cache)) {
+            return $cache[$this->name];
+        }
+
+        if (($attribute = $this->getPermissionAttribute()) instanceof PermissionGroupEnum) {
+            return $cache[$this->name] = $attribute->getLabel();
+        }
+
+        static $prefixes = [
+            'force_delete_any_', 'force_delete_',
+            'restore_any_', 'restore_',
+            'delete_any_', 'delete_',
+            'update_any_', 'update_',
+            'view_any_', 'view_',
+            'create_',
+        ];
+
+        $groupName = str_replace($prefixes, '', $this->value, $count);
+
+        if ($count === 0) {
+            return $cache[$this->name] = PermissionGroupEnum::Other->getLabel();
+        }
+
+        return $cache[$this->name] = ucwords(str_replace('_', ' ', $groupName));
+    }
+
+    private function getPermissionAttribute(): ?PermissionGroupEnum
+    {
+        $reflection = new ReflectionClassConstant(self::class, $this->name);
+        $attributes = $reflection->getAttributes(PermissionGroupAttribute::class);
+
+        if ($attributes === []) {
+            return null;
+        }
+
+        return $attributes[0]->newInstance()->name;
+    }
 }
