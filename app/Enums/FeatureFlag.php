@@ -26,4 +26,10 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Controls the Reporting feature')]
     #[DefaultFeatureFlagState(true)]
     case Reports = 'reporting';
+
+    #[DefaultFeatureFlagState(true)]
+    case UserDashboard = 'user_dashboard';
+
+    #[DefaultFeatureFlagState(true)]
+    case UserSettings = 'user_settings';
 }
