@@ -655,7 +655,7 @@ class InitialEpisodeSeeder extends Seeder
                     'clip_id' => $id,
                     'claimed_by' => 0,
                     'claimed_at' => now(),
-                    'status' => CompilationClipClaimStatus::Completed,
+                    'claim_status' => CompilationClipClaimStatus::Completed,
                 ]);
 
             $compilation->clips()->sync($clips);
