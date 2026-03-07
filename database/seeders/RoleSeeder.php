@@ -90,5 +90,13 @@ class RoleSeeder extends Seeder
                 'public' => true,
             ]
         );
+        Role::firstOrCreate(
+            ['id' => 7],
+            [
+                'name' => ['de' => 'Kontributoren', 'en' => 'Contributor'],
+                'weight' => 0,
+                'public' => true,
+            ]
+        );
     }
 }
