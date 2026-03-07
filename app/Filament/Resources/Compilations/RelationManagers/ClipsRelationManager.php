@@ -283,7 +283,7 @@ class ClipsRelationManager extends RelationManager
                         blank: fn (Builder $query): Builder => $query,
                     ),
 
-                SelectFilter::make('clip_compilation.status')
+                SelectFilter::make('clip_compilation.claim_status')
                     ->label('admin/resources/compilations.relation_managers.clips.filters.cutter_status')
                     ->translateLabel()
                     ->multiple()
