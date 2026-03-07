@@ -15,10 +15,6 @@ RUN install-php-extensions \
     redis \
     zip
 
-RUN apk add --no-cache \
-    supervisor \
-    && rm -rf /var/cache/apk/*
-
 # Dependencies
 FROM base AS build
 
@@ -44,11 +40,10 @@ ENV APP_ENV=production
 COPY --from=build /app /app
 
 # Setup Permissions
-RUN mkdir -p /var/log/supervisor storage/framework/sessions storage/framework/views storage/framework/cache \
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
     && chmod -R 775 storage bootstrap/cache
 
 # Copy Configs
-COPY docker/release/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/release/Caddyfile /etc/caddy/Caddyfile
 COPY docker/release/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/release/init.sh /app/init-app.sh
