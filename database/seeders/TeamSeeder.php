@@ -90,7 +90,7 @@ class TeamSeeder extends Seeder
 
     public function run(TwitchService $twitchService): void
     {
-        if (User::query()->whereNot('id', 0)->exists()) {
+        if (app()->environment('testing') || User::query()->whereNot('id', 0)->exists()) {
             return;
         }
 
