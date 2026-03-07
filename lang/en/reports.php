@@ -16,6 +16,7 @@ return [
             'harassment' => 'Harassment',
             'hate-speech' => 'Hate Speech',
             'ai-content' => 'AI Content',
+            'content-unavailable' => 'Content Unavailable',
         ],
         'resolve-action' => [
             'other' => 'Other',

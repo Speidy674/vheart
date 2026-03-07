@@ -10,15 +10,14 @@ use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Verifies the 2FA input is valid and authenticates the user if so
  */
 class TwoFactorVerificationController extends Controller implements HasMiddleware
 {
-    public function __invoke(TwoFactorSubmitRequest $request, AppAuthentication $mfa): SymfonyResponse
+    public function __invoke(TwoFactorSubmitRequest $request, AppAuthentication $mfa): RedirectResponse
     {
         $userId = $request->getChallengedUserId();
         $user = User::query()->find($userId);
@@ -31,9 +30,7 @@ class TwoFactorVerificationController extends Controller implements HasMiddlewar
         $request->session()->regenerate();
         Auth::login($user);
 
-        $url = $request->session()->pull('url.intended', route('home'));
-
-        return Inertia::location($url);
+        return redirect()->intended(route('home'));
     }
 
     public static function middleware(): array

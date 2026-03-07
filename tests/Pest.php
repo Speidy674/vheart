@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 use App\Models\User;
 use Filament\PanelProvider as AbstractFilamentPanelProvider;
+use Illuminate\Support\ServiceProvider as AbstractServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
 use SocialiteProviders\Manager\OAuth2\AbstractProvider as AbstractSocialiteProvider;
@@ -48,6 +49,7 @@ arch()->preset()->laravel()
     ->ignoring([
         "App\Providers\Filament", // Filament has different base class
         "App\Providers\Socialite", // Custom Socialite Providers
+        "App\Providers\Support", // Custom Service Providers
         "App\Services", // Services may not follow the strict laravel conventions (yet)
         "App\Enums\Traits", // should probably organize it better but this has to work for now
         "App\Http\Resources", // Resources may be used in models, preset was created before laravel had that attribute.
@@ -62,6 +64,11 @@ arch('filament specifics')->expect('App\Providers\Filament')
 arch('socialite specifics')->expect('App\Providers\Socialite')
     ->toHaveSuffix('SocialiteProvider')
     ->toExtend(AbstractSocialiteProvider::class);
+
+// Custom Providers
+arch('custom service providers')->expect('App\Providers\Support')
+    ->toHaveSuffix('ServiceProvider')
+    ->toExtend(AbstractServiceProvider::class);
 
 // Services
 arch()
