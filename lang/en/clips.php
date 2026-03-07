@@ -104,6 +104,8 @@ return [
         'cannot_submit' => 'This clip cannot be submitted.',
         'daily_limit' => 'You have reached your daily limit of :limit submissions.',
         'generic' => 'Something went wrong. Please try again.',
+        'too_old' => 'This clip is too old. We only accept clips that are less than :age old.',
+        'too_short' => 'This clip is too short. Clips must be at least :seconds seconds long.',
     ],
 
     'status' => [
