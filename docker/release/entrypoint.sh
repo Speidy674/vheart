@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e  # Exit immediately if any command fails
 
-echo "[Entrypoint] Starting Application Initialization..."
+INSTANCE=${CONTAINER_ROLE:-web}
+
+echo "[Entrypoint] Starting $INSTANCE..."
 
 # Force resolve service names to IPs and append to /etc/hosts.
 # This bypasses the Alpine DNS resolver which often times out (1s) on IPv6.
@@ -16,24 +18,38 @@ if getent hosts redis > /dev/null; then
     echo "   -> Mapped 'redis' to $(getent hosts redis | awk '{ print $1 }')"
 fi
 
-echo "[Entrypoint] Updating Cloudflare IP ranges..."
-if CF_IPS=$( { wget -qO- https://www.cloudflare.com/ips-v4; echo; wget -qO- https://www.cloudflare.com/ips-v6; } | tr '\n' ' ' ); then
-    echo "trusted_proxies static private_ranges $CF_IPS" > /etc/caddy/trusted_proxies.caddy
-    echo "   -> Cloudflare IPs updated."
+if [ "$INSTANCE" = "web" ]; then
+    echo "[Entrypoint] Updating Cloudflare IP ranges..."
+    if CF_IPS=$( { wget -qO- https://www.cloudflare.com/ips-v4; echo; wget -qO- https://www.cloudflare.com/ips-v6; } | tr '\n' ' ' ); then
+        echo "trusted_proxies static private_ranges $CF_IPS" > /etc/caddy/trusted_proxies.caddy
+        echo "   -> Cloudflare IPs updated."
+    else
+        echo "   -> [WARNING] Failed to fetch Cloudflare IPs. Using default private ranges."
+        echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
+    fi
+
+    echo "[Entrypoint] Starting FrankenPHP..."
+    exec php -d variables_order=EGPCS /app/artisan octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
+
+elif [ "$INSTANCE" = "worker" ]; then
+    echo "[Entrypoint] Starting Laravel Worker..."
+    exec php /app/artisan queue:work --name=queue-worker --queue=default --sleep=3 --tries=3 --max-time=3600 --json
+
+elif [ "$INSTANCE" = "scheduler" ]; then
+    echo "[Entrypoint] Starting Laravel Scheduler..."
+    exec php /app/artisan schedule:work --whisper
+
+elif [ "$INSTANCE" = "init" ]; then
+    echo "[Entrypoint] Running Initializations..."
+    if [ -f /app/init-app.sh ]; then
+        /bin/sh /app/init-app.sh
+    else
+        echo "[Entrypoint] /app/init-app.sh not found."
+    fi
+    echo "[Entrypoint] Initialization complete."
+    exit 0
+
 else
-    echo "   -> [WARNING] Failed to fetch Cloudflare IPs. Using default private ranges."
-    echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
+    echo "[Entrypoint] Error: Unknown Instance '$INSTANCE'"
+    exit 1
 fi
-
-# Run your existing initialization script
-if [ -f /app/init-app.sh ]; then
-    /bin/sh /app/init-app.sh
-else
-    echo "[Entrypoint] /app/init-app.sh not found. Skipping custom init."
-fi
-
-echo "[Entrypoint] Initialization complete."
-echo "[Entrypoint] Starting Supervisor..."
-
-# Start Supervisor
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

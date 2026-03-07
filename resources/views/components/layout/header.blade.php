@@ -1,10 +1,11 @@
+@use(App\Enums\FeatureFlag)
 <nav class="sticky top-0 md:top-2 my-2 z-100">
     <header
         class="flex items-center h-14 w-full px-3 sm:px-4    text-gray-900 dark:text-white/85   bg-white/75 dark:bg-black/80    border border-gray-200 dark:border-white/20    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none"
     >
         <div class="flex min-w-0 flex-1 items-center shrink-0">
             <a
-                href="{{ request()->routeIs('static') ? '#' : route('static') }}"
+                href="{{ request()->routeIs('home') ? '#' : route('home') }}"
                 class="flex items-center hover:opacity-80 h-6 sm:h-8"
                 aria-label="Homepage"
             >
@@ -13,21 +14,25 @@
         </div>
 
         <div class="flex gap-1 lg:gap-1.5">
-            <x-layout.shared.link href="{{ route('submitclip.create') }}" :active="request()->routeIs('submitclip.create')">
-                <x-slot:icon>
-                    <x-lucide-send defer />
-                </x-slot:icon>
+            @feature(FeatureFlag::ClipSubmission)
+                <x-layout.shared.link href="{{ route('submitclip.create') }}" :active="request()->routeIs('submitclip.create')">
+                    <x-slot:icon>
+                        <x-lucide-send defer />
+                    </x-slot:icon>
 
-                {{ __('navigation.submit_clips') }}
-            </x-layout.shared.link>
+                    {{ __('navigation.submit_clips') }}
+                </x-layout.shared.link>
+            @endfeature
 
-            <x-layout.shared.link href="{{ route('vote') }}" :active="request()->routeIs('vote')">
-                <x-slot:icon>
-                    <x-lucide-thumbs-up defer />
-                </x-slot:icon>
+            @feature(FeatureFlag::ClipVoting)
+                <x-layout.shared.link href="{{ route('vote') }}" :active="request()->routeIs('vote')">
+                    <x-slot:icon>
+                        <x-lucide-thumbs-up defer />
+                    </x-slot:icon>
 
-                {{ __('navigation.evaluate_clips') }}
-            </x-layout.shared.link>
+                    {{ __('navigation.evaluate_clips') }}
+                </x-layout.shared.link>
+            @endfeature
 
             @auth
                 <x-ui.dropdown>

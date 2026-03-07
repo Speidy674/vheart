@@ -26,6 +26,6 @@ class TwoFactorChallengeRequest extends FormRequest
 
     public function getChallengedUserId(): int
     {
-        return (int) $this->session()->get('auth.2fa.id', false);
+        return (int) $this->session()->get('auth_2fa_id', false);
     }
 }

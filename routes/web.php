@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
 use App\Http\Controllers\FaqController;
@@ -13,51 +14,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', static function () {
+Route::get('/', static function (Request $request) {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
         ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
-        ->orderByDesc('votes_count')
-        ->limit(10)
-        ->get();
-
-    return Inertia::render('start', [
-        'bestRated' => $bestRated->toResourceCollection(),
-        'discover' => Inertia::scroll(static function () {
-            $discover = Clip::query()
-                ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
-                ->orderByDesc('created_at')
-                ->cursorPaginate();
-
-            return $discover->toResourceCollection();
-        }),
-    ]);
-})
-    ->name('home');
-
-Route::get('/static', static function () {
-
-    $bestRated = Clip::query()
-        ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
+        ->with('tags')
         ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
         ->orderByDesc('votes_count')
         ->limit(10)
         ->get();
 
     $discover = Clip::query()
+        ->with('tags')
         ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
         ->orderByDesc('created_at')
-        ->cursorPaginate();
+        ->orderByDesc('id')
+        ->cursorPaginate(perPage: 42);
+
+    if ($request->ajax()) {
+        return response(
+            view('components.clips.preview-list', ['clips' => $discover])->render(),
+            headers: [
+                'X-Next-Page' => $discover->nextPageUrl(),
+            ]);
+    }
 
     return view('index', [
         'bestRated' => $bestRated,
         'discover' => $discover,
     ]);
 })
-    ->name('static');
+    ->name('home');
 
 Route::get('/about-us', static function () {
     $settings = [
@@ -84,16 +72,19 @@ Route::get('/privacy', function () {
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::feature(FeatureFlag::ClipSubmission)->group(function () {
+        Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
+        Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
+    });
 
-    Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
+    Route::feature(FeatureFlag::ClipVoting)->group(function () {
+        Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
+        Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
+    });
 
-    Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
-
-    Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
-
-    Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
-
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    Route::feature(FeatureFlag::Reports)->group(function () {
+        Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    });
 });
 
 Route::get('/team', TeamController::class)->name('team');

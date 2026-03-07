@@ -1,10 +1,5 @@
 FROM dunglas/frankenphp:php8.5-alpine AS base
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /app
-ENV TZ=Europe/Berlin
-
-# Install PHP extensions
 RUN install-php-extensions \
     pcntl \
     bcmath \
@@ -15,49 +10,45 @@ RUN install-php-extensions \
     redis \
     zip
 
-RUN apk add --no-cache \
-    supervisor \
-    && rm -rf /var/cache/apk/*
+WORKDIR /app
+ENV TZ=Europe/Berlin
+ENV APP_ENV=production
 
-# Dependencies
 FROM base AS build
 
-COPY composer.json composer.lock ./
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN composer install \
+RUN --mount=type=bind,source=composer.json,target=composer.json \
+    --mount=type=bind,source=composer.lock,target=composer.lock \
+    --mount=type=cache,target=/root/.composer/cache \
+    composer install \
     --no-dev \
     --no-interaction \
     --prefer-dist \
     --no-autoloader \
     --no-scripts
 
-COPY . /app
+COPY . .
 
-# Generate Optimized Autoloader
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative && rm /usr/bin/composer
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 FROM base AS runner
 
 LABEL maintainer="VHeart IT Team" description="VHeart Website"
 
-ENV APP_ENV=production
 COPY --from=build /app /app
 
-# Setup Permissions
-RUN mkdir -p /var/log/supervisor storage/framework/sessions storage/framework/views storage/framework/cache \
-    && chmod -R 775 storage bootstrap/cache
+RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache \
+    && echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
 
-# Copy Configs
-COPY docker/release/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 COPY docker/release/Caddyfile /etc/caddy/Caddyfile
 COPY docker/release/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/release/init.sh /app/init-app.sh
 COPY docker/release/entrypoint.sh /app/entrypoint.sh
 
-# Setup Caddy Proxies
-RUN echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
-
-# Make scripts executable
 RUN chmod +x /app/init-app.sh /app/entrypoint.sh
 
 EXPOSE 80

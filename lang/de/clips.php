@@ -49,6 +49,24 @@ return [
         ],
     ],
 
+    'vote' => [
+        'page_title' => 'Clips Bewerten',
+        'form' => [
+            'fields' => [
+                'vote' => [
+                    'label' => 'Stimme für diesen Clip',
+                ],
+                'skip' => [
+                    'label' => 'Diesen Clip überspringen',
+                ],
+            ],
+        ],
+        'aside' => [
+            'total_votes' => 'Bisherige stimmen für diesen Clip',
+            'nothing_left' => 'Wir finden gerade nix was du Voten könntest. Komme bitte später nochmal vorbei!',
+        ],
+    ],
+
     // Untouched
 
     'recent' => [

@@ -41,7 +41,8 @@ class RoleSeeder extends Seeder
             return;
         }
 
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 1],
             [
                 'name' => ['de' => 'Administrator', 'en' => 'Administrator'],
                 'weight' => 100,
@@ -49,38 +50,51 @@ class RoleSeeder extends Seeder
             ]
         );
 
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 2],
             [
                 'name' => ['de' => 'Community Manager', 'en' => 'Community Manager'],
                 'weight' => 90,
                 'public' => true,
             ]
         );
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 3],
             [
                 'name' => ['de' => 'Moderator', 'en' => 'Moderator'],
                 'weight' => 80,
                 'public' => true,
             ]
         );
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 4],
             [
                 'name' => ['de' => 'Cutter', 'en' => 'Cutter'],
                 'weight' => 70,
                 'public' => true,
             ]
         );
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 5],
             [
                 'name' => ['de' => 'IT', 'en' => 'IT'],
                 'weight' => 60,
                 'public' => true,
             ]
         );
-        Role::create(
+        Role::firstOrCreate(
+            ['id' => 6],
             [
                 'name' => ['de' => 'Jury', 'en' => 'Jury'],
                 'weight' => 50,
+                'public' => true,
+            ]
+        );
+        Role::firstOrCreate(
+            ['id' => 7],
+            [
+                'name' => ['de' => 'Kontributoren', 'en' => 'Contributor'],
+                'weight' => 0,
                 'public' => true,
             ]
         );
