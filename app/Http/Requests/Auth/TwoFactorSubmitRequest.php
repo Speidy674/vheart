@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
+use Closure;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\ValidationException;
 
 class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
 {
-    public function authorize(): bool
-    {
-        return $this->session()->has('auth.2fa.id');
-    }
+    protected bool $isOtp = false;
 
     /**
      * @return array<string, ValidationRule|array|string>
@@ -22,8 +20,24 @@ class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
     public function rules(): array
     {
         return [
-            'code' => ['sometimes', 'numeric', 'max_digits:6', 'min_digits:6'],
-            'recovery_code' => ['sometimes', 'string'],
+            'code' => [
+                'required',
+                'string',
+                'min:6',
+                'max:21',
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $this->isOtp = ctype_digit($value);
+                    $length = mb_strlen($value);
+
+                    if ($this->isOtp && $length !== 6) {
+                        $fail(__('auth.two-factor.validation.otp'));
+                    }
+
+                    if (! $this->isOtp && $length !== 21) {
+                        $fail(__('auth.two-factor.validation.recovery'));
+                    }
+                },
+            ],
         ];
     }
 
@@ -35,19 +49,19 @@ class TwoFactorSubmitRequest extends TwoFactorChallengeRequest
     public function ensureCodeIsValid(User $user): void
     {
         $mfa = app(AppAuthentication::class);
+        $code = $this->input('code', '');
 
         if (
-            $mfa->verifyCode($this->input('code', ''), $user->app_authentication_secret) ||
-            $mfa->verifyRecoveryCode($this->input('recovery_code', ''), $user)
+            $this->isOtp
+                ? $mfa->verifyCode($code, $user->app_authentication_secret)
+                : $mfa->verifyRecoveryCode($code, $user)
         ) {
-            $this->session()->forget(['auth.2fa.id']);
-
             return;
         }
 
+        $this->session()->keep(['auth_2fa_id']);
         throw ValidationException::withMessages([
-            'code' => 'Incorrect code',
-            'recovery_code' => 'Incorrect code',
+            'code' => __('auth.two-factor.validation.incorrect'),
         ]);
     }
 }

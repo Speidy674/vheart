@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\Permission;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -46,6 +47,7 @@ class DatabaseSeeder extends Seeder
             TagSeeder::class,
             InitialEpisodeSeeder::class,
             FaqSeeder::class,
+            FeatureFlagSeeder::class,
         ]);
     }
 }

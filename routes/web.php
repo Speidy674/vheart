@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
 use App\Http\Controllers\FaqController;
@@ -71,16 +72,19 @@ Route::get('/privacy', function () {
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::feature(FeatureFlag::ClipSubmission)->group(function () {
+        Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
+        Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
+    });
 
-    Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
+    Route::feature(FeatureFlag::ClipVoting)->group(function () {
+        Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
+        Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
+    });
 
-    Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
-
-    Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
-
-    Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
-
-    Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    Route::feature(FeatureFlag::Reports)->group(function () {
+        Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
+    });
 });
 
 Route::get('/team', TeamController::class)->name('team');
