@@ -44,7 +44,7 @@ trait FeatureFlagMagic
         static $cache = [];
 
         if (array_key_exists($this->name, $cache)) {
-            return ! app()->environment($cache[$this->name]);
+            return $cache[$this->name];
         }
 
         $reflection = new ReflectionClassConstant(self::class, $this->name);
@@ -54,9 +54,7 @@ trait FeatureFlagMagic
             return $cache[$this->name] = false;
         }
 
-        $cache[$this->name] = $attributes[0]->newInstance()->state;
-
-        return ! app()->environment($attributes[0]->newInstance()->state);
+        return $cache[$this->name] = ! app()->environment($attributes[0]->newInstance()->state);
     }
 
     /**
