@@ -34,62 +34,70 @@
                 </x-layout.shared.link>
             @endfeature
 
-            @auth
-                <x-ui.dropdown>
-                    <x-ui.dropdown.trigger>
-                        <button
-                            class="group inline-flex h-auto items-center gap-2 px-1 py-1 sm:px-2 sm:py-1.5 cursor-pointer rounded-xl outline-hidden select-none transition-colors duration-200 ease-in-out text-gray-600 hover:bg-accent/15 hover:text-gray-900 focus-visible:bg-accent/15 focus-visible:text-gray-900 focus-visible:ring-2 focus-visible:ring-accent/50 dark:text-white/70 dark:hover:text-white dark:focus-visible:text-white"
-                        >
-                            <x-ui.avatar
-                                class="size-8 text-base"
-                                :src="auth()->user()->proxiedContentUrl()"
-                                :name="auth()->user()->name"
-                                :force="true"
-                            />
-
-                            <span
-                                class="hidden text-sm font-medium xl:inline"
+            @feature(FeatureFlag::UserNavigation)
+                @auth
+                    <x-ui.dropdown>
+                        <x-ui.dropdown.trigger>
+                            <button
+                                class="group inline-flex h-auto items-center gap-2 px-1 py-1 sm:px-2 sm:py-1.5 cursor-pointer rounded-xl outline-hidden select-none transition-colors duration-200 ease-in-out text-gray-600 hover:bg-accent/15 hover:text-gray-900 focus-visible:bg-accent/15 focus-visible:text-gray-900 focus-visible:ring-2 focus-visible:ring-accent/50 dark:text-white/70 dark:hover:text-white dark:focus-visible:text-white"
                             >
-                                {{ auth()->user()->name }}
-                            </span>
+                                <x-ui.avatar
+                                    class="size-8 text-base"
+                                    :src="auth()->user()->proxiedContentUrl()"
+                                    :name="auth()->user()->name"
+                                    :force="true"
+                                />
 
-                            <x-lucide-chevron-down
-                                class="hidden size-4 opacity-70 transition-transform duration-200 group-hover:scale-110 lg:block"
-                                x-bind:class="{ 'rotate-180': open }"
-                                defer
-                            />
-                        </button>
-                    </x-ui.dropdown.trigger>
+                                <span
+                                    class="hidden text-sm font-medium xl:inline"
+                                >
+                                    {{ auth()->user()->name }}
+                                </span>
 
-                    <x-ui.dropdown.content align="right" class="min-w-42">
-                        <x-ui.dropdown.item href="{{ route('dashboard') }}">
-                            {{ __('navigation.dashboard') }}
-                        </x-ui.dropdown.item>
+                                <x-lucide-chevron-down
+                                    class="hidden size-4 opacity-70 transition-transform duration-200 group-hover:scale-110 lg:block"
+                                    x-bind:class="{ 'rotate-180': open }"
+                                    defer
+                                />
+                            </button>
+                        </x-ui.dropdown.trigger>
 
-                        <x-ui.dropdown.item href="{{ route('profile.edit') }}">
-                            {{ __('navigation.settings') }}
-                        </x-ui.dropdown.item>
+                        <x-ui.dropdown.content align="right" class="min-w-42">
+                            @feature(FeatureFlag::UserDashboard)
+                                <x-ui.dropdown.item href="{{ route('dashboard') }}">
+                                    {{ __('navigation.dashboard') }}
+                                </x-ui.dropdown.item>
+                            @endfeature
 
-                        <x-ui.dropdown.separator/>
+                            @feature(FeatureFlag::UserSettings)
+                                <x-ui.dropdown.item href="{{ route('profile.edit') }}">
+                                    {{ __('navigation.settings') }}
+                                </x-ui.dropdown.item>
+                            @endfeature
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            <x-ui.dropdown.item as="button" type="submit" variant="destructive">
-                                {{ __('navigation.logout') }}
-                            </x-ui.dropdown.item>
-                        </form>
-                    </x-ui.dropdown.content>
-                </x-ui.dropdown>
-            @endauth
+                            @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings])
+                                <x-ui.dropdown.separator/>
+                            @endfeatureAny
 
-            @guest
-                <x-layout.shared.link href="{{ route('login') }}" :active="request()->routeIs('login')">
-                    <x-slot:icon>
-                        <x-lucide-log-in />
-                    </x-slot:icon>
+                            <form method="POST" action="{{ route('logout') }}">
+                                <x-ui.dropdown.item as="button" type="submit" variant="destructive">
+                                    {{ __('navigation.logout') }}
+                                </x-ui.dropdown.item>
+                            </form>
+                        </x-ui.dropdown.content>
+                    </x-ui.dropdown>
+                @endauth
 
-                    {{ __('navigation.login') }}
-                </x-layout.shared.link>
-            @endguest
+                @guest
+                    <x-layout.shared.link href="{{ route('login') }}" :active="request()->routeIs('login')">
+                        <x-slot:icon>
+                            <x-lucide-log-in />
+                        </x-slot:icon>
+
+                        {{ __('navigation.login') }}
+                    </x-layout.shared.link>
+                @endguest
+            @endfeature
         </div>
     </header>
 </nav>

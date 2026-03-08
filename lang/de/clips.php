@@ -96,6 +96,8 @@ return [
         'cannot_submit' => 'Clip kann nicht eingereicht werden.',
         'daily_limit' => 'Du hast dein tägliches Limit von :limit Einreichungen erreicht.',
         'generic' => 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
+        'too_old' => 'Dieser Clip ist zu alt. Wir akzeptieren nur Clips, die nicht älter als :age sind.',
+        'too_short' => 'Dieser Clip ist zu kurz. Clips müssen mindestens :seconds Sekunden lang sein.',
     ],
 
     'status' => [
