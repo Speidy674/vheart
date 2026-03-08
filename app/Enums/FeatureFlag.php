@@ -26,4 +26,14 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Controls the Reporting feature')]
     #[DefaultFeatureFlagState(true)]
     case Reports = 'reporting';
+
+    #[DefaultFeatureFlagState(true)]
+    case UserDashboard = 'user_dashboard';
+
+    #[DefaultFeatureFlagState(true)]
+    case UserSettings = 'user_settings';
+
+    #[Description('Toggles the user navigation/dropdown in the top navigation, this is only a visual change and does NOT disable the features shown in that dropdown.')]
+    #[DefaultFeatureFlagState(true)]
+    case UserNavigation = 'user_navigation';
 }
