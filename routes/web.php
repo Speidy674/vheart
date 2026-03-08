@@ -48,13 +48,9 @@ Route::get('/', static function (Request $request) {
     ->name('home');
 
 Route::get('/about-us', static function () {
-    $settings = [
-        'donationUrl' => 'https://www.betterplace.org/de/fundraising-events/55712-vheart-fuerdiesuessmaeuse',
-        'partnerIcon' => null,
-        'youtubeUrl' => 'https://www.youtube-nocookie.com/embed/videoseries?list=UUUefW5IjMaQS_ZFaG4VZi9A',
-    ];
+    $locale = app()->getLocale();
 
-    return Inertia::render('welcome', $settings);
+    return view('about-us', ['locale' => $locale]);
 })->name('home');
 
 Route::get('/imprint', function () {
@@ -88,15 +84,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/team', TeamController::class)->name('team');
-
-Route::get('/about-us', function () {
-    $settings = [
-        'donationUrl' => 'https://www.betterplace.org/de/fundraising-events/55712-vheart-fuerdiesuessmaeuse',
-        'partnerIcon' => null,
-    ];
-
-    return Inertia::render('about', $settings);
-})->name('about');
 
 Route::get('/locales', static function (Request $request) {
     $lang = $request->input('locale', 'en');
