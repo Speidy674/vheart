@@ -12,4 +12,5 @@ return [
     'clip_submission' => env('FEATURE_CLIP_SUBMISSION', null),
     'clip_voting' => env('FEATURE_CLIP_VOTING', null),
     'reporting' => env('FEATURE_REPORTING', null),
+    'about_us_as_index' => env('FEATURE_ABOUT_US_AS_INDEX', null),
 ];

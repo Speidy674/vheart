@@ -12,4 +12,5 @@ enum PermissionGroup implements HasLabel
     use HasHeadlineLabel;
 
     case Other;
+    case AdminSubmission;
 }
