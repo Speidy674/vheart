@@ -1,4 +1,4 @@
-@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false, 'fallback' => null])
+@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false, 'fallback' => null, 'loading' => 'lazy'])
 
 @if($force)
     <div {{ $attributes }}>
@@ -7,7 +7,7 @@
             alt="{{ $alt }}"
             @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
             class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
-            decoding="async"
+            loading="{{ $loading }}"
         />
     </div>
 @else
@@ -38,7 +38,7 @@
                 x-bind:data-status="imageStatus"
                 x-bind:data-cached="isCached ? 'true' : 'false'"
                 class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 data-[cached=false]:transition-opacity data-[cached=false]:duration-300"
-                loading="lazy"
+                loading="{{ $loading }}"
                 decoding="async"
             />
         </template>
@@ -49,6 +49,7 @@
                 alt="{{ $alt }}"
                 @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
                 class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
+                loading="{{ $loading }}"
                 decoding="async"
             />
         </noscript>
