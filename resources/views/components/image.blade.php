@@ -1,12 +1,12 @@
-@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false])
+@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false, 'fallback' => null])
 
 @if($force)
     <div {{ $attributes }}>
         <img
             src="{{ $src }}"
             alt="{{ $alt }}"
-            class="h-full w-full object-cover"
-            loading="lazy"
+            @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
+            class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
             decoding="async"
         />
     </div>
@@ -47,8 +47,8 @@
             <img
                 src="{{ $src }}"
                 alt="{{ $alt }}"
-                class="h-full w-full object-cover"
-                loading="lazy"
+                @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
+                class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
                 decoding="async"
             />
         </noscript>
