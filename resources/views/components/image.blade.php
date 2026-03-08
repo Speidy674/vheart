@@ -16,6 +16,18 @@
         x-intersect.margin.{{ $viewBuffer }}px.once="show()"
         {{ $attributes }}
     >
+        @if(isset($placeholder))
+            <div x-show="imageStatus === 'loading'" {{ $placeholder->attributes->twMerge('absolute inset-0 flex items-center justify-center') }}>
+                {{ $placeholder }}
+            </div>
+        @endif
+
+        @if(isset($error))
+            <div x-show="imageStatus === 'error'" style="display: none;" {{ $error->attributes->twMerge('absolute inset-0 flex items-center justify-center') }}>
+                {{ $error }}
+            </div>
+        @endif
+
         <template x-if="shown">
             <img
                 src="{{ $src }}"
