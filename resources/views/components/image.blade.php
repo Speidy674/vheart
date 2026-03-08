@@ -22,15 +22,12 @@
                 alt="{{ $alt }}"
                 x-init="checkCached($el)"
                 @load="imageStatus = 'loaded'"
-            @@error="imageStatus = 'error'"
-            :class="{
-                    'opacity-100': imageStatus === 'loaded',
-                    'opacity-0': imageStatus !== 'loaded',
-                    'transition-opacity duration-300': !isCached
-                }"
-            class="h-full w-full object-cover"
-            loading="lazy"
-            decoding="async"
+                @@error="imageStatus = 'error'"
+                x-bind:data-status="imageStatus"
+                x-bind:data-cached="isCached ? 'true' : 'false'"
+                class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 data-[cached=false]:transition-opacity data-[cached=false]:duration-300"
+                loading="lazy"
+                decoding="async"
             />
         </template>
 
