@@ -6,6 +6,7 @@ namespace App\Enums\Traits;
 
 use App\Support\FeatureFlag\Attributes\DefaultFeatureFlagState;
 use App\Support\FeatureFlag\Attributes\Description;
+use App\Support\FeatureFlag\Attributes\Environment;
 use App\Support\FeatureFlag\Attributes\Issue;
 use ReflectionClassConstant;
 
@@ -33,6 +34,29 @@ trait FeatureFlagMagic
     public function configIdentifier(): string
     {
         return self::makeConfigIdentifier($this->name);
+    }
+
+    /**
+     * Get the disabled state of this flag (based on environment)
+     */
+    public function getDisabledOnEnvironment(): bool
+    {
+        static $cache = [];
+
+        if (array_key_exists($this->name, $cache)) {
+            return ! app()->environment($cache[$this->name]);
+        }
+
+        $reflection = new ReflectionClassConstant(self::class, $this->name);
+        $attributes = $reflection->getAttributes(Environment::class);
+
+        if ($attributes === []) {
+            return $cache[$this->name] = false;
+        }
+
+        $cache[$this->name] = $attributes[0]->newInstance()->state;
+
+        return ! app()->environment($attributes[0]->newInstance()->state);
     }
 
     /**
