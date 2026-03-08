@@ -12,7 +12,7 @@
     </div>
 @else
     <div
-        x-data="image()"
+        x-data="image('{{ $src }}', '{{ $alt }}')"
         x-intersect.margin.{{ $viewBuffer }}px.once="show()"
         {{ $attributes }}
     >
@@ -30,16 +30,9 @@
 
         <template x-if="shown">
             <img
-                src="{{ $src }}"
-                alt="{{ $alt }}"
+                x-bind="imageBindings"
                 x-init="checkCached($el)"
-                @load="imageStatus = 'loaded'"
-                @@error="imageStatus = 'error'"
-                x-bind:data-status="imageStatus"
-                x-bind:data-cached="isCached ? 'true' : 'false'"
                 class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 data-[cached=false]:transition-opacity data-[cached=false]:duration-300"
-                loading="{{ $loading }}"
-                decoding="async"
             />
         </template>
 
