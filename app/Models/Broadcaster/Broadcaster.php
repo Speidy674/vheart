@@ -7,6 +7,8 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use Database\Factories\Broadcaster\BroadcasterFactory;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -66,5 +68,24 @@ class Broadcaster extends Model
             'submit_mods_allowed' => 'boolean',
             'submit_vip_allowed' => 'boolean',
         ];
+    }
+
+    /**
+     * Include only Clips where the broadcaster has explicitly granted any consens.
+     */
+    #[Scope]
+    protected function whereGivenAnyConsent(Builder $query): Builder
+    {
+        $first = true;
+        foreach (BroadcasterConsent::cases() as $broadcasterConsent) {
+            if ($first) {
+                $query->whereJsonContains('consent', $broadcasterConsent);
+                $first = false;
+            } else {
+                $query->orWhereJsonContains('consent', $broadcasterConsent);
+            }
+        }
+
+        return $query;
     }
 }

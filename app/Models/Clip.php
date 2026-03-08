@@ -283,4 +283,15 @@ class Clip extends Model implements Commentable, ExternalProxyable
             ->withJuryVoteCount()
             ->withPublicVoteCount();
     }
+
+    /**
+     * Include only Clips where the broadcaster has explicitly granted any consens.
+     */
+    #[Scope]
+    protected function whereBroadcasterGaveAnyConsent(Builder $query): Builder
+    {
+        return $query->whereHas('broadcaster',
+            fn (Builder $q) => $q->whereHas('broadcaster', callback: fn (Builder $q2) => $q2->whereGivenAnyConsent())
+        );
+    }
 }
