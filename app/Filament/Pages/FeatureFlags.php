@@ -70,6 +70,7 @@ class FeatureFlags extends Page
 
             $configValue = config($case->configIdentifier());
             $isOverridden = ! is_null($configValue);
+            $isDisabled = $case->getDisabledOnEnvironment();
 
             $actions = [];
 
@@ -78,6 +79,14 @@ class FeatureFlags extends Page
                     ->icon(Heroicon::Link)
                     ->tooltip('View Issue')
                     ->url($case->getIssue(), shouldOpenInNewTab: true);
+            }
+
+            if ($isDisabled) {
+                $actions[] = Action::make('locked')
+                    ->color('gray')
+                    ->icon(Heroicon::LockClosed)
+                    ->tooltip('This Flag is disabled on this Environment.')
+                    ->disabled();
             }
 
             if ($isOverridden) {
@@ -92,8 +101,9 @@ class FeatureFlags extends Page
             $form[] = Toggle::make($case->value)
                 ->label($case->getLabel() ?? $case->name)
                 ->default($case->getDefaultState())
-                ->disabled($isOverridden)
-                ->dehydrated(! $isOverridden)
+                ->hidden($isDisabled)
+                ->disabled($isOverridden || $isDisabled)
+                ->dehydrated(! ($isOverridden || $isDisabled))
                 ->hintActions($actions)
                 ->helperText($helperText);
         }
