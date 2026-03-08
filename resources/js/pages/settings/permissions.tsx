@@ -1,5 +1,4 @@
 import HeadingSmall from '@/components/heading-small';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
@@ -20,25 +19,37 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function Permissions() {
     const { t } = useTranslation('settings');
     const { auth } = usePage<SharedData>().props;
-    const [clipPermission, setClipPermission] = useState(
-        Boolean(auth.user?.clip_permission),
+    const [getBroadcasterConsent, setBroadcasterConsent] = useState(
+        auth.user?.broadcaster?.consent,
     );
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const granted = Boolean(clipPermission);
-
-    const handleChange = (checked: boolean | 'indeterminate') => {
-        const value = checked === true;
-        setClipPermission(value);
+    const handleChange = (
+        broadcasterConsent: number,
+        checked: boolean | 'indeterminate',
+    ) => {
         setIsUpdating(true);
         router.patch(
             update().url,
-            { clip_permission: value },
+            { broadcasterConsent: broadcasterConsent, state: checked === true },
             {
                 preserveScroll: true,
-                onError: () =>
-                    setClipPermission(Boolean(auth.user?.clip_permission)),
-                onFinish: () => setIsUpdating(false),
+                onError: () => setIsUpdating(false),
+                onFinish: () => {
+                    setIsUpdating(false);
+                    if (checked === true) {
+                        setBroadcasterConsent([
+                            ...getBroadcasterConsent,
+                            broadcasterConsent,
+                        ]);
+                    } else {
+                        setBroadcasterConsent(
+                            getBroadcasterConsent?.filter(
+                                (consent) => consent != broadcasterConsent,
+                            ),
+                        );
+                    }
+                },
             },
         );
     };
@@ -64,23 +75,30 @@ export default function Permissions() {
                                     {t('permissions.clip_description')}
                                 </p>
                             </div>
-                            <Badge variant={granted ? 'default' : 'secondary'}>
-                                {granted
-                                    ? t('permissions.granted')
-                                    : t('permissions.revoked')}
-                            </Badge>
                         </div>
 
                         <div className="flex items-center gap-2">
                             <Checkbox
-                                id="clip_permission"
-                                checked={granted}
-                                onCheckedChange={handleChange}
+                                id="consent_compilations"
+                                checked={getBroadcasterConsent?.includes(0)}
+                                onCheckedChange={(checked) =>
+                                    handleChange(0, checked)
+                                }
                                 disabled={isUpdating}
                             />
-                            <Label htmlFor="clip_permission">
-                                {t('permissions.toggle_label')}
+                            <Label htmlFor="consent_compilations">
+                                Compilations
                             </Label>
+
+                            <Checkbox
+                                id="consent_shorts"
+                                checked={getBroadcasterConsent?.includes(1)}
+                                onCheckedChange={(checked) =>
+                                    handleChange(1, checked)
+                                }
+                                disabled={isUpdating}
+                            />
+                            <Label htmlFor="consent_shorts">Shorts</Label>
                         </div>
                         <p className="text-sm text-muted-foreground">
                             {t('permissions.clip_disclaimer')}

@@ -44,7 +44,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user()?->toResource(AuthenticatedUserResource::class),
+                'user' => $request->user()?->load('broadcaster')?->toResource(AuthenticatedUserResource::class),
                 'permissions' => $request->user()?->permissions(),
             ],
             'reportOptions' => Inertia::optional(static fn (): array => [
