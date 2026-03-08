@@ -11,20 +11,32 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Foundation\ViteException;
+use Illuminate\Support\Facades\Vite;
 
 class ClipColumns
 {
     public static function thumbnail(): ImageColumn
     {
+        try {
+            $placeholder = Vite::asset('resources/images/webp/clips/no_thumbnail.webp');
+        } catch (ViteException) {
+            // Vite crashing everything is worse than a broken image
+            $placeholder = '';
+        }
+
         return ImageColumn::make('thumbnail_url')
             ->label('admin/resources/clips.table.columns.thumbnail')
             ->translateLabel()
             ->imageHeight(100)
             ->alignCenter()
             ->getStateUsing(fn (Clip $clip): ?string => $clip->proxiedContentUrl())
+            ->defaultImageUrl($placeholder)
             ->extraImgAttributes([
-                'class' => 'object-cover rounded aspect-video',
+                'class' => "object-cover rounded aspect-video text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-[image:var(--placeholder-url)] after:bg-cover after:bg-center",
+                'style' => "--placeholder-url: url('{$placeholder}');",
                 'loading' => 'lazy',
+                'onerror' => "this.onerror=null;this.src='{$placeholder}';",
             ]);
     }
 
