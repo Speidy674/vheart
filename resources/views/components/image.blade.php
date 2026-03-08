@@ -12,7 +12,7 @@
     </div>
 @else
     <div
-        x-data="image({ viewBuffer: {{ $viewBuffer }} })"
+        x-data="image()"
         x-intersect.margin.{{ $viewBuffer }}px.once="show()"
         {{ $attributes }}
     >
