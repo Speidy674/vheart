@@ -22,7 +22,6 @@ export default (src: string, alt: string): AlpineComponent<ImageData> => ({
 
     checkCached(el: HTMLImageElement) {
         if (el.complete && el.naturalWidth > 0) {
-            this.imageStatus = 'loaded';
             this.isCached = true;
         }
     },

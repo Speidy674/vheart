@@ -33,7 +33,7 @@
             <img
                 x-bind="imageBindings"
                 x-init="checkCached($el)"
-                class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 data-[cached=false]:transition-opacity data-[cached=false]:duration-300"
+                class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 transition-opacity data-[cached=false]:duration-300 data-[cached=true]:duration-150"
             />
         </template>
 
