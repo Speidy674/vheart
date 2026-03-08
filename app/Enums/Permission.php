@@ -90,6 +90,17 @@ enum Permission: string implements HasLabel
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
+    #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
+    case BypassConsentCheck = 'as_bypass_consent';
+    #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
+    case BypassMaximumAgeLimitCheck = 'as_bypass_max_age';
+
+    #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
+    case BypassMinimumLengthRequirementCheck = 'as_bypass_min_length';
+
+    #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
+    case BypassBannedCategoryCheck = 'as_bypass_banned_category';
+
     public function getPermissionGroup(): string
     {
         static $cache = [];
