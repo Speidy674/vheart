@@ -8,6 +8,7 @@
             @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
             class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
             loading="{{ $loading }}"
+            decoding="async"
         />
     </div>
 @else
