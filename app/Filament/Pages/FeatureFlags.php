@@ -103,7 +103,7 @@ class FeatureFlags extends Page
                 ->default($case->getDefaultState())
                 ->hidden($isDisabled)
                 ->disabled($isOverridden || $isDisabled)
-                ->dehydrated(! ($isOverridden || $isDisabled))
+                ->dehydrated(! $isOverridden && ! $isDisabled)
                 ->hintActions($actions)
                 ->helperText($helperText);
         }
