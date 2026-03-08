@@ -16,6 +16,7 @@ use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Carbon\CarbonInterval;
 use Closure;
+use Deprecated;
 use Exception;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -45,12 +46,10 @@ class SubmitClipAction extends Action
                     ->translateLabel()
                     ->placeholder('https://clips.twitch.tv/...')
                     ->rules([
-                        function (TwitchService $twitchService) {
-                            return static function (string $attribute, $value, Closure $fail) use ($twitchService) {
-                                if (! $twitchService->parseClipId($value)) {
-                                    $fail(__('clips.errors.clip_url_required'));
-                                }
-                            };
+                        fn (TwitchService $twitchService): Closure => static function (string $attribute, $value, Closure $fail) use ($twitchService): void {
+                            if (! $twitchService->parseClipId($value)) {
+                                $fail(__('clips.errors.clip_url_required'));
+                            }
                         },
                     ])
                     ->required(),
@@ -232,9 +231,8 @@ class SubmitClipAction extends Action
 
     /**
      * Allows the user to bypass selected restrictions if they have permissions for them.
-     *
-     * @deprecated Do not use outside Team panel.
      */
+    #[Deprecated('Do not use outside Team panel.')]
     public function withBypass(bool $state = true): static
     {
         $this->bypassable = $state;
