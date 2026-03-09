@@ -8,6 +8,7 @@ use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\ExternalContentProxyType;
+use App\Enums\FeatureFlag;
 use App\Http\Resources\PublicClipResource;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
@@ -18,6 +19,7 @@ use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
+use App\Support\FeatureFlag\Feature;
 use Carbon\CarbonInterval;
 use Database\Factories\ClipFactory;
 use DateTimeInterface;
@@ -152,6 +154,11 @@ class Clip extends Model implements Commentable, ExternalProxyable
     {
         /** @var CarbonInterval $maxAge */
         $maxAge = config('vheart.clips.voting.maximum_age');
+
+        if (! Feature::isActive(FeatureFlag::ClipVoting)) {
+            // Since the feature got disabled, make it impossible to get anything to vote on
+            return $query->whereRaw('1 = 0');
+        }
 
         // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
         return $query
