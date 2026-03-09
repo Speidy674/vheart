@@ -104,11 +104,7 @@ class ClipVoteController extends Controller
 
         if ($clips === []) {
             $clips = Clip::query()
-                ->whereNot('submitter_id', $user->id)
-                ->whereNot('broadcaster_id', $user->id)
-                ->whereNot('creator_id', $user->id)
-                ->whereNoVotesFrom($user)
-                ->whereNotPublished()
+                ->whereEligibleForVoting($user)
                 ->inRandomOrder()
                 ->limit(self::QUEUE_SIZE)
                 ->pluck('id')
