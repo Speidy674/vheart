@@ -226,7 +226,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereNoVotesFrom(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereDoesntHave('votes', fn (Builder $q) => $q->where('user_id', $userId));
     }
@@ -237,7 +237,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereVotesFrom(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereHas('votes', fn (Builder $q) => $q->where('user_id', $userId));
     }
@@ -248,7 +248,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereNotBroadcastBy(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereNot('broadcaster_id', $userId);
     }
@@ -281,7 +281,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereBroadcastBy(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->where('broadcaster_id', $userId);
     }
