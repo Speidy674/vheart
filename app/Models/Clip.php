@@ -18,6 +18,7 @@ use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
+use Carbon\CarbonInterval;
 use Database\Factories\ClipFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -144,6 +145,28 @@ class Clip extends Model implements Commentable, ExternalProxyable
     }
 
     /**
+     * add rules/filters here to limit what can be voted on.
+     */
+    #[Scope]
+    protected function whereEligibleForVoting(Builder $query, ?User $user = null): Builder
+    {
+        /** @var CarbonInterval $maxAge */
+        $maxAge = config('vheart.clips.voting.maximum_age');
+
+        // Make sure to sort the rules in a way that allows the biggest scope to filter the most
+        return $query
+            ->whereSubmittedAfter(now()->sub($maxAge))
+            ->whereBroadcasterGavePermission()
+            ->whereNotPublished()
+            ->when($user, fn (Builder $query) => $query
+                ->whereNotBroadcastBy($user)
+                ->whereNotCreatedBy($user)
+                ->whereNotSubmittedBy($user)
+                ->whereNoVotesFrom($user)
+            );
+    }
+
+    /**
      * Exclude Clips that has been Submitted before a date
      */
     #[Scope]
@@ -231,6 +254,28 @@ class Clip extends Model implements Commentable, ExternalProxyable
     }
 
     /**
+     * Exclude Clips the user has Created/Clipped
+     */
+    #[Scope]
+    protected function whereNotCreatedBy(Builder $query, User|int $userOrId): Builder
+    {
+        $userId = $this->extractUserIdFromParameter($userOrId);
+
+        return $query->whereNot('creator_id', $userId);
+    }
+
+    /**
+     * Exclude Clips the user has Submitted
+     */
+    #[Scope]
+    protected function whereNotSubmittedBy(Builder $query, User|int $userOrId): Builder
+    {
+        $userId = $this->extractUserIdFromParameter($userOrId);
+
+        return $query->whereNot('submitter_id', $userId);
+    }
+
+    /**
      * Include only Clips the user has Broadcasted
      */
     #[Scope]
@@ -282,5 +327,10 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return $query
             ->withJuryVoteCount()
             ->withPublicVoteCount();
+    }
+
+    private function extractUserIdFromParameter(User|int $userOrId): int
+    {
+        return $userOrId instanceof User ? $userOrId->id : $userOrId;
     }
 }
