@@ -153,7 +153,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
         /** @var CarbonInterval $maxAge */
         $maxAge = config('vheart.clips.voting.maximum_age');
 
-        // Make sure to sort the rules in a way that allows the biggest scope to filter the most
+        // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
         return $query
             ->whereSubmittedAfter(now()->sub($maxAge))
             ->whereBroadcasterGavePermission()
