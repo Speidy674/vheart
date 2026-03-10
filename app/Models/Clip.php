@@ -15,6 +15,7 @@ use App\Models\Clip\Tag;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
@@ -42,7 +43,7 @@ use Kirschbaum\Commentions\HasComments;
 class Clip extends Model implements Commentable, ExternalProxyable
 {
     /** @use HasFactory<ClipFactory> */
-    use HasComments, HasExternalProxy, HasFactory, Reportable;
+    use Auditable, HasComments, HasExternalProxy, HasFactory, Reportable;
 
     public static function getProxyIdentifierColumn(): string
     {

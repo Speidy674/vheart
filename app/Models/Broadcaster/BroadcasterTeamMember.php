@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterPermission;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use Database\Factories\Broadcaster\BroadcasterTeamMemberFactory;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BroadcasterTeamMember extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<BroadcasterTeamMemberFactory> */
     use HasFactory;
 
