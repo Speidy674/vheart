@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Pages;
 
+use App\Filament\Actions\Tables\SubmitClipAction;
 use App\Filament\Resources\Clips\ClipResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListClips extends ListRecords
@@ -15,7 +15,7 @@ class ListClips extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            // CreateAction::make(),
+            SubmitClipAction::make()->withBypass(),
         ];
     }
 }
