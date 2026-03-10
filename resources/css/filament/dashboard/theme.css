@@ -33,5 +33,5 @@ html.dark body {
 }
 
 .fi-topbar {
-    @apply flex items-center w-full h-18 px-3 sm:px-4 text-gray-900 dark:text-white/85 bg-white/75 dark:bg-black/80;
+    @apply flex items-center w-full px-3 sm:px-4 text-gray-900 dark:text-white/85 bg-white/75 dark:bg-black/80;
 }
