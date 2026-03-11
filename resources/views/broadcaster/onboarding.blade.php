@@ -42,10 +42,10 @@
                         </p>
                     </div>
 
-                    <div class="grid gap-3" x-data="{ all: true, vips: true, mods: true }">
+                    <div class="grid gap-3" x-data="{ everyone: true, vips: true, mods: true }">
                         <x-onboarding.checkbox
-                            x-model="all"
-                            @change="if(all) { vips = true; mods = true }"
+                            x-model="everyone"
+                            @change="if(everyone) { vips = true; mods = true }"
                             checked name="everyone"
                             label="{{ __('onboarding.setup.submissions.options.everyone.label') }}"
                             description="{{ __('onboarding.setup.submissions.options.everyone.description') }}"
@@ -54,8 +54,8 @@
 
                         <x-onboarding.checkbox
                             x-model="vips"
-                            x-bind:data-all="all"
-                            @change="if(!vips) all = false"
+                            x-bind:data-everyone="everyone"
+                            @change="if(!vips) everyone = false"
                             checked
                             name="vips"
                             label="{{ __('onboarding2.setup.submissions.options.vips.label') }}"
@@ -65,8 +65,8 @@
 
                         <x-onboarding.checkbox
                             x-model="mods"
-                            x-bind:data-all="all"
-                            @change="if(!mods) all = false"
+                            x-bind:data-everyone="everyone"
+                            @change="if(!mods) everyone = false"
                             checked
                             name="moderators"
                             label="{{ __('onboarding.setup.submissions.options.mods.label') }}"

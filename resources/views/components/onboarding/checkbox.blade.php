@@ -5,13 +5,13 @@
     'description' => null,
 ])
 <label
-    class="relative flex items-center gap-4 p-4 rounded-md border border-border bg-card hover:bg-accent/20 hover:text-accent-foreground cursor-pointer transition-colors has-focus-visible:ring-1 has-focus-visible:ring-ring has-focus-visible:ring-offset-1 has-focus-visible:ring-offset-background active:bg-accent/30 has-data-[all='true']:opacity-50"
+    class="relative flex items-center gap-4 p-4 rounded-md border border-border bg-card hover:bg-accent/20 hover:text-accent-foreground cursor-pointer transition-colors has-focus-visible:ring-1 has-focus-visible:ring-ring has-focus-visible:ring-offset-1 has-focus-visible:ring-offset-background active:bg-accent/30 has-data-[everyone='true']:opacity-50"
 >
     <input
         type="checkbox"
         name="{{ $name }}"
         value="{{ $value }}"
-        class="size-5 accent-accent data-[all='true']:accent-muted-foreground border-input rounded-sm focus:outline-none focus-visible:ring-ring bg-background cursor-pointer data-[all='true']:cursor-not-allowed"
+        class="size-5 accent-accent data-[all='true']:accent-muted-foreground border-input rounded-sm focus:outline-none focus-visible:ring-ring bg-background cursor-pointer data-[everyone='true']:cursor-not-allowed"
         {{ $attributes }}
     >
 
