@@ -1,4 +1,6 @@
 @use(App\Enums\FeatureFlag)
+@use(App\Models\Broadcaster\Broadcaster)
+@use(App\Support\FeatureFlag\Feature)
 <nav class="sticky top-0 md:top-2 my-2 z-100">
     <header
         class="flex items-center h-14 w-full px-3 sm:px-4    text-gray-900 dark:text-white/85   bg-white/75 dark:bg-black/80    border border-gray-200 dark:border-white/20    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none"
@@ -64,9 +66,19 @@
 
                         <x-ui.dropdown.content align="right" class="min-w-42">
                             @feature(FeatureFlag::UserDashboard)
-                                <x-ui.dropdown.item href="{{ route('dashboard') }}">
-                                    {{ __('navigation.dashboard') }}
-                                </x-ui.dropdown.item>
+                                @if(Broadcaster::where('id', auth()->id())->exists())
+                                    <x-ui.dropdown.item href="{{ route('dashboard') }}">
+                                        {{ __('navigation.dashboard') }}
+                                    </x-ui.dropdown.item>
+                                @endif
+                            @endfeature
+
+                            @feature(FeatureFlag::BroadcasterOnboarding)
+                                @if(! Feature::isActive(FeatureFlag::UserDashboard) || ! Broadcaster::where('id', auth()->id())->exists())
+                                    <x-ui.dropdown.item href="{{ route('dashboard.onboarding') }}">
+                                        {{ __('navigation.onboarding') }}
+                                    </x-ui.dropdown.item>
+                                @endif
                             @endfeature
 
                             @feature(FeatureFlag::UserSettings)
@@ -75,7 +87,7 @@
                                 </x-ui.dropdown.item>
                             @endfeature
 
-                            @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings])
+                            @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings, FeatureFlag::BroadcasterOnboarding])
                                 <x-ui.dropdown.separator/>
                             @endfeatureAny
 

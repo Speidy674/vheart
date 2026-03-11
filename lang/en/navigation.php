@@ -27,6 +27,7 @@ return [
     'logo_alt' => 'VHeart Logo',
 
     // User Dropdown
+    'onboarding' => 'Onboarding',
     'settings' => 'Settings',
     'logout' => 'Logout',
 ];
