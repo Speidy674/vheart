@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Enums\FeatureFlag;
+use App\Http\Controllers\Broadcaster\OnboardingController;
+use App\Http\Controllers\Broadcaster\OnboardingSubmitController;
 use App\Http\Middleware\BroadcasterDashboard;
 use App\Http\Middleware\FeatureFlagGuard;
 use App\Models\Clip;
@@ -12,6 +14,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::BroadcasterOnboarding)])->group(function () {
+    Route::get('/dashboard/onboarding', OnboardingController::class)->name('dashboard.onboarding');
+    Route::post('/dashboard/onboarding', OnboardingSubmitController::class)->name('dashboard.onboarding.setup');
+});
 
 Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserDashboard)])->group(function () {
     Route::get('/dashboard', function (Request $request) {
