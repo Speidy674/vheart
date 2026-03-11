@@ -4,24 +4,24 @@
         <x-ui.card class="shadow-sm border border-border bg-card text-card-foreground">
             <x-ui.card.header class="pb-6 border-b border-border">
                 <x-ui.card.title class="text-center text-2xl font-bold tracking-tight">
-                    <h1>Willkommen, {{ auth()->user()->name }}!</h1>
+                    <h1>{{ __('onboarding.heading', ['username' => auth()->user()->name]) }}</h1>
                 </x-ui.card.title>
             </x-ui.card.header>
 
             <x-ui.card.content class="p-4 pt-6 space-y-8">
                 <div class="text-center space-y-2">
                     <p class="text-lg font-medium text-foreground">
-                        Lass uns dein Profil einrichten.
+                        {{ __('onboarding.setup.heading') }}
                     </p>
                 </div>
 
                 <section id="consent" class="space-y-5">
                     <div class="space-y-1">
                         <h3 class="text-base font-semibold text-foreground">
-                            Nutzungsrechte für deine Inhalte
+                            {{ __('onboarding.setup.consent.heading') }}
                         </h3>
                         <p class="text-sm text-muted-foreground">
-                            Damit wir deine Clips in unseren Compilations verwenden können, brauchen wir deine Erlaubnis. Du kannst das natürlich überspringen und dir erstmal alles in Ruhe anschauen.
+                            {{ __('onboarding.setup.consent.subheading') }}
                         </p>
                     </div>
 
@@ -35,10 +35,10 @@
                 <section id="submit_permissions" class="space-y-5">
                     <div class="space-y-1">
                         <h3 class="text-base font-semibold text-foreground">
-                            Clip-Einsendungen
+                            {{ __('onboarding.setup.submissions.heading') }}
                         </h3>
                         <p class="text-sm text-muted-foreground">
-                            Wer darf Clips von dir bei uns einreichen? Wir empfehlen, dies für alle Zuschauer freizugeben.
+                            {{ __('onboarding.setup.submissions.subheading') }}
                         </p>
                     </div>
 
@@ -47,8 +47,8 @@
                             x-model="all"
                             @change="if(all) { vips = true; mods = true }"
                             checked name="everyone"
-                            label="Jeder"
-                            description="Jeder kann deine Clips auf unserer Seite einsenden"
+                            label="{{ __('onboarding.setup.submissions.options.everyone.label') }}"
+                            description="{{ __('onboarding.setup.submissions.options.everyone.description') }}"
                             value="1"
                         />
 
@@ -58,8 +58,8 @@
                             @change="if(!vips) all = false"
                             checked
                             name="vips"
-                            label="VIPs"
-                            description="Zuschauer mit dem VIP Status können Clips einsenden"
+                            label="{{ __('onboarding2.setup.submissions.options.vips.label') }}"
+                            description="{{ __('onboarding.setup.submissions.options.vips.description') }}"
                             value="1"
                         />
 
@@ -69,8 +69,8 @@
                             @change="if(!mods) all = false"
                             checked
                             name="moderators"
-                            label="Moderatoren"
-                            description="Moderatoren können Clips einsenden"
+                            label="{{ __('onboarding.setup.submissions.options.mods.label') }}"
+                            description="{{ __('onboarding.setup.submissions.options.mods.description') }}"
                             value="1"
                         />
                     </div>
@@ -79,10 +79,10 @@
 
             <x-ui.card.footer class="p-4 flex-col-reverse sm:flex-row justify-between md:justify-end gap-4 border-t border-border md:bottom-14 md:sticky md:z-10 bg-card text-card-foreground">
                 <x-ui.button type="submit" name="action" value="skip" variant="outline">
-                    Später entscheiden
+                    {{ __('onboarding.setup.later') }}
                 </x-ui.button>
                 <x-ui.button type="submit" name="action" value="setup">
-                    Speichern & Weiter
+                    {{ __('onboarding.setup.submit') }}
                 </x-ui.button>
             </x-ui.card.footer>
         </x-ui.card>
