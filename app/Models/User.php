@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
 use App\Enums\Permission;
 use App\Models\Contracts\ExternalProxyable;
@@ -282,6 +283,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     protected function casts(): array
     {
         return [
+            'avatar_url' => TwitchAvatarCast::class,
             'email_verified_at' => 'datetime',
             'clip_permission' => 'boolean',
             'password' => 'hashed',
