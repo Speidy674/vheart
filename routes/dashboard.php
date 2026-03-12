@@ -7,6 +7,7 @@ use App\Http\Controllers\Broadcaster\OnboardingController;
 use App\Http\Controllers\Broadcaster\OnboardingSubmitController;
 use App\Http\Middleware\BroadcasterDashboard;
 use App\Http\Middleware\FeatureFlagGuard;
+use App\Http\Middleware\RequiresBroadcasterProfile;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
@@ -23,7 +24,9 @@ Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::BroadcasterOnboardi
 Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserDashboard)])->group(function () {
     Route::get('/dashboard', function (Request $request) {
         return Redirect::route('dashboard.main', $request->user()->id);
-    })->name('dashboard');
+    })
+        ->middleware([RequiresBroadcasterProfile::class])
+        ->name('dashboard');
 
     Route::middleware(BroadcasterDashboard::class)
         ->missing(function () {
