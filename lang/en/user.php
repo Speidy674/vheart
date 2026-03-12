@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    'settings' => [
+        'title' => 'Account Settings',
+        'broadcaster_note' => [
+            'label' => 'Notice for Broadcasters',
+            'description' => 'To manage specific settings for your channel, please switch to the Broadcaster Dashboard.',
+            'link' => 'Go to Broadcaster Dashboard',
+        ],
+        'delete' => [
+            'heading' => 'Delete Account',
+            'subheading' => 'Are you sure you want to delete your account?',
+            'description' => 'Your broadcaster profile and personal data will be deleted. For technical reasons, your Twitch user ID, votes you have cast until they are archived, and clips of other channels you have submitted will be retained. However, clips from your own channel will be hidden immediately and will only become visible again if you create a new broadcaster profile in the future.',
+            'confirmation' => [
+                'two-factor' => [
+                    'label' => 'Confirm using your Two-Factor Authentication',
+                ],
+                'keyword' => [
+                    'label' => 'Confirm by typing <code>:keyword</code>',
+                    'keyword' => 'DELETE ACCOUNT',
+                ],
+            ],
+            'submit' => 'Delete Account',
+        ],
+    ],
+];
