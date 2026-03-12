@@ -19,6 +19,7 @@ class OnboardingSubmitController extends Controller
             'submit_user_allowed' => $request->boolean('everyone'),
             'submit_vip_allowed' => $request->boolean('vips'),
             'submit_mods_allowed' => $request->boolean('moderators'),
+            'onboarded_at' => now(),
         ]);
 
         $fallbackRoute = route(
