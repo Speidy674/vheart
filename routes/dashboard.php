@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Enums\FeatureFlag;
 use App\Http\Middleware\BroadcasterDashboard;
+use App\Http\Middleware\FeatureFlagGuard;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
@@ -11,8 +13,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::middleware('auth')->group(function () {
-
+Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserDashboard)])->group(function () {
     Route::get('/dashboard', function (Request $request) {
         return Redirect::route('dashboard.main', $request->user()->id);
     })->name('dashboard');
