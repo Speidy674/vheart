@@ -1,5 +1,4 @@
 import { Dashboard_items } from '@/components/sidebar/dashboard_items';
-import { SettingsSection } from '@/components/sidebar/settings-section';
 import { SidebarMenu } from '@/components/ui/sidebar';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import { type BreadcrumbItem } from '@/types';
@@ -25,12 +24,6 @@ export default function AppLayout({
                 {sidebarVariant === 'creator_dashboard' && (
                     <>
                         <Dashboard_items />
-                    </>
-                )}
-
-                {sidebarVariant === 'personal_settings' && (
-                    <>
-                        <SettingsSection />
                     </>
                 )}
             </SidebarMenu>
