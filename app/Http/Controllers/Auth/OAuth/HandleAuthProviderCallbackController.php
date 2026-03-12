@@ -93,7 +93,7 @@ class HandleAuthProviderCallbackController extends Controller implements HasMidd
             }
         }
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('home'));
     }
 
     public static function middleware(): array
