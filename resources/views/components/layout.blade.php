@@ -73,6 +73,7 @@
         <x-layout.header />
 
         <main {{ $attributes->twMerge("grow") }}>
+            <x-layout.shared.onboarding-alert />
             {{ $slot }}
         </main>
 

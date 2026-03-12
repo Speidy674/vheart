@@ -32,4 +32,10 @@ return [
         'later' => 'I will decide Later',
         'submit' => 'Save and Continue',
     ],
+    'alert' => [
+        'heading' => 'Streamer?',
+        'description' => 'Please set up your profile and grant us permission to use your content.',
+        'cta' => 'Set up your profile',
+        'dismiss' => 'Dismiss notice',
+    ],
 ];

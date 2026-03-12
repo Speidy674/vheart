@@ -32,4 +32,10 @@ return [
         'later' => 'Später entscheiden',
         'submit' => 'Speichern & Weiter',
     ],
+    'alert' => [
+        'heading' => 'Streamer?',
+        'description' => 'Bitte erstelle ein Streamer-Profil und erteile uns die Erlaubnis, deine Inhalte zu verwenden.',
+        'cta' => 'Profil einrichten',
+        'dismiss' => 'Schließen',
+    ],
 ];
