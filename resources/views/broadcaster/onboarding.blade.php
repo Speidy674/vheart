@@ -58,7 +58,7 @@
                             @change="if(!vips) everyone = false"
                             checked
                             name="vips"
-                            label="{{ __('onboarding2.setup.submissions.options.vips.label') }}"
+                            label="{{ __('onboarding.setup.submissions.options.vips.label') }}"
                             description="{{ __('onboarding.setup.submissions.options.vips.description') }}"
                             value="1"
                         />
