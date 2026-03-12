@@ -1,6 +1,6 @@
 @use(App\Enums\Broadcaster\BroadcasterConsent)
 <x-layout :title="'Onboarding'" class="max-w-3xl w-full mx-auto font-sans">
-    <form action="#" method="POST">
+    <form action="{{ route('dashboard.onboarding.store') }}" method="POST">
         <x-ui.card class="shadow-sm border border-border bg-card text-card-foreground">
             <x-ui.card.header class="pb-6 border-b border-border">
                 <x-ui.card.title class="text-center text-2xl font-bold tracking-tight">

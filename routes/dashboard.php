@@ -17,7 +17,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::BroadcasterOnboarding)])->group(function () {
     Route::get('/dashboard/onboarding', OnboardingController::class)->name('dashboard.onboarding');
-    Route::post('/dashboard/onboarding', OnboardingSubmitController::class)->name('dashboard.onboarding.setup');
+    Route::post('/dashboard/onboarding', OnboardingSubmitController::class)->name('dashboard.onboarding.store');
 });
 
 Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserDashboard)])->group(function () {
