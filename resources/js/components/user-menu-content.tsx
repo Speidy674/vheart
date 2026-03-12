@@ -2,16 +2,16 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
+    DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { logout } from '@/routes';
-import { edit } from '@/routes/profile';
 import { type AuthenticatedUser } from '@/types';
 import { Link, router } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { settings } from '@/routes/user';
 
 interface UserMenuContentProps {
     user: AuthenticatedUser;
@@ -38,7 +38,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                 <DropdownMenuItem asChild>
                     <Link
                         className="block w-full"
-                        href={edit()}
+                        href={settings()}
                         as="button"
                         prefetch
                         onClick={cleanup}
