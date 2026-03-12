@@ -196,7 +196,7 @@ trait Auditable
                 unset($old[$deletedAtCol], $new[$deletedAtCol]);
             }
 
-            if ($new === [] && $event !== 'restored') {
+            if ($event !== 'restored') {
                 return;
             }
         } elseif (in_array($event, ['created', 'deleted', 'forceDeleted'], true)) {
