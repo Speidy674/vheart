@@ -19,12 +19,12 @@ class RequiresBroadcasterProfile
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // we don't want infinite redirect loops with this economy (just in case it happens to be on that route too)
-        if ($request->routeIs('dashboard.onboarding')) {
-            return $next($request);
-        }
-
         if (! Broadcaster::where('id', $request->user()?->id)->exists()) {
+            // we don't want infinite redirect loops with this economy (just in case it happens to be on that route too)
+            if ($request->routeIs('dashboard.onboarding')) {
+                return $next($request);
+            }
+
             return redirect()->guest(route('dashboard.onboarding'));
         }
 
