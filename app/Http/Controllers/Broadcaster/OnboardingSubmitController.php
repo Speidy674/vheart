@@ -21,10 +21,12 @@ class OnboardingSubmitController extends Controller
             'submit_mods_allowed' => $request->boolean('moderators'),
         ]);
 
-        return redirect()->route(
+        $fallbackRoute = route(
             Feature::isActive(FeatureFlag::UserDashboard)
                 ? 'dashboard'
                 : 'home'
         );
+
+        return redirect()->intended($fallbackRoute);
     }
 }
