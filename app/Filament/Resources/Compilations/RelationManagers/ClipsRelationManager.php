@@ -94,6 +94,13 @@ class ClipsRelationManager extends RelationManager
                         ->space(1),
 
                     Stack::make([
+                        TextColumn::make('adder.name')
+                            ->label('admin/resources/compilations.relation_managers.clips.columns.adder')
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.adder'))
+                            ->translateLabel()
+                            ->icon(Heroicon::Plus)
+                            ->color('gray'),
+
                         TextColumn::make('claimer.name')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.claimer')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.claimer'))
@@ -113,6 +120,13 @@ class ClipsRelationManager extends RelationManager
                             ->icon(Heroicon::Calendar)
                             ->translateLabel()
                             ->dateTime(),
+                        TextColumn::make('pivot.added_at')
+                            ->label(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->translateLabel()
+                            ->dateTime()
+                            ->color('gray'),
                     ])
                         ->space(1),
                 ])->from('lg'),
@@ -172,6 +186,36 @@ class ClipsRelationManager extends RelationManager
                             }
                         });
                     }),
+                SelectFilter::make('adder')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.adder')
+                    ->translateLabel()
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->options(fn () => User::query()
+                        ->whereIn('id', $this->getOwnerRecord()->clips()->newPivotStatement()
+                            ->where('compilation_id', $this->getOwnerRecord()->getKey())
+                            ->pluck('added_by'))
+                        ->pluck('name', 'id')
+                        ->prepend(__('admin/resources/compilations.relation_managers.clips.filters.adder_option_none'), 'null'))
+                    ->query(function (Builder $query, array $data): void {
+                        $values = $data['values'] ?? [];
+                        if (empty($values)) {
+                            return;
+                        }
+
+                        $query->where(function (Builder $query) use ($values): void {
+                            $ids = array_diff($values, ['null']);
+
+                            if (in_array('null', $values, true)) {
+                                $query->whereNull('clip_compilation.added_by');
+                            }
+
+                            if ($ids !== []) {
+                                $query->orWhereIn('clip_compilation.added_by', $ids);
+                            }
+                        });
+                    }),
                 SelectFilter::make('category')
                     ->relationship('category', 'title',
                         fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('category_id')))
@@ -212,13 +256,18 @@ class ClipsRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
-                        Select::make('status')
+                        Select::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
                             ->options(CompilationClipClaimStatus::class)
                             ->default(CompilationClipClaimStatus::Pending)
                             ->required(),
-                    ]),
+                    ])
+                    ->mutateDataUsing(function (array $data): array {
+                        $data['added_by'] = auth()->id();
+
+                        return $data;
+                    }),
             ])
             ->recordActions([
                 CommentsAction::make()
