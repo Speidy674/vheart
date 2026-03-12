@@ -4,7 +4,7 @@
     static $selectValidation = "aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40";
     static $selectDisabled = "disabled:cursor-not-allowed disabled:opacity-50";
 @endphp
-<div class="relative">
+<div class="relative h-fit">
     <select
         data-slot="select"
         {{ $attributes->twMerge($selectBase, $selectFocused, $selectValidation, $selectDisabled) }}
