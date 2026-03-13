@@ -3,23 +3,21 @@
 declare(strict_types=1);
 
 use App\Enums\FeatureFlag;
-use App\Http\Controllers\Settings\PermissionsController;
-use App\Http\Controllers\Settings\ProfileController;
+use App\Http\Controllers\Auth\User\DeleteUserController;
 use App\Http\Middleware\FeatureFlagGuard;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserSettings)])->group(function () {
-    Route::redirect('settings', '/settings/profile');
+Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserSettings)])
+    ->prefix('settings')
+    ->name('user.settings')
+    ->group(function () {
+        Route::get('/', function (Request $request, AppAuthentication $mfa) {
+            return view('settings', [
+                'useTwoFactor' => $mfa->isEnabled($request->user()),
+            ]);
+        });
 
-    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('settings/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('settings/appearance', function () {
-        return Inertia::render('settings/appearance');
-    })->name('appearance.edit');
-
-    Route::get('settings/permissions', [PermissionsController::class, 'edit'])->name('permissions.edit');
-    Route::patch('settings/permissions', [PermissionsController::class, 'update'])->name('permissions.update');
-});
+        Route::delete('/', DeleteUserController::class)->name('.delete');
+    });
