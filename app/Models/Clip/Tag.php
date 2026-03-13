@@ -6,6 +6,7 @@ namespace App\Models\Clip;
 
 use App\Http\Resources\Clip\TagResource;
 use App\Models\Clip;
+use App\Models\Traits\Auditable;
 use App\Policies\TagPolicy;
 use Database\Factories\Clip\TagFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -20,6 +21,8 @@ use Spatie\Translatable\HasTranslations;
 #[UseResource(TagResource::class)]
 class Tag extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 

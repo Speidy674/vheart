@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Auth\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Inertia\Inertia;
 
 class EmailVerificationPromptController extends Controller implements HasMiddleware
 {
@@ -17,7 +16,7 @@ class EmailVerificationPromptController extends Controller implements HasMiddlew
             return redirect()->intended(route('dashboard'));
         }
 
-        return Inertia::render('auth/verify-email');
+        return view('auth.verify-email');
     }
 
     public static function middleware(): array

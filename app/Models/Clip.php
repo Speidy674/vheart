@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\TwitchClipThumbnailCast;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\ExternalContentProxyType;
+use App\Enums\FeatureFlag;
 use App\Http\Resources\PublicClipResource;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
@@ -15,9 +17,12 @@ use App\Models\Clip\Tag;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\ClipPolicy;
+use App\Support\FeatureFlag\Feature;
+use Carbon\CarbonInterval;
 use Database\Factories\ClipFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -42,7 +47,7 @@ use Kirschbaum\Commentions\HasComments;
 class Clip extends Model implements Commentable, ExternalProxyable
 {
     /** @use HasFactory<ClipFactory> */
-    use HasComments, HasExternalProxy, HasFactory, Reportable;
+    use Auditable, HasComments, HasExternalProxy, HasFactory, Reportable;
 
     public static function getProxyIdentifierColumn(): string
     {
@@ -154,8 +159,36 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function casts(): array
     {
         return [
+            'thumbnail_url' => TwitchClipThumbnailCast::class,
             'status' => ClipStatus::class,
         ];
+    }
+
+    /**
+     * add rules/filters here to limit what can be voted on.
+     */
+    #[Scope]
+    protected function whereEligibleForVoting(Builder $query, ?User $user = null): Builder
+    {
+        /** @var CarbonInterval $maxAge */
+        $maxAge = config('vheart.clips.voting.maximum_age');
+
+        if (! Feature::isActive(FeatureFlag::ClipVoting)) {
+            // Since the feature got disabled, make it impossible to get anything to vote on
+            return $query->whereRaw('1 = 0');
+        }
+
+        // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
+        return $query
+            ->whereSubmittedAfter(now()->sub($maxAge))
+            ->whereBroadcasterGavePermission()
+            ->whereNotPublished()
+            ->when($user, fn (Builder $query) => $query
+                ->whereNotBroadcastBy($user)
+                ->whereNotCreatedBy($user)
+                ->whereNotSubmittedBy($user)
+                ->whereNoVotesFrom($user)
+            );
     }
 
     /**
@@ -218,7 +251,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereNoVotesFrom(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereDoesntHave('votes', fn (Builder $q) => $q->where('user_id', $userId));
     }
@@ -229,7 +262,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereVotesFrom(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereHas('votes', fn (Builder $q) => $q->where('user_id', $userId));
     }
@@ -240,9 +273,31 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereNotBroadcastBy(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->whereNot('broadcaster_id', $userId);
+    }
+
+    /**
+     * Exclude Clips the user has Created/Clipped
+     */
+    #[Scope]
+    protected function whereNotCreatedBy(Builder $query, User|int $userOrId): Builder
+    {
+        $userId = $this->extractUserIdFromParameter($userOrId);
+
+        return $query->whereNot('creator_id', $userId);
+    }
+
+    /**
+     * Exclude Clips the user has Submitted
+     */
+    #[Scope]
+    protected function whereNotSubmittedBy(Builder $query, User|int $userOrId): Builder
+    {
+        $userId = $this->extractUserIdFromParameter($userOrId);
+
+        return $query->whereNot('submitter_id', $userId);
     }
 
     /**
@@ -251,7 +306,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereBroadcastBy(Builder $query, User|int $userOrId): Builder
     {
-        $userId = $userOrId instanceof User ? $userOrId->id : $userOrId;
+        $userId = $this->extractUserIdFromParameter($userOrId);
 
         return $query->where('broadcaster_id', $userId);
     }
@@ -297,5 +352,10 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return $query
             ->withJuryVoteCount()
             ->withPublicVoteCount();
+    }
+
+    private function extractUserIdFromParameter(User|int $userOrId): int
+    {
+        return $userOrId instanceof User ? $userOrId->id : $userOrId;
     }
 }

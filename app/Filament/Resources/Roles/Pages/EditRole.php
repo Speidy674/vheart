@@ -25,4 +25,14 @@ class EditRole extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function beforeSave(): void
+    {
+        $this->record->prepareExtraAudit();
+    }
+
+    protected function afterSave(): void
+    {
+        $this->record->commitExtraAudit();
+    }
 }

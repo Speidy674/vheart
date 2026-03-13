@@ -3,8 +3,11 @@
 declare(strict_types=1);
 
 use App\Enums\FeatureFlag;
+use App\Http\Controllers\Broadcaster\OnboardingController;
+use App\Http\Controllers\Broadcaster\OnboardingSubmitController;
 use App\Http\Middleware\BroadcasterDashboard;
 use App\Http\Middleware\FeatureFlagGuard;
+use App\Http\Middleware\RequiresBroadcasterProfile;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
@@ -13,10 +16,17 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::BroadcasterOnboarding)])->group(function () {
+    Route::get('/dashboard/onboarding', OnboardingController::class)->name('dashboard.onboarding');
+    Route::post('/dashboard/onboarding', OnboardingSubmitController::class)->name('dashboard.onboarding.store');
+});
+
 Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserDashboard)])->group(function () {
     Route::get('/dashboard', function (Request $request) {
         return Redirect::route('dashboard.main', $request->user()->id);
-    })->name('dashboard');
+    })
+        ->middleware([RequiresBroadcasterProfile::class])
+        ->name('dashboard');
 
     Route::middleware(BroadcasterDashboard::class)
         ->missing(function () {

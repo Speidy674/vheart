@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Permission;
 use App\Http\Resources\Role\RoleResource;
+use App\Models\Traits\Auditable;
 use App\Policies\RolePolicy;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
@@ -19,6 +21,7 @@ use Spatie\Translatable\HasTranslations;
 #[UsePolicy(RolePolicy::class)]
 class Role extends Model
 {
+    use Auditable;
     use HasFactory;
     use HasTranslations;
 
@@ -41,6 +44,13 @@ class Role extends Model
     public function permissions(): HasMany
     {
         return $this->hasMany(RolePermission::class);
+    }
+
+    public function getExtraAuditData(): array
+    {
+        return [
+            'permissions' => $this->permissions()->pluck('permission')->map(fn (Permission $permission) => $permission->value)->toArray(),
+        ];
     }
 
     protected function casts(): array

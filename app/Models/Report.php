@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
+use App\Models\Traits\Auditable;
 use App\Policies\ReportPolicy;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -24,7 +25,7 @@ use Kirschbaum\Commentions\HasComments;
 class Report extends Model implements Commentable
 {
     /** @use HasFactory<ReportFactory> */
-    use HasComments, HasFactory, SoftDeletes;
+    use Auditable, HasComments, HasFactory, SoftDeletes;
 
     /**
      * @return BelongsTo<User, $this>
