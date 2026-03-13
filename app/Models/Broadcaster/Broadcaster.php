@@ -68,6 +68,7 @@ class Broadcaster extends Model
             'submit_user_allowed' => 'boolean',
             'submit_mods_allowed' => 'boolean',
             'submit_vip_allowed' => 'boolean',
+            'onboarded_at' => 'datetime',
         ];
     }
 }
