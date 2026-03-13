@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Casts\TwitchClipThumbnailCast;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
@@ -158,6 +159,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function casts(): array
     {
         return [
+            'thumbnail_url' => TwitchClipThumbnailCast::class,
             'status' => ClipStatus::class,
         ];
     }

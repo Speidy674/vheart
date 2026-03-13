@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Casts\TwitchAvatarCast;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchEndpoints;
@@ -122,7 +123,7 @@ class TeamSeeder extends Seeder
         $usersData = collect($userDtos)->map(fn (UserDto $userDto): array => [
             'id' => $userDto->id,
             'name' => $userDto->display_name,
-            'avatar_url' => $userDto->profile_image_url,
+            'avatar_url' => TwitchAvatarCast::encode($userDto->profile_image_url),
             'created_at' => $userDto->created_at,
             'updated_at' => now(),
         ])->toArray();
