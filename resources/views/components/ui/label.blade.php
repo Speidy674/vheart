@@ -5,7 +5,7 @@
 @endphp
 <label
     data-slot="label"
-    data-required="{{ $attributes->get('required') ? 'true' : 'false' }}"
+    @if($attributes->get('required')) data-required="true" @endif
     {{ $attributes->except('required')->twMerge($labelBase, $labelDisabled, $labelRequired) }}
 >
     {{ $slot }}
