@@ -1,43 +1,55 @@
 import { AlpineComponent } from 'alpinejs';
-import { checkInView } from '@/lib/utils';
 
 export type ImageStatus = 'loading' | 'loaded' | 'error';
 
-export interface ImageConfig {
-    viewBuffer: number;
-}
-
 export interface ImageData {
+    src: string;
+    alt: string;
     shown: boolean;
     imageStatus: ImageStatus;
     isCached: boolean;
-    viewBuffer: number;
+    imageBindings: Record<string, unknown>;
     checkCached(el: HTMLImageElement): void;
     show(): void;
 }
 
-export default (config: ImageConfig): AlpineComponent<ImageData> => ({
+export default (src: string, alt: string): AlpineComponent<ImageData> => ({
+    src,
+    alt,
     shown: false,
     imageStatus: 'loading',
     isCached: false,
-    viewBuffer: config.viewBuffer || 100,
-    init() {
-        const el = this.$el as HTMLImageElement;
-        this.checkCached(el);
 
-        const inView = checkInView(el, this.viewBuffer);
-
-        if (this.isCached || inView) {
-            this.shown = true;
-        }
-    },
     checkCached(el: HTMLImageElement) {
-        if (el.complete) {
-            this.imageStatus = 'loaded';
+        if (el.complete && el.naturalWidth > 0) {
             this.isCached = true;
         }
     },
+
     show() {
         this.shown = true;
+    },
+
+    imageBindings: {
+        [':src']() {
+            return this.src;
+        },
+        [':alt']() {
+            return this.alt;
+        },
+        ['@load']() {
+            this.imageStatus = 'loaded';
+        },
+        ['@error']() {
+            this.imageStatus = 'error';
+        },
+        [':data-status']() {
+            return this.imageStatus;
+        },
+        [':data-cached']() {
+            return this.isCached ? 'true' : 'false';
+        },
+        ['loading']: 'lazy',
+        ['decoding']: 'async',
     },
 });
