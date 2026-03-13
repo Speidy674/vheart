@@ -1,36 +1,39 @@
-@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false])
+@props(['src' => null, 'alt' => null, 'viewBuffer' => 100, 'force' => false, 'fallback' => null, 'loading' => 'lazy'])
 
 @if($force)
     <div {{ $attributes }}>
         <img
             src="{{ $src }}"
             alt="{{ $alt }}"
-            class="h-full w-full object-cover"
-            loading="lazy"
+            @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
+            class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
+            loading="{{ $loading }}"
             decoding="async"
         />
     </div>
 @else
     <div
-        x-data="image({ viewBuffer: {{ $viewBuffer }} })"
+        x-data="image('{{ $src }}', '{{ $alt }}')"
         x-intersect.margin.{{ $viewBuffer }}px.once="show()"
         {{ $attributes }}
     >
+        @if(isset($placeholder))
+            <div x-show="imageStatus === 'loading'" {{ $placeholder->attributes->twMerge('absolute inset-0 flex items-center justify-center') }}>
+                {{ $placeholder }}
+            </div>
+        @endif
+
+        @if(isset($error))
+            <div x-show="imageStatus === 'error'" style="display: none;" {{ $error->attributes->twMerge('absolute inset-0 flex items-center justify-center') }}>
+                {{ $error }}
+            </div>
+        @endif
+
         <template x-if="shown">
             <img
-                src="{{ $src }}"
-                alt="{{ $alt }}"
+                x-bind="imageBindings"
                 x-init="checkCached($el)"
-                @load="imageStatus = 'loaded'"
-            @@error="imageStatus = 'error'"
-            :class="{
-                    'opacity-100': imageStatus === 'loaded',
-                    'opacity-0': imageStatus !== 'loaded',
-                    'transition-opacity duration-300': !isCached
-                }"
-            class="h-full w-full object-cover"
-            loading="lazy"
-            decoding="async"
+                class="h-full w-full object-cover opacity-0 data-[status=loaded]:opacity-100 transition-opacity data-[cached=false]:duration-300 data-[cached=true]:duration-150"
             />
         </template>
 
@@ -38,8 +41,9 @@
             <img
                 src="{{ $src }}"
                 alt="{{ $alt }}"
-                class="h-full w-full object-cover"
-                loading="lazy"
+                @if($fallback) style="--fallback: url('{{ $fallback }}');" @endif
+                class="h-full w-full object-cover text-transparent relative after:content-[''] after:absolute after:inset-0 after:bg-(image:--fallback) after:bg-cover after:bg-center"
+                loading="{{ $loading }}"
                 decoding="async"
             />
         </noscript>

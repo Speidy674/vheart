@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\ExternalContentProxyType;
 use App\Http\Resources\CategoryResource;
 use App\Models\Contracts\ExternalProxyable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Policies\CategoryPolicy;
 use Database\Factories\CategoryFactory;
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[UseResource(CategoryResource::class)]
 class Category extends Model implements ExternalProxyable
 {
+    use Auditable;
     use HasExternalProxy;
 
     /** @use HasFactory<CategoryFactory> */

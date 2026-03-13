@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Clip;
 
 use App\Enums\Clips\CompilationClipClaimStatus;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 // pivot data, this is usually accessible via $model->pivot->stuff()
 class CompilationClip extends Pivot
 {
+    use Auditable;
     use HasFactory;
 
     public $incrementing = true;

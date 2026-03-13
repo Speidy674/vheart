@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
-use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
 
 /**
@@ -86,11 +85,7 @@ class HandleAuthProviderCallbackController extends Controller implements HasMidd
         Auth::login($user);
 
         if ($user->wasRecentlyCreated) {
-            Inertia::flash('showTwitchPermissionsPrompt', true);
-
-            if (User::query()->whereNot('id', 0)->count() === 1) {
-                $user->syncRoles([0]);
-            }
+            $request->session()->flash('showTwitchPermissionsPrompt');
         }
 
         return redirect()->intended(route('home'));
