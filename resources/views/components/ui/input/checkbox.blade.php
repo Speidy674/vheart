@@ -11,7 +11,7 @@
         'default' => 'hover:border-primary/50 checked:bg-primary checked:text-primary-foreground checked:border-primary',
     ];
 @endphp
-<div class="relative inline-flex items-center justify-center align-middle">
+<div class="relative inline-flex items-center justify-center align-middle h-fit w-fit">
     <input
         type="checkbox"
         data-slot="checkbox"
