@@ -7,14 +7,18 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Models\Traits\Auditable;
+use App\Models\User;
 use Database\Factories\Broadcaster\BroadcasterFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Broadcaster extends Model
 {
@@ -26,6 +30,11 @@ class Broadcaster extends Model
     use SoftDeletes;
 
     public $incrementing = false;
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id', 'id');
+    }
 
     /**
      * @return HasMany<BroadcasterTeamMember, $this>
@@ -41,6 +50,11 @@ class Broadcaster extends Model
     public function filters(): HasMany
     {
         return $this->hasMany(BroadcasterSubmissionFilter::class);
+    }
+
+    public function proxiedContentUrl(): mixed
+    {
+        return $this->loadMissing('user')->user->proxiedContentUrl();
     }
 
     protected static function booted(): void
@@ -62,6 +76,13 @@ class Broadcaster extends Model
         });
     }
 
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->loadMissing('user')->user->name,
+        );
+    }
+
     protected function casts(): array
     {
         return [
@@ -74,22 +95,31 @@ class Broadcaster extends Model
         ];
     }
 
+    #[Scope]
+    protected function whereGaveNoConsent(Builder $query): Builder
+    {
+        return $query->where(function (Builder $query) {
+            return $query
+                ->whereJsonLength('consent', '=', '0')
+                ->orWhereNull('consent');
+        });
+    }
+
     /**
-     * Include only Clips where the broadcaster has explicitly granted any consens.
+     * check if the broadcaster has given the consents or when no consents provided check if any consent is given
      */
     #[Scope]
-    protected function whereGivenAnyConsent(Builder $query): Builder
+    protected function whereGaveConsent(Builder $query, BroadcasterConsent|Collection|array|null $consents = null): Builder
     {
-        $first = true;
-        foreach (BroadcasterConsent::cases() as $broadcasterConsent) {
-            if ($first) {
-                $query->whereJsonContains('consent', $broadcasterConsent);
-                $first = false;
-            } else {
-                $query->orWhereJsonContains('consent', $broadcasterConsent);
-            }
+        if (! $consents) {
+            return $query->whereJsonLength('consent', '>', '0');
         }
 
-        return $query;
+        if ($consents instanceof BroadcasterConsent) {
+            $consents = [$consents];
+        }
+
+        return $query->whereJsonContains('consent', $consents);
+
     }
 }
