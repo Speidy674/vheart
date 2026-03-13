@@ -15,10 +15,10 @@ beforeEach(function () {
     Cache::flush();
 
     $this->defaultFalseFlag = collect(FeatureFlag::cases())
-        ->first(fn (FeatureFlag $flag) => $flag->getDefaultState() === false);
+        ->first(fn (FeatureFlag $flag) => $flag->getDefaultState() === false && $flag->getDisabledOnEnvironment() === false);
 
     $this->defaultTrueFlag = collect(FeatureFlag::cases())
-        ->first(fn (FeatureFlag $flag) => $flag->getDefaultState() === true);
+        ->first(fn (FeatureFlag $flag) => $flag->getDefaultState() === true && $flag->getDisabledOnEnvironment() === false);
 
     $this->anyFlag = $this->defaultFalseFlag ?? $this->defaultTrueFlag;
 });
