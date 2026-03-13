@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Enums;
 
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\ExternalContentProxyType;
 use App\Models\Category;
 use App\Models\Clip;
@@ -23,8 +24,8 @@ test('it correctly resolves resource url from database', function () {
         'thumbnail_url' => 'https://example.com/img.jpg',
     ]);
 
-    $clip->broadcaster()->update([
-        'clip_permission' => true,
+    $clip->owner->broadcaster()->create([
+        'consent' => [BroadcasterConsent::Compilations],
     ]);
 
     $resolvedUrl = ExternalContentProxyType::TwitchClip->getResource('some-slug');
