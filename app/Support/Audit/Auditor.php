@@ -30,7 +30,7 @@ class Auditor
     public static function make(): static
     {
         $instance = new static();
-        $instance->requestId = context('x_request_id');
+        $instance->requestId = context('request_id');
 
         if (auth()->check()) {
             $instance->causer = auth()->user();
