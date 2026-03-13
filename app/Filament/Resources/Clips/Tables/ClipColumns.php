@@ -108,7 +108,7 @@ class ClipColumns
 
     public static function broadcasterName(): TextColumn
     {
-        return TextColumn::make('broadcaster.name')
+        return TextColumn::make('owner.name')
             ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
             ->icon(Heroicon::VideoCamera)
             ->color('gray');
