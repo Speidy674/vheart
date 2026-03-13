@@ -23,6 +23,6 @@ class ClipPermissionScope implements Scope
         }
 
         /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        $builder->whereBroadcasterGaveAnyConsent();
+        $builder->whereBroadcasterGavePermission();
     }
 }
