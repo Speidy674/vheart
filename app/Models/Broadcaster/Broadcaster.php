@@ -6,6 +6,7 @@ namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
+use App\Models\Traits\Auditable;
 use Database\Factories\Broadcaster\BroadcasterFactory;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Broadcaster extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<BroadcasterFactory> */
     use HasFactory;
 

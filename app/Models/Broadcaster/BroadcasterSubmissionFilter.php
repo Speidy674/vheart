@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Broadcaster;
 
 use App\Models\Category;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use Database\Factories\Broadcaster\BroadcasterSubmissionFilterFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BroadcasterSubmissionFilter extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<BroadcasterSubmissionFilterFactory> */
     use HasFactory;
 
