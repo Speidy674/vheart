@@ -83,7 +83,7 @@
                             @endfeature
 
                             @feature(FeatureFlag::UserSettings)
-                                <x-ui.dropdown.item href="{{ route('profile.edit') }}">
+                                <x-ui.dropdown.item href="{{ route('user.settings') }}">
                                     {{ __('navigation.settings') }}
                                 </x-ui.dropdown.item>
                             @endfeature
