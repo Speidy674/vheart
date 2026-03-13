@@ -1,4 +1,6 @@
 @use(App\Enums\FeatureFlag)
+@use(App\Models\Broadcaster\Broadcaster)
+@use(App\Support\FeatureFlag\Feature)
 @use(Filament\Facades\Filament)
 <nav class="sticky top-0 md:top-2 my-2 z-100">
     <header
@@ -65,9 +67,19 @@
 
                         <x-ui.dropdown.content align="right" class="min-w-42">
                             @feature(FeatureFlag::UserDashboard)
-                                <x-ui.dropdown.item href="{{ route('dashboard') }}">
-                                    {{ __('navigation.dashboard') }}
-                                </x-ui.dropdown.item>
+                                @if(Broadcaster::where('id', auth()->id())->exists())
+                                    <x-ui.dropdown.item href="{{ route('dashboard') }}">
+                                        {{ __('navigation.dashboard') }}
+                                    </x-ui.dropdown.item>
+                                @endif
+                            @endfeature
+
+                            @feature(FeatureFlag::BroadcasterOnboarding)
+                                @if(! Feature::isActive(FeatureFlag::UserDashboard) || ! Broadcaster::where('id', auth()->id())->exists())
+                                    <x-ui.dropdown.item href="{{ route('dashboard.onboarding') }}">
+                                        {{ __('navigation.onboarding') }}
+                                    </x-ui.dropdown.item>
+                                @endif
                             @endfeature
 
                             @feature(FeatureFlag::UserSettings)
@@ -76,7 +88,7 @@
                                 </x-ui.dropdown.item>
                             @endfeature
 
-                            @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings])
+                            @featureAny([FeatureFlag::UserDashboard, FeatureFlag::UserSettings, FeatureFlag::BroadcasterOnboarding])
                                 <x-ui.dropdown.separator/>
                             @endfeatureAny
 

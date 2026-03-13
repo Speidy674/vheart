@@ -1,32 +1,12 @@
 import { Link, usePage } from '@inertiajs/react';
-import {
-    ChevronDown,
-    LayoutGrid,
-    LucideProps,
-    ScanHeart,
-    Search,
-    Send,
-    X,
-} from 'lucide-react';
-import {
-    ForwardRefExoticComponent,
-    lazy,
-    RefAttributes,
-    Suspense,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { ChevronDown, LayoutGrid, LucideProps, ScanHeart, Search, Send, X } from 'lucide-react';
+import { ForwardRefExoticComponent, RefAttributes, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ClipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
@@ -56,10 +36,6 @@ interface NavigationItem {
 interface AppTopbarProps {
     isIsland?: boolean;
 }
-
-const TwitchPermissionsBanner = lazy(
-    () => import('@/components/twitch-permissions-banner'),
-);
 
 const NAVIGATION_ITEMS = [
     { key: 'dashboard', href: dashboard(), icon: LayoutGrid },
@@ -117,14 +93,6 @@ export function AppTopbar({ isIsland = true }: AppTopbarProps) {
                 isIsland ? 'px-2 pt-2 sm:px-4 sm:pt-4' : 'px-0 pt-0',
             )}
         >
-            {Boolean(page.props.flash?.showTwitchPermissionsPrompt) && (
-                <div className={cn('w-full', isIsland ? 'mb-2' : 'mb-0')}>
-                    <Suspense fallback={null}>
-                        <TwitchPermissionsBanner />
-                    </Suspense>
-                </div>
-            )}
-
             <header
                 className={cn(
                     'relative flex h-14 w-full items-center justify-between',
