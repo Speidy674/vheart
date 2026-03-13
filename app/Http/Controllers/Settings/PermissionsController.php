@@ -32,7 +32,7 @@ class PermissionsController extends Controller
         if ($request->boolean('state') === true && ! in_array($broadCasterConsent, $consent->toArray())) {
             $consent->push($broadCasterConsent);
         } else {
-            $consent = $consent->filter(fn ($item) => $item !== $broadCasterConsent);
+            $consent = $consent->filter(fn ($item): bool => $item !== $broadCasterConsent);
         }
 
         $broadcaster->update([

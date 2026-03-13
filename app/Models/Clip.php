@@ -66,11 +66,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return 'jpg';
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function owner(): BelongsTo
     {
         return $this->BelongsTo(User::class, 'broadcaster_id', 'id')->withTrashed();
     }
 
+    /**
+     * @return BelongsTo<Broadcaster, $this>
+     */
     public function broadcaster(): BelongsTo
     {
         return $this->belongsTo(Broadcaster::class)->withTrashed();

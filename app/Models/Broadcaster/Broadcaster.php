@@ -31,6 +31,9 @@ class Broadcaster extends Model
 
     public $incrementing = false;
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id', 'id');
@@ -98,11 +101,9 @@ class Broadcaster extends Model
     #[Scope]
     protected function whereGaveNoConsent(Builder $query): Builder
     {
-        return $query->where(function (Builder $query) {
-            return $query
-                ->whereJsonLength('consent', '=', '0')
-                ->orWhereNull('consent');
-        });
+        return $query->where(fn (Builder $query) => $query
+            ->whereJsonLength('consent', '=', '0')
+            ->orWhereNull('consent'));
     }
 
     /**
