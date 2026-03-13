@@ -43,7 +43,7 @@ describe('Twitch Callback', function () {
         mockTwitchUser($user);
 
         $this->get(route('auth.callback'))
-            ->assertRedirect(route('dashboard'));
+            ->assertRedirect(route('home'));
 
         expect(auth()->user()->id)->toBe($user->id)
             ->and(session('auth_2fa_id'))->toBeNull();

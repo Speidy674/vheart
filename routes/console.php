@@ -1,3 +1,30 @@
 <?php
 
 declare(strict_types=1);
+
+use App\Models\Audit;
+use Illuminate\Database\Console\PruneCommand;
+use Illuminate\Support\Facades\Schedule;
+
+Schedule::call(static function () {
+    Audit::query()
+        ->where('created_at', '<=', now()->subDays(30))
+        ->where(function ($query) {
+            $query->whereNotNull('ip_address')
+                ->orWhereNotNull('user_agent');
+        })
+        ->update([
+            'ip_address' => null,
+            'user_agent' => null,
+        ]);
+})
+    ->name('Minify Audit Logs')
+    ->description('Deletes IP and User Agent data from Audit logs that are older than 30 days.')
+    ->onOneServer()
+    ->hourly();
+
+Schedule::command(PruneCommand::class)
+    ->name('Prune Models')
+    ->description('Prune Models based on their Prune definition')
+    ->onOneServer()
+    ->daily();

@@ -32,15 +32,19 @@ return [
     'relation_managers' => [
         'clips' => [
             'columns' => [
+                'adder' => 'Added By',
                 'claimer' => 'Claimer',
                 'status_cutter' => 'Cutter Status',
                 'status_moderation' => 'Moderation Status',
                 'removed_at' => 'Removed At',
+                'added_at' => 'Added At',
             ],
             'filters' => [
                 'broadcaster' => 'Broadcaster',
                 'creator' => 'Clip Creator',
                 'submitter' => 'Submitter',
+                'adder' => 'Added By',
+                'adder_option_none' => 'Nobody',
                 'claimer' => 'Claimer',
                 'claimer_option_none' => 'None / Unclaimed',
                 'category' => 'Category',

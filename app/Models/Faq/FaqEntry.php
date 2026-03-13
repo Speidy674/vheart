@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Faq;
 
 use App\Http\Resources\FaqEntryResource;
+use App\Models\Traits\Auditable;
 use App\Policies\FaqEntryPolicy;
 use Database\Factories\Faq\FaqEntryFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
@@ -18,6 +19,8 @@ use Spatie\Translatable\HasTranslations;
 #[UseResource(FaqEntryResource::class)]
 class FaqEntry extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<FaqEntryFactory> */
     use HasFactory;
 

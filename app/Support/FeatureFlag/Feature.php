@@ -22,6 +22,10 @@ class Feature
             return (bool) $envValue;
         }
 
+        if ($feature->getDisabledOnEnvironment()) {
+            return $feature->getDefaultState();
+        }
+
         return Cache::rememberForever($feature->cacheIdentifier(), static function () use ($feature): bool {
             $flag = DB::table('feature_flags')->where('name', $feature->value)->first();
 

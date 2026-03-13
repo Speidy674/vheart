@@ -20,6 +20,8 @@ return new class extends Migration
             $table->boolean('submit_user_allowed')->default(false);
             $table->boolean('submit_mods_allowed')->default(false);
             $table->boolean('submit_vip_allowed')->default(false);
+
+            $table->timestamp('onboarded_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Clip;
 
 use App\Enums\Clips\CompilationClipClaimStatus;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 // pivot data, this is usually accessible via $model->pivot->stuff()
 class CompilationClip extends Pivot
 {
+    use Auditable;
     use HasFactory;
 
     public $incrementing = true;
@@ -29,6 +31,8 @@ class CompilationClip extends Pivot
     {
         return [
             'id',
+            'added_by',
+            'added_at',
             'claimed_by',
             'claim_status',
             'claimed_at',
@@ -44,10 +48,19 @@ class CompilationClip extends Pivot
         return $this->belongsTo(User::class, 'claimed_by');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function adder(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+
     protected function casts(): array
     {
         return [
             'claim_status' => CompilationClipClaimStatus::class,
+            'added_at' => 'datetime',
             'claimed_at' => 'datetime',
             'removed_at' => 'datetime',
         ];
