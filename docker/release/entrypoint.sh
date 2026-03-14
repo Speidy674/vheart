@@ -18,6 +18,11 @@ if getent hosts redis > /dev/null; then
     echo "   -> Mapped 'redis' to $(getent hosts redis | awk '{ print $1 }')"
 fi
 
+if [ "$#" -gt 0 ]; then
+    echo "you can use artisan via 'production <command>'"
+    exec "$@"
+fi
+
 if [ "$INSTANCE" = "web" ]; then
     echo "[Entrypoint] Updating Cloudflare IP ranges..."
     if CF_IPS=$( { wget -qO- https://www.cloudflare.com/ips-v4; echo; wget -qO- https://www.cloudflare.com/ips-v6; } | tr '\n' ' ' ); then
