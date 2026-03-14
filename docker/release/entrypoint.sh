@@ -34,15 +34,15 @@ if [ "$INSTANCE" = "web" ]; then
     fi
 
     echo "[Entrypoint] Starting FrankenPHP..."
-    exec php -d variables_order=EGPCS /app/artisan octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
+    exec php -d variables_order=EGPCS production octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
 
 elif [ "$INSTANCE" = "worker" ]; then
     echo "[Entrypoint] Starting Laravel Worker..."
-    exec php /app/artisan queue:work --name=queue-worker --queue=default --sleep=3 --tries=3 --max-time=3600 --json
+    exec production queue:work --name=queue-worker --queue=default --sleep=3 --tries=3 --max-time=3600 --json
 
 elif [ "$INSTANCE" = "scheduler" ]; then
     echo "[Entrypoint] Starting Laravel Scheduler..."
-    exec php /app/artisan schedule:work --whisper
+    exec production schedule:work --whisper
 
 elif [ "$INSTANCE" = "init" ]; then
     echo "[Entrypoint] Running Initializations..."
