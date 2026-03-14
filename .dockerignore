@@ -19,6 +19,7 @@ data
 vendor
 frankenphp
 _ide_helper.php
+_ide_helper_models.php
 .phpstorm.meta.php
 node_modules
 tests
@@ -50,3 +51,11 @@ public/hot
 public/storage
 bootstrap/cache/*
 !bootstrap/cache/.gitignore
+.devcontainer
+clean
+components.json
+fix.sh
+resources/js/*
+resources/css/*
+resources/images/*
+resources/fonts/*
