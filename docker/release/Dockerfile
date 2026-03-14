@@ -11,8 +11,9 @@ RUN install-php-extensions \
     zip
 
 WORKDIR /app
-ENV TZ=Europe/Berlin
-ENV APP_ENV=production
+ENV TZ=Europe/Berlin \
+    APP_ENV=production \
+    APP_DEBUG=false
 
 FROM base AS build
 
