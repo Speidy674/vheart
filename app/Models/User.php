@@ -8,6 +8,8 @@ namespace App\Models;
 use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
+use App\Models\Broadcaster\BroadcasterTeamMember;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
@@ -18,19 +20,26 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
+use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Kirschbaum\Commentions\Contracts\Commentable;
@@ -40,7 +49,7 @@ use Kirschbaum\Commentions\HasComments;
 // We tell laravel where to find the policy class
 // While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
-class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasName, MustVerifyEmail
+class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasDefaultTenant, HasName, HasTenants, MustVerifyEmail
 {
     use Auditable;
     use HasComments;
@@ -258,6 +267,10 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'dashboard') {
+            return true;
+        }
+
         return $this->canAny([
             Permission::ViewAnyFaqEntry,
             Permission::ViewAnyClip,
@@ -289,6 +302,55 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     public function getProxyType(): ExternalContentProxyType
     {
         return ExternalContentProxyType::TwitchUser;
+    }
+
+    /**
+     * @return HasOne<Broadcaster, $this>
+     */
+    public function broadcaster(): HasOne
+    {
+        return $this->hasOne(Broadcaster::class, 'id');
+    }
+
+    public function broadcasterTeams(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Broadcaster::class,
+            BroadcasterTeamMember::class,
+            'user_id',
+            'id',
+            'id',
+            'broadcaster_id'
+        );
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<Model> | Collection
+     */
+    public function getTenants(Panel $panel): array|Collection
+    {
+        if ($panel->getId() !== 'dashboard') {
+            return [];
+        }
+
+        $tenants = new Collection($this->broadcasterTeams);
+        if ($this->broadcaster) {
+            $tenants->add($this->broadcaster);
+        }
+
+        // Check twitch mod broadcaster
+
+        return $tenants;
+    }
+
+    public function getDefaultTenant(Panel $panel): ?Model
+    {
+        return $this->broadcaster;
     }
 
     /**

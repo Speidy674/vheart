@@ -7,6 +7,7 @@ namespace App\Providers\Filament;
 use App\Filament\Dashboard\Pages\Dashboard;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\StagingGateMiddleware;
+use App\Models\Broadcaster\Broadcaster;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -53,6 +54,8 @@ class DashboardPanelProvider extends PanelProvider
             ->darkModeBrandLogo(fn () => Vite::asset('resources/images/svg/logo-full-dark.svg'))
             ->brandLogo(fn () => Vite::asset('resources/images/svg/logo-full-title.svg'))
             ->brandLogoHeight('2rem')
+            ->homeUrl('/')
+            ->tenant(Broadcaster::class)
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\Filament\Dashboard\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\Filament\Dashboard\Pages')
             ->pages([

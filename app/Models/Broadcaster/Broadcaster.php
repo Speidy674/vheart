@@ -7,14 +7,18 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Models\Traits\Auditable;
+use App\Models\User;
 use Database\Factories\Broadcaster\BroadcasterFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Broadcaster extends Model
+class Broadcaster extends Model implements HasAvatar
 {
     use Auditable;
 
@@ -24,6 +28,14 @@ class Broadcaster extends Model
     use SoftDeletes;
 
     public $incrementing = false;
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id', 'id');
+    }
 
     /**
      * @return HasMany<BroadcasterTeamMember, $this>
@@ -39,6 +51,16 @@ class Broadcaster extends Model
     public function filters(): HasMany
     {
         return $this->hasMany(BroadcasterSubmissionFilter::class);
+    }
+
+    public function proxiedContentUrl(): mixed
+    {
+        return $this->loadMissing('user')->user->proxiedContentUrl();
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->proxiedContentUrl();
     }
 
     protected static function booted(): void
@@ -58,6 +80,13 @@ class Broadcaster extends Model
                     ->values();
             }
         });
+    }
+
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->loadMissing('user')->user->name,
+        );
     }
 
     protected function casts(): array
