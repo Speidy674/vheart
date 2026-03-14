@@ -312,14 +312,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return ExternalContentProxyType::TwitchUser;
     }
 
-    /**
-     * @return HasOne<Broadcaster, $this>
-     */
-    public function broadcaster(): HasOne
-    {
-        return $this->hasOne(Broadcaster::class, 'id');
-    }
-
     public function broadcasterTeams(): HasManyThrough
     {
         return $this->hasManyThrough(
