@@ -326,7 +326,9 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     public function canAccessTenant(Model $tenant): bool
     {
-        return true;
+        if (! Feature::isActive(FeatureFlag::BroadcasterTenant)) {
+            return false;
+        }
     }
 
     /**
@@ -334,7 +336,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
      */
     public function getTenants(Panel $panel): array|Collection
     {
-        if ($panel->getId() !== 'dashboard') {
+        if ($panel->getId() !== 'dashboard' || ! Feature::isActive(FeatureFlag::BroadcasterTenant)) {
             return [];
         }
 
