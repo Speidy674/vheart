@@ -56,6 +56,7 @@ class DashboardPanelProvider extends PanelProvider
             ->brandLogoHeight('2rem')
             ->homeUrl('/')
             ->tenant(Broadcaster::class)
+            ->searchableTenantMenu()
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\Filament\Dashboard\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\Filament\Dashboard\Pages')
             ->pages([

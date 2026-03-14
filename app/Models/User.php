@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
+use App\Enums\FeatureFlag;
 use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterTeamMember;
@@ -15,6 +16,8 @@ use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\UserPolicy;
+use App\Services\Twitch\TwitchService;
+use App\Support\FeatureFlag\Feature;
 use Database\Factories\UserFactory;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
@@ -33,7 +36,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -312,23 +314,28 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return ExternalContentProxyType::TwitchUser;
     }
 
-    public function broadcasterTeams(): HasManyThrough
+    public function broadcasterTeamMembers(): HasMany
     {
-        return $this->hasManyThrough(
-            Broadcaster::class,
-            BroadcasterTeamMember::class,
-            'user_id',
-            'id',
-            'id',
-            'broadcaster_id'
-        );
+        return $this->hasMany(BroadcasterTeamMember::class);
     }
 
     public function canAccessTenant(Model $tenant): bool
     {
+        if ($tenant->id === $this->id) {
+            return true;
+        }
+
         if (! Feature::isActive(FeatureFlag::BroadcasterTenant)) {
             return false;
         }
+
+        if ($this->broadcasterTeamMembers()->pluck('broadcaster_id')->contains($tenant->id)) {
+            return true;
+        }
+
+        $twitchService = app(TwitchService::class);
+
+        return $twitchService->asUser($this, session()?->get('twitch_access_token'))->isModeratorFor($tenant->user);
     }
 
     /**
@@ -340,14 +347,16 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
             return [];
         }
 
-        $tenants = new Collection($this->broadcasterTeams);
+        $broadcasterIds = $this->broadcasterTeamMembers()->pluck('broadcaster_id');
         if ($this->broadcaster) {
-            $tenants->add($this->broadcaster);
+            $broadcasterIds->add($this->broadcaster->id);
         }
 
-        // Check twitch mod broadcaster
+        $twitchService = app(TwitchService::class);
+        $twitchBroadcasterIds = $twitchService->asUser($this, session()?->get('twitch_access_token'))->getModeratedChannels();
+        $broadcasterIds->push($twitchBroadcasterIds);
 
-        return $tenants;
+        return Broadcaster::findMany($broadcasterIds->unique());
     }
 
     public function getDefaultTenant(Panel $panel): ?Model
