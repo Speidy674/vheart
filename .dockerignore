@@ -40,13 +40,6 @@ eslint.config.js
 .prettierrc
 .prettierignore
 tsconfig.json
-rector.php
-phpstan.neon
-pint.json
-eslint.config.js
-.prettierrc
-.prettierignore
-tsconfig.json
 storage/app/*
 storage/debugbar/*
 storage/framework/cache/*
