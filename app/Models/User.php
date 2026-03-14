@@ -265,6 +265,14 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return parent::hasVerifiedEmail();
     }
 
+    /**
+     * @return HasOne<Broadcaster, $this>
+     */
+    public function broadcaster(): HasOne
+    {
+        return $this->hasOne(Broadcaster::class, 'id');
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'dashboard') {

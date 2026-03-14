@@ -10,6 +10,8 @@ use App\Models\Traits\Auditable;
 use App\Models\User;
 use Database\Factories\Broadcaster\BroadcasterFactory;
 use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Broadcaster extends Model implements HasAvatar
 {
@@ -99,5 +102,31 @@ class Broadcaster extends Model implements HasAvatar
             'submit_vip_allowed' => 'boolean',
             'onboarded_at' => 'datetime',
         ];
+    }
+
+    #[Scope]
+    protected function whereGaveNoConsent(Builder $query): Builder
+    {
+        return $query->where(fn (Builder $query) => $query
+            ->whereJsonLength('consent', '=', '0')
+            ->orWhereNull('consent'));
+    }
+
+    /**
+     * check if the broadcaster has given the consents or when no consents provided check if any consent is given
+     */
+    #[Scope]
+    protected function whereGaveConsent(Builder $query, BroadcasterConsent|Collection|array|null $consents = null): Builder
+    {
+        if (! $consents) {
+            return $query->whereJsonLength('consent', '>', '0');
+        }
+
+        if ($consents instanceof BroadcasterConsent) {
+            $consents = [$consents];
+        }
+
+        return $query->whereJsonContains('consent', $consents);
+
     }
 }

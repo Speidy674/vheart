@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Actions\ImportClipAction;
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Models\Category;
 use App\Models\Clip\Tag;
 use App\Models\User;
@@ -24,6 +25,11 @@ beforeEach(function () {
             'id' => 201000, // Default for dto
             'name' => 'Broadcaster',
         ]);
+
+    $this->broadcaster->broadcaster()->create([
+        'consent' => [BroadcasterConsent::Compilations],
+    ]);
+
     $this->broadcasterWithoutPermission = User::factory()
         ->withClipPermission(false)
         ->create([

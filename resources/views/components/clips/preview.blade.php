@@ -26,7 +26,7 @@
         </h3>
 
         <div class="truncate text-foreground font-bold text-xs sm:text-sm">
-            {{ $clip->broadcaster->name }}
+            {{ $clip->owner->name }}
         </div>
     </x-clips.preview.container>
 </a>
