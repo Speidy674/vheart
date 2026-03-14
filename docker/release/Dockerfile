@@ -30,7 +30,8 @@ RUN --mount=type=bind,source=composer.json,target=composer.json \
 
 COPY . .
 
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
+    && php artisan translations:export
 
 FROM base AS runner
 

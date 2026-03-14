@@ -18,9 +18,6 @@ chmod -R 775 /app/storage /app/bootstrap/cache
 echo "[Init] Setup Storage..."
 php /app/artisan storage:link --force
 
-echo "[Init] Export translation files..."
-php /app/artisan translations:export
-
 echo "[Init] Restarting Queue Signal..."
 php /app/artisan queue:restart
 
