@@ -14,7 +14,7 @@
  */
 declare(strict_types=1);
 
-namespace App\Filament\Enums;
+namespace App\Enums\Filament;
 
 use Filament\Support\Contracts\ScalableIcon;
 use Filament\Support\Enums\IconSize;
