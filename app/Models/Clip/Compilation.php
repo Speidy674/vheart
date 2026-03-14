@@ -8,6 +8,7 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
 use App\Models\Clip;
 use App\Models\Contracts\FilamentResourceful;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use App\Policies\CompilationPolicy;
 use Database\Factories\Clip\CompilationFactory;
@@ -25,7 +26,7 @@ use Kirschbaum\Commentions\HasComments;
 class Compilation extends Model implements Commentable, FilamentResourceful
 {
     /** @use HasFactory<CompilationFactory> */
-    use HasComments, HasFactory, SoftDeletes;
+    use Auditable, HasComments, HasFactory, SoftDeletes;
 
     public string $filamentResourcePageForCommentNotifications = 'edit';
 

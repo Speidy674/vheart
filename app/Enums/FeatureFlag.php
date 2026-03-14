@@ -8,6 +8,7 @@ use App\Enums\Traits\FeatureFlagMagic;
 use App\Enums\Traits\HasHeadlineLabel;
 use App\Support\FeatureFlag\Attributes\DefaultFeatureFlagState;
 use App\Support\FeatureFlag\Attributes\Description;
+use App\Support\FeatureFlag\Attributes\Environment;
 use Filament\Support\Contracts\HasLabel;
 
 enum FeatureFlag: string implements HasLabel
@@ -27,9 +28,13 @@ enum FeatureFlag: string implements HasLabel
     #[DefaultFeatureFlagState(true)]
     case Reports = 'reporting';
 
+    #[Description('Bypasses the Broadcaster Consent scope on Clips, useful for debugging locally')]
+    #[Environment(['local', 'staging'])]
+    case IgnoreBroadcasterConsentOnClipScope = 'bypass_broadcaster_consent';
+
     #[Description('Shows the about-us page on index (also hides the footer item and route for about us)')]
     case AboutUsAsIndex = 'about_us_as_index';
-  
+
     #[DefaultFeatureFlagState(true)]
     case UserDashboard = 'user_dashboard';
 
@@ -39,4 +44,7 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Toggles the user navigation/dropdown in the top navigation, this is only a visual change and does NOT disable the features shown in that dropdown.')]
     #[DefaultFeatureFlagState(true)]
     case UserNavigation = 'user_navigation';
+
+    #[DefaultFeatureFlagState(true)]
+    case BroadcasterOnboarding = 'broadcaster_onboarding';
 }

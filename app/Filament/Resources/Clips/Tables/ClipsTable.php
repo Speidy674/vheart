@@ -18,13 +18,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Support\Enums\FontFamily;
-use Filament\Support\Enums\TextSize;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -40,130 +36,45 @@ class ClipsTable
                 'broadcaster',
                 'creator',
                 'submitter',
-            ])->withCount([
-                'votes as votes_jury' => function (Builder $query): void {
-                    $query->where('type', ClipVoteType::Jury)->whereVoted(true);
-                },
-                'votes as votes_public' => function (Builder $query): void {
-                    $query->where('type', ClipVoteType::Public)->whereVoted(true);
-                },
-            ]))
+            ])
+                ->withCount([
+                    'votes as votes_jury' => function (Builder $query): void {
+                        $query->where('type', ClipVoteType::Jury)->whereVoted(true);
+                    },
+                    'votes as votes_public' => function (Builder $query): void {
+                        $query->where('type', ClipVoteType::Public)->whereVoted(true);
+                    },
+                ]))
             ->columns([
                 Split::make([
                     Stack::make([
-                        ImageColumn::make('thumbnail_url')
-                            ->label('admin/resources/clips.table.columns.thumbnail')
-                            ->translateLabel()
-                            ->imageHeight(100)
-                            ->alignCenter()
-                            ->extraImgAttributes([
-                                'class' => 'object-cover rounded aspect-video',
-                                'loading' => 'lazy',
-                            ]),
+                        ClipColumns::thumbnail(),
                     ])->grow(false),
 
                     Stack::make([
-                        TextColumn::make('title')
-                            ->label('admin/resources/clips.table.columns.title')
-                            ->translateLabel()
-                            ->weight('bold')
-                            ->searchable()
-                            ->wrap(),
+                        ClipColumns::title(),
 
                         Split::make([
-                            TextColumn::make('duration')
-                                ->label(__('admin/resources/clips.table.columns.duration'))
-                                ->tooltip(__('admin/resources/clips.table.columns.duration'))
-                                ->icon(Heroicon::Clock)
-                                ->size(TextSize::Medium)
-                                ->sortable()
-                                ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
-                                ->fontFamily(FontFamily::Mono)
-                                ->badge()
-                                ->color('gray'),
-
-                            TextColumn::make('votes_jury')
-                                ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
-                                ->label(__('admin/resources/clips.table.columns.votes_jury'))
-                                ->icon(Heroicon::Star)
-                                ->size(TextSize::Medium)
-                                ->sortable()
-                                ->badge()
-                                ->color('warning'),
-                            TextColumn::make('votes_public')
-                                ->label(__('admin/resources/clips.table.columns.votes_public'))
-                                ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
-                                ->size(TextSize::Medium)
-                                ->icon(Heroicon::UserGroup)
-                                ->sortable()
-                                ->badge()
-                                ->color('success'),
-                            TextColumn::make('status')
-                                ->label('admin/resources/clips.table.columns.status')
-                                ->tooltip(__('admin/resources/clips.table.columns.status'))
-                                ->size(TextSize::Medium)
-                                ->icon(Heroicon::Clipboard)
-                                ->badge()
-                                ->translateLabel(),
+                            ClipColumns::duration(),
+                            ClipColumns::juryVotes('votes_jury'),
+                            ClipColumns::publicVotes('votes_public'),
+                            ClipColumns::status(),
                         ])->grow(false),
 
-                        TextColumn::make('tags.name')
-                            ->color('gray')
-                            ->badge(),
+                        ClipColumns::tags(),
                     ])->space(),
 
                     Stack::make([
-                        TextColumn::make('broadcaster.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
-                            ->icon(Heroicon::VideoCamera)
-                            ->color('gray'),
-
-                        TextColumn::make('creator.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.creator'))
-                            ->icon(Heroicon::Scissors)
-                            ->color('gray'),
-
-                        TextColumn::make('submitter.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.submitter'))
-                            ->icon(Heroicon::User)
-                            ->color('gray'),
+                        ClipColumns::broadcasterName(),
+                        ClipColumns::creatorName(),
+                        ClipColumns::submitterName(),
                     ])
                         ->space(1),
 
                     Stack::make([
-                        TextColumn::make('date')
-                            ->label(__('admin/resources/clips.table.columns.created_at'))
-                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->sortable()
-                            ->color('gray'),
-                        TextColumn::make('created_at')
-                            ->label(__('admin/resources/clips.table.columns.submitted_at'))
-                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->sortable()
-                            ->color('gray'),
-
-                        Split::make([
-                            ImageColumn::make('category.box_art')
-                                ->imageHeight(40)
-                                ->alignCenter()
-                                ->getStateUsing(fn (Clip $record) => $record->category?->getBoxArt())
-                                ->extraImgAttributes([
-                                    'class' => 'object-cover rounded-md aspect-[3/4]',
-                                ])
-                                ->grow(false),
-                            TextColumn::make('category.title')
-                                ->label('admin/resources/clips.table.columns.category')
-                                ->translateLabel()
-                                ->weight('medium')
-                                ->wrap()
-                                ->color('gray')
-                                ->searchable(),
-                        ])
-                            ->grow(false),
+                        ClipColumns::createdAt(),
+                        ClipColumns::submittedAt(),
+                        ClipColumns::category(),
                     ])
                         ->space(1),
                 ])->from('lg'),
@@ -288,8 +199,10 @@ class ClipsTable
                         ])
                         ->action(function (Clip $record, array $data): void {
                             $record->compilations()->attach($data['compilation_id'], [
+                                'added_by' => auth()->id(),
                                 'claim_status' => $data['status'] ?? CompilationClipClaimStatus::Pending,
                                 'claimed_by' => $data['claim'] ? auth()->id() : null,
+                                'claimed_at' => now(),
                             ]);
                         })
                         ->successNotificationTitle(__('admin/resources/clips.notifications.actions.attached_to_compilation')),

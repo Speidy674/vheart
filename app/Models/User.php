@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
 use App\Enums\Permission;
 use App\Models\Contracts\ExternalProxyable;
+use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
 use App\Policies\UserPolicy;
@@ -40,6 +42,7 @@ use Kirschbaum\Commentions\HasComments;
 #[UsePolicy(UserPolicy::class)]
 class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasName, MustVerifyEmail
 {
+    use Auditable;
     use HasComments;
     use HasExternalProxy;
 
@@ -53,6 +56,14 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     use SoftDeletes;
 
     public $incrementing = false;
+
+    protected array $auditExclude = [
+        'name',
+        'email',
+        'avatar_url',
+    ];
+
+    protected array $auditExcludeEvents = ['created'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -288,6 +299,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     protected function casts(): array
     {
         return [
+            'avatar_url' => TwitchAvatarCast::class,
             'email_verified_at' => 'datetime',
             'clip_permission' => 'boolean',
             'password' => 'hashed',

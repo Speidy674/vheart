@@ -11,6 +11,7 @@ use App\Events\Admin\Compilations\CompilationClipClaimed;
 use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
 use App\Events\Admin\Compilations\CompilationClipUnclaimed;
 use App\Filament\Resources\Clips\ClipResource;
+use App\Filament\Resources\Clips\Tables\ClipColumns;
 use App\Models\Clip;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDownloadDto;
@@ -26,11 +27,8 @@ use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Support\Enums\FontFamily;
-use Filament\Support\Enums\TextSize;
 use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
@@ -63,126 +61,46 @@ class ClipsRelationManager extends RelationManager
             ->columns([
                 Split::make([
                     Stack::make([
-                        ImageColumn::make('thumbnail_url')
-                            ->getStateUsing(fn (Clip $clip): ?string => $clip->proxiedContentUrl())
-                            ->extraImgAttributes([
-                                'loading' => 'lazy',
-                            ])
-                            ->label('admin/resources/clips.table.columns.thumbnail')
-                            ->translateLabel()
-                            ->imageHeight(100)
-                            ->alignCenter()
-                            ->extraImgAttributes([
-                                'class' => 'object-cover rounded aspect-video',
-                                'loading' => 'lazy',
-                            ]),
+                        ClipColumns::thumbnail(),
                     ])->grow(false),
 
                     Stack::make([
-                        TextColumn::make('title')
-                            ->label('admin/resources/clips.table.columns.title')
-                            ->translateLabel()
-                            ->weight('bold')
-                            ->searchable()
-                            ->wrap(),
+                        ClipColumns::title(),
                         Split::make([
-                            TextColumn::make('duration')
-                                ->label(__('admin/resources/clips.table.columns.duration'))
-                                ->tooltip(__('admin/resources/clips.table.columns.duration'))
-                                ->icon(Heroicon::Clock)
-                                ->size(TextSize::Medium)
-                                ->sortable()
-                                ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
-                                ->fontFamily(FontFamily::Mono)
-                                ->badge()
-                                ->color('gray'),
-
-                            TextColumn::make('votes_jury')
-                                ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
-                                ->label(__('admin/resources/clips.table.columns.votes_jury'))
-                                ->icon(Heroicon::Star)
-                                ->size(TextSize::Medium)
-                                ->sortable()
-                                ->badge()
-                                ->color('warning'),
-                            TextColumn::make('votes_public')
-                                ->label(__('admin/resources/clips.table.columns.votes_public'))
-                                ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
-                                ->size(TextSize::Medium)
-                                ->icon(Heroicon::UserGroup)
-                                ->sortable()
-                                ->badge()
-                                ->color('success'),
-
-                            TextColumn::make('status')
+                            ClipColumns::duration(),
+                            ClipColumns::juryVotes('votes_jury'),
+                            ClipColumns::publicVotes('votes_public'),
+                            ClipColumns::status()
                                 ->label('admin/resources/compilations.relation_managers.clips.columns.status_moderation')
-                                ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_moderation'))
-                                ->size(TextSize::Medium)
-                                ->icon(Heroicon::Clipboard)
-                                ->badge()
-                                ->translateLabel(),
+                                ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_moderation')),
                         ])->grow(false),
                     ])->space(),
 
                     Stack::make([
-                        TextColumn::make('broadcaster.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
-                            ->icon(Heroicon::VideoCamera)
-                            ->color('gray'),
-
-                        TextColumn::make('creator.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.creator'))
-                            ->icon(Heroicon::Scissors)
-                            ->color('gray'),
-
-                        TextColumn::make('submitter.name')
-                            ->tooltip(__('admin/resources/clips.table.columns.submitter'))
-                            ->icon(Heroicon::User)
-                            ->color('gray'),
+                        ClipColumns::broadcasterName(),
+                        ClipColumns::creatorName(),
+                        ClipColumns::submitterName(),
                     ])
                         ->space(1),
 
                     Stack::make([
-                        TextColumn::make('clips.date')
-                            ->getStateUsing(fn (Clip $clip) => $clip->date)
-                            ->label(__('admin/resources/clips.table.columns.created_at'))
-                            ->tooltip(__('admin/resources/clips.table.columns.created_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->sortable()
-                            ->color('gray'),
-                        TextColumn::make('clips.created_at')
-                            ->getStateUsing(fn (Clip $clip) => $clip->created_at)
-                            ->label(__('admin/resources/clips.table.columns.submitted_at'))
-                            ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
-                            ->icon(Heroicon::Calendar)
-                            ->dateTime()
-                            ->sortable()
-                            ->color('gray'),
+                        ClipColumns::createdAt('clips.date')
+                            ->getStateUsing(fn (Clip $clip) => $clip->date),
+                        ClipColumns::submittedAt('clips.created_at')
+                            ->getStateUsing(fn (Clip $clip) => $clip->created_at),
 
-                        Split::make([
-                            ImageColumn::make('category.box_art')
-                                ->imageHeight(40)
-                                ->alignCenter()
-                                ->getStateUsing(fn (Clip $record) => $record->category?->proxiedContentUrl())
-                                ->extraImgAttributes([
-                                    'class' => 'object-cover rounded-md aspect-[3/4]',
-                                    'loading' => 'lazy',
-                                ])
-                                ->grow(false),
-                            TextColumn::make('category.title')
-                                ->label('admin/resources/clips.table.columns.category')
-                                ->translateLabel()
-                                ->weight('medium')
-                                ->wrap()
-                                ->color('gray')
-                                ->searchable(),
-                        ])
-                            ->grow(false),
+                        ClipColumns::category(),
                     ])
                         ->space(1),
 
                     Stack::make([
+                        TextColumn::make('adder.name')
+                            ->label('admin/resources/compilations.relation_managers.clips.columns.adder')
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.adder'))
+                            ->translateLabel()
+                            ->icon(Heroicon::Plus)
+                            ->color('gray'),
+
                         TextColumn::make('claimer.name')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.claimer')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.claimer'))
@@ -202,6 +120,13 @@ class ClipsRelationManager extends RelationManager
                             ->icon(Heroicon::Calendar)
                             ->translateLabel()
                             ->dateTime(),
+                        TextColumn::make('pivot.added_at')
+                            ->label(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
+                            ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
+                            ->icon(Heroicon::Calendar)
+                            ->translateLabel()
+                            ->dateTime()
+                            ->color('gray'),
                     ])
                         ->space(1),
                 ])->from('lg'),
@@ -261,6 +186,36 @@ class ClipsRelationManager extends RelationManager
                             }
                         });
                     }),
+                SelectFilter::make('adder')
+                    ->label('admin/resources/compilations.relation_managers.clips.filters.adder')
+                    ->translateLabel()
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->options(fn () => User::query()
+                        ->whereIn('id', $this->getOwnerRecord()->clips()->newPivotStatement()
+                            ->where('compilation_id', $this->getOwnerRecord()->getKey())
+                            ->pluck('added_by'))
+                        ->pluck('name', 'id')
+                        ->prepend(__('admin/resources/compilations.relation_managers.clips.filters.adder_option_none'), 'null'))
+                    ->query(function (Builder $query, array $data): void {
+                        $values = $data['values'] ?? [];
+                        if (empty($values)) {
+                            return;
+                        }
+
+                        $query->where(function (Builder $query) use ($values): void {
+                            $ids = array_diff($values, ['null']);
+
+                            if (in_array('null', $values, true)) {
+                                $query->whereNull('clip_compilation.added_by');
+                            }
+
+                            if ($ids !== []) {
+                                $query->orWhereIn('clip_compilation.added_by', $ids);
+                            }
+                        });
+                    }),
                 SelectFilter::make('category')
                     ->relationship('category', 'title',
                         fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('category_id')))
@@ -301,13 +256,18 @@ class ClipsRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
-                        Select::make('status')
+                        Select::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
                             ->options(CompilationClipClaimStatus::class)
                             ->default(CompilationClipClaimStatus::Pending)
                             ->required(),
-                    ]),
+                    ])
+                    ->mutateDataUsing(function (array $data): array {
+                        $data['added_by'] = auth()->id();
+
+                        return $data;
+                    }),
             ])
             ->recordActions([
                 CommentsAction::make()
