@@ -9,12 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Broadcaster\OnboardingRequest;
 use App\Models\Broadcaster\Broadcaster;
 use App\Support\FeatureFlag\Feature;
+use Filament\Facades\Filament;
 
 class OnboardingSubmitController extends Controller
 {
     public function __invoke(OnboardingRequest $request)
     {
-        Broadcaster::updateOrCreate(['id' => auth()->user()->id], [
+        $broadcaster = Broadcaster::updateOrCreate(['id' => auth()->user()->id], [
             'consent' => $request->array('consent'),
             'submit_user_allowed' => $request->boolean('everyone'),
             'submit_vip_allowed' => $request->boolean('vips'),
@@ -22,11 +23,7 @@ class OnboardingSubmitController extends Controller
             'onboarded_at' => now(),
         ]);
 
-        $fallbackRoute = route(
-            Feature::isActive(FeatureFlag::UserDashboard)
-                ? 'dashboard'
-                : 'home'
-        );
+        $fallbackRoute = Feature::isActive(FeatureFlag::UserDashboard) ? Filament::getPanel('dashboard')->getUrl($broadcaster) : route('home');
 
         return redirect()->intended($fallbackRoute);
     }
