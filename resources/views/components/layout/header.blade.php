@@ -68,7 +68,7 @@
                         <x-ui.dropdown.content align="right" class="min-w-42">
                             @feature(FeatureFlag::UserDashboard)
                                 @if(Broadcaster::where('id', auth()->id())->exists())
-                                    <x-ui.dropdown.item href="{{ route('dashboard') }}">
+                                    <x-ui.dropdown.item href="{{ Filament::getPanel('dashboard')->getUrl() }}">
                                         {{ __('navigation.dashboard') }}
                                     </x-ui.dropdown.item>
                                 @endif
