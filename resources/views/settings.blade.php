@@ -1,4 +1,5 @@
 @use(App\Enums\FeatureFlag)
+@use(Filament\Facades\Filament)
 <x-layout class="max-w-3xl w-full mx-auto space-y-6" :title="__('user.settings.title')">
     @feature(FeatureFlag::UserDashboard)
         <x-ui.alert>
@@ -9,7 +10,7 @@
                 <p>
                     {{ __('user.settings.broadcaster_note.description') }}
                 </p>
-                <x-ui.button href="{{ route('dashboard') }}" variant="link">
+                <x-ui.button href="{{ Filament::getPanel('dashboard')->getUrl() }}" variant="link">
                     <span class="md:hidden">
                         {{ __('user.settings.broadcaster_note.link') }}
                     </span>
