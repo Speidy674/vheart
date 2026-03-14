@@ -12,6 +12,9 @@ php /app/artisan db:seed --force
 echo "[Init] Optimize..."
 php /app/artisan optimize
 
+chown -R www-data:www-data /app/storage /app/bootstrap/cache
+chmod -R 775 /app/storage /app/bootstrap/cache
+
 echo "[Init] Setup Storage..."
 php /app/artisan storage:link --force
 
