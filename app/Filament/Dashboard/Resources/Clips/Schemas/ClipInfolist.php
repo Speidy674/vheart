@@ -6,13 +6,11 @@ namespace App\Filament\Dashboard\Resources\Clips\Schemas;
 
 use App\Enums\ClipVoteType;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
-use App\Filament\Resources\Users\UserResource;
 use App\Models\Category;
 use App\Models\Clip;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontFamily;
@@ -42,7 +40,7 @@ class ClipInfolist
                             ->weight('bold')
                             ->size(TextSize::Large),
                         TextEntry::make('tags.name')
-                            ->label('admin/resources/clips.form.tags')
+                            ->label('dashboard/resources/clips.form.tags')
                             ->translateLabel()
                             ->color('gray')
                             ->size(TextSize::Large)
@@ -59,7 +57,7 @@ class ClipInfolist
                                     ->columnSpan(1)
                                     ->grow(false),
                                 TextEntry::make('title')
-                                    ->label('admin/resources/clips.infolist.category')
+                                    ->label('dashboard/resources/clips.infolist.category')
                                     ->translateLabel()
                                     ->columnSpan(3)
                                     ->hiddenLabel()
@@ -71,84 +69,55 @@ class ClipInfolist
                         Grid::make(3)
                             ->schema([
                                 TextEntry::make('duration')
-                                    ->label(__('admin/resources/clips.table.columns.duration'))
-                                    ->tooltip(__('admin/resources/clips.table.columns.duration'))
+                                    ->label(__('dashboard/resources/clips.table.columns.duration'))
+                                    ->tooltip(__('dashboard/resources/clips.table.columns.duration'))
                                     ->icon(Heroicon::Clock)
                                     ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
                                     ->fontFamily(FontFamily::Mono)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('gray'),
-
-                                TextEntry::make('votes_jury')
-                                    ->label(__('admin/resources/clips.table.columns.votes_jury'))
-                                    ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Jury)->whereVoted(true)->count())
-                                    ->icon(Heroicon::Star)
-                                    ->size(TextSize::Medium)
-                                    ->badge()
-                                    ->color('warning'),
-
                                 TextEntry::make('votes_public')
-                                    ->label(__('admin/resources/clips.table.columns.votes_public'))
+                                    ->label(__('dashboard/resources/clips.table.columns.votes'))
                                     ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Public)->whereVoted(true)->count())
                                     ->icon(Heroicon::UserGroup)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('success'),
+                                TextEntry::make('status')
+                                    ->label('dashboard/resources/clips.table.columns.status')
+                                    ->tooltip(__('dashboard/resources/clips.table.columns.status'))
+                                    ->size(TextSize::Medium)
+                                    ->icon(Heroicon::Clipboard)
+                                    ->badge()
+                                    ->translateLabel(),
                             ]),
 
-                        Group::make([
-                            TextEntry::make('broadcaster.name')
-                                ->label('admin/resources/clips.infolist.broadcaster')
-                                ->translateLabel()
-                                ->icon(Heroicon::VideoCamera)
-                                ->color('gray')
-                                ->url(function (Clip $clip): ?string {
-                                    if (! $clip->broadcaster?->exists) {
-                                        return null;
-                                    }
-
-                                    return UserResource::getUrl('view', ['record' => $clip->broadcaster]);
-                                })->openUrlInNewTab(),
-
-                            TextEntry::make('creator.name')
-                                ->label('admin/resources/clips.infolist.creator')
-                                ->translateLabel()
-                                ->icon(Heroicon::Scissors)
-                                ->color('gray')
-                                ->url(function (Clip $clip): ?string {
-                                    if (! $clip->creator?->exists) {
-                                        return null;
-                                    }
-
-                                    return UserResource::getUrl('view', ['record' => $clip->creator]);
-                                })->openUrlInNewTab(),
-
-                            TextEntry::make('submitter.name')
-                                ->label('admin/resources/clips.infolist.submitted_by')
-                                ->translateLabel()
-                                ->icon(Heroicon::User)
-                                ->color('gray')
-                                ->url(function (Clip $clip): ?string {
-                                    if (! $clip->submitter?->exists) {
-                                        return null;
-                                    }
-
-                                    return UserResource::getUrl('view', ['record' => $clip->submitter]);
-                                })->openUrlInNewTab(),
-                        ]),
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('creator.name')
+                                    ->label('dashboard/resources/clips.infolist.creator')
+                                    ->translateLabel()
+                                    ->icon(Heroicon::Scissors)
+                                    ->color('gray'),
+                                TextEntry::make('submitter.name')
+                                    ->label('dashboard/resources/clips.infolist.submitted_by')
+                                    ->translateLabel()
+                                    ->icon(Heroicon::User)
+                                    ->color('gray'),
+                            ]),
 
                         Grid::make(2)
                             ->schema([
                                 TextEntry::make('date')
                                     ->date()
-                                    ->label('admin/resources/clips.infolist.created_at')
+                                    ->label('dashboard/resources/clips.infolist.created_at')
                                     ->translateLabel()
                                     ->icon(Heroicon::Calendar)
                                     ->color('gray'),
                                 TextEntry::make('created_at')
                                     ->date()
-                                    ->label('admin/resources/clips.infolist.submitted_at')
+                                    ->label('dashboard/resources/clips.infolist.submitted_at')
                                     ->translateLabel()
                                     ->icon(Heroicon::Calendar)
                                     ->color('gray'),

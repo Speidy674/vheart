@@ -15,15 +15,13 @@ class ClipsOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $user = auth()->user();
+        $totalClips = Clip::count();
+        $totalClipsToday = Clip::where('created_at', '>=', now()->startOfDay())->count();
+        $totalClipsThisWeek = Clip::where('created_at', '>=', now()->startOfWeek())->count();
+        $totalClipsThisMonth = Clip::where('created_at', '>=', now()->startOfMonth())->count();
 
-        $totalClips = Clip::whereBroadcastBy($user)->count();
-        $totalClipsToday = Clip::whereBroadcastBy($user)->where('created_at', '>=', now()->startOfDay())->count();
-        $totalClipsThisWeek = Clip::whereBroadcastBy($user)->where('created_at', '>=', now()->startOfWeek())->count();
-        $totalClipsThisMonth = Clip::whereBroadcastBy($user)->where('created_at', '>=', now()->startOfMonth())->count();
-
-        $averageDuration = Clip::whereBroadcastBy($user)->avg('duration') ?? 0;
-        $clipsLast30Days = Clip::whereBroadcastBy($user)->where('created_at', '>=', now()->subDays(30))->count();
+        $averageDuration = Clip::avg('duration') ?? 0;
+        $clipsLast30Days = Clip::where('created_at', '>=', now()->subDays(30))->count();
         $averageClipsPerDay = $clipsLast30Days / 30;
 
         return [

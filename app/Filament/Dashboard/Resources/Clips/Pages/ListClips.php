@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Dashboard\Resources\Clips\Pages;
 
 use App\Filament\Dashboard\Resources\Clips\ClipResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListClips extends ListRecords
@@ -14,8 +13,6 @@ class ListClips extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            // CreateAction::make(),
-        ];
+        return [];
     }
 }

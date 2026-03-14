@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Dashboard\Resources\Clips\Pages;
 
 use App\Enums\Permission;
-use App\Filament\Resources\Clips\ClipResource;
+use App\Filament\Dashboard\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
 use Filament\Actions\Action;

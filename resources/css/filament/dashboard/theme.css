@@ -2,6 +2,7 @@
 @import '../../shared.css';
 
 @source '../../../../app/Filament/Dashboard/**/*';
+@source '../../../../resources/views/filament/**/*';
 @source '../../../../resources/views/filament/dashboard/**/*';
 
 html {

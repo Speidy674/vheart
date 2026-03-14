@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Dashboard\Resources\Clips\Schemas;
 
+use App\Enums\Clips\ClipStatus;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -28,18 +29,18 @@ class ClipForm
                     ->compact()
                     ->schema([
                         TextInput::make('title')
-                            ->label('admin/resources/clips.form.title')
+                            ->label('dashboard/resources/clips.form.title')
                             ->translateLabel()
                             ->required(),
                         Select::make('category_id')
-                            ->label('admin/resources/clips.form.category')
+                            ->label('dashboard/resources/clips.form.category')
                             ->translateLabel()
                             ->required()
                             ->preload()
                             ->relationship('category', 'title')
                             ->searchable(),
                         Select::make('tags')
-                            ->label('admin/resources/clips.form.tags')
+                            ->label('dashboard/resources/clips.form.tags')
                             ->translateLabel()
                             ->multiple()
                             ->required()
@@ -48,8 +49,13 @@ class ClipForm
                             ->preload()
                             ->relationship('tags', 'name')
                             ->searchable(),
+                        Select::make('status')
+                            ->label('dashboard/resources/clips.form.status')
+                            ->translateLabel()
+                            ->required()
+                            ->options(ClipStatus::class),
                         TextEntry::make('duration')
-                            ->label('admin/resources/clips.form.duration')
+                            ->label('dashboard/resources/clips.form.duration')
                             ->translateLabel()
                             ->formatStateUsing(function ($state): string {
                                 $totalSeconds = (int) round($state);
@@ -59,23 +65,18 @@ class ClipForm
 
                                 return sprintf('%d:%02d', $minutes, $seconds);
                             }),
-                        Select::make('broadcaster')
-                            ->relationship('broadcaster', 'name')
-                            ->disabled()
-                            ->label('admin/resources/clips.form.broadcaster')
-                            ->translateLabel(),
                         Select::make('creator')
                             ->relationship('creator', 'name')
                             ->disabled()
-                            ->label('admin/resources/clips.form.creator')
+                            ->label('dashboard/resources/clips.form.creator')
                             ->translateLabel(),
                         Select::make('submitter')
                             ->relationship('submitter', 'name')
                             ->disabled()
-                            ->label('admin/resources/clips.form.submitted_by')
+                            ->label('dashboard/resources/clips.form.submitted_by')
                             ->translateLabel(),
                         DateTimePicker::make('date')
-                            ->label('admin/resources/clips.form.created_at')
+                            ->label('dashboard/resources/clips.form.created_at')
                             ->translateLabel()
                             ->disabled(),
                     ]),

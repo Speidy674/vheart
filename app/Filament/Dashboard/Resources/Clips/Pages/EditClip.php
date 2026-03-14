@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Dashboard\Resources\Clips\Pages;
 
-use App\Filament\Resources\Clips\ClipResource;
+use App\Filament\Dashboard\Resources\Clips\ClipResource;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -16,7 +16,7 @@ class EditClip extends EditRecord
 
     public function getTitle(): string|Htmlable
     {
-        return __('admin/resources/clips.edit.title', [
+        return __('dashboard/resources/clips.edit.title', [
             'label' => $this->getRecordTitle(),
             'broadcaster' => $this->getRecord()->broadcaster?->name,
         ]);

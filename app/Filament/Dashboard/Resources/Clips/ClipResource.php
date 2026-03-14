@@ -50,7 +50,6 @@ class ClipResource extends Resource
     {
         return [
             'index' => ListClips::route('/'),
-            // 'create' => CreateClip::route('/create'),
             'view' => ViewClip::route('/{record}'),
             'edit' => EditClip::route('/{record}/edit'),
         ];
