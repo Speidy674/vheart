@@ -32,7 +32,12 @@ RUN --mount=type=bind,source=composer.json,target=composer.json \
 COPY . .
 
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
-    && php artisan translations:export
+    && php artisan translations:export \
+    && rm -f bootstrap/cache/*.php \
+    && rm -rf storage/framework/cache/data/* \
+    && rm -rf storage/framework/views/*.php \
+    && rm -rf storage/framework/sessions/* \
+    && rm -rf storage/framework/cache/data/*
 
 FROM base AS runner
 
