@@ -335,6 +335,8 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
         $twitchService = app(TwitchService::class);
 
+        // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
+
         return $twitchService->asUser($this, session()?->get('twitch_access_token'))->isModeratorFor($tenant->user);
     }
 
@@ -355,6 +357,8 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         $twitchService = app(TwitchService::class);
         $twitchBroadcasterIds = $twitchService->asUser($this, session()?->get('twitch_access_token'))->getModeratedChannels();
         $broadcasterIds->push($twitchBroadcasterIds);
+
+        // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
 
         return Broadcaster::findMany($broadcasterIds->unique());
     }
