@@ -27,10 +27,10 @@ class PublicClipResource extends JsonResource
             'thumbnail_url' => $this->proxiedContentUrl(),
             'clip_url' => $this->getClipUrl(),
 
-            'broadcaster' => $this->whenLoaded('broadcaster', [
+            'broadcaster' => $this->whenLoaded('owner', [
                 'id' => $this->broadcaster_id,
-                'name' => $this->broadcaster->name,
-                'avatar' => $this->broadcaster->proxiedContentUrl(),
+                'name' => $this->owner->name,
+                'avatar' => $this->owner->proxiedContentUrl(),
             ]),
 
             'clipper' => $this->whenHas('creator', [

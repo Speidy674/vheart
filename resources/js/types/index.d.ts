@@ -42,6 +42,7 @@ export interface AuthenticatedUser {
     has_email_authentication: boolean;
     created_at: string;
     updated_at: string;
+    broadcaster?: Broadcaster
 }
 
 export interface FaqEntryResource {
@@ -117,4 +118,12 @@ export interface PublicClip {
 export interface DashboardData extends SharedData {
     selectedStreamer: PublicUser;
     streamers: PublicUser[];
+}
+
+export interface Broadcaster {
+    consent: number[],
+    twitch_mod_permissions: number[],
+    submit_user_allowed: boolean,
+    submit_mods_allowed: boolean,
+    submit_vip_allowed: boolean,
 }

@@ -8,6 +8,7 @@ namespace App\Models;
 use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
@@ -26,6 +27,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -248,6 +250,14 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         }
 
         return parent::hasVerifiedEmail();
+    }
+
+    /**
+     * @return HasOne<Broadcaster, $this>
+     */
+    public function broadcaster(): HasOne
+    {
+        return $this->hasOne(Broadcaster::class, 'id');
     }
 
     public function canAccessPanel(Panel $panel): bool

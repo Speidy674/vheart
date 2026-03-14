@@ -133,7 +133,7 @@ class ClipsRelationManager extends RelationManager
             ])
             ->filters([
                 SelectFilter::make('broadcaster')
-                    ->relationship('broadcaster', 'name', fn (Builder $query) => $query->whereIn('id',
+                    ->relationship('owner', 'name', fn (Builder $query) => $query->whereIn('id',
                         $this->getOwnerRecord()->clips->pluck('broadcaster_id')))
                     ->searchable()
                     ->preload()

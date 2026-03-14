@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\ExternalContentProxyType;
 use App\Models\Category;
 use App\Models\Clip;
@@ -112,8 +113,8 @@ test('it successfully proxies if the local clip exists and broadcaster gave perm
     $clip = Clip::factory()->create([
         'thumbnail_url' => 'https://example.com/thumbnail.jpg',
     ]);
-    $clip->broadcaster->update([
-        'clip_permission' => true,
+    $clip->owner->broadcaster()->create([
+        'consent' => [BroadcasterConsent::Compilations],
     ]);
 
     Http::fake([

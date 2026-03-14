@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Casts\TwitchClipThumbnailCast;
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\ExternalContentProxyType;
 use App\Enums\FeatureFlag;
 use App\Http\Resources\PublicClipResource;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Clip\Tag;
@@ -36,7 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\HasComments;
 
@@ -64,11 +66,20 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return 'jpg';
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->BelongsTo(User::class, 'broadcaster_id', 'id')->withTrashed();
+    }
+
+    /**
+     * @return BelongsTo<Broadcaster, $this>
+     */
     public function broadcaster(): BelongsTo
     {
-        return $this->BelongsTo(User::class)
-            ->withTrashed()
-            ->withDefault(['name' => 'N/A', 'avatar_url' => Vite::asset('resources/images/png/cat.png')]);
+        return $this->belongsTo(Broadcaster::class)->withTrashed();
     }
 
     /**
@@ -213,10 +224,10 @@ class Clip extends Model implements Commentable, ExternalProxyable
      * Include only Clips where the broadcaster has explicitly granted content use permission.
      */
     #[Scope]
-    protected function whereBroadcasterGavePermission(Builder $query): Builder
+    protected function whereBroadcasterGavePermission(Builder $query, BroadcasterConsent|Collection|array|null $consents = null): Builder
     {
         return $query->whereHas('broadcaster',
-            fn (Builder $q) => $q->where('clip_permission', true)
+            fn (Builder $q) => $q->whereGaveConsent($consents)
         );
     }
 
@@ -227,7 +238,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function whereBroadcasterDeniedPermission(Builder $query): Builder
     {
         return $query->whereDoesntHave('broadcaster',
-            fn (Builder $q) => $q->where('clip_permission', true)
+            fn (Builder $q) => $q->whereGaveNoConsent()
         );
     }
 

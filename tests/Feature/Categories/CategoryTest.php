@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\User;
@@ -13,7 +14,11 @@ beforeEach(function () {
 describe('Banned Category', function () {
     it('shows clips with normal category', function () {
         $category = Category::factory()->create();
-        $user = User::factory()->withClipPermission()->create();
+        $user = User::factory()->create();
+
+        $user->broadcaster()->create([
+            'consent' => [BroadcasterConsent::Compilations],
+        ]);
 
         Clip::factory()->recycle($category)->recycle($user)->create();
 
@@ -24,7 +29,11 @@ describe('Banned Category', function () {
 
     it('hides clips with banned categories', function () {
         $category = Category::factory()->isBanned()->create();
-        $user = User::factory()->withClipPermission()->create();
+        $user = User::factory()->create();
+
+        $user->broadcaster()->create([
+            'consent' => [BroadcasterConsent::Compilations],
+        ]);
 
         Clip::factory()->recycle($category)->recycle($user)->create();
 
@@ -34,7 +43,10 @@ describe('Banned Category', function () {
     });
 
     it('does not affect clips without any category', function () {
-        $user = User::factory()->withClipPermission()->create();
+        $user = User::factory()->create();
+        $user->broadcaster()->create([
+            'consent' => [BroadcasterConsent::Compilations],
+        ]);
 
         Clip::factory()->recycle($user)->create([
             'category_id' => 1,

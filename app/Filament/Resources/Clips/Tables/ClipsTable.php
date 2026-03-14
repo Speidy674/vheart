@@ -81,7 +81,7 @@ class ClipsTable
             ])
             ->filters([
                 SelectFilter::make('broadcaster')
-                    ->relationship('broadcaster', 'name', fn (Builder $query): Builder => $query->whereHas('broadcastedClips'))
+                    ->relationship('owner', 'name', fn (Builder $query): Builder => $query->whereHas('broadcastedClips'))
                     ->searchable()
                     ->preload()
                     ->multiple()
