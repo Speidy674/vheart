@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Enums\FeatureFlag;
 use App\Filament\Dashboard\Pages\Dashboard;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\StagingGateMiddleware;
 use App\Models\Broadcaster\Broadcaster;
+use App\Support\FeatureFlag\Feature;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -57,6 +59,7 @@ class DashboardPanelProvider extends PanelProvider
             ->homeUrl('/')
             ->tenant(Broadcaster::class)
             ->searchableTenantMenu()
+            ->tenantMenu(fn () => Feature::isActive(FeatureFlag::BroadcasterTenant))
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\Filament\Dashboard\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\Filament\Dashboard\Pages')
             ->pages([
