@@ -51,7 +51,11 @@ COPY docker/release/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/release/init.sh /app/init-app.sh
 COPY docker/release/entrypoint.sh /app/entrypoint.sh
 
-RUN chmod +x /app/init-app.sh /app/entrypoint.sh
+RUN mv /app/artisan /app/production \
+    && ln -s /app/production /usr/local/bin/production \
+    && echo 'alias production="php /app/production"' >> /etc/profile \
+    && echo 'export ENV=/etc/profile' >> /etc/environment \
+    && chmod +x /app/init-app.sh /app/entrypoint.sh
 
 EXPOSE 80
 
