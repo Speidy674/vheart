@@ -33,6 +33,9 @@ if [ "$INSTANCE" = "web" ]; then
         echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
     fi
 
+    echo "[Entrypoint] Linking Storage..."
+    production storage:link --force
+
     echo "[Entrypoint] Starting FrankenPHP..."
     exec php -d variables_order=EGPCS production octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
 

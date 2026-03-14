@@ -15,9 +15,6 @@ production optimize
 chown -R www-data:www-data /app/storage /app/bootstrap/cache
 chmod -R 775 /app/storage /app/bootstrap/cache
 
-echo "[Init] Setup Storage..."
-production storage:link --force
-
 echo "[Init] Restarting Queue Signal..."
 production queue:restart
 
