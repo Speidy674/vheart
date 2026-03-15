@@ -54,8 +54,14 @@ class UserPolicy
             return false;
         }
 
-        if ($user->getRole()?->weight <= $model->getRole()?->weight) {
-            return $user->getRole()?->id === 0;
+        $userRole = $user->getRole();
+
+        if (! $userRole) {
+            return false;
+        }
+
+        if ($userRole->weight <= $model->getRole()?->weight) {
+            return $userRole->id === self::SystemUser;
         }
 
         return $user->can(Permission::UpdateAnyUser);
@@ -74,11 +80,14 @@ class UserPolicy
             return $this->deny('Cannot delete own user');
         }
 
-        if (
-            $user->getRole()?->id !== 0 &&
-            $user->getRole()?->weight <= $model->getRole()?->weight
-        ) {
-            return $this->deny('Cannot delete users with higher weight');
+        $userRole = $user->getRole();
+
+        if (! $userRole) {
+            return $this->deny();
+        }
+
+        if ($userRole->id !== self::SystemUser && $userRole->weight <= $model->getRole()?->weight) {
+            return $this->deny('Cannot delete users with equal or higher role weight');
         }
 
         if ($user->can(Permission::DeleteAnyUser)) {
@@ -86,6 +95,11 @@ class UserPolicy
         }
 
         return $this->deny();
+    }
+
+    public function deleteAny(User $user): bool
+    {
+        return $user->can(Permission::DeleteAnyUser);
     }
 
     /**
@@ -100,6 +114,11 @@ class UserPolicy
         return $user->can(Permission::RestoreAnyUser);
     }
 
+    public function restoreAny(User $user): bool
+    {
+        return $user->can(Permission::RestoreAnyUser);
+    }
+
     /**
      * Determine whether the user can permanently delete the model.
      */
@@ -109,10 +128,21 @@ class UserPolicy
             return false;
         }
 
-        if ($user->getRole()?->weight <= $model->getRole()?->weight) {
-            return $user->getRole()?->id === 0;
+        $userRole = $user->getRole();
+
+        if (! $userRole) {
+            return false;
         }
 
+        if ($userRole->weight <= $model->getRole()?->weight) {
+            return $userRole->id === self::SystemUser;
+        }
+
+        return $user->can(Permission::ForceDeleteAnyUser);
+    }
+
+    public function forceDeleteAny(User $user): bool
+    {
         return $user->can(Permission::ForceDeleteAnyUser);
     }
 }
