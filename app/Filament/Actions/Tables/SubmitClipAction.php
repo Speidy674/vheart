@@ -91,8 +91,8 @@ class SubmitClipAction extends Action
                             ->label('filament/actions/tables.clips.submit_action.form.bypass.options.broadcaster_consent')
                             ->translateLabel()
                             ->onColor('danger')
-                            ->disabled(fn () => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent))
-                            ->default(fn () => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)),
+                            ->disabled(fn (): bool => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent))
+                            ->default(fn (): bool => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)),
                         Toggle::make('category_ban')
                             ->hidden(fn (): bool => ! auth()->user()?->can(Permission::BypassBannedCategoryCheck))
                             ->label('filament/actions/tables.clips.submit_action.form.bypass.options.category_ban')
@@ -261,7 +261,7 @@ class SubmitClipAction extends Action
             return true;
         }
 
-        if ($allowedUsers) {
+        if ($allowedUsers !== []) {
             $isAllowed = in_array($user->id, $allowedUsers, true);
         }
 
