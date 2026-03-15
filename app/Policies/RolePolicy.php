@@ -45,8 +45,14 @@ class RolePolicy
             return false;
         }
 
-        if ($role->weight >= $user->getRole()?->weight) {
-            return $user->getRole()?->id === 0;
+        $userRole = $user->getRole();
+
+        if (! $userRole) {
+            return false;
+        }
+
+        if ($role->weight >= $userRole->weight) {
+            return $userRole->id === self::SuperAdminRole;
         }
 
         return $user->can(Permission::UpdateAnyRole);
@@ -69,8 +75,14 @@ class RolePolicy
             return false;
         }
 
-        if ($role->weight >= $user->getRole()?->weight) {
-            return $user->getRole()?->id === 0;
+        $userRole = $user->getRole();
+
+        if (! $userRole) {
+            return false;
+        }
+
+        if ($role->weight >= $userRole->weight) {
+            return $userRole->id === self::SuperAdminRole;
         }
 
         return $user->can(Permission::DeleteAnyRole);
