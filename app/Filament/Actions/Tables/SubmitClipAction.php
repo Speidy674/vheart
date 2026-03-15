@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Actions\Tables;
 
 use App\Actions\ImportClipAction;
+use App\Enums\FeatureFlag;
 use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
@@ -15,6 +16,7 @@ use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
 use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
+use App\Support\FeatureFlag\Feature;
 use Carbon\CarbonInterval;
 use Closure;
 use Deprecated;
@@ -88,7 +90,8 @@ class SubmitClipAction extends Action
                             ->label('filament/actions/tables.clips.submit_action.form.bypass.options.broadcaster_consent')
                             ->translateLabel()
                             ->onColor('danger')
-                            ->default(false),
+                            ->disabled(fn () => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent))
+                            ->default(fn () => Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)),
                         Toggle::make('category_ban')
                             ->hidden(fn (): bool => ! auth()->user()?->can(Permission::BypassBannedCategoryCheck))
                             ->label('filament/actions/tables.clips.submit_action.form.bypass.options.category_ban')
@@ -126,7 +129,7 @@ class SubmitClipAction extends Action
                         return;
                     }
 
-                    $bypassBroadcasterConsent = auth()->user()?->can(Permission::BypassConsentCheck) && $data['broadcaster_consent'];
+                    $bypassBroadcasterConsent = Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent) || (auth()->user()?->can(Permission::BypassConsentCheck) && $data['broadcaster_consent']);
                     $bypassMinLength = auth()->user()?->can(Permission::BypassBannedCategoryCheck) && $data['minimum_length'];
                     $bypassMaxAge = auth()->user()?->can(Permission::BypassMaximumAgeLimitCheck) && $data['maximum_age'];
                     $bypassCategoryBan = auth()->user()?->can(Permission::BypassBannedCategoryCheck) && $data['category_ban'];
