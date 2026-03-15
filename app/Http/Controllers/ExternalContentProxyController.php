@@ -29,9 +29,9 @@ class ExternalContentProxyController extends Controller
         }
 
         $contentType = $response->header('Content-Type');
-        if ($contentType !== 'application/json' && ! str_starts_with($contentType, 'image/')) {
-            abort(415);
-        }
+        $allowed = str_starts_with($contentType, 'image/')
+            || in_array($contentType, ['application/json', 'binary/octet-stream']);
+        abort_unless($allowed, 415);
 
         $headers = [
             'Content-Type' => $contentType,
