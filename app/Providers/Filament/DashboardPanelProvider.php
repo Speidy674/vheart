@@ -60,7 +60,7 @@ class DashboardPanelProvider extends PanelProvider
             ->homeUrl('/')
             ->tenant(Broadcaster::class)
             ->searchableTenantMenu()
-            ->tenantMenu(fn () => Feature::isActive(FeatureFlag::BroadcasterTenant))
+            ->tenantMenu(fn (): bool => Feature::isActive(FeatureFlag::BroadcasterTenant))
             ->discoverResources(in: app_path('Filament/Dashboard/Resources'), for: 'App\Filament\Dashboard\Resources')
             ->discoverPages(in: app_path('Filament/Dashboard/Pages'), for: 'App\Filament\Dashboard\Pages')
             ->pages([
