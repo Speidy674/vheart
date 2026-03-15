@@ -12,33 +12,21 @@ class RolePolicy
 {
     public const int SuperAdminRole = 0;
 
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
         return $user->can(Permission::ViewAnyRole);
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Role $role): bool
     {
         return $user->can(Permission::ViewRole);
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
         return $user->can(Permission::CreateRole);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Role $role): bool
     {
         if ($role->id === self::SuperAdminRole) {
@@ -58,17 +46,11 @@ class RolePolicy
         return $user->can(Permission::UpdateAnyRole);
     }
 
-    /**
-     * Determine whether the user can bulk update models.
-     */
     public function updateAny(User $user): bool
     {
         return $user->can(Permission::UpdateAnyRole);
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Role $role): bool
     {
         if ($role->id === self::SuperAdminRole) {
@@ -88,17 +70,11 @@ class RolePolicy
         return $user->can(Permission::DeleteAnyRole);
     }
 
-    /**
-     * Determine whether the user can bulk delete models.
-     */
     public function deleteAny(User $user): bool
     {
         return $user->can(Permission::DeleteAnyRole);
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Role $role): bool
     {
         return false;
@@ -109,9 +85,6 @@ class RolePolicy
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Role $role): bool
     {
         return false;
