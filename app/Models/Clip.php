@@ -226,6 +226,10 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereBroadcasterGavePermission(Builder $query, BroadcasterConsent|Collection|array|null $consents = null): Builder
     {
+        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
+            return $query;
+        }
+
         return $query->whereHas('broadcaster',
             fn (Builder $q) => $q->whereGaveConsent($consents)
         );
@@ -237,6 +241,10 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function whereBroadcasterDeniedPermission(Builder $query): Builder
     {
+        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
+            return $query->whereRaw('1 = 0');
+        }
+
         return $query->whereDoesntHave('broadcaster',
             fn (Builder $q) => $q->whereGaveNoConsent()
         );
