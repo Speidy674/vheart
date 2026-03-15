@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Actions\ImportClipAction;
 use App\Enums\Broadcaster\BroadcasterConsent;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
 use App\Models\Clip\Tag;
 use App\Models\User;
@@ -19,23 +20,23 @@ beforeEach(function () {
         'name' => 'Submitter',
     ]);
 
-    $this->broadcaster = User::factory()
-        ->withClipPermission()
+    $broadcasterUser = User::factory()
         ->create([
             'id' => 201000, // Default for dto
             'name' => 'Broadcaster',
         ]);
 
-    $this->broadcaster->broadcaster()->create([
+    $this->broadcaster = Broadcaster::create([
+        'id' => $broadcasterUser->id,
+        'submit_user_allowed' => true,
         'consent' => [BroadcasterConsent::Compilations],
     ]);
 
     $this->broadcasterWithoutPermission = User::factory()
-        ->withClipPermission(false)
         ->create([
             'id' => 201001,
             'name' => 'Disallowed',
-        ]);
+        ])->broadcaster()->create();
 
     $this->category = Category::factory()->create([
         'title' => 'Good Category',
@@ -177,7 +178,7 @@ describe('broadcaster requirements', function () {
         $mock->shouldNotReceive('get');
 
         $this->broadcaster
-            ->broadcasterFilter()
+            ->filters()
             ->create([
                 'filterable_type' => $this->submitter->getMorphClass(),
                 'filterable_id' => $this->submitter->id,
@@ -199,7 +200,7 @@ describe('broadcaster requirements', function () {
         $mock->shouldNotReceive('get');
 
         $this->broadcaster
-            ->broadcasterFilter()
+            ->filters()
             ->create([
                 'filterable_type' => new Category()->getMorphClass(),
                 'filterable_id' => $this->category->id,
@@ -232,7 +233,7 @@ describe('website requirements', function () {
     });
 
     test('fails if clip is already known to us', function () {
-        $this->broadcaster->broadcastedClips()
+        $this->broadcaster->clips()
             ->create(
                 $this->clipDto->toModel([
                     'submitter_id' => $this->broadcasterWithoutPermission->id,
