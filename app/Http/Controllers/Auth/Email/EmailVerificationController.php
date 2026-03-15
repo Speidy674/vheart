@@ -14,14 +14,14 @@ class EmailVerificationController extends Controller implements HasMiddleware
     public function __invoke(VerifyEmailRequest $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', ['verified' => true]));
+            return redirect()->intended(route('home', ['verified' => true]));
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->intended(route('dashboard', ['verified' => true]));
+        return redirect()->intended(route('home', ['verified' => true]));
     }
 
     public static function middleware(): array

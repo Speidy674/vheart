@@ -13,7 +13,7 @@ class EmailVerificationPromptController extends Controller implements HasMiddlew
     public function __invoke(Request $request)
     {
         if ($request->user()->email === null || $request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard'));
+            return redirect()->intended(route('home'));
         }
 
         return view('auth.verify-email');
