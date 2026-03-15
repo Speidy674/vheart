@@ -47,7 +47,7 @@ class RolePolicy
 
         $userRole = $user->getRole();
 
-        if (! $userRole) {
+        if (! $userRole instanceof Role) {
             return false;
         }
 
@@ -77,7 +77,7 @@ class RolePolicy
 
         $userRole = $user->getRole();
 
-        if (! $userRole) {
+        if (! $userRole instanceof Role) {
             return false;
         }
 

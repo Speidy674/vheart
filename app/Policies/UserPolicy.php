@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -56,7 +57,7 @@ class UserPolicy
 
         $userRole = $user->getRole();
 
-        if (! $userRole) {
+        if (! $userRole instanceof Role) {
             return false;
         }
 
@@ -82,7 +83,7 @@ class UserPolicy
 
         $userRole = $user->getRole();
 
-        if (! $userRole) {
+        if (! $userRole instanceof Role) {
             return $this->deny();
         }
 
@@ -130,7 +131,7 @@ class UserPolicy
 
         $userRole = $user->getRole();
 
-        if (! $userRole) {
+        if (! $userRole instanceof Role) {
             return false;
         }
 
