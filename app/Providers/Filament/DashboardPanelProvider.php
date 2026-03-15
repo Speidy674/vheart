@@ -7,6 +7,7 @@ namespace App\Providers\Filament;
 use App\Enums\FeatureFlag;
 use App\Filament\Dashboard\Pages\Dashboard;
 use App\Http\Middleware\Localization;
+use App\Http\Middleware\RequiresBroadcasterProfile;
 use App\Http\Middleware\StagingGateMiddleware;
 use App\Models\Broadcaster\Broadcaster;
 use App\Support\FeatureFlag\Feature;
@@ -77,6 +78,7 @@ class DashboardPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                RequiresBroadcasterProfile::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
