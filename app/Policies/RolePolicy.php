@@ -104,6 +104,11 @@ class RolePolicy
         return false;
     }
 
+    public function restoreAny(User $user): bool
+    {
+        return $user->can(Permission::RestoreAnyUser);
+    }
+
     /**
      * Determine whether the user can permanently delete the model.
      */
