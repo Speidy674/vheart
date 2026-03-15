@@ -10,7 +10,7 @@ use App\Models\User;
 
 class RolePolicy
 {
-    public static int $SuperAdminRole = 0;
+    public const int SuperAdminRole = 0;
 
     /**
      * Determine whether the user can view any models.
@@ -41,7 +41,7 @@ class RolePolicy
      */
     public function update(User $user, Role $role): bool
     {
-        if ($role->id === self::$SuperAdminRole) {
+        if ($role->id === self::SuperAdminRole) {
             return false;
         }
 
@@ -65,7 +65,7 @@ class RolePolicy
      */
     public function delete(User $user, Role $role): bool
     {
-        if ($role->id === self::$SuperAdminRole) {
+        if ($role->id === self::SuperAdminRole) {
             return false;
         }
 
