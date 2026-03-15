@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\ExternalContentProxyType;
 use App\Http\Requests\ContentProxyRequest;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * We act as a proxy to hide the user ip from twitch/youtube
@@ -16,7 +17,7 @@ class ExternalContentProxyController extends Controller
 {
     public const int STREAM_BUFFER_SIZE = 8192;
 
-    public function __invoke(ContentProxyRequest $request, ExternalContentProxyType $type, string $identifier)
+    public function __invoke(ContentProxyRequest $request, ExternalContentProxyType $type, string $identifier): StreamedResponse
     {
         $resource = $type->getResource($identifier);
 
@@ -24,9 +25,7 @@ class ExternalContentProxyController extends Controller
             ->timeout(5)
             ->get($resource);
 
-        if ($response->failed()) {
-            abort(404);
-        }
+        abort_if($response->failed(), 404);
 
         $contentType = $response->header('Content-Type');
         $allowed = str_starts_with($contentType, 'image/')
