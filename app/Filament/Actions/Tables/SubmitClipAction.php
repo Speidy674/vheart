@@ -6,6 +6,7 @@ namespace App\Filament\Actions\Tables;
 
 use App\Actions\ImportClipAction;
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\Clip\Tag;
@@ -172,10 +173,10 @@ class SubmitClipAction extends Action
 
                     // Broadcaster
                     if (! $bypassBroadcasterConsent) {
-                        $broadcaster = User::query()
+                        $broadcaster = Broadcaster::query()
                             ->where('id', $clipInfo->broadcaster_id)
-                            ->whereClipPermission(true)
-                            ->with(['broadcasterFilter'])
+                            ->whereGaveConsent()
+                            ->with(['filters'])
                             ->first();
 
                         if (! $broadcaster) {
@@ -187,7 +188,7 @@ class SubmitClipAction extends Action
                         $userType = $user->getMorphClass();
                         $categoryType = new Category()->getMorphClass();
 
-                        $groupedFilters = $broadcaster->broadcasterFilter->groupBy(['filterable_type', 'state']);
+                        $groupedFilters = $broadcaster->filters->groupBy(['filterable_type', 'state']);
                         $allowedUsers = $groupedFilters->get($userType)?->get(true)?->pluck('filterable_id')->toArray() ?? [];
                         $disallowedUsers = $groupedFilters->get($userType)?->get(false)?->pluck('filterable_id')->toArray() ?? [];
                         $allowedCategories = $groupedFilters->get($categoryType)?->get(true)?->pluck('filterable_id')->toArray() ?? [];
@@ -204,6 +205,10 @@ class SubmitClipAction extends Action
 
                             return;
                         }
+                    } else {
+                        Broadcaster::firstOrCreate([
+                            'id' => $clipInfo->broadcaster_id,
+                        ]);
                     }
 
                     User::updateOrCreate([
@@ -240,30 +245,32 @@ class SubmitClipAction extends Action
         return $this;
     }
 
-    protected function passesUserChecks(User $user, User $broadcaster, array $disallowedUsers, array $allowedUsers, TwitchService $twitchService): bool
+    protected function passesUserChecks(User $user, Broadcaster $broadcaster, array $disallowedUsers, array $allowedUsers, TwitchService $twitchService): bool
     {
-        $rules = $broadcaster->rules ?? [];
-
         if (in_array($user->id, $disallowedUsers, true)) {
             return false;
         }
 
-        $isAllowed = empty($rules) || $broadcaster->id === $user->id;
+        $isAllowed = $broadcaster->submit_user_allowed || $broadcaster->id === $user->id;
 
-        if (! $isAllowed && $allowedUsers && in_array('userAllowList', $rules, true)) {
+        if ($isAllowed) {
+            return true;
+        }
+
+        if ($allowedUsers) {
             $isAllowed = in_array($user->id, $allowedUsers, true);
         }
 
-        if (! $isAllowed && in_array('userAllowMods', $rules, true)) {
+        if (! $isAllowed && $broadcaster->submit_mods_allowed) {
             $isAllowed = $twitchService
                 ->asUser($user, session()?->get('twitch_access_token'))
-                ->isModeratorFor($broadcaster);
+                ->isModeratorFor($broadcaster->user);
         }
 
-        if (! $isAllowed && in_array('userAllowVips', $rules, true)) {
+        if (! $isAllowed && $broadcaster->submit_vip_allowed) {
             try {
                 $vipInfos = $twitchService
-                    ->asUser($broadcaster)
+                    ->asUser($broadcaster->user)
                     ->onUserTokenRefresh()
                     ->get(TwitchEndpoints::GetVIPs, [
                         'user_id' => $user->id,
