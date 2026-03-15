@@ -53,6 +53,14 @@ class RolePolicy
     }
 
     /**
+     * Determine whether the user can bulk update models.
+     */
+    public function updateAny(User $user): bool
+    {
+        return $user->can(Permission::UpdateAnyRole);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Role $role): bool
@@ -65,6 +73,14 @@ class RolePolicy
             return $user->getRole()?->id === 0;
         }
 
+        return $user->can(Permission::DeleteAnyRole);
+    }
+
+    /**
+     * Determine whether the user can bulk delete models.
+     */
+    public function deleteAny(User $user): bool
+    {
         return $user->can(Permission::DeleteAnyRole);
     }
 
