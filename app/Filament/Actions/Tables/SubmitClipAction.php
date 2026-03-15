@@ -70,6 +70,7 @@ class SubmitClipAction extends Action
                     ->required(),
 
                 Section::make(__('filament/actions/tables.clips.submit_action.form.bypass.label'))
+                    ->description(__('filament/actions/tables.clips.submit_action.form.bypass.description'))
                     ->compact()
                     ->hidden(function (): bool {
                         if (! $this->bypassable) {
