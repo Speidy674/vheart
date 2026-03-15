@@ -106,7 +106,7 @@ class RolePolicy
 
     public function restoreAny(User $user): bool
     {
-        return $user->can(Permission::RestoreAnyUser);
+        return false;
     }
 
     /**
@@ -119,6 +119,6 @@ class RolePolicy
 
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can(Permission::ForceDeleteAnyUser);
+        return false;
     }
 }
