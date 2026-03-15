@@ -111,4 +111,9 @@ class RolePolicy
     {
         return false;
     }
+
+    public function forceDeleteAny(User $user): bool
+    {
+        return $user->can(Permission::ForceDeleteAnyUser);
+    }
 }
