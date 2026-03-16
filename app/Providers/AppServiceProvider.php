@@ -64,6 +64,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureSecurity();
+
         Event::listen(static function (SocialiteWasCalled $event): void {
             $event->extendSocialite('twitch', TwitchSocialiteProvider::class);
         });
@@ -226,5 +228,14 @@ class AppServiceProvider extends ServiceProvider
 
             return Limit::perMinute(60)->by($throttleKey);
         });
+    }
+
+    private function configureSecurity(): void
+    {
+        if (app()->isProduction() || str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceHttps();
+        }
+
+        Inertia::encryptHistory();
     }
 }

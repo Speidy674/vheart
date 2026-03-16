@@ -18,6 +18,11 @@ if getent hosts redis > /dev/null; then
     echo "   -> Mapped 'redis' to $(getent hosts redis | awk '{ print $1 }')"
 fi
 
+if [ "$#" -gt 0 ]; then
+    echo "you can use artisan via 'production <command>'"
+    exec "$@"
+fi
+
 if [ "$INSTANCE" = "web" ]; then
     echo "[Entrypoint] Updating Cloudflare IP ranges..."
     if CF_IPS=$( { wget -qO- https://www.cloudflare.com/ips-v4; echo; wget -qO- https://www.cloudflare.com/ips-v6; } | tr '\n' ' ' ); then
@@ -28,16 +33,19 @@ if [ "$INSTANCE" = "web" ]; then
         echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
     fi
 
+    echo "[Entrypoint] Linking Storage..."
+    production storage:link --force
+
     echo "[Entrypoint] Starting FrankenPHP..."
-    exec php -d variables_order=EGPCS /app/artisan octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
+    exec php -d variables_order=EGPCS production octane:start --server=frankenphp --host=0.0.0.0 --admin-port=2019 --port=80 --max-requests=500 --caddyfile=/etc/caddy/Caddyfile
 
 elif [ "$INSTANCE" = "worker" ]; then
     echo "[Entrypoint] Starting Laravel Worker..."
-    exec php /app/artisan queue:work --name=queue-worker --queue=default --sleep=3 --tries=3 --max-time=3600 --json
+    exec production queue:work --name=queue-worker --queue=default --sleep=3 --tries=3 --max-time=3600 --json
 
 elif [ "$INSTANCE" = "scheduler" ]; then
     echo "[Entrypoint] Starting Laravel Scheduler..."
-    exec php /app/artisan schedule:work --whisper
+    exec production schedule:work --whisper
 
 elif [ "$INSTANCE" = "init" ]; then
     echo "[Entrypoint] Running Initializations..."

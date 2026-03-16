@@ -18,7 +18,7 @@ class ClipPermissionScope implements Scope
 {
     public function apply(Builder $builder, Model $model): void
     {
-        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsentOnClipScope) || Filament::isServing()) {
+        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent) || Filament::isServing()) {
             return;
         }
 
