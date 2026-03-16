@@ -6,7 +6,6 @@ namespace App\Http\Middleware;
 
 use App\Models\Broadcaster\Broadcaster;
 use Closure;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,18 +19,12 @@ class RequiresBroadcasterProfile
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $user = $request->user();
         $tenantId = $request->route('tenant');
+        $isSelfTenant = ((int) $tenantId) === $user?->id;
 
-        if (! $tenantId && ! Broadcaster::where('id', $request->user()?->id)->exists()) {
+        if ((! $tenantId || $isSelfTenant) && ! Broadcaster::where('id', $user?->id)->exists()) {
             return redirect()->guest(route('dashboard.onboarding'));
-        }
-
-        if (! is_numeric($tenantId)) {
-            return redirect()->guest(Filament::getPanel('dashboard')->getUrl());
-        }
-
-        if (! Broadcaster::where('id', $tenantId)->exists()) {
-            return redirect()->guest(Filament::getPanel('dashboard')->getUrl());
         }
 
         return $next($request);
