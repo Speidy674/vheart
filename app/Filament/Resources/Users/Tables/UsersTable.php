@@ -59,9 +59,14 @@ class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()->label('Disable Users'),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make()->label('Restore Users'),
+                    DeleteBulkAction::make()
+                        ->authorizeIndividualRecords()
+                        ->label('Disable Users'),
+                    ForceDeleteBulkAction::make()
+                        ->authorizeIndividualRecords(),
+                    RestoreBulkAction::make()
+                        ->authorizeIndividualRecords()
+                        ->label('Restore Users'),
                 ]),
             ]);
     }
