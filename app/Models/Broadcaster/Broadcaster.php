@@ -6,8 +6,10 @@ namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
+use App\Enums\FeatureFlag;
 use App\Models\Traits\Auditable;
 use App\Models\User;
+use App\Support\FeatureFlag\Feature;
 use Database\Factories\Broadcaster\BroadcasterFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -101,6 +103,10 @@ class Broadcaster extends Model
     #[Scope]
     protected function whereGaveNoConsent(Builder $query): Builder
     {
+        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
+            return $query->whereRaw('1 = 0');
+        }
+
         return $query->where(fn (Builder $query) => $query
             ->whereJsonLength('consent', '=', '0')
             ->orWhereNull('consent'));
@@ -112,6 +118,10 @@ class Broadcaster extends Model
     #[Scope]
     protected function whereGaveConsent(Builder $query, BroadcasterConsent|Collection|array|null $consents = null): Builder
     {
+        if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
+            return $query;
+        }
+
         if (! $consents) {
             return $query->whereJsonLength('consent', '>', '0');
         }
