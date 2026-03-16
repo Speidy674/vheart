@@ -8,7 +8,6 @@ use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use App\Models\Broadcaster\BroadcasterTeamMember;
-use App\Models\BroadcasterFilter;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\Clip\Compilation;
@@ -137,7 +136,6 @@ class AppServiceProvider extends ServiceProvider
             'user' => User::class,
             'vote' => Vote::class,
             'broadcaster' => Broadcaster::class,
-            'broadcaster_filter' => BroadcasterFilter::class, // TODO: remove if fully refactored to new models later
             'broadcaster_submission_filter' => BroadcasterSubmissionFilter::class,
             'broadcaster_team_member' => BroadcasterTeamMember::class,
         ]);

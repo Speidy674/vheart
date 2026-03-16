@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
 use App\Models\Clip;
-use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
 use App\Services\Twitch\TwitchEndpoints;
@@ -18,7 +18,7 @@ class SubmitClipRequest extends FormRequest
 {
     public ?ClipDto $clipInfo = null;
 
-    public ?User $broadcaster = null;
+    public ?Broadcaster $broadcaster = null;
 
     public ?array $disallowedUsers = null;
 
@@ -115,13 +115,13 @@ class SubmitClipRequest extends FormRequest
                 // Check if the Broadcaster is even registered (deny otherwise)
                 // also fetch other data if possible to minimize queries in one go
                 // broadcasters should never have enough data to make this a memory issue
-                $this->broadcaster = User::query()
+                $this->broadcaster = Broadcaster::query()
                     ->where('id', $this->clipInfo->broadcaster_id)
-                    ->whereClipPermission(true)
-                    ->with(['broadcasterFilter'])
+                    ->whereGaveConsent()
+                    ->with(['filters'])
                     ->first();
 
-                if (! $this->broadcaster instanceof User) {
+                if (! $this->broadcaster instanceof Broadcaster) {
                     $validator->errors()->add('clip_url', __('clips.errors.broadcaster_not_allowed'));
 
                     return;
@@ -130,7 +130,7 @@ class SubmitClipRequest extends FormRequest
                 $userType = $this->user()->getMorphClass();
                 $categoryType = new Category()->getMorphClass();
 
-                $groupedFilters = $this->broadcaster->broadcasterFilter->groupBy(['filterable_type', 'state']);
+                $groupedFilters = $this->broadcaster->filters->groupBy(['filterable_type', 'state']);
                 $this->allowedUsers = $groupedFilters->get($userType)?->get(true)?->pluck('filterable_id')->toArray();
                 $this->disallowedUsers = $groupedFilters->get($userType)?->get(false)?->pluck('filterable_id')->toArray();
                 $this->allowedCategories = $groupedFilters->get($categoryType)?->get(true)?->pluck('filterable_id')->toArray();
@@ -166,33 +166,35 @@ class SubmitClipRequest extends FormRequest
     protected function passesUserChecks(): bool
     {
         $user = $this->user();
-        $rules = $this->broadcaster->rules ?? [];
+        $broadcaster = $this->broadcaster;
+        $weAreBroadcaster = $this->broadcaster->id === $user->id;
 
         // Check if user is blacklisted
         if (in_array($user->id, $this->disallowedUsers ?? [], true)) {
             return false;
         }
 
-        // bypass if no rules or broadcaster is submitting
-        $isAllowed = empty($rules) || $this->broadcaster->id === $user->id;
+        // bypass if broadcaster is allowing everyone or is submitting themselves
+        $isAllowed = $broadcaster->submit_user_allowed || $weAreBroadcaster;
+
+        if ($isAllowed) {
+            return true;
+        }
 
         // Check if user is in explicit Allow-list (allow if yes)
-        if (! $isAllowed &&
-            $this->allowedUsers &&
-            in_array('userAllowList', $rules, true)
-        ) {
+        if ($this->allowedUsers) {
             $isAllowed = in_array($user->id, $this->allowedUsers, true);
         }
 
-        // Check if Broadcaster has enabled Mod Allow-list and if the User is on it
-        if (! $isAllowed && in_array('userAllowMods', $rules, true)) {
+        // Check if Broadcaster has allowed moderators to submit
+        if (! $isAllowed && $broadcaster->submit_mods_allowed) {
             $isAllowed = $this->twitchService
                 ->asUser($user, session()?->get('twitch_access_token'))
                 ->isModeratorFor($this->broadcaster);
         }
 
-        // Check if Broadcaster has enabled VIP Allow-list and if the User is on it
-        if (! $isAllowed && in_array('userAllowVips', $rules, true)) {
+        // Check if Broadcaster has allowed VIPs to submit
+        if (! $isAllowed && $broadcaster->submit_vip_allowed) {
             try {
                 $vipInfos = $this->twitchService
                     ->asUser($this->broadcaster)

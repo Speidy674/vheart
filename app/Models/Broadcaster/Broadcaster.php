@@ -7,6 +7,7 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Enums\FeatureFlag;
+use App\Models\Clip;
 use App\Models\Traits\Auditable;
 use App\Models\User;
 use App\Support\FeatureFlag\Feature;
@@ -39,6 +40,14 @@ class Broadcaster extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id', 'id');
+    }
+
+    /**
+     * @return HasMany<Clip, $this>
+     */
+    public function clips(): HasMany
+    {
+        return $this->hasMany(Clip::class, 'broadcaster_id', 'id');
     }
 
     /**

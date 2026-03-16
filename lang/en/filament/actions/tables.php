@@ -11,6 +11,7 @@ return [
                 'tags' => 'Tags',
                 'bypass' => [
                     'label' => 'Bypass Limitations',
+                    'description' => 'You have Permission to bypass specific limitations, do not abuse.',
                     'options' => [
                         'broadcaster_consent' => 'Broadcaster Consent',
                         'category_ban' => 'Site Category Ban',
