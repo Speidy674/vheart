@@ -28,9 +28,9 @@ enum FeatureFlag: string implements HasLabel
     #[DefaultFeatureFlagState(true)]
     case Reports = 'reporting';
 
-    #[Description('Bypasses the Broadcaster Consent scope on Clips, useful for debugging locally')]
+    #[Description('Bypasses the Broadcaster Consent globally, useful for debugging locally')]
     #[Environment(['local', 'staging'])]
-    case IgnoreBroadcasterConsentOnClipScope = 'bypass_broadcaster_consent';
+    case IgnoreBroadcasterConsent = 'bypass_broadcaster_consent';
 
     #[Description('Shows the about-us page on index (also hides the footer item and route for about us)')]
     case AboutUsAsIndex = 'about_us_as_index';

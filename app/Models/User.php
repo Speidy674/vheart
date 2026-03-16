@@ -207,14 +207,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return parent::setRelation($relation, $value);
     }
 
-    /**
-     * @return HasMany<BroadcasterFilter, $this>
-     */
-    public function broadcasterFilter(): HasMany
-    {
-        return $this->hasMany(BroadcasterFilter::class, 'broadcaster_id');
-    }
-
     public function getFilamentName(): string
     {
         return $this->name;
