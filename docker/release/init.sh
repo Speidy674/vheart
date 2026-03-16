@@ -1,36 +1,21 @@
 #!/bin/sh
 
 echo "[Init] Running Migrations..."
-php /app/artisan migrate --force
+production migrate --force
 
 echo "[Init] Clearing old caches..."
-php /app/artisan optimize:clear
+production optimize:clear
 
 echo "[Init] Seeding Database..."
-php /app/artisan db:seed --force
-
-echo "[Init] Caching Configuration..."
-php /app/artisan config:cache
-
-echo "[Init] Caching Events..."
-php /app/artisan event:cache
-
-echo "[Init] Caching Routes..."
-php /app/artisan route:cache
-
-echo "[Init] Caching Views..."
-php /app/artisan view:cache
+production db:seed --force
 
 echo "[Init] Optimize..."
-php /app/artisan optimize
+production optimize
 
-echo "[Init] Setup Storage"
-php /app/artisan storage:link --force
-
-echo "[Init] Export translation files..."
-php /app/artisan translations:export
+chown -R www-data:www-data /app/storage /app/bootstrap/cache
+chmod -R 775 /app/storage /app/bootstrap/cache
 
 echo "[Init] Restarting Queue Signal..."
-php /app/artisan queue:restart
+production queue:restart
 
 echo "[Init] Done."

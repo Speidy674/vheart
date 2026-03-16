@@ -19,6 +19,7 @@ data
 vendor
 frankenphp
 _ide_helper.php
+_ide_helper_models.php
 .phpstorm.meta.php
 node_modules
 tests
@@ -40,13 +41,6 @@ eslint.config.js
 .prettierrc
 .prettierignore
 tsconfig.json
-rector.php
-phpstan.neon
-pint.json
-eslint.config.js
-.prettierrc
-.prettierignore
-tsconfig.json
 storage/app/*
 storage/debugbar/*
 storage/framework/cache/*
@@ -57,3 +51,11 @@ public/hot
 public/storage
 bootstrap/cache/*
 !bootstrap/cache/.gitignore
+.devcontainer
+clean
+components.json
+fix.sh
+resources/js/*
+resources/css/*
+resources/images/*
+resources/fonts/*

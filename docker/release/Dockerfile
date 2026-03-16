@@ -11,8 +11,9 @@ RUN install-php-extensions \
     zip
 
 WORKDIR /app
-ENV TZ=Europe/Berlin
-ENV APP_ENV=production
+ENV TZ=Europe/Berlin \
+    APP_ENV=production \
+    APP_DEBUG=false
 
 FROM base AS build
 
@@ -30,7 +31,13 @@ RUN --mount=type=bind,source=composer.json,target=composer.json \
 
 COPY . .
 
-RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative \
+    && php artisan translations:export \
+    && rm -f bootstrap/cache/*.php \
+    && rm -rf storage/framework/cache/data/* \
+    && rm -rf storage/framework/views/*.php \
+    && rm -rf storage/framework/sessions/* \
+    && rm -rf storage/framework/cache/data/*
 
 FROM base AS runner
 
@@ -49,7 +56,11 @@ COPY docker/release/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/release/init.sh /app/init-app.sh
 COPY docker/release/entrypoint.sh /app/entrypoint.sh
 
-RUN chmod +x /app/init-app.sh /app/entrypoint.sh
+RUN mv /app/artisan /app/production \
+    && ln -s /app/production /usr/local/bin/production \
+    && echo 'alias production="php /app/production"' >> /etc/profile \
+    && echo 'export ENV=/etc/profile' >> /etc/environment \
+    && chmod +x /app/init-app.sh /app/entrypoint.sh
 
 EXPOSE 80
 
