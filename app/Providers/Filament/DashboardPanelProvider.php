@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers\Filament;
 
 use App\Enums\FeatureFlag;
+use App\Enums\Filament\LucideIcon;
 use App\Filament\Dashboard\Pages\Dashboard;
 use App\Http\Middleware\FeatureFlagGuard;
 use App\Http\Middleware\Localization;
@@ -59,6 +60,14 @@ class DashboardPanelProvider extends PanelProvider
             ->brandLogo(fn () => Vite::asset('resources/images/svg/logo-full-title.svg'))
             ->brandLogoHeight('2rem')
             ->homeUrl('/')
+            ->userMenuItems([
+                Action::make('back-home')
+                    ->label('dashboard/navigation.back-home')
+                    ->translateLabel()
+                    ->url(fn (): string => route('home'))
+                    ->icon(LucideIcon::Home)
+                    ->sort(100),
+            ])
             ->tenant(Broadcaster::class)
             ->searchableTenantMenu()
             ->tenantMenu(fn (): bool => Feature::isActive(FeatureFlag::BroadcasterTenant))
