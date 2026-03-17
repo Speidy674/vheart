@@ -16,7 +16,7 @@ class EmailVerificationNotificationController extends Controller implements HasM
         if ($request->user()->hasVerifiedEmail()) {
             return $request->wantsJson()
                 ? new JsonResponse(status: 204)
-                : redirect()->intended(route('dashboard'));
+                : redirect()->intended(route('home'));
         }
 
         $request->user()->sendEmailVerificationNotification();

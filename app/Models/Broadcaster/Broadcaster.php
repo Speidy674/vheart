@@ -12,6 +12,7 @@ use App\Models\Traits\Auditable;
 use App\Models\User;
 use App\Support\FeatureFlag\Feature;
 use Database\Factories\Broadcaster\BroadcasterFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
@@ -23,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
-class Broadcaster extends Model
+class Broadcaster extends Model implements HasAvatar
 {
     use Auditable;
 
@@ -69,6 +70,11 @@ class Broadcaster extends Model
     public function proxiedContentUrl(): mixed
     {
         return $this->loadMissing('user')->user->proxiedContentUrl();
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->proxiedContentUrl();
     }
 
     protected static function booted(): void

@@ -58,7 +58,7 @@ class CompilationsRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
-                        Select::make('status')
+                        Select::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status')
                             ->translateLabel()
                             ->options(CompilationClipClaimStatus::class)

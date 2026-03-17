@@ -47,4 +47,8 @@ enum FeatureFlag: string implements HasLabel
 
     #[DefaultFeatureFlagState(true)]
     case BroadcasterOnboarding = 'broadcaster_onboarding';
+
+    #[Description('Toggles the Tenant Feature in the Broadcaster Dashboard')]
+    #[DefaultFeatureFlagState(false)]
+    case BroadcasterTenant = 'broadcaster_tenant';
 }

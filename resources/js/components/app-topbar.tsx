@@ -1,22 +1,40 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronDown, LayoutGrid, LucideProps, ScanHeart, Search, Send, X } from 'lucide-react';
-import { ForwardRefExoticComponent, RefAttributes, useEffect, useRef, useState } from 'react';
+import {
+    ChevronDown,
+    LayoutGrid,
+    LucideProps,
+    ScanHeart,
+    Search,
+    Send,
+    X,
+} from 'lucide-react';
+import {
+    ForwardRefExoticComponent,
+    RefAttributes,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ClipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn } from '@/lib/utils';
-import { dashboard, home, login } from '@/routes';
+import { home, login } from '@/routes';
 import submitclip from '@/routes/submitclip';
 import { type SharedData as BaseSharedData } from '@/types';
 
+import { RouteDefinition } from '@/wayfinder';
 import LogoFullDark from '/resources/images/svg/logo-full-dark.svg';
 import LogoFullLight from '/resources/images/svg/logo-full-title.svg';
-import { RouteDefinition } from '@/wayfinder';
 
 interface SharedData extends BaseSharedData {
     flash?: {
@@ -38,7 +56,7 @@ interface AppTopbarProps {
 }
 
 const NAVIGATION_ITEMS = [
-    { key: 'dashboard', href: dashboard(), icon: LayoutGrid },
+    { key: 'dashboard', href: '/dashboard', icon: LayoutGrid, static: true },
     {
         key: 'submit_clips',
         href: submitclip.create().url,
