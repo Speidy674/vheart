@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Filament\Dashboard\Resources\Clips\RelationManagers;
 
 use App\Enums\Clips\CompilationStatus;
+use App\Models\Clip\Compilation;
+use Filament\Actions\Action;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,25 +32,23 @@ class CompilationsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScope(filament()->getTenancyScopeName())->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases()))
+            ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases()))
             ->columns([
                 TextColumn::make('title')
-                    ->label('admin/resources/clips.table.columns.title')
+                    ->label('dashboard/resources/compilations.table.columns.title')
                     ->translateLabel()
                     ->wrap()
                     ->searchable(),
-
                 TextColumn::make('type')
-                    ->label('admin/resources/compilations.form.type')
+                    ->label('dashboard/resources/compilations.table.columns.type')
                     ->translateLabel()
-                    ->badge(),
-
-                TextColumn::make('created_at')
-                    ->label('admin/resources/clips.table.columns.created_at')
-                    ->translateLabel()
-                    ->dateTime()
-                    ->sortable()
+                    ->badge()
                     ->toggleable(isToggledHiddenByDefault: true),
+            ])->recordActions([
+                Action::make('open_youtube_url')
+                    ->url(fn (Compilation $record): string => $record->youtube_url, true)
+                    ->label(__('dashboard/resources/compilations.actions.open_youtube_url'))
+                    ->hidden(fn (Compilation $record): bool => ! $record->youtube_url),
             ]);
     }
 }
