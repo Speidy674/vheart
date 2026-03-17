@@ -6,6 +6,7 @@ namespace App\Providers\Filament;
 
 use App\Enums\FeatureFlag;
 use App\Filament\Dashboard\Pages\Dashboard;
+use App\Http\Middleware\FeatureFlagGuard;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\RequiresBroadcasterProfile;
 use App\Http\Middleware\StagingGateMiddleware;
@@ -84,6 +85,7 @@ class DashboardPanelProvider extends PanelProvider
                 Authenticate::class,
                 StagingGateMiddleware::class,
                 Localization::class,
+                FeatureFlagGuard::of(FeatureFlag::UserDashboard),
             ])->spa();
     }
 }
