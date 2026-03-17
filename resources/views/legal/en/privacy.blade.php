@@ -4,11 +4,10 @@ This privacy policy explains what personal data we process when you use this web
 
 ## Controller / Responsible
 
-VHeart
-Jennifer Matern
-c/o PURE4U GbR
-Amtstraße 22
-44575 Castrop-Rauxel
+VHeart \
+XXXX XXXX \
+XXXX XXXX \
+XXXX XXXX \
 Germany
 
 **Email:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)

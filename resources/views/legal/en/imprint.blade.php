@@ -4,11 +4,10 @@ Information according to § 5 DDG
 
 ## Provider
 
-VHeart
-Jennifer Matern
-c/o PURE4U GbR
-Amtstraße 22
-44575 Castrop-Rauxel
+VHeart \
+XXXX XXXX \
+XXXX XXXX \
+XXXX XXXX \
 Germany
 
 **Email:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
