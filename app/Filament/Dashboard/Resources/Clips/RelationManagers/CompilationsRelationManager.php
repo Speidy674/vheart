@@ -47,7 +47,8 @@ class CompilationsRelationManager extends RelationManager
             ])->recordActions([
                 Action::make('open_youtube_url')
                     ->url(fn (Compilation $record): string => $record->youtube_url, true)
-                    ->label(__('dashboard/resources/compilations.actions.open_youtube_url'))
+                    ->label('dashboard/resources/compilations.actions.open_youtube_url')
+                    ->translateLabel()
                     ->hidden(fn (Compilation $record): bool => ! $record->youtube_url),
             ]);
     }
