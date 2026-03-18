@@ -6,10 +6,8 @@ namespace App\Filament\Dashboard\Resources\Clips\Schemas;
 
 use App\Enums\Clips\ClipStatus;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -54,31 +52,6 @@ class ClipForm
                             ->translateLabel()
                             ->required()
                             ->options(ClipStatus::class),
-                        TextEntry::make('duration')
-                            ->label('dashboard/resources/clips.form.duration')
-                            ->translateLabel()
-                            ->formatStateUsing(function ($state): string {
-                                $totalSeconds = (int) round($state);
-
-                                $minutes = intdiv($totalSeconds, 60);
-                                $seconds = $totalSeconds % 60;
-
-                                return sprintf('%d:%02d', $minutes, $seconds);
-                            }),
-                        Select::make('creator')
-                            ->relationship('creator', 'name')
-                            ->disabled()
-                            ->label('dashboard/resources/clips.form.creator')
-                            ->translateLabel(),
-                        Select::make('submitter')
-                            ->relationship('submitter', 'name')
-                            ->disabled()
-                            ->label('dashboard/resources/clips.form.submitted_by')
-                            ->translateLabel(),
-                        DateTimePicker::make('date')
-                            ->label('dashboard/resources/clips.form.created_at')
-                            ->translateLabel()
-                            ->disabled(),
                     ]),
             ])->columns(3);
     }
