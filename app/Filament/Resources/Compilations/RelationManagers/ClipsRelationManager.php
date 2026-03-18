@@ -400,7 +400,17 @@ class ClipsRelationManager extends RelationManager
                         ->action(function (Clip $clip, $livewire): void {
                             $title = Str::limit($clip->title, 50, '');
 
-                            $filename = "[{$clip->id}] {$clip->broadcaster->name} - {$clip->category->title} - {$title}.mp4";
+                            if (! $clip->owner) {
+                                Notification::make()
+                                    ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copy_failed_title'))
+                                    ->body(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copy_failed_no_broadcaster'))
+                                    ->danger()
+                                    ->send();
+
+                                return;
+                            }
+
+                            $filename = "[{$clip->id}] {$clip->owner->name} - {$clip->category->title} - {$title}.mp4";
                             $livewire->js("window.navigator.clipboard.writeText('{$filename}');");
 
                             Notification::make()
