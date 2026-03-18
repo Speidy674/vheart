@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Providers\Filament;
 
+use App\Enums\Filament\LucideIcon;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Http\Middleware\StagingGateMiddleware;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,7 +19,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Width;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -58,6 +59,12 @@ class AdminPanelProvider extends PanelProvider
                 Action::make('Back to Website')
                     ->url(fn (): string => route('home'))
                     ->icon(Heroicon::Home)
+                    ->sort(100),
+                Action::make('to-admin')
+                    ->label('navigation.dashboard')
+                    ->translateLabel()
+                    ->url(fn (): string => Filament::getPanel('dashboard')->getUrl())
+                    ->icon(LucideIcon::LayoutDashboard)
                     ->sort(100),
             ])
             ->middleware([
