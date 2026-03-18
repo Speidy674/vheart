@@ -1,0 +1,5 @@
+/* only add components we use here */
+@source '../../../resources/views/components/clips/**/*';
+@source '../../../resources/views/components/embeds/**/*';
+@source '../../../resources/views/components/ui/**/*';
+@source '../../../resources/views/components/image.blade.php';
