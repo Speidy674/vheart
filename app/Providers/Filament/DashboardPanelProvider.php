@@ -105,6 +105,12 @@ class DashboardPanelProvider extends PanelProvider
                 StagingGateMiddleware::class,
                 Localization::class,
                 FeatureFlagGuard::of(FeatureFlag::UserDashboard),
-            ])->spa();
+            ])
+            ->spa()
+            ->spaUrlExceptions(fn (): array => [
+                url('/'),
+                url('/admin'),
+                '*/admin*',
+            ]);
     }
 }
