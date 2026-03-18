@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Dashboard\Resources\Clips\Tables;
 
 use App\Enums\Clips\ClipStatus;
-use App\Enums\ClipVoteType;
 use App\Filament\Filters\DateRangeFilter;
 use App\Filament\Resources\Clips\Tables\ClipColumns;
 use Filament\Actions\ActionGroup;
@@ -24,16 +23,12 @@ class ClipsTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with([
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
                 'category',
                 'broadcaster',
                 'creator',
                 'submitter',
-            ])->withCount([
-                'votes as votes_public' => function (Builder $query): void {
-                    $query->where('type', ClipVoteType::Public)->whereVoted(true);
-                },
-            ]))
+            ])->withPublicVoteCount())
             ->columns([
                 Split::make([
                     Stack::make([
@@ -48,7 +43,7 @@ class ClipsTable
                             ClipColumns::duration()
                                 ->label(__('dashboard/resources/clips.table.columns.duration'))
                                 ->tooltip(__('dashboard/resources/clips.table.columns.duration')),
-                            ClipColumns::publicVotes('votes_public')
+                            ClipColumns::publicVotes()
                                 ->label(__('dashboard/resources/clips.table.columns.votes'))
                                 ->tooltip(__('dashboard/resources/clips.table.columns.votes')),
                             ClipColumns::status()
