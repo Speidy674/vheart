@@ -35,7 +35,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.tsx',
                 'resources/css/filament/admin.css',
-                'resources/css/filament/dashboard/theme.css',
+                'resources/css/filament/dashboard.css',
                 'resources/js/static/app.ts',
                 'resources/js/static/alpine.ts',
             ],
