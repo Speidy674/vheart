@@ -55,9 +55,6 @@ class DashboardPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->userMenuItems([
-                // 'profile' => fn (Action $action) => $action->label('Edit profile'),
-            ])
             ->maxContentWidth(Width::ScreenTwoExtraLarge)
             ->darkModeBrandLogo(fn () => Vite::asset('resources/images/svg/logo-full-dark.svg'))
             ->brandLogo(fn () => Vite::asset('resources/images/svg/logo-full-title.svg'))
