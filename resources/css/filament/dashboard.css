@@ -1,5 +1,6 @@
 @import '../../../vendor/filament/filament/resources/css/theme.css';
 @import '../shared.css';
+@import './custom-components.css';
 
 @source '../../../../app/Filament/Dashboard/**/*';
 @source '../../../../resources/views/filament/**/*';
