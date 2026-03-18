@@ -56,9 +56,11 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->databaseNotifications()
             ->userMenuItems([
-                Action::make('Back to Website')
+                Action::make('back-home')
+                    ->label('dashboard/navigation.back-home')
+                    ->translateLabel()
                     ->url(fn (): string => route('home'))
-                    ->icon(Heroicon::Home)
+                    ->icon(LucideIcon::Home)
                     ->sort(100),
                 Action::make('to-admin')
                     ->label('navigation.dashboard')
