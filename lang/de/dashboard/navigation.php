@@ -6,5 +6,5 @@ return [
     'dashboard' => 'Übersicht',
     'clips' => 'Clips verwalten',
     'permissions' => 'Berechtigungen',
-    'back-home' => 'Zuruck zur Startseite',
+    'back-home' => 'Zurück zur Startseite',
 ];
