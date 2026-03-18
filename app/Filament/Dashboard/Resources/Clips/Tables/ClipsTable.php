@@ -30,9 +30,6 @@ class ClipsTable
                 'creator',
                 'submitter',
             ])->withCount([
-                'votes as votes_jury' => function (Builder $query): void {
-                    $query->where('type', ClipVoteType::Jury)->whereVoted(true);
-                },
                 'votes as votes_public' => function (Builder $query): void {
                     $query->where('type', ClipVoteType::Public)->whereVoted(true);
                 },
