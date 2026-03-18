@@ -13,4 +13,9 @@ enum BroadcasterConsent: int implements HasLabel
 
     case Compilations = 0;
     case Shorts = 1;
+
+    private function getTranslatableEnumLabelPrefix(): string
+    {
+        return 'broadcaster.enums';
+    }
 }
