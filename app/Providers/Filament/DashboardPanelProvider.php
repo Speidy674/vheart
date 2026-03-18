@@ -15,6 +15,7 @@ use App\Models\Broadcaster\Broadcaster;
 use App\Support\FeatureFlag\Feature;
 use Filament\Actions\Action;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,6 +38,8 @@ class DashboardPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $adminPanel = Filament::getPanel('admin');
+
         return $panel
             ->default()
             ->plugin(SpatieTranslatablePlugin::make()->defaultLocales(['de', 'en'])->useFallbackLocale(false))
@@ -53,9 +56,6 @@ class DashboardPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->userMenuItems([
-                // 'profile' => fn (Action $action) => $action->label('Edit profile'),
-            ])
             ->maxContentWidth(Width::ScreenTwoExtraLarge)
             ->darkModeBrandLogo(fn () => Vite::asset('resources/images/svg/logo-full-dark.svg'))
             ->brandLogo(fn () => Vite::asset('resources/images/svg/logo-full-title.svg'))
@@ -67,6 +67,13 @@ class DashboardPanelProvider extends PanelProvider
                     ->translateLabel()
                     ->url(fn (): string => route('home'))
                     ->icon(LucideIcon::Home)
+                    ->sort(100),
+                Action::make('to-admin')
+                    ->label('navigation.team_dashboard')
+                    ->translateLabel()
+                    ->hidden(fn (): bool => ! auth()->user()->canAccessPanel($adminPanel))
+                    ->url(fn (): string => $adminPanel->getUrl())
+                    ->icon(LucideIcon::LayoutDashboard)
                     ->sort(100),
             ])
             ->tenant(Broadcaster::class)
@@ -100,6 +107,12 @@ class DashboardPanelProvider extends PanelProvider
                 StagingGateMiddleware::class,
                 Localization::class,
                 FeatureFlagGuard::of(FeatureFlag::UserDashboard),
-            ])->spa();
+            ])
+            ->spa()
+            ->spaUrlExceptions(fn (): array => [
+                url('/'),
+                url('/admin'),
+                '*/admin*',
+            ]);
     }
 }
