@@ -80,6 +80,8 @@ return [
                 'download_error_broadcaster' => 'Broadcaster is not available.',
                 'download_error_not_found' => 'Clip was not found.',
                 'filename_copied' => 'Filename Copied',
+                'filename_copy_failed_title' => 'Could not copy filename',
+                'filename_copy_failed_no_broadcaster' => 'Broadcaster profile not found',
                 'status_updated' => 'Status has been updated',
             ],
         ],
