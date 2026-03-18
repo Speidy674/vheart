@@ -62,7 +62,7 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn (): string => route('home'))
                     ->icon(LucideIcon::Home)
                     ->sort(100),
-                Action::make('to-admin')
+                Action::make('to-broadcaster')
                     ->label('navigation.dashboard')
                     ->translateLabel()
                     ->url(fn (): string => Filament::getPanel('dashboard')->getUrl())
