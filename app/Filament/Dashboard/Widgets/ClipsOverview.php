@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Dashboard\Widgets;
 
+use App\Enums\Filament\LucideIcon;
 use App\Models\Clip;
-use Filament\Support\Icons\Heroicon;
+use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -15,29 +16,32 @@ class ClipsOverview extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $totalClips = Clip::count();
-        $totalClipsToday = Clip::where('created_at', '>=', now()->startOfDay())->count();
-        $totalClipsThisWeek = Clip::where('created_at', '>=', now()->startOfWeek())->count();
-        $totalClipsThisMonth = Clip::where('created_at', '>=', now()->startOfMonth())->count();
+        $tenantId = Filament::getTenant()->id;
+        $clipBaseQuery = Clip::whereBroadcasterId($tenantId)->withoutGlobalScope(filament()->getTenancyScopeName());
 
-        $averageDuration = Clip::avg('duration') ?? 0;
-        $clipsLast30Days = Clip::where('created_at', '>=', now()->subDays(30))->count();
+        $totalClips = $clipBaseQuery->clone()->count();
+        $totalClipsToday = $clipBaseQuery->clone()->where('created_at', '>=', now()->startOfDay())->count();
+        $totalClipsThisWeek = $clipBaseQuery->clone()->where('created_at', '>=', now()->startOfWeek())->count();
+        $totalClipsThisMonth = $clipBaseQuery->clone()->where('created_at', '>=', now()->startOfMonth())->count();
+
+        $averageDuration = $clipBaseQuery->clone()->avg('duration') ?? 0;
+        $clipsLast30Days = $clipBaseQuery->clone()->where('created_at', '>=', now()->subDays(30))->count();
         $averageClipsPerDay = $clipsLast30Days / 30;
 
         return [
             Stat::make('Total Clips Submitted', number_format($totalClips))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted Today', number_format($totalClipsToday))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted This Week', number_format($totalClipsThisWeek))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted This Month', number_format($totalClipsThisMonth))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
 
             Stat::make('Avg. Clip Duration', number_format($averageDuration).'s')
-                ->icon(Heroicon::Clock),
+                ->icon(LucideIcon::Clock),
             Stat::make('Avg. Daily Submissions (30 Days)', number_format($averageClipsPerDay, 2))
-                ->icon(Heroicon::ChartBar),
+                ->icon(LucideIcon::ChartBar),
         ];
     }
 }
