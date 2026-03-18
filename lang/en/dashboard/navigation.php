@@ -6,4 +6,5 @@ return [
     'dashboard' => 'Dashboard',
     'clips' => 'Manage Clips',
     'permissions' => 'Permissions',
+    'back-home' => 'Back to Homepage',
 ];
