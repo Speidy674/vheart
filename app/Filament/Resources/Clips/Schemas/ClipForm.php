@@ -59,8 +59,8 @@ class ClipForm
 
                                 return sprintf('%d:%02d', $minutes, $seconds);
                             }),
-                        Select::make('broadcaster')
-                            ->relationship('broadcaster', 'name')
+                        Select::make('owner')
+                            ->relationship('owner', 'name')
                             ->disabled()
                             ->label('admin/resources/clips.form.broadcaster')
                             ->translateLabel(),
