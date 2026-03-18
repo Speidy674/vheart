@@ -37,6 +37,7 @@ export default defineConfig({
                 'resources/css/filament/admin.css',
                 'resources/css/filament/dashboard/theme.css',
                 'resources/js/static/app.ts',
+                'resources/js/static/alpine.ts',
             ],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
