@@ -180,7 +180,7 @@ class AppServiceProvider extends ServiceProvider
                 $page = $record->filamentResourcePageForCommentNotifications;
             }
 
-            return Filament::getResourceUrl($record, $page);
+            return Filament::getPanel('admin')->getResourceUrl($record, $page);
         });
 
         /**
