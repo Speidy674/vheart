@@ -52,8 +52,8 @@ class ManageConsent extends Page
     {
         $this->form->fill(
             collect(BroadcasterConsent::cases())
-                ->mapWithKeys(fn (BroadcasterConsent $case) => [
-                    "consent_{$case->value}" => $this->getRecord()->consent->contains(fn (BroadcasterConsent $c) => $c === $case),
+                ->mapWithKeys(fn (BroadcasterConsent $case): array => [
+                    "consent_{$case->value}" => $this->getRecord()->consent->contains(fn (BroadcasterConsent $c): bool => $c === $case),
                 ])
                 ->all()
         );
@@ -67,7 +67,7 @@ class ManageConsent extends Page
                     ->description(__('dashboard/settings/manage-consent.section.description'))
                     ->schema([Form::make(
                         collect(BroadcasterConsent::cases())
-                            ->map(fn (BroadcasterConsent $case) => Toggle::make("consent_{$case->value}")
+                            ->map(fn (BroadcasterConsent $case): Toggle => Toggle::make("consent_{$case->value}")
                                 ->label($case->getLabel())
                                 ->live()
                                 ->afterStateUpdated(fn () => $this->autosave())
