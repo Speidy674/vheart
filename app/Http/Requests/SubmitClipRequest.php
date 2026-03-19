@@ -120,6 +120,14 @@ class SubmitClipRequest extends FormRequest
                         'clip_id' => $this->clipInfo->id,
                         'broadcaster_id' => $this->clipInfo->broadcaster_id,
                     ]);
+
+                    if (! Broadcaster::query()
+                        ->where('id', $this->user()->id)
+                        ->whereGaveConsent()
+                        ->exists()
+                    ) {
+                        session()->flash('showTwitchPermissionsPrompt');
+                    }
                 } else {
                     // Check if the Broadcaster is even registered (deny otherwise)
                     // also fetch other data if possible to minimize queries in one go
