@@ -13,6 +13,7 @@ use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class SubmitClipRequest extends FormRequest
 {
@@ -112,40 +113,57 @@ class SubmitClipRequest extends FormRequest
                     return;
                 }
 
-                // Check if the Broadcaster is even registered (deny otherwise)
-                // also fetch other data if possible to minimize queries in one go
-                // broadcasters should never have enough data to make this a memory issue
-                $this->broadcaster = Broadcaster::query()
-                    ->where('id', $this->clipInfo->broadcaster_id)
-                    ->whereGaveConsent()
-                    ->with(['filters'])
-                    ->first();
+                // Broadcaster can always bypass their own rules
+                // We only bypass submit restrictions here though, consent is still required to see and use them
+                if ($this->clipInfo->broadcaster_id === $this->user()->id) {
+                    Log::debug('Bypassing Submission restrictions, Broadcaster is submitting their own Clip.', [
+                        'clip_id' => $this->clipInfo->id,
+                        'broadcaster_id' => $this->clipInfo->broadcaster_id,
+                    ]);
 
-                if (! $this->broadcaster instanceof Broadcaster) {
-                    $validator->errors()->add('clip_url', __('clips.errors.broadcaster_not_allowed'));
+                    if (! Broadcaster::query()
+                        ->where('id', $this->user()->id)
+                        ->whereGaveConsent()
+                        ->exists()
+                    ) {
+                        session()->flash('showTwitchPermissionsPrompt');
+                    }
+                } else {
+                    // Check if the Broadcaster is even registered (deny otherwise)
+                    // also fetch other data if possible to minimize queries in one go
+                    // broadcasters should never have enough data to make this a memory issue
+                    $this->broadcaster = Broadcaster::query()
+                        ->where('id', $this->clipInfo->broadcaster_id)
+                        ->whereGaveConsent()
+                        ->with(['filters'])
+                        ->first();
 
-                    return;
-                }
+                    if (! $this->broadcaster instanceof Broadcaster) {
+                        $validator->errors()->add('clip_url', __('clips.errors.broadcaster_not_allowed'));
 
-                $userType = $this->user()->getMorphClass();
-                $categoryType = new Category()->getMorphClass();
+                        return;
+                    }
 
-                $groupedFilters = $this->broadcaster->filters->groupBy(['filterable_type', 'state']);
-                $this->allowedUsers = $groupedFilters->get($userType)?->get(true)?->pluck('filterable_id')->toArray();
-                $this->disallowedUsers = $groupedFilters->get($userType)?->get(false)?->pluck('filterable_id')->toArray();
-                $this->allowedCategories = $groupedFilters->get($categoryType)?->get(true)?->pluck('filterable_id')->toArray();
-                $this->disallowedCategories = $groupedFilters->get($categoryType)?->get(false)?->pluck('filterable_id')->toArray();
+                    $userType = $this->user()->getMorphClass();
+                    $categoryType = new Category()->getMorphClass();
 
-                if (! $this->passesUserChecks()) {
-                    $validator->errors()->add('clip_url', __('clips.errors.user_not_allowed_for_broadcaster'));
+                    $groupedFilters = $this->broadcaster->filters->groupBy(['filterable_type', 'state']);
+                    $this->allowedUsers = $groupedFilters->get($userType)?->get(true)?->pluck('filterable_id')->toArray();
+                    $this->disallowedUsers = $groupedFilters->get($userType)?->get(false)?->pluck('filterable_id')->toArray();
+                    $this->allowedCategories = $groupedFilters->get($categoryType)?->get(true)?->pluck('filterable_id')->toArray();
+                    $this->disallowedCategories = $groupedFilters->get($categoryType)?->get(false)?->pluck('filterable_id')->toArray();
 
-                    return;
-                }
+                    if (! $this->passesUserChecks()) {
+                        $validator->errors()->add('clip_url', __('clips.errors.user_not_allowed_for_broadcaster'));
 
-                if (! $this->passesCategoryChecks()) {
-                    $validator->errors()->add('clip_url', __('clips.errors.category_blocked'));
+                        return;
+                    }
 
-                    return;
+                    if (! $this->passesCategoryChecks()) {
+                        $validator->errors()->add('clip_url', __('clips.errors.category_blocked'));
+
+                        return;
+                    }
                 }
 
                 // Check if clip already exists
