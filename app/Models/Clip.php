@@ -356,7 +356,9 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return $query->withCount(
             [
                 'votes as jury_votes' => function (Builder $query): void {
-                    $query->where('type', ClipVoteType::Jury);
+                    $query
+                        ->where('voted', true)
+                        ->where('type', ClipVoteType::Jury);
                 },
             ]
         );
