@@ -10,5 +10,11 @@ return [
             'shorts' => 'Shorts',
             'shorts_description' => 'Allows us to use your content for Shorts',
         ],
+        'dashboard-navigation-group' => [
+            'settings' => 'Settings',
+        ],
+        'dashboard-navigation-item' => [
+            'manage-consent' => 'Manage Consent',
+        ],
     ],
 ];
