@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
+use Database\Factories\BroadcasterConsentLogFactory;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use JsonException;
 use LogicException;
 
 class BroadcasterConsentLog extends Model
 {
+    /** @use HasFactory<BroadcasterConsentLogFactory> */
+    use HasFactory;
+
     public $timestamps = false;
 
     public function isValid(): bool
