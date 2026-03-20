@@ -38,6 +38,8 @@ class BroadcasterConsentLog extends Model
     protected static function booted(): void
     {
         static::creating(static function (self $log): void {
+            $log->changed_at ??= now();
+            $log->changed_by ??= 0;
             $log->checksum = self::computeChecksum($log, app('encrypter')->getKey());
         });
 
