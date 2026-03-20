@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
@@ -65,6 +66,22 @@ class Broadcaster extends Model implements HasAvatar
     public function filters(): HasMany
     {
         return $this->hasMany(BroadcasterSubmissionFilter::class);
+    }
+
+    /**
+     * @return HasMany<BroadcasterConsentLog, $this>
+     */
+    public function consentLogs(): HasMany
+    {
+        return $this->hasMany(BroadcasterConsentLog::class)->orderBy('changed_at');
+    }
+
+    /**
+     * @return HasOne<BroadcasterConsentLog, $this>
+     */
+    public function latestConsentLog(): HasOne
+    {
+        return $this->hasOne(BroadcasterConsentLog::class)->latestOfMany('changed_at');
     }
 
     public function proxiedContentUrl(): mixed
