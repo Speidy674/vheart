@@ -39,7 +39,7 @@ return new class extends Migration
             $table->string('change_reason')->nullable();
 
             $table->timestamp('changed_at');
-            $table->string('checksum', 64);
+            $table->string('checksum', 73);
         });
 
         DB::statement('
