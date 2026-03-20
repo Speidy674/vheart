@@ -44,7 +44,7 @@ class BroadcasterConsentLog extends Model
     {
         static::creating(static function (self $log): void {
             $log->changed_at ??= now();
-            $log->changed_by ??= 0;
+            $log->changed_by ??= auth()->check() ? auth()->id() : 0;
             $log->checksum = self::computeChecksum($log, app('encrypter')->getKey());
         });
 
