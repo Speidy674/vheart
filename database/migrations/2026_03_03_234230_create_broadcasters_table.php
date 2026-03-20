@@ -28,6 +28,35 @@ return new class extends Migration
             $table->foreign('id')->references('id')->on('users')->cascadeOnDelete();
         });
 
+        // BroadcasterConsentLog
+        Schema::create('broadcaster_consent_logs', function (Blueprint $table): void {
+            $table->id();
+            $table->unsignedBigInteger('broadcaster_id')->index();
+
+            $table->jsonb('state');
+
+            $table->unsignedBigInteger('changed_by')->index();
+            $table->string('change_reason')->nullable();
+
+            $table->timestamp('changed_at')->useCurrent();
+            $table->string('checksum', 64);
+        });
+
+        DB::statement('
+            CREATE OR REPLACE FUNCTION prevent_consent_log_mutation()
+            RETURNS trigger AS $$
+            BEGIN
+                RAISE EXCEPTION \'broadcaster_consent_logs is append-only\';
+            END;
+            $$ LANGUAGE plpgsql
+        ');
+
+        DB::statement('
+            CREATE TRIGGER consent_logs_immutable
+            BEFORE UPDATE OR DELETE ON broadcaster_consent_logs
+            FOR EACH ROW EXECUTE FUNCTION prevent_consent_log_mutation()
+        ');
+
         // BroadcasterTeamMember
         Schema::create('broadcaster_team_members', function (Blueprint $table): void {
             $table->id();
