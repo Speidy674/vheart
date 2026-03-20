@@ -94,6 +94,19 @@ class Broadcaster extends Model implements HasAvatar
                     ->values();
             }
         });
+
+        static::updating(static function (self $broadcaster): void {
+            if (! $broadcaster->isDirty('consent') && $broadcaster->id !== auth()->id()) {
+                return;
+            }
+
+            BroadcasterConsentLog::create([
+                'broadcaster_id' => $broadcaster->id,
+                'state' => $broadcaster->consent->values(),
+                'changed_by' => auth()->id(),
+                'changed_at' => now(),
+            ]);
+        });
     }
 
     protected function name(): Attribute
