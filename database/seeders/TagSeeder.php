@@ -36,6 +36,8 @@ class TagSeeder extends Seeder
             ['Storytime', 'Storytime'],
             ['Was passiert gerade?', 'What\'s happening right now?'],
             ['Musik', 'Music'],
+            ['Kollaboration', 'Collaboration'],
+            ['Kunst', 'Art'],
         ];
 
         foreach ($tags as $tag) {
