@@ -8,89 +8,73 @@ use App\Services\Twitch\Contracts\TwitchDtoInterface;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 
-/**
- * Data Transfer Object for Twitch Clips
- * That way we can make it "type safe" and easier to use.
- */
+/* @link https://dev.twitch.tv/docs/api/reference#get-clips */
 readonly class ClipDto implements TwitchDtoInterface
 {
     public function __construct(
         public string $id,
         public string $url,
-        public string $embed_url,
-        public int $broadcaster_id,
-        public string $broadcaster_name,
-        public int $creator_id,
-        public string $creator_name,
-        public ?int $video_id,
-        public int $game_id,
+        public string $embedUrl, // embed_url
+        public int $broadcasterId, // broadcaster_id
+        public string $broadcasterName, // broadcaster_name
+        public int $creatorId, // creator_id
+        public string $creatorName, // creator_name
+        public ?int $videoId, // video_id
+        public int $gameId, // game_id
         public string $language,
         public string $title,
-        public int $view_count,
-        public CarbonInterface $created_at,
-        public string $thumbnail_url,
+        public int $viewCount, // view_count
+        public CarbonInterface $createdAt, // created_at
+        public string $thumbnailUrl, // thumbnail_url
         public float $duration,
-        public ?int $vod_offset,
-        public bool $is_featured
+        public ?int $vodOffset, // vod_offset
+        public bool $isFeatured, // is_featured
     ) {}
 
     public static function from(array $data): static
     {
         // Twitch returns an empty string "" for video_id if unavailable
-        $video_id = empty($data['video_id']) ? null : (int) $data['video_id'];
-        $created_at = Carbon::parse($data['created_at']);
-
         return new static(
-            (string) $data['id'],
-            $data['url'],
-            $data['embed_url'],
-            (int) $data['broadcaster_id'],
-            $data['broadcaster_name'],
-            (int) $data['creator_id'],
-            $data['creator_name'],
-            $video_id,
-            (int) $data['game_id'],
-            $data['language'],
-            $data['title'],
-            $data['view_count'],
-            $created_at,
-            $data['thumbnail_url'],
-            $data['duration'],
-            $data['vod_offset'],
-            $data['is_featured']
+            id: (string) $data['id'],
+            url: $data['url'],
+            embedUrl: $data['embed_url'],
+            broadcasterId: (int) $data['broadcaster_id'],
+            broadcasterName: $data['broadcaster_name'],
+            creatorId: (int) $data['creator_id'],
+            creatorName: $data['creator_name'],
+            videoId: empty($data['video_id']) ? null : (int) $data['video_id'],
+            gameId: (int) $data['game_id'],
+            language: $data['language'],
+            title: $data['title'],
+            viewCount: (int) $data['view_count'],
+            createdAt: Carbon::parse($data['created_at']),
+            thumbnailUrl: $data['thumbnail_url'],
+            duration: (float) $data['duration'],
+            vodOffset: $data['vod_offset'] ?? null,
+            isFeatured: (bool) $data['is_featured'],
         );
     }
 
-    /**
-     * @return array<int, ClipDto>
-     */
-    public static function fromArray(array $dataList): array
+    /** @return list<static> */
+    public static function fromCollection(array $response): array
     {
-        $result = [];
-        foreach ($dataList['data'] as $clip) {
-            $result[] = self::from($clip);
-        }
-
-        return $result;
+        return array_map(static::from(...), $response['data']);
     }
 
-    /**
-     * Convert this DTO to a Model compatible structure
-     */
-    public function toModel(?array $data = null): array
+    public function toModel(array $extra = []): array
     {
         return array_merge([
             'twitch_id' => $this->id,
             'title' => $this->title,
-            'thumbnail_url' => $this->thumbnail_url,
-            'broadcaster_id' => $this->broadcaster_id,
-            'creator_id' => $this->creator_id,
-            'category_id' => $this->game_id,
-            'vod_id' => $this->video_id,
-            'vod_offset' => $this->vod_offset,
+            'thumbnail_url' => $this->thumbnailUrl,
+            'broadcaster_id' => $this->broadcasterId,
+            'creator_id' => $this->creatorId,
+            'category_id' => $this->gameId,
+            'vod_id' => $this->videoId,
+            'vod_offset' => $this->vodOffset,
             'duration' => $this->duration,
             'language' => $this->language,
-            'date' => $this->created_at,
-        ], $data ?? []);
+            'date' => $this->createdAt,
+        ], $extra);
     }
 }
