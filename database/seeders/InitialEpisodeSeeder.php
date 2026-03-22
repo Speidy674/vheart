@@ -710,14 +710,14 @@ class InitialEpisodeSeeder extends Seeder
         $missingClips = collect();
 
         Log::notice("Importing {$allClips->count()} Clips...");
+        $appTwitch = $twitchService->asApp();
 
-        $allClips->chunk(100)->each(function ($chunk, $index) use ($twitchService, &$twitchClips, &$missingClips): void {
+        $allClips->chunk(100)->each(function ($chunk, $index) use ($appTwitch, &$twitchClips, &$missingClips): void {
             $requestedIds = $chunk->values()->toArray();
             $params = ['id' => $requestedIds];
 
             try {
-                /** @var ClipDto[] $clips */
-                $clips = $twitchService->get(TwitchEndpoints::GetClips, $params);
+                $clips = $appTwitch->getClips($params);
 
                 $fetchedClips = collect($clips);
 
