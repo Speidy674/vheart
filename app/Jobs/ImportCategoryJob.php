@@ -53,8 +53,10 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
             'total' => $missingCategories->count(),
         ]);
 
-        $missingCategories->chunk(100)->each(function ($chunk) use ($twitchService, $importCategoryAction): void {
-            $categories = $twitchService->get(TwitchEndpoints::GetGames, [
+        $appTwitch = $twitchService->asApp();
+
+        $missingCategories->chunk(100)->each(function ($chunk) use ($appTwitch, $importCategoryAction): void {
+            $categories = $appTwitch->collection(TwitchEndpoints::GetGames, [
                 'id' => $chunk->values()->toArray(),
             ]);
 
