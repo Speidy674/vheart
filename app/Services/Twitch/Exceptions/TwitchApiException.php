@@ -5,25 +5,54 @@ declare(strict_types=1);
 namespace App\Services\Twitch\Exceptions;
 
 use Exception;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Illuminate\Http\Client\Promises\LazyPromise;
-use Illuminate\Http\Client\Response as IlluminateResponse;
+use Illuminate\Http\Client\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class TwitchApiException extends Exception
+final class TwitchApiException extends Exception implements HttpExceptionInterface
 {
-    public static function GenericApiResponseError(PromiseInterface|LazyPromise|GuzzleResponse|IlluminateResponse $response): self
-    {
-        return new self("Twitch API Error: {$response->getReasonPhrase()} ({$response->getStatusCode()})");
+    private function __construct(
+        string $message,
+        int $code = 500,
+    ) {
+        parent::__construct($message, $code);
     }
 
-    public static function ApplicationAuthenticationError(): self
+    public static function authenticationFailed(Response $response): self
     {
-        return new self('Could not authenticate app with Twitch');
+        return new self(
+            "Could not authenticate application with Twitch: {$response->status()} {$response->reason()}, {$response->json()['message']}",
+            401,
+        );
     }
 
-    public static function ApplicationClientIdOrSecretNotConfiguredError(): self
+    public static function notConfigured(): self
     {
-        return new self('Twitch Client ID or Secret is not configured');
+        return new self('Twitch client_id or client_secret is not configured.', 500);
+    }
+
+    public static function requestFailed(Response $response): self
+    {
+        return new self(
+            "Twitch API request failed: {$response->status()} {$response->reason()}, {$response->json()['message']}",
+            $response->status(),
+        );
+    }
+
+    public static function userTokenRefreshFailed(Response $response): self
+    {
+        return new self(
+            "Failed to refresh Twitch user access token: {$response->status()} {$response->reason()}, {$response->json()['message']}",
+            401,
+        );
+    }
+
+    public function getStatusCode(): int
+    {
+        return $this->getCode();
+    }
+
+    public function getHeaders(): array
+    {
+        return [];
     }
 }
