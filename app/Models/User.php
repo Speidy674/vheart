@@ -23,7 +23,6 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
-use Filament\Facades\Filament;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasDefaultTenant;
@@ -332,7 +331,9 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
         // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
 
-        return $twitchService->asUser($this, session()?->get('twitch_access_token'))->isModeratorFor($tenant->user);
+        return $twitchService
+            ->asSessionUser()
+            ->isModeratorFor($tenant->user);
     }
 
     /**
@@ -350,8 +351,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         }
 
         $twitchService = app(TwitchService::class);
-        $twitchBroadcasterIds = $twitchService->asUser($this, session()?->get('twitch_access_token'))->getModeratedChannels();
-        $broadcasterIds->push($twitchBroadcasterIds);
+        $broadcasterIds->push($twitchService->asSessionUser()->getModeratedChannels());
 
         // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
 
