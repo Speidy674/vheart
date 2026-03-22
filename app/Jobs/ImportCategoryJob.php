@@ -9,7 +9,7 @@ use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Services\Twitch\Data\GameDto;
-use App\Services\Twitch\TwitchEndpoints;
+use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;

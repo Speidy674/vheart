@@ -6,7 +6,6 @@ namespace App\Console\Commands;
 
 use App\Actions\ImportClipAction;
 use App\Models\User;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Console\Command;
 

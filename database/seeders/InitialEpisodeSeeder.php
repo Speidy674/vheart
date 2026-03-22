@@ -15,7 +15,6 @@ use App\Models\Clip\Compilation;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Exception;
 use Illuminate\Database\Seeder;

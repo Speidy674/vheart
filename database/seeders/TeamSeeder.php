@@ -7,7 +7,6 @@ namespace Database\Seeders;
 use App\Casts\TwitchAvatarCast;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Database\Seeder;
 

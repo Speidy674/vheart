@@ -9,7 +9,6 @@ use App\Models\Category;
 use App\Models\Clip;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
