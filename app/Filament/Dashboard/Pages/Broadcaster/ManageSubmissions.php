@@ -78,7 +78,7 @@ class ManageSubmissions extends Page
             ])->statePath('data');
     }
 
-    public function autosave($): void
+    public function autosave(): void
     {
     }
 
