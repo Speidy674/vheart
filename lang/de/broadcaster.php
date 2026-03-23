@@ -15,6 +15,7 @@ return [
         ],
         'dashboard-navigation-item' => [
             'manage-consent' => 'Zustimmung Verwalten',
+            'manage-submissions' => 'Einsendungen Verwalten',
         ],
     ],
 ];

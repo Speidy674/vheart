@@ -15,6 +15,7 @@ return [
         ],
         'dashboard-navigation-item' => [
             'manage-consent' => 'Manage Consent',
+            'manage-submissions' => 'Manage Submissions',
         ],
     ],
 ];
