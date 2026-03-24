@@ -35,6 +35,8 @@ class ManageSubmissions extends Page
 
     protected string $view = 'filament.dashboard.pages.broadcaster.manage-submissions';
 
+    protected ?string $heading = '';
+
     public static function getNavigationLabel(): string
     {
         return DashboardNavigationItem::ManageSubmissions->getLabel();
@@ -49,16 +51,6 @@ class ManageSubmissions extends Page
     public function getTitle(): string|Htmlable
     {
         return Filament::getTenant()->name.' - '.DashboardNavigationItem::ManageSubmissions->getLabel();
-    }
-
-    public function getHeading(): string|Htmlable|null
-    {
-        return DashboardNavigationItem::ManageSubmissions->getLabel();
-    }
-
-    public function getSubheading(): ?string
-    {
-        return __('dashboard/settings/manage-submissions.section.description');
     }
 
     public function mount(): void
