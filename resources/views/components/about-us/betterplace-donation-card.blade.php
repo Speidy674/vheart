@@ -6,7 +6,6 @@
     use App\Support\BetterplaceHelper;
     use Illuminate\Support\Facades\Http;
 
-    $totalDonationsLimit = 20;
     $cacheTtl = 300;
 
     try {
@@ -36,7 +35,7 @@
             $error = '';
         }
 
-        $donations = array_slice($donationsData['data'] ?? [], 0, $totalDonationsLimit);
+        $donations = $donationsData['data'];
     } catch (Exception $e) {
         $error = __('betterplace.error');
         $eventData = null;
