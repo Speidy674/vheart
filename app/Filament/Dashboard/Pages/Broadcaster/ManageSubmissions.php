@@ -11,9 +11,12 @@ use App\Models\Broadcaster\Broadcaster;
 use BackedEnum;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -22,8 +25,10 @@ use UnitEnum;
 /**
  * @property-read Schema $form
  */
-class ManageSubmissions extends Page
+class ManageSubmissions extends Page implements HasForms
 {
+    use InteractsWithForms;
+
     /** @var array<string, mixed>|null */
     public ?array $data = [];
 
@@ -55,7 +60,7 @@ class ManageSubmissions extends Page
 
     public function mount(): void
     {
-        $this->form->fill($this->getRecord()->attributesToArray());
+        $this->form->fill($this->getRecord()->only(['submit_user_allowed', 'submit_vip_allowed', 'submit_mods_allowed']));
     }
 
     public function form(Schema $schema): Schema
@@ -72,11 +77,13 @@ class ManageSubmissions extends Page
                         Toggle::make('submit_vip_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_vip_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_vip_allowed.description'))
-                            ->translateLabel(),
+                            ->translateLabel()
+                            ->disabled(fn (Get $get) => $get('submit_user_allowed')),
                         Toggle::make('submit_mods_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_mods_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_mods_allowed.description'))
-                            ->translateLabel(),
+                            ->translateLabel()
+                            ->disabled(fn (Get $get) => $get('submit_user_allowed')),
                     ])
                         ->live()
                         ->afterStateUpdated(fn () => $this->autosave()),
@@ -86,6 +93,17 @@ class ManageSubmissions extends Page
 
     public function autosave(): void
     {
+        $state = $this->form->getState();
+
+        if ($state['submit_user_allowed'] === true) {
+            $state['submit_vip_allowed'] = true;
+            $state['submit_mods_allowed'] = true;
+        }
+
+        $this->getRecord()->update($state);
+        $this->getRecord()->refresh();
+        $this->mount();
+
     }
 
     /**
