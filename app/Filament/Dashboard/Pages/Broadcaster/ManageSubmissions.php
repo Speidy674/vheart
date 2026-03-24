@@ -78,12 +78,12 @@ class ManageSubmissions extends Page implements HasForms
                             ->label('dashboard/settings/manage-submissions.form.submit_vip_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_vip_allowed.description'))
                             ->translateLabel()
-                            ->disabled(fn (Get $get): mixed => $get('submit_user_allowed')),
+                            ->disabled(fn (Get $get): bool => (bool) $get('submit_user_allowed')),
                         Toggle::make('submit_mods_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_mods_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_mods_allowed.description'))
                             ->translateLabel()
-                            ->disabled(fn (Get $get): mixed => $get('submit_user_allowed')),
+                            ->disabled(fn (Get $get): bool => (bool) $get('submit_user_allowed')),
                     ])
                         ->live()
                         ->afterStateUpdated(fn () => $this->autosave()),
