@@ -15,6 +15,7 @@ use Filament\Pages\Page;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 
@@ -31,8 +32,6 @@ class ManageSubmissions extends Page
     protected static ?int $navigationSort = 999;
 
     protected static string|null|UnitEnum $navigationGroup = DashboardNavigationGroup::Settings;
-
-    protected static ?string $title = '';
 
     protected string $view = 'filament.dashboard.pages.broadcaster.manage-submissions';
 
