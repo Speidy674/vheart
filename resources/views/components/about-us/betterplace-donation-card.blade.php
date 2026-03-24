@@ -1,23 +1,9 @@
 @php
+    use App\Support\BetterplaceHelper;
     use Illuminate\Support\Facades\Http;
 
     const EVENT_ID = 55712;
     const TOTAL_DONATIONS_LIMIT = 20;
-
-    function formatCurrency($amount)
-    {
-        return number_format($amount, 2, ',', '.');
-    }
-
-    function pickFirstString(...$values)
-    {
-        foreach ($values as $v) {
-            if (is_string($v) && trim($v) !== '') {
-                return $v;
-            }
-        }
-        return '';
-    }
 
     try {
         $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . EVENT_ID . '.json');
@@ -79,7 +65,7 @@
                             </div>
                             <div
                                 class="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-center text-3xl font-bold text-transparent sm:text-4xl md:text-5xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
-                                {{ formatCurrency(($eventData['donated_amount_in_cents'] ?? 0) / 100) }} €
+                                {{ BetterplaceHelper::formatCurrency(($eventData['donated_amount_in_cents'] ?? 0) / 100) }} €
                             </div>
                         </div>
                     </div>
@@ -141,22 +127,22 @@
                                         ($donation['donated_amount_in_cents'] ?? ($donation['amount_in_cents'] ?? 0)) /
                                         100;
                                     $name =
-                                        pickFirstString(
+                                        BetterplaceHelper::pickFirstString(
                                             $donation['author']['name'] ?? null,
                                             $donation['donator_name'] ?? null,
-                                        ) ?:
+                                        ) ?: 
                                         __('betterplace.anonymous');
-                                    $image = pickFirstString(
+                                    $image = BetterplaceHelper::pickFirstString(
                                         $donation['author']['picture']['links'][0]['href'] ?? null,
                                         $donation['donator_picture'] ?? null,
                                     );
-                                    $message = pickFirstString($donation['message'] ?? null);
+                                    $message = BetterplaceHelper::pickFirstString($donation['message'] ?? null);
                                 @endphp
                                 <div class="border-b border-gray-300/80 py-4 last:border-b-0 dark:border-white/15">
                                     <div class="flex items-start gap-4">
                                         <div
                                             class="w-20 shrink-0 bg-gradient-to-r from-purple-700 to-cyan-700 bg-clip-text text-base font-bold text-transparent dark:from-purple-300 dark:to-cyan-300">
-                                            {{ formatCurrency($amount) }} €
+                                            {{ BetterplaceHelper::formatCurrency($amount) }} €
                                         </div>
 
                                         <div class="shrink-0">
