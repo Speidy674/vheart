@@ -1,26 +1,42 @@
+@props([
+    'eventId' => 55712,
+])
+
 @php
     use App\Support\BetterplaceHelper;
     use Illuminate\Support\Facades\Http;
 
-    const EVENT_ID = 55712;
-    const TOTAL_DONATIONS_LIMIT = 20;
+    $totalDonationsLimit = 20;
+    $cacheTtl = 300;
 
     try {
-        $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . EVENT_ID . '.json');
-        $donationsResponse = Http::get(
-            'https://api.betterplace.org/de/api_v4/fundraising_events/' . EVENT_ID . '/opinions.json',
-        );
+        $eventData = Cache::get('betterplace_event_' . $eventId);
+        $donationsData = Cache::get('betterplace_donations_' . $eventId);
 
-        if ($eventResponse->successful() && $donationsResponse->successful()) {
-            $eventData = $eventResponse->json();
-            $donationsData = $donationsResponse->json();
-            $donations = array_slice($donationsData['data'] ?? [], 0, TOTAL_DONATIONS_LIMIT);
-            $error = '';
+        if ($eventData === null || $donationsData === null) {
+            $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . $eventId . '.json');
+            $donationsResponse = Http::get(
+                'https://api.betterplace.org/de/api_v4/fundraising_events/' . $eventId . '/opinions.json',
+            );
+
+            if ($eventResponse->successful() && $donationsResponse->successful()) {
+                $eventData = $eventResponse->json();
+                $donationsData = $donationsResponse->json();
+                
+                Cache::put('betterplace_event_' . $eventId, $eventData, $cacheTtl);
+                Cache::put('betterplace_donations_' . $eventId, $donationsData, $cacheTtl);
+                
+                $error = '';
+            } else {
+                $error = __('betterplace.error');
+                $eventData = null;
+                $donationsData = ['data' => []];
+            }
         } else {
-            $error = __('betterplace.error');
-            $eventData = null;
-            $donations = [];
+            $error = '';
         }
+
+        $donations = array_slice($donationsData['data'] ?? [], 0, $totalDonationsLimit);
     } catch (Exception $e) {
         $error = __('betterplace.error');
         $eventData = null;
@@ -173,7 +189,7 @@
                 @endif
                 <div class="border-t border-gray-300/80 pt-4 sm:pt-6 dark:border-white/15">
                     <div class="flex justify-center">
-                        <a href="https://secure.betterplace.org/de/donate/platform/fundraising-events/{{ EVENT_ID }}"
+                        <a href="https://secure.betterplace.org/de/donate/platform/fundraising-events/{{ $eventId }}"
                             target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto">
                             <button type="button"
                                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-10 has-[>svg]:px-4 w-full rounded-full border-0 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 px-6 py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:shadow-xl hover:shadow-emerald-500/25 sm:px-8 sm:py-5 sm:text-base">
