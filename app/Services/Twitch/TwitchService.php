@@ -65,7 +65,7 @@ class TwitchService
 
         $context = TwitchUserContext::forUser($user instanceof Model ? $user->id : $user, $refreshToken, $accessToken);
 
-        if ($onRefresh instanceof \Closure) {
+        if ($onRefresh instanceof Closure) {
             $context = $context->withOnRefresh($onRefresh);
         } elseif($user instanceof User && $refreshToken) {
             $context = $context->withOnRefresh(
