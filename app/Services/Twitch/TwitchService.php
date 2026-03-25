@@ -79,7 +79,7 @@ class TwitchService
     /**
      * Helper for asUser to use the currently authenticated user.
      */
-    public function asSessionUser(): self
+    public function asSessionUser(?Closure $onRefresh = null): self
     {
         $user = auth()->user();
 
@@ -90,6 +90,10 @@ class TwitchService
         return $this->asUser($user,
             refreshToken: $user->twitch_refresh_token,
             accessToken: session()?->get('twitch_access_token'),
+            onRefresh: $onRefresh ?? static function(string $accessToken, string $refreshToken) use ($user): void {
+                $user->update(['twitch_refresh_token' => $refreshToken]);
+                session()->set('twitch_access_token', $accessToken);
+            }
         );
     }
 
@@ -189,8 +193,8 @@ class TwitchService
         return Cache::remember(
             "twitch:moderated_channels:{$userId}",
             now()->addMinutes(5),
-            fn () => array_map(
-                static fn(SimpleUserDto $simpleUserDto) => $simpleUserDto->id,
+            fn (): array => array_map(
+                static fn(SimpleUserDto $simpleUserDto): int => $simpleUserDto->id,
                 $this->collection(TwitchEndpoints::GetModeratedChannels, [
                     'user_id' => $userId,
                     'first'   => 100,
@@ -216,7 +220,7 @@ class TwitchService
         return Cache::remember(
             "twitch:vip:{$broadcasterId}:{$userId}",
             now()->addMinute(),
-            fn () => count($this->collection(TwitchEndpoints::GetVIPs, [
+            fn (): bool => count($this->collection(TwitchEndpoints::GetVIPs, [
                 'broadcaster_id' => $broadcasterId,
                 'user_id'        => $userId,
             ])) > 0
