@@ -31,7 +31,7 @@ use LogicException;
  *   // User-token with token refresh callback
  *   app(TwitchService::class)
  *       ->asUser($user, onRefresh: fn($at, $rt) => $user->update([...]))
- *       // if have a valid session we can use this instead:
+ *       // if we have a valid session we can use this instead:
  *       ->asSessionUser()
  *       ->getModeratedChannels();
  */
