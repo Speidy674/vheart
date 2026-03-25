@@ -10,9 +10,6 @@ readonly class TwitchUserContext
 {
     /**
      * @param positive-int $userId
-     * @param string|null $accessToken
-     * @param string $refreshToken
-     * @param bool $forceRefresh
      * @param (Closure(string $accessToken, string $refreshToken, int $expiresIn): void)|null $onRefresh
      */
     public function __construct(
