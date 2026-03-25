@@ -30,6 +30,12 @@ class TwitchClient implements TwitchClientInterface
         private readonly TwitchTokenManager $tokens,
     ) {}
 
+
+    /**
+     * Authenticates as the Application
+     *
+     * Will return a clone of itself to avoid mutation
+     */
     public function asApp(): self
     {
         return clone ($this, [
@@ -38,6 +44,11 @@ class TwitchClient implements TwitchClientInterface
         ]);
     }
 
+    /**
+     * Authenticates as the given User
+     *
+     * Will return a clone of itself to avoid mutation
+     */
     public function asUser(TwitchUserContext $context): self
     {
         return clone ($this, [
