@@ -73,7 +73,7 @@ class Broadcaster extends Model implements HasAvatar
      */
     public function consentLogs(): HasMany
     {
-        return $this->hasMany(BroadcasterConsentLog::class)->orderBy('changed_at');
+        return $this->hasMany(BroadcasterConsentLog::class);
     }
 
     /**
