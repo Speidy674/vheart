@@ -28,7 +28,7 @@ class ClipsTable
                 'broadcaster',
                 'creator',
                 'submitter',
-            ])->withPublicVoteCount())
+            ])->withAbsoluteVoteCount())
             ->columns([
                 Split::make([
                     Stack::make([
@@ -43,7 +43,7 @@ class ClipsTable
                             ClipColumns::duration()
                                 ->label(__('dashboard/resources/clips.table.columns.duration'))
                                 ->tooltip(__('dashboard/resources/clips.table.columns.duration')),
-                            ClipColumns::publicVotes()
+                            ClipColumns::publicVotes('absolute_votes')
                                 ->label(__('dashboard/resources/clips.table.columns.votes'))
                                 ->tooltip(__('dashboard/resources/clips.table.columns.votes')),
                             ClipColumns::status()
