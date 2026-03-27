@@ -8,6 +8,7 @@ use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
+use App\Enums\Filament\LucideIcon;
 use App\Filament\Filters\DateRangeFilter;
 use App\Models\Clip;
 use Filament\Actions\Action;
@@ -18,7 +19,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
@@ -172,7 +172,7 @@ class ClipsTable
                     Action::make('attach_to_compilation')
                         ->label('admin/resources/clips.actions.attach_to_compilation.label')
                         ->translateLabel()
-                        ->icon(Heroicon::Link)
+                        ->icon(LucideIcon::Link)
                         ->schema([
                             Select::make('compilation_id')
                                 ->label('Compilation')

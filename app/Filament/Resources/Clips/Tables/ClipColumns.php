@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Tables;
 
+use App\Enums\Filament\LucideIcon;
 use App\Models\Clip;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
@@ -55,7 +55,7 @@ class ClipColumns
         return TextColumn::make('duration')
             ->label(__('admin/resources/clips.table.columns.duration'))
             ->tooltip(__('admin/resources/clips.table.columns.duration'))
-            ->icon(Heroicon::Clock)
+            ->icon(LucideIcon::Clock)
             ->size(TextSize::Medium)
             ->sortable()
             ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
@@ -69,7 +69,7 @@ class ClipColumns
         return TextColumn::make($column)
             ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
             ->label(__('admin/resources/clips.table.columns.votes_jury'))
-            ->icon(Heroicon::Star)
+            ->icon(LucideIcon::Star)
             ->size(TextSize::Medium)
             ->sortable()
             ->badge()
@@ -82,7 +82,7 @@ class ClipColumns
             ->label(__('admin/resources/clips.table.columns.votes_public'))
             ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
             ->size(TextSize::Medium)
-            ->icon(Heroicon::UserGroup)
+            ->icon(LucideIcon::Users)
             ->sortable()
             ->badge()
             ->color('success');
@@ -94,7 +94,7 @@ class ClipColumns
             ->label('admin/resources/clips.table.columns.status')
             ->tooltip(__('admin/resources/clips.table.columns.status'))
             ->size(TextSize::Medium)
-            ->icon(Heroicon::Clipboard)
+            ->icon(LucideIcon::Clipboard)
             ->badge()
             ->translateLabel();
     }
@@ -110,7 +110,7 @@ class ClipColumns
     {
         return TextColumn::make('owner.name')
             ->tooltip(__('admin/resources/clips.table.columns.broadcaster'))
-            ->icon(Heroicon::VideoCamera)
+            ->icon(LucideIcon::Video)
             ->color('gray');
     }
 
@@ -118,7 +118,7 @@ class ClipColumns
     {
         return TextColumn::make('creator.name')
             ->tooltip(__('admin/resources/clips.table.columns.creator'))
-            ->icon(Heroicon::Scissors)
+            ->icon(LucideIcon::Scissors)
             ->color('gray');
     }
 
@@ -126,7 +126,7 @@ class ClipColumns
     {
         return TextColumn::make('submitter.name')
             ->tooltip(__('admin/resources/clips.table.columns.submitter'))
-            ->icon(Heroicon::User)
+            ->icon(LucideIcon::User)
             ->color('gray');
     }
 
@@ -135,7 +135,7 @@ class ClipColumns
         return TextColumn::make($column)
             ->label(__('admin/resources/clips.table.columns.created_at'))
             ->tooltip(__('admin/resources/clips.table.columns.created_at'))
-            ->icon(Heroicon::Calendar)
+            ->icon(LucideIcon::Calendar)
             ->dateTime()
             ->sortable()
             ->color('gray');
@@ -146,7 +146,7 @@ class ClipColumns
         return TextColumn::make($column)
             ->label(__('admin/resources/clips.table.columns.submitted_at'))
             ->tooltip(__('admin/resources/clips.table.columns.submitted_at'))
-            ->icon(Heroicon::Calendar)
+            ->icon(LucideIcon::Calendar)
             ->dateTime()
             ->sortable()
             ->color('gray');
