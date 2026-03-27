@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Filament\Widgets;
 
 use App\Enums\ClipVoteType;
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
 use App\Models\Clip;
 use App\Models\Vote;
-use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -49,25 +49,25 @@ class DashboardClipsOverview extends StatsOverviewWidget
 
         return [
             Stat::make('Total Clips Submitted', number_format($totalClips))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted Today', number_format($totalClipsToday))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted This Week', number_format($totalClipsThisWeek))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
             Stat::make('Clips Submitted This Month', number_format($totalClipsThisMonth))
-                ->icon(Heroicon::VideoCamera),
+                ->icon(LucideIcon::Video),
 
             Stat::make('Avg. Clip Duration', number_format($averageDuration).'s')
-                ->icon(Heroicon::Clock),
+                ->icon(LucideIcon::Clock),
             Stat::make('Avg. Daily Submissions (30 Days)', number_format($averageClipsPerDay))
-                ->icon(Heroicon::ChartBar),
+                ->icon(LucideIcon::ChartBar),
 
             Stat::make('Average Public Votes per Clip', number_format($averageVotesPerClip))
-                ->icon(Heroicon::HandThumbUp),
+                ->icon(LucideIcon::ThumbsUp),
             Stat::make('Average Jury Votes per Clip', number_format($averageJuryVotesPerClip))
-                ->icon(Heroicon::Star),
+                ->icon(LucideIcon::Star),
             Stat::make('Average Skips per Clip', number_format($averageSkipsPerClip))
-                ->icon(Heroicon::NoSymbol),
+                ->icon(LucideIcon::CircleX),
         ];
     }
 }

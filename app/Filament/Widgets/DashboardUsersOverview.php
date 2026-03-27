@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
 use App\Models\User;
-use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -26,11 +26,11 @@ class DashboardUsersOverview extends StatsOverviewWidget
 
         return [
             Stat::make('Total Users', number_format($totalUsers))
-                ->icon(Heroicon::Users)
+                ->icon(LucideIcon::Users)
                 ->color('primary'),
 
             Stat::make('Total Broadcasters', number_format($totalBroadcasters))
-                ->icon(Heroicon::Users)
+                ->icon(LucideIcon::Users)
                 ->color('primary'),
         ];
     }
