@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\ClipVoteType;
 use App\Enums\FeatureFlag;
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
@@ -24,16 +25,16 @@ Route::get('/', static function (Request $request) {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public))
+        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public))
         ->with('tags')
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
+        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public)])
         ->orderByDesc('votes_count')
         ->limit(10)
         ->get();
 
     $discover = Clip::query()
         ->with('tags')
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', App\Enums\ClipVoteType::Public)])
+        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public)])
         ->orderByDesc('created_at')
         ->orderByDesc('id')
         ->cursorPaginate(perPage: 42);
