@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Categories;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\NavigationGroup;
 use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Filament\Resources\Categories\Schemas\CategoryForm;
@@ -12,7 +13,6 @@ use App\Models\Category;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use UnitEnum;
 
@@ -24,7 +24,7 @@ class CategoryResource extends Resource
 
     protected static ?int $navigationSort = 100;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Folder;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Folder;
 
     protected static ?string $recordTitleAttribute = 'title';
 
