@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Filters;
 
+use App\Enums\Filament\LucideIcon;
 use Carbon\CarbonInterface;
 use Closure;
 use DateTimeInterface;
@@ -12,7 +13,6 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -73,7 +73,7 @@ class DateRangeFilter extends Filter
                                 ->label('filament/filters/date_range.actions.clear_from')
                                 ->translateLabel()
                                 ->iconButton()
-                                ->icon(Heroicon::XMark)
+                                ->icon(LucideIcon::X)
                                 ->color('gray')
                                 ->action(function (Set $set): void {
                                     $set('from', null);
@@ -87,7 +87,7 @@ class DateRangeFilter extends Filter
                                 ->label('filament/filters/date_range.actions.clear_to')
                                 ->translateLabel()
                                 ->iconButton()
-                                ->icon(Heroicon::XMark)
+                                ->icon(LucideIcon::X)
                                 ->color('gray')
                                 ->action(function (Set $set): void {
                                     $set('to', null);

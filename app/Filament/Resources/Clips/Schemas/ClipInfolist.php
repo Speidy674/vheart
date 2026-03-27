@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Clips\Schemas;
 
 use App\Enums\ClipVoteType;
+use App\Enums\Filament\LucideIcon;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\Category;
@@ -17,7 +18,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
-use Filament\Support\Icons\Heroicon;
 
 class ClipInfolist
 {
@@ -73,7 +73,7 @@ class ClipInfolist
                                 TextEntry::make('duration')
                                     ->label(__('admin/resources/clips.table.columns.duration'))
                                     ->tooltip(__('admin/resources/clips.table.columns.duration'))
-                                    ->icon(Heroicon::Clock)
+                                    ->icon(LucideIcon::Clock)
                                     ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
                                     ->fontFamily(FontFamily::Mono)
                                     ->size(TextSize::Medium)
@@ -83,7 +83,7 @@ class ClipInfolist
                                 TextEntry::make('votes_jury')
                                     ->label(__('admin/resources/clips.table.columns.votes_jury'))
                                     ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Jury)->whereVoted(true)->count())
-                                    ->icon(Heroicon::Star)
+                                    ->icon(LucideIcon::Star)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('warning'),
@@ -91,7 +91,7 @@ class ClipInfolist
                                 TextEntry::make('votes_public')
                                     ->label(__('admin/resources/clips.table.columns.votes_public'))
                                     ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Public)->whereVoted(true)->count())
-                                    ->icon(Heroicon::UserGroup)
+                                    ->icon(LucideIcon::Users)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('success'),
@@ -101,7 +101,7 @@ class ClipInfolist
                             TextEntry::make('broadcaster.name')
                                 ->label('admin/resources/clips.infolist.broadcaster')
                                 ->translateLabel()
-                                ->icon(Heroicon::VideoCamera)
+                                ->icon(LucideIcon::Video)
                                 ->color('gray')
                                 ->url(function (Clip $clip): ?string {
                                     if (! $clip->broadcaster?->exists) {
@@ -114,7 +114,7 @@ class ClipInfolist
                             TextEntry::make('creator.name')
                                 ->label('admin/resources/clips.infolist.creator')
                                 ->translateLabel()
-                                ->icon(Heroicon::Scissors)
+                                ->icon(LucideIcon::Scissors)
                                 ->color('gray')
                                 ->url(function (Clip $clip): ?string {
                                     if (! $clip->creator?->exists) {
@@ -127,7 +127,7 @@ class ClipInfolist
                             TextEntry::make('submitter.name')
                                 ->label('admin/resources/clips.infolist.submitted_by')
                                 ->translateLabel()
-                                ->icon(Heroicon::User)
+                                ->icon(LucideIcon::User)
                                 ->color('gray')
                                 ->url(function (Clip $clip): ?string {
                                     if (! $clip->submitter?->exists) {
@@ -144,13 +144,13 @@ class ClipInfolist
                                     ->date()
                                     ->label('admin/resources/clips.infolist.created_at')
                                     ->translateLabel()
-                                    ->icon(Heroicon::Calendar)
+                                    ->icon(LucideIcon::Calendar)
                                     ->color('gray'),
                                 TextEntry::make('created_at')
                                     ->date()
                                     ->label('admin/resources/clips.infolist.submitted_at')
                                     ->translateLabel()
-                                    ->icon(Heroicon::Calendar)
+                                    ->icon(LucideIcon::Calendar)
                                     ->color('gray'),
                             ]),
                     ])

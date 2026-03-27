@@ -6,6 +6,7 @@ namespace App\Filament\Actions\Tables;
 
 use App\Actions\ImportClipAction;
 use App\Enums\FeatureFlag;
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
@@ -27,7 +28,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Gate;
 
 class SubmitClipAction extends Action
@@ -41,7 +41,7 @@ class SubmitClipAction extends Action
         $this->name('submit_clip')
             ->label('filament/actions/tables.clips.submit_action.label')
             ->translateLabel()
-            ->icon(Heroicon::Plus)
+            ->icon(LucideIcon::Plus)
             ->hidden(fn (): bool => ! Gate::allows('submit', Clip::class))
             ->schema([
                 TextInput::make('uri')
