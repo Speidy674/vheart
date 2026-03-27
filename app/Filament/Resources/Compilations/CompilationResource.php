@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Compilations;
 
+use App\Enums\Filament\LucideIcon;
 use App\Filament\Resources\Compilations\Pages\CreateCompilation;
 use App\Filament\Resources\Compilations\Pages\EditCompilation;
 use App\Filament\Resources\Compilations\Pages\ListCompilations;
@@ -16,7 +17,6 @@ use App\Models\Clip\Compilation;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -25,7 +25,7 @@ class CompilationResource extends Resource
 {
     protected static ?string $model = Compilation::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::ClipboardDocument;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Clipboard;
 
     protected static ?string $recordTitleAttribute = 'title';
 
