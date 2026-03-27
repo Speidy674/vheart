@@ -74,4 +74,11 @@ class BroadcasterResource extends Resource
                 SoftDeletingScope::class,
             ]);
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withTrashed()
+            ->with(['user', 'latestConsentLog']);
+    }
 }
