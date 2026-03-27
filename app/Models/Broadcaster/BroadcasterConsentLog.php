@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
+use App\Models\User;
 use Database\Factories\BroadcasterConsentLogFactory;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use JsonException;
 use LogicException;
 
@@ -38,6 +40,11 @@ class BroadcasterConsentLog extends Model
 
             return false;
         }
+    }
+
+    public function changedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'changed_by');
     }
 
     protected static function booted(): void
