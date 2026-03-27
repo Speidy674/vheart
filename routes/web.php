@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\ClipVoteType;
 use App\Enums\FeatureFlag;
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
@@ -25,7 +24,7 @@ Route::get('/', static function (Request $request) {
 
     $bestRated = Clip::query()
         ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public))
+        ->whereHas('votes', fn ($q) => $q->where('voted', true))
         ->with('tags')
         ->withAbsoluteVoteCount()
         ->orderByDesc('votes_count')
