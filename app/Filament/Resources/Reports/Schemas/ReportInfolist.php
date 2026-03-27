@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports\Schemas;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -15,7 +16,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Enums\TextSize;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
 
@@ -30,7 +30,7 @@ class ReportInfolist
                     ->schema([
                         Group::make([
                             Section::make('Report Overview')
-                                ->icon(Heroicon::DocumentText)
+                                ->icon(LucideIcon::Text)
                                 ->schema([
                                     Grid::make(2)->schema([
                                         TextEntry::make('reason')
@@ -57,7 +57,7 @@ class ReportInfolist
 
                             Section::make('Action')
                                 ->visible(fn (Model $record): bool => $record->resolve_action !== null)
-                                ->icon(Heroicon::CommandLine)
+                                ->icon(LucideIcon::Book)
                                 ->compact()
                                 ->schema([
                                     TextEntry::make('resolve_action')
@@ -73,11 +73,11 @@ class ReportInfolist
                                 ->headerActions([
                                     Action::make('view')
                                         ->color('info')
-                                        ->icon(Heroicon::ArrowTopRightOnSquare)
+                                        ->icon(LucideIcon::ExternalLink)
                                         ->disabled(fn (Model $record): bool => self::getResourceUrl($record->reportable) === null)
                                         ->url(fn (Model $record): ?string => self::getResourceUrl($record->reportable), shouldOpenInNewTab: true),
                                 ])
-                                ->icon(Heroicon::Eye)
+                                ->icon(LucideIcon::Eye)
                                 ->columns(2)
                                 ->schema([
                                     TextEntry::make('reportable_type')
@@ -94,19 +94,19 @@ class ReportInfolist
 
                         Group::make([
                             Section::make('Involved Parties')
-                                ->icon(Heroicon::Users)
+                                ->icon(LucideIcon::Users)
                                 ->schema([
                                     TextEntry::make('reporter.name')
                                         ->url(fn (Model $record): ?string => self::getResourceUrl($record->reporter), true)
                                         ->label('Reporter')
-                                        ->icon(Heroicon::User)
+                                        ->icon(LucideIcon::User)
                                         ->weight(FontWeight::Bold)
                                         ->color('gray'),
 
                                     TextEntry::make('claimer.name')
                                         ->url(fn (Model $record): ?string => self::getResourceUrl($record->claimer), true)
                                         ->label('Claimed By')
-                                        ->icon(Heroicon::ShieldCheck)
+                                        ->icon(LucideIcon::ShieldCheck)
                                         ->placeholder('Unclaimed')
                                         ->weight(FontWeight::Bold)
                                         ->color('gray'),
@@ -114,14 +114,14 @@ class ReportInfolist
                                     TextEntry::make('resolver.name')
                                         ->url(fn (Model $record): ?string => self::getResourceUrl($record->resolver), true)
                                         ->label('Resolved By')
-                                        ->icon(Heroicon::CheckBadge)
+                                        ->icon(LucideIcon::BadgeCheck)
                                         ->placeholder('Unresolved')
                                         ->weight(FontWeight::Bold)
                                         ->color('gray'),
                                 ]),
 
                             Section::make('Timeline')
-                                ->icon(Heroicon::Clock)
+                                ->icon(LucideIcon::Clock)
                                 ->compact()
                                 ->schema([
                                     TextEntry::make('created_at')

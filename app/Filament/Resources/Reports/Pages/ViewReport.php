@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports\Pages;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Filament\Resources\Reports\ReportResource;
@@ -14,7 +15,6 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
-use Filament\Support\Icons\Heroicon;
 
 class ViewReport extends ViewRecord
 {
@@ -26,7 +26,7 @@ class ViewReport extends ViewRecord
             Action::make('claim')
                 ->requiresConfirmation()
                 ->label('Claim')
-                ->icon(Heroicon::LockClosed)
+                ->icon(LucideIcon::Lock)
                 ->color('info')
                 ->visible(fn (Report $record): bool => $record->claimed_by === null && $record->status === ReportStatus::Pending)
                 ->action(function (Report $record): void {
@@ -39,7 +39,7 @@ class ViewReport extends ViewRecord
             Action::make('unclaim')
                 ->requiresConfirmation()
                 ->label('Unclaim')
-                ->icon(Heroicon::LockClosed)
+                ->icon(LucideIcon::LockOpen)
                 ->color('info')
                 ->visible(fn (Report $record): bool => $record->claimed_by !== null && $record->status === ReportStatus::InReview)
                 ->action(function (Report $record): void {
@@ -52,7 +52,7 @@ class ViewReport extends ViewRecord
             Action::make('resolve')
                 ->requiresConfirmation()
                 ->label('Resolve')
-                ->icon('heroicon-o-check')
+                ->icon(LucideIcon::Check)
                 ->color('success')
                 ->modalWidth(Width::ThreeExtraLarge)
                 ->schema([
