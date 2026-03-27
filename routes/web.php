@@ -27,7 +27,7 @@ Route::get('/', static function (Request $request) {
         ->whereHas('votes', fn ($q) => $q->where('voted', true))
         ->with('tags')
         ->withAbsoluteVoteCount()
-        ->orderByDesc('votes_count')
+        ->orderByDesc('absolute_votes')
         ->limit(10)
         ->get();
 
