@@ -27,14 +27,14 @@ Route::get('/', static function (Request $request) {
         ->where('created_at', '>', now()->subDays(30))
         ->whereHas('votes', fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public))
         ->with('tags')
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public)])
+        ->withAbsoluteVoteCount()
         ->orderByDesc('votes_count')
         ->limit(10)
         ->get();
 
     $discover = Clip::query()
         ->with('tags')
-        ->withCount(['votes' => fn ($q) => $q->where('voted', true)->where('type', ClipVoteType::Public)])
+        ->withAbsoluteVoteCount()
         ->orderByDesc('created_at')
         ->orderByDesc('id')
         ->cursorPaginate(perPage: 42);
