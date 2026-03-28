@@ -19,6 +19,8 @@ class ConsentLogsRelationManager extends RelationManager
 {
     protected static string $relationship = 'consentLogs';
 
+    protected static bool $isLazy = false;
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return $pageClass !== EditBroadcaster::class;
