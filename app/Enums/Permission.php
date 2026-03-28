@@ -99,6 +99,12 @@ enum Permission: string implements HasLabel
     // BroadcasterConsentLog
     case ViewAnyBroadcasterConsentLog = 'view_any_broadcaster_consent_log';
 
+    // BroadcasterSubmissionFilter
+    case ViewAnyBroadcasterSubmissionFilter = 'view_any_broadcaster_submissinon_filter';
+    case CreateAnyBroadcasterSubmissionFilter = 'create_any_broadcaster_submissinon_filter';
+    case UpdateAnyBroadcasterSubmissionFilter = 'update_any_broadcaster_submissinon_filter';
+    case DeleteAnyBroadcasterSubmissionFilter = 'delete_any_broadcaster_submissinon_filter';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
