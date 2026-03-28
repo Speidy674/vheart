@@ -37,8 +37,9 @@ class ConsentLogsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('changed_at')
             ->defaultSort('changed_at', 'desc')
+            ->recordTitleAttribute('changed_at')
+            ->deferLoading()
             ->columns([
                 TextColumn::make('changed_at')
                     ->label('Changed At')
