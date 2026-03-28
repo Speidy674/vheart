@@ -87,6 +87,15 @@ enum Permission: string implements HasLabel
     case RestoreAnyClip = 'restore_any_clip';
     case ForceDeleteAnyClip = 'force_delete_any_clip';
 
+    // Broadcaster
+    case ViewAnyBroadcaster = 'view_any_broadcaster';
+    case ViewBroadcaster = 'view_broadcaster';
+    case CreateBroadcaster = 'create_broadcaster';
+    case UpdateAnyBroadcaster = 'update_any_broadcaster';
+    case DeleteAnyBroadcaster = 'delete_any_broadcaster';
+    case RestoreAnyBroadcaster = 'restore_any_broadcaster';
+    case ForceDeleteAnyBroadcaster = 'force_delete_any_broadcaster';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
