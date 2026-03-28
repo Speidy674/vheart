@@ -394,7 +394,7 @@ class ClipsRelationManager extends RelationManager
                     Action::make('copy_cutter_optimized_name')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.copy_filename')
                         ->translateLabel()
-                        ->icon('heroicon-o-clipboard-document-list')
+                        ->icon(LucideIcon::ClipboardList)
                         ->color('gray')
                         ->tooltip(__('admin/resources/compilations.relation_managers.clips.actions.copy_filename_tooltip'))
                         ->action(function (Clip $clip, $livewire): void {

@@ -58,7 +58,7 @@ class UserForm
                     ->columnSpanFull(),
 
                 Section::make('Overview')
-                    ->icon('heroicon-o-shield-check')
+                    ->icon(LucideIcon::ShieldCheck)
                     ->visibleOn('view')
                     ->schema([
                         Grid::make(1)
