@@ -96,6 +96,9 @@ enum Permission: string implements HasLabel
     case RestoreAnyBroadcaster = 'restore_any_broadcaster';
     case ForceDeleteAnyBroadcaster = 'force_delete_any_broadcaster';
 
+    // BroadcasterConsentLog
+    case ViewAnyBroadcasterConsentLog = 'view_any_broadcaster_consent_log';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 

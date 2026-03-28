@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Broadcasters\RelationManagers;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
+use App\Enums\Permission;
 use App\Filament\Resources\Broadcasters\Pages\EditBroadcaster;
 use App\Models\Broadcaster\BroadcasterConsentLog;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -23,7 +24,7 @@ class ConsentLogsRelationManager extends RelationManager
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        return $pageClass !== EditBroadcaster::class;
+        return auth()->user()->can(Permission::ViewAnyBroadcasterConsentLog) && $pageClass !== EditBroadcaster::class;
     }
 
     public function isReadOnly(): bool
