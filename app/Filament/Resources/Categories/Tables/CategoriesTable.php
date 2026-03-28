@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Categories\Tables;
 
+use App\Enums\Filament\LucideIcon;
 use App\Models\Category;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -59,7 +59,7 @@ class CategoriesTable
                     Action::make('ban')
                         ->label('admin/resources/categories.table.actions.ban')
                         ->translateLabel()
-                        ->icon(Heroicon::LockClosed)
+                        ->icon(LucideIcon::Lock)
                         ->color('danger')
                         ->hidden(fn (Category $record): bool => $record->is_banned)
                         ->requiresConfirmation()
@@ -70,7 +70,7 @@ class CategoriesTable
                     Action::make('unban')
                         ->label('admin/resources/categories.table.actions.unban')
                         ->translateLabel()
-                        ->icon(Heroicon::LockOpen)
+                        ->icon(LucideIcon::LockOpen)
                         ->color('success')
                         ->hidden(fn (Category $record): bool => ! $record->is_banned)
                         ->requiresConfirmation()

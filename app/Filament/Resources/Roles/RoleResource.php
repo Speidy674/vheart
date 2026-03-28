@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Roles;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\NavigationGroup;
 use App\Filament\Resources\Roles\Pages\CreateRole;
 use App\Filament\Resources\Roles\Pages\EditRole;
@@ -16,7 +17,6 @@ use App\Models\Role;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use UnitEnum;
@@ -29,7 +29,7 @@ class RoleResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Administration;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::UserGroup;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Award;
 
     protected static ?string $recordTitleAttribute = 'name';
 

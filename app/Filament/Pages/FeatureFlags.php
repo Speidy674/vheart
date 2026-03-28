@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Pages;
 
 use App\Enums\FeatureFlag;
+use App\Enums\Filament\LucideIcon;
 use App\Enums\NavigationGroup;
 use BackedEnum;
 use Exception;
@@ -15,7 +16,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use UnitEnum;
@@ -26,7 +26,7 @@ class FeatureFlags extends Page
 
     public ?array $data = [];
 
-    protected static string|null|BackedEnum $navigationIcon = Heroicon::Cog8Tooth;
+    protected static string|null|BackedEnum $navigationIcon = LucideIcon::ServerCog;
 
     protected static string|null|UnitEnum $navigationGroup = NavigationGroup::Administration;
 
@@ -76,7 +76,7 @@ class FeatureFlags extends Page
 
             if ($case->getIssue()) {
                 $actions[] = Action::make('issue')
-                    ->icon(Heroicon::Link)
+                    ->icon(LucideIcon::ExternalLink)
                     ->tooltip('View Issue')
                     ->url($case->getIssue(), shouldOpenInNewTab: true);
             }
@@ -84,7 +84,7 @@ class FeatureFlags extends Page
             if ($isDisabled) {
                 $actions[] = Action::make('locked')
                     ->color('gray')
-                    ->icon(Heroicon::LockClosed)
+                    ->icon(LucideIcon::Lock)
                     ->tooltip('This Flag is disabled on this Environment.')
                     ->disabled();
             }
@@ -93,7 +93,7 @@ class FeatureFlags extends Page
                 $overrideState = $configValue ? 'Enabled' : 'Disabled';
                 $actions[] = Action::make('locked')
                     ->color('danger')
-                    ->icon(Heroicon::LockClosed)
+                    ->icon(LucideIcon::Lock)
                     ->tooltip("Forced as {$overrideState} by environment")
                     ->disabled();
             }

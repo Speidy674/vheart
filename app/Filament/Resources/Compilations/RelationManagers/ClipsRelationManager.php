@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Compilations\RelationManagers;
 
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipClaimStatus;
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
 use App\Events\Admin\Compilations\CompilationClipClaimed;
 use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
@@ -28,7 +29,6 @@ use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\Width;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
@@ -98,7 +98,7 @@ class ClipsRelationManager extends RelationManager
                             ->label('admin/resources/compilations.relation_managers.clips.columns.adder')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.adder'))
                             ->translateLabel()
-                            ->icon(Heroicon::Plus)
+                            ->icon(LucideIcon::Plus)
                             ->color('gray'),
 
                         TextColumn::make('claimer.name')
@@ -106,24 +106,24 @@ class ClipsRelationManager extends RelationManager
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.claimer'))
                             ->translateLabel()
                             ->weight('bold')
-                            ->icon(Heroicon::Check)
+                            ->icon(LucideIcon::Check)
                             ->color('gray'),
                         TextColumn::make('claim_status')
                             ->label('admin/resources/compilations.relation_managers.clips.columns.status_cutter')
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_cutter'))
                             ->badge()
-                            ->icon(Heroicon::Clipboard)
+                            ->icon(LucideIcon::Clipboard)
                             ->translateLabel(),
                         TextColumn::make('pivot.removed_at')
                             ->label(__('admin/resources/compilations.relation_managers.clips.columns.removed_at'))
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.removed_at'))
-                            ->icon(Heroicon::Calendar)
+                            ->icon(LucideIcon::Calendar)
                             ->translateLabel()
                             ->dateTime(),
                         TextColumn::make('pivot.added_at')
                             ->label(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
                             ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.added_at'))
-                            ->icon(Heroicon::Calendar)
+                            ->icon(LucideIcon::Calendar)
                             ->translateLabel()
                             ->dateTime()
                             ->color('gray'),
@@ -280,7 +280,7 @@ class ClipsRelationManager extends RelationManager
                     Action::make('claim')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.claim')
                         ->translateLabel()
-                        ->icon(Heroicon::LockClosed)
+                        ->icon(LucideIcon::Lock)
                         ->rateLimit(5)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by === auth()->id())
                         ->requiresConfirmation(fn (Clip $record): bool => ! is_null($record->pivot->claimed_by))
@@ -309,7 +309,7 @@ class ClipsRelationManager extends RelationManager
                     Action::make('status')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.status.title')
                         ->translateLabel()
-                        ->icon(Heroicon::Clipboard)
+                        ->icon(LucideIcon::Clipboard)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->fillForm(fn (Clip $record): array => [
                             'status' => $record->pivot->claim_status,
@@ -340,7 +340,7 @@ class ClipsRelationManager extends RelationManager
                         ->hidden() // not required? only hide it for now
                         ->label('admin/resources/clips.actions.download')
                         ->translateLabel()
-                        ->icon(Heroicon::ArrowDownTray)
+                        ->icon(LucideIcon::Download)
                         ->disabled(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->action(function (Clip $clip, TwitchService $twitchService, Component $livewire): bool {
                             $broadCaster = $clip->broadcaster;
@@ -394,7 +394,7 @@ class ClipsRelationManager extends RelationManager
                     Action::make('copy_cutter_optimized_name')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.copy_filename')
                         ->translateLabel()
-                        ->icon('heroicon-o-clipboard-document-list')
+                        ->icon(LucideIcon::ClipboardList)
                         ->color('gray')
                         ->tooltip(__('admin/resources/compilations.relation_managers.clips.actions.copy_filename_tooltip'))
                         ->action(function (Clip $clip, $livewire): void {
@@ -423,7 +423,7 @@ class ClipsRelationManager extends RelationManager
                         ->label('admin/resources/compilations.relation_managers.clips.actions.unclaim')
                         ->translateLabel()
                         ->color('warning')
-                        ->icon(Heroicon::LockOpen)
+                        ->icon(LucideIcon::LockOpen)
                         ->hidden(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
                         ->requiresConfirmation()
                         ->action(function (Clip $clip): void {

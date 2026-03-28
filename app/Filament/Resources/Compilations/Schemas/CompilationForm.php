@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Compilations\Schemas;
 
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
+use App\Enums\Filament\LucideIcon;
 use App\Models\Clip\Compilation;
 use Filament\Actions\Action;
 use Filament\Forms\Components\MarkdownEditor;
@@ -15,7 +16,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 
 class CompilationForm
 {
@@ -40,7 +40,7 @@ class CompilationForm
                             ->afterContent(
                                 Action::make('generateSlug')
                                     ->tooltip(__('admin/resources/compilations.action.generate-slug'))
-                                    ->icon(Heroicon::Link)
+                                    ->icon(LucideIcon::Link)
                                     ->iconButton()
                                     ->action(function (Get $schemaGet, Set $schemaSet): void {
                                         $schemaSet('slug', str($schemaGet('title'))->trim()->slug()->toString());

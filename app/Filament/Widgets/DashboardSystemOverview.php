@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Widgets;
 
-use Filament\Support\Icons\Heroicon;
+use App\Enums\Filament\LucideIcon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
@@ -25,10 +25,10 @@ class DashboardSystemOverview extends StatsOverviewWidget
 
         return [
             Stat::make('Current Queue Jobs', number_format($currentJobs))
-                ->icon(Heroicon::Server),
+                ->icon(LucideIcon::Server),
 
             Stat::make('Failed Queue Jobs', number_format($failedJobs))
-                ->icon($failedJobs > 0 ? Heroicon::XCircle : Heroicon::CheckCircle)
+                ->icon($failedJobs > 0 ? LucideIcon::CircleX : LucideIcon::CircleCheck)
                 ->color($failedJobs > 0 ? 'danger' : 'success'),
         ];
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Notifications\Admin;
 
+use App\Enums\Filament\LucideIcon;
+use Filament\Support\Enums\IconSize;
 use Illuminate\Support\Str;
 use Kirschbaum\Commentions\Config;
 use Kirschbaum\Commentions\Notifications\UserMentionedInComment as BaseNotification;
@@ -23,7 +25,7 @@ class UserMentionedInCommentNotification extends BaseNotification
             'title' => "{$author} mentioned you",
             'body' => $body,
             'status' => 'info',
-            'icon' => 'heroicon-o-chat-bubble-left-right',
+            'icon' => LucideIcon::MessagesSquare->getIconForSize(IconSize::Medium),
             'actions' => $url ? [
                 [
                     'name' => 'view',

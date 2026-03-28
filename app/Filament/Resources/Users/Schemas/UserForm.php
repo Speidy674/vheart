@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Enums\Filament\LucideIcon;
 use App\Models\Role;
 use App\Models\User;
 use Filament\Forms\Components\Checkbox;
@@ -13,7 +14,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
 
 class UserForm
@@ -31,7 +31,7 @@ class UserForm
                     ->schema([
                         TextInput::make('name')
                             ->label('Name')
-                            ->prefixIcon(Heroicon::User)
+                            ->prefixIcon(LucideIcon::User)
                             ->disabled(),
                         Select::make('roles')
                             ->relationship(
@@ -51,14 +51,14 @@ class UserForm
                             })
                             ->label('Roles')
                             ->multiple()
-                            ->prefixIcon(Heroicon::ShieldCheck)
+                            ->prefixIcon(LucideIcon::ShieldCheck)
                             ->preload()
                             ->searchable(),
                     ])
                     ->columnSpanFull(),
 
                 Section::make('Overview')
-                    ->icon('heroicon-o-shield-check')
+                    ->icon(LucideIcon::ShieldCheck)
                     ->visibleOn('view')
                     ->schema([
                         Grid::make(1)

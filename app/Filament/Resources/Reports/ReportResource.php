@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Reports;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\NavigationGroup;
 use App\Enums\Reports\ReportStatus;
 use App\Filament\Resources\Reports\Pages\ListReports;
@@ -14,7 +15,6 @@ use App\Models\Report;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -26,7 +26,7 @@ class ReportResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Moderation;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Flag;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Flag;
 
     protected static ?int $navigationSort = 0;
 

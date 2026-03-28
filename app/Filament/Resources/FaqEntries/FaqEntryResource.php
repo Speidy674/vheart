@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\FaqEntries;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\NavigationGroup;
 use App\Filament\Resources\FaqEntries\Pages\ListFaqEntries;
 use App\Filament\Resources\FaqEntries\Schemas\FaqEntryForm;
@@ -13,7 +14,6 @@ use App\Models\Faq\FaqEntry;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -28,7 +28,7 @@ class FaqEntryResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = NavigationGroup::Management;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Newspaper;
+    protected static string|BackedEnum|null $navigationIcon = LucideIcon::Newspaper;
 
     protected static ?string $recordTitleAttribute = 'title';
 

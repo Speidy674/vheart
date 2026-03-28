@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Notifications\Admin;
 
+use App\Enums\Filament\LucideIcon;
+use Filament\Support\Enums\IconSize;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -39,7 +41,7 @@ class NewSubscribedCommentNotification extends Notification implements ShouldQue
             'title' => "{$author} has commented",
             'body' => $body,
             'status' => 'info',
-            'icon' => 'heroicon-o-chat-bubble-bottom-center-text',
+            'icon' => LucideIcon::MessagesSquare->getIconForSize(IconSize::Medium),
 
             'actions' => $url ? [
                 [
