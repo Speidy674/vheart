@@ -105,6 +105,12 @@ enum Permission: string implements HasLabel
     case UpdateAnyBroadcasterSubmissionFilter = 'update_any_broadcaster_submissinon_filter';
     case DeleteAnyBroadcasterSubmissionFilter = 'delete_any_broadcaster_submissinon_filter';
 
+    // BroadcasterTeamMember
+    case ViewAnyBroadcasterTeamMember = 'view_any_broadcaster_team_member';
+    case CreateAnyBroadcasterTeamMember = 'create_any_broadcaster_team_member';
+    case UpdateAnyBroadcasterTeamMember = 'update_any_broadcaster_team_member';
+    case DeleteAnyBroadcasterTeamMember = 'delete_any_broadcaster_team_member';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
