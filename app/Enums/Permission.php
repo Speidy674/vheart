@@ -131,7 +131,7 @@ enum Permission: string implements HasLabel
             'delete_any_', 'delete_',
             'update_any_', 'update_',
             'view_any_', 'view_',
-            'create_',
+            'create_any_', 'create_',
         ];
 
         $groupName = str_replace($prefixes, '', $this->value, $count);
