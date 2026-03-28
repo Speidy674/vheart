@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Filament\Resources\Broadcasters\RelationManagers;
+
+use App\Enums\Filament\LucideIcon;
+use App\Filament\Resources\Broadcasters\Pages\ViewBroadcaster;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Toggle;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+
+abstract class BaseSubmissionFilterRelationManager extends RelationManager
+{
+    protected static string $relationship = 'filters';
+
+    protected static bool $isLazy = false;
+
+    abstract protected function getMorphClass(): string;
+
+    abstract protected function getFilterableColumns(): array;
+
+    abstract protected function getFilterableFormField(): mixed;
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->where('filterable_type', $this->getMorphClass()))
+            ->deferLoading()
+            ->columns([
+                ...$this->getFilterableColumns(),
+
+                ToggleColumn::make('state')
+                    ->label('Allowed')
+                    ->onIcon(LucideIcon::Check)
+                    ->offIcon(LucideIcon::X)
+                    ->onColor('success')
+                    ->offColor('danger')
+                    ->disabled(fn () => $this->getPageClass() === ViewBroadcaster::class)
+                    ->alignCenter(),
+
+                TextColumn::make('updated_at')
+                    ->label('Updated')
+                    ->since()
+                    ->sortable(),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                DeleteAction::make(),
+            ])
+            ->toolbarActions([
+                CreateAction::make()
+                    ->mutateDataUsing(function (array $data): array {
+                        $data['filterable_type'] = $this->getMorphClass();
+
+                        return $data;
+                    }),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    protected function sharedFormFields(): array
+    {
+        return [
+            Toggle::make('state')
+                ->onIcon(LucideIcon::Check)
+                ->offIcon(LucideIcon::X)
+                ->onColor('success')
+                ->offColor('danger')
+                ->onColor('success')
+                ->label('Allowed')
+                ->required(),
+        ];
+    }
+}
