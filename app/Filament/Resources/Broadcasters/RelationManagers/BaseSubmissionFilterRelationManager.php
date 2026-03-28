@@ -6,6 +6,8 @@ namespace App\Filament\Resources\Broadcasters\RelationManagers;
 
 use App\Enums\Filament\LucideIcon;
 use App\Filament\Resources\Broadcasters\Pages\ViewBroadcaster;
+use App\Models\Broadcaster\Broadcaster;
+use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -16,6 +18,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseSubmissionFilterRelationManager extends RelationManager
 {
@@ -28,6 +31,14 @@ abstract class BaseSubmissionFilterRelationManager extends RelationManager
     abstract protected function getFilterableColumns(): array;
 
     abstract protected function getFilterableFormField(): mixed;
+
+    /**
+     * @param  Broadcaster  $ownerRecord
+     */
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return auth()->user()->can('viewAny', [BroadcasterSubmissionFilter::class, $ownerRecord]);
+    }
 
     public function table(Table $table): Table
     {
@@ -66,7 +77,8 @@ abstract class BaseSubmissionFilterRelationManager extends RelationManager
                         return $data;
                     }),
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->authorize('deleteAny', $this->getOwnerRecord()),
                 ]),
             ]);
     }
