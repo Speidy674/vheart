@@ -81,7 +81,6 @@ return new class extends Migration
             $table->morphs('filterable');
             $table->boolean('state')->index();
             $table->timestamps();
-            $table->softDeletes();
 
             $table->foreign('broadcaster_id')->references('id')->on('broadcasters')->cascadeOnDelete();
 

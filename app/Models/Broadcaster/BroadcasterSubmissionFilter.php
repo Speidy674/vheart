@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BroadcasterSubmissionFilter extends Model
 {
@@ -20,8 +19,6 @@ class BroadcasterSubmissionFilter extends Model
 
     /** @use HasFactory<BroadcasterSubmissionFilterFactory> */
     use HasFactory;
-
-    use SoftDeletes;
 
     /**
      * @return BelongsTo<Broadcaster, $this>
