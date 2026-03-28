@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Broadcasters;
 
 use App\Enums\Filament\LucideIcon;
-use App\Filament\Resources\Broadcasters\Pages\CreateBroadcaster;
 use App\Filament\Resources\Broadcasters\Pages\EditBroadcaster;
 use App\Filament\Resources\Broadcasters\Pages\ListBroadcasters;
 use App\Filament\Resources\Broadcasters\Pages\ViewBroadcaster;
@@ -66,7 +65,6 @@ class BroadcasterResource extends Resource
     {
         return [
             'index' => ListBroadcasters::route('/'),
-            'create' => CreateBroadcaster::route('/create'),
             'view' => ViewBroadcaster::route('/{record}'),
             'edit' => EditBroadcaster::route('/{record}/edit'),
         ];
