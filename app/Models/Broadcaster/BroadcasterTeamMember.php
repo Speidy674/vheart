@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BroadcasterTeamMember extends Model
 {
@@ -20,8 +19,6 @@ class BroadcasterTeamMember extends Model
 
     /** @use HasFactory<BroadcasterTeamMemberFactory> */
     use HasFactory;
-
-    use SoftDeletes;
 
     /**
      * @return BelongsTo<Broadcaster, $this>
