@@ -9,7 +9,9 @@ use App\Filament\Resources\Broadcasters\Pages\CreateBroadcaster;
 use App\Filament\Resources\Broadcasters\Pages\EditBroadcaster;
 use App\Filament\Resources\Broadcasters\Pages\ListBroadcasters;
 use App\Filament\Resources\Broadcasters\Pages\ViewBroadcaster;
+use App\Filament\Resources\Broadcasters\RelationManagers\CategoryFiltersRelationManager;
 use App\Filament\Resources\Broadcasters\RelationManagers\ConsentLogsRelationManager;
+use App\Filament\Resources\Broadcasters\RelationManagers\UserFiltersRelationManager;
 use App\Filament\Resources\Broadcasters\Schemas\BroadcasterForm;
 use App\Filament\Resources\Broadcasters\Schemas\BroadcasterInfolist;
 use App\Filament\Resources\Broadcasters\Tables\BroadcastersTable;
@@ -54,6 +56,8 @@ class BroadcasterResource extends Resource
     public static function getRelations(): array
     {
         return [
+            UserFiltersRelationManager::make(),
+            CategoryFiltersRelationManager::make(),
             ConsentLogsRelationManager::make(),
         ];
     }
