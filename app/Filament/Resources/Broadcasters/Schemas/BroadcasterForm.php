@@ -29,6 +29,7 @@ class BroadcasterForm
     private static function makeConsentSection(): Section
     {
         return Section::make('Consent')
+            ->hiddenOn('create')
             ->schema([
                 CheckboxList::make('consent')
                     ->options(BroadcasterConsent::class)
@@ -49,6 +50,7 @@ class BroadcasterForm
     private static function makeSubmitPermissionsSection(): Section
     {
         return Section::make('Submission Permissions')
+            ->hiddenOn('create')
             ->schema([
                 Toggle::make('submit_user_allowed')
                     ->afterStateUpdated(function (bool $state, Set $set): void {
