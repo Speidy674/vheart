@@ -8,16 +8,19 @@ use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Enums\Filament\LucideIcon;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class BroadcasterForm
 {
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
+            self::makeUserSection(),
             self::makeConsentSection(),
             self::makeSubmitPermissionsSection(),
         ]);
@@ -84,5 +87,20 @@ class BroadcasterForm
                     ->label('Mods')
                     ->live(),
             ]);
+    }
+
+    private static function makeUserSection(): Select
+    {
+        return Select::make('id')
+            ->visibleOn('create')
+            ->columnSpanFull()
+            ->relationship(
+                name: 'user',
+                titleAttribute: 'name',
+                modifyQueryUsing: fn (Builder $query) => $query->whereDoesntHave('broadcaster'),
+            )
+            ->label('User')
+            ->searchable()
+            ->preload();
     }
 }
