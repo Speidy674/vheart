@@ -7,12 +7,15 @@ namespace App\Models\Broadcaster;
 use App\Models\Category;
 use App\Models\Traits\Auditable;
 use App\Models\User;
+use App\Policies\Broadcaster\BroadcasterSubmissionFilterPolicy;
 use Database\Factories\Broadcaster\BroadcasterSubmissionFilterFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+#[UsePolicy(BroadcasterSubmissionFilterPolicy::class)]
 class BroadcasterSubmissionFilter extends Model
 {
     use Auditable;

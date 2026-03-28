@@ -7,12 +7,15 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Models\Traits\Auditable;
 use App\Models\User;
+use App\Policies\Broadcaster\BroadcasterTeamMemberPolicy;
 use Database\Factories\Broadcaster\BroadcasterTeamMemberFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[UsePolicy(BroadcasterTeamMemberPolicy::class)]
 class BroadcasterTeamMember extends Model
 {
     use Auditable;
