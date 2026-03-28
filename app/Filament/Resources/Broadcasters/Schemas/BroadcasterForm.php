@@ -13,6 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Operation;
 use Illuminate\Database\Eloquent\Builder;
 
 class BroadcasterForm
@@ -29,7 +30,7 @@ class BroadcasterForm
     private static function makeConsentSection(): Section
     {
         return Section::make('Consent')
-            ->hiddenOn('create')
+            ->hiddenOn(Operation::Create)
             ->schema([
                 CheckboxList::make('consent')
                     ->options(BroadcasterConsent::class)
@@ -50,7 +51,7 @@ class BroadcasterForm
     private static function makeSubmitPermissionsSection(): Section
     {
         return Section::make('Submission Permissions')
-            ->hiddenOn('create')
+            ->hiddenOn(Operation::Create)
             ->schema([
                 Toggle::make('submit_user_allowed')
                     ->afterStateUpdated(function (bool $state, Set $set): void {
@@ -94,7 +95,7 @@ class BroadcasterForm
     private static function makeUserSection(): Select
     {
         return Select::make('id')
-            ->visibleOn('create')
+            ->visibleOn(Operation::Create)
             ->columnSpanFull()
             ->relationship(
                 name: 'user',

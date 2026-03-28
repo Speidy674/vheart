@@ -8,6 +8,7 @@ use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use App\Models\User;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Operation;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -76,7 +77,7 @@ class UserFiltersRelationManager extends BaseSubmissionFilterRelationManager
             )
             ->getOptionLabelUsing(fn (string $value) => User::find((int) $value)?->name)
             ->label('User')
-            ->hiddenOn('edit')
+            ->hiddenOn(Operation::Edit)
             ->columnSpanFull()
             ->searchable()
             ->required();
