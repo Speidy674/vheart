@@ -59,6 +59,7 @@ abstract class BaseSubmissionFilterRelationManager extends RelationManager
             ])
             ->toolbarActions([
                 CreateAction::make()
+                    ->authorize('create', $this->getOwnerRecord())
                     ->mutateDataUsing(function (array $data): array {
                         $data['filterable_type'] = $this->getMorphClass();
 
