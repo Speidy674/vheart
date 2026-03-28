@@ -30,6 +30,8 @@ class BroadcasterResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = LucideIcon::UserStar;
 
+    protected static ?int $navigationSort = 100;
+
     protected static ?string $recordTitleAttribute = 'user.name';
 
     public static function getRecordTitle(?Model $record): string|Htmlable|null
