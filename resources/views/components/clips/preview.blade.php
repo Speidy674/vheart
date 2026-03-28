@@ -16,7 +16,7 @@
     </x-image>
 
     <x-clips.preview.duration :duration="round($clip->duration)" />
-    <x-clips.preview.votes :votes="$clip->votes_count" />
+    <x-clips.preview.votes :votes="$clip->absolute_votes" />
 
     <x-clips.preview.container class="right-2 bottom-1 sm:bottom-2 left-2 block">
         <x-clips.preview.tags :clip="$clip" />
