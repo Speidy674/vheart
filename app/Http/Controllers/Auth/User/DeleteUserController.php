@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Auth\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\DeleteUserRequest;
+use App\Jobs\RemoverUserDataJob;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
@@ -23,6 +24,8 @@ class DeleteUserController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        RemoverUserDataJob::dispatch($user->id);
 
         return redirect('/');
     }
