@@ -26,20 +26,6 @@ export default defineConfig({
     ],
     build: {
         target: 'baseline-widely-available',
-        rolldownOptions: {
-            output: {
-                manualChunks(id) {
-                    if (
-                        id.includes('@icons-pack/react-simple-icons') ||
-                        id.includes('lucide-react')
-                    ) {
-                        return 'icons';
-                    }
-
-                    return null;
-                },
-            },
-        },
     },
     oxc: {
         jsx: {
