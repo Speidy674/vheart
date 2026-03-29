@@ -8,10 +8,10 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
+                'resources/js/app.ts',
+                'resources/js/alpine.ts',
                 'resources/css/filament/admin.css',
                 'resources/css/filament/dashboard.css',
-                'resources/js/static/app.ts',
-                'resources/js/static/alpine.ts',
             ],
             assets: [
                 'resources/images/**',

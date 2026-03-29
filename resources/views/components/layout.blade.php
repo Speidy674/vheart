@@ -65,7 +65,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     @viteReactRefresh
-    @vite(['resources/css/app.css', 'resources/js/static/app.ts'])
+    @vite(['resources/css/app.css', 'resources/js/app.ts'])
     @cookieconsentscripts
 </head>
 <body class="font-inter antialiased">
