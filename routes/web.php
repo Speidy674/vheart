@@ -50,7 +50,7 @@ Route::get('/', static function (Request $request) {
 Route::get('/about-us', static function () {
     $locale = app()->getLocale();
 
-    return view('about-us', ['locale' => $locale]);
+    return view('about-us');
 })->name('home');
 
 Route::get('/imprint', function () {
