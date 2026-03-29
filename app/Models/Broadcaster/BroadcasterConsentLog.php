@@ -45,6 +45,9 @@ class BroadcasterConsentLog extends Model
         }
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function changedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'changed_by');

@@ -55,7 +55,7 @@ class UserFiltersRelationManager extends BaseSubmissionFilterRelationManager
         return Select::make('filterable_id')
             ->getSearchResultsUsing(
                 fn (string $search) => User::where('name', 'ilike', "%{$search}%")
-                    ->whereNotExists(function ($query) {
+                    ->whereNotExists(function ($query): void {
                         $query->from('broadcaster_submission_filters')
                             ->whereColumn('broadcaster_submission_filters.filterable_id', (new User)->getTable().'.id')
                             ->where('broadcaster_submission_filters.filterable_type', $this->getMorphClass())
@@ -65,7 +65,7 @@ class UserFiltersRelationManager extends BaseSubmissionFilterRelationManager
                     ->pluck('name', 'id')
             )
             ->options(fn () => User::query()
-                ->whereNotExists(function ($query) {
+                ->whereNotExists(function ($query): void {
                     $query->from('broadcaster_submission_filters')
                         ->whereColumn('broadcaster_submission_filters.filterable_id', (new User)->getTable().'.id')
                         ->where('broadcaster_submission_filters.filterable_type', $this->getMorphClass())

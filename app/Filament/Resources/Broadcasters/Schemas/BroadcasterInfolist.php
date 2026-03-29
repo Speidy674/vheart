@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\FontWeight;
+use Illuminate\Contracts\Support\Htmlable;
 
 class BroadcasterInfolist
 {
@@ -60,7 +61,7 @@ class BroadcasterInfolist
                             ->date(),
 
                         TextEntry::make('deleted_at')
-                            ->hidden(fn ($record) => $record->deleted_at === null)
+                            ->hidden(fn ($record): bool => $record->deleted_at === null)
                             ->placeholder('Active')
                             ->label('Deleted')
                             ->color('danger')
@@ -95,7 +96,7 @@ class BroadcasterInfolist
             ->columns()
             ->schema([
                 TextEntry::make('consent')
-                    ->formatStateUsing(fn (BroadcasterConsent $state) => $state->getLabel())
+                    ->formatStateUsing(fn (BroadcasterConsent $state): Htmlable|string|null => $state->getLabel())
                     ->label('Given Consents')
                     ->placeholder('No consent given')
                     ->color('success')
@@ -103,7 +104,7 @@ class BroadcasterInfolist
                     ->badge(),
 
                 TextEntry::make('twitch_mod_permissions')
-                    ->formatStateUsing(fn (BroadcasterPermission $state) => $state->getLabel())
+                    ->formatStateUsing(fn (BroadcasterPermission $state): string|Htmlable|null => $state->getLabel())
                     ->placeholder('No permissions granted')
                     ->label('Mod Permissions')
                     ->color('info')

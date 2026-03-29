@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Broadcasters\Tables;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
+use Closure;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -21,6 +22,7 @@ use Filament\Tables\Filters\Indicator;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 
 class BroadcastersTable
@@ -36,12 +38,10 @@ class BroadcastersTable
                     ->sortable(),
 
                 TextColumn::make('user.name')
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHas('user', fn (Builder $q) => $q->where('name', 'ilike', "%{$search}%"));
-                    }),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereHas('user', fn (Builder $q) => $q->where('name', 'ilike', "%{$search}%"))),
 
                 TextColumn::make('consent')
-                    ->formatStateUsing(fn (BroadcasterConsent $state) => $state->getLabel())
+                    ->formatStateUsing(fn (BroadcasterConsent $state): Htmlable|string|null => $state->getLabel())
                     ->color('gray')
                     ->separator()
                     ->badge(),
@@ -142,7 +142,7 @@ class BroadcastersTable
 
                 return collect($map)
                     ->filter(fn ($_, $col): bool => $data[$col] ?? false)
-                    ->map(fn ($label, $col) => Indicator::make("Can Submit: $label")->removeField($col))
+                    ->map(fn ($label, string|Closure|null $col): Indicator => Indicator::make("Can Submit: $label")->removeField($col))
                     ->values()
                     ->all();
             });

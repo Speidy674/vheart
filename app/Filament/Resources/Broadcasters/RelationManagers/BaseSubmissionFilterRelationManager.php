@@ -54,7 +54,7 @@ abstract class BaseSubmissionFilterRelationManager extends RelationManager
                     ->offIcon(LucideIcon::X)
                     ->onColor('success')
                     ->offColor('danger')
-                    ->disabled(fn () => $this->getPageClass() === ViewBroadcaster::class)
+                    ->disabled(fn (): bool => $this->getPageClass() === ViewBroadcaster::class)
                     ->alignCenter(),
 
                 TextColumn::make('updated_at')

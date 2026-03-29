@@ -14,6 +14,7 @@ use Filament\Support\Enums\FontFamily;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 
 class ConsentLogsRelationManager extends RelationManager
@@ -53,7 +54,7 @@ class ConsentLogsRelationManager extends RelationManager
                     ->label('Changed By'),
 
                 TextColumn::make('state')
-                    ->formatStateUsing(fn (BroadcasterConsent $state) => $state->getLabel())
+                    ->formatStateUsing(fn (BroadcasterConsent $state): string|Htmlable|null => $state->getLabel())
                     ->label('Consents')
                     ->color('success')
                     ->separator()
@@ -65,11 +66,11 @@ class ConsentLogsRelationManager extends RelationManager
                     ->wrap(),
 
                 IconColumn::make('checksum_validity')
-                    ->tooltip(fn (BroadcasterConsentLog $record) => $record->isValid()
+                    ->tooltip(fn (BroadcasterConsentLog $record): string => $record->isValid()
                         ? 'Checksum valid'
                         : 'Checksum invalid, record may have been tampered with'
                     )
-                    ->state(fn (BroadcasterConsentLog $record) => $record->isValid())
+                    ->state(fn (BroadcasterConsentLog $record): bool => $record->isValid())
                     ->label('Status')
                     ->trueColor('success')
                     ->falseColor('danger')
