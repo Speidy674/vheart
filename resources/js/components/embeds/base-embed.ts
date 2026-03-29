@@ -78,19 +78,22 @@ export default (
     },
 
     hasConsent() {
-        if (! this.cookieManager) {
+        if (!this.cookieManager) {
             return this.hasConsentGiven;
         }
 
-        return this.hasConsentGiven || (this.cookieManager?.hasConsent && !! this.cookieManager?.get());
+        return (
+            this.hasConsentGiven ||
+            (this.cookieManager?.hasConsent && !!this.cookieManager?.get())
+        );
     },
 
     accept() {
         this.hasConsentGiven = true;
 
         this.cookieManager?.set('1', {
-            days: 30
-        })
+            days: 30,
+        });
     },
     setVisible() {
         this.isVisible = true;
