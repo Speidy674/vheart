@@ -47,7 +47,7 @@ class BetterplaceDonationCard extends Component
 
             $this->eventData = $eventData;
             $this->donations = $donationsData['data'] ?? [];
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->error = __('betterplace.error');
             $this->eventData = null;
             $this->donations = [];
