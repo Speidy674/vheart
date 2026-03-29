@@ -2,8 +2,7 @@
     <div class="mx-auto grid max-w-7xl grid-cols-1 items-start mb-8">
         <x-ui.card class="rounded-2xl border border-gray-200 bg-gradient-to-br from-white/70 via-white/85 to-white/70 p-8 shadow-2xl ring-1 shadow-black/10 ring-black/5 dark:border-white/20 dark:bg-black/30 dark:!bg-none dark:!from-transparent dark:!via-transparent dark:!to-transparent dark:ring-0 dark:shadow-purple-900/30">
             <div class="flex justify-center pt-10 pb-6">
-                <img src="{{ Vite::asset('resources/images/svg/logo-full-title.svg') }}" alt="VHeart logo" class="block h-32 w-auto dark:hidden" />
-                <img src="{{ Vite::asset('resources/images/svg/logo-full-dark.svg') }}" alt="VHeart logo" class="hidden h-32 w-auto dark:block" />
+                <x-ui.branding.banner class="h-32 w-auto" />
             </div>
 
             <div class="px-6 pb-8 sm:px-10 sm:pb-12">
