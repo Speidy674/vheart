@@ -3,75 +3,25 @@
 declare(strict_types=1);
 
 use App\Enums\FeatureFlag;
+use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\ChangeLanguageController;
 use App\Http\Controllers\ClipSubmitController;
 use App\Http\Controllers\ClipVoteController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\Legal\ImprintController;
+use App\Http\Controllers\Legal\PrivacyController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TeamController;
-use App\Models\Clip;
-use App\Support\FeatureFlag\Feature;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', static function (Request $request) {
-
-    // Have to redirect as about us is currently being worked on by someone else
-    if (Feature::isActive(FeatureFlag::AboutUsAsIndex)) {
-        return redirect()->route('about');
-    }
-
-    $bestRated = Clip::query()
-        ->where('created_at', '>', now()->subDays(30))
-        ->whereHas('votes', fn ($q) => $q->where('voted', true))
-        ->with('tags')
-        ->withAbsoluteVoteCount()
-        ->orderByDesc('absolute_votes')
-        ->limit(10)
-        ->get();
-
-    $discover = Clip::query()
-        ->with('tags')
-        ->withAbsoluteVoteCount()
-        ->orderByDesc('created_at')
-        ->orderByDesc('id')
-        ->cursorPaginate(perPage: 42);
-
-    if ($request->ajax()) {
-        return response(
-            view('components.clips.preview-list', ['clips' => $discover])->render(),
-            headers: [
-                'X-Next-Page' => $discover->nextPageUrl(),
-            ]);
-    }
-
-    return view('index', [
-        'bestRated' => $bestRated,
-        'discover' => $discover,
-    ]);
-})
-    ->name('home');
-
-Route::get('/about-us', static function () {
-    $locale = app()->getLocale();
-
-    return view('about-us');
-})->name('home');
-
-Route::get('/imprint', function () {
-    $locale = app()->getLocale();
-
-    return view('legal', ['locale' => $locale, 'type' => 'imprint']);
-});
-
-Route::get('/privacy', function () {
-    $locale = app()->getLocale();
-
-    return view('legal', ['locale' => $locale, 'type' => 'privacy']);
-});
-
-Route::get('/faq', [FaqController::class, 'index'])->name('faq');
+Route::get('/', IndexController::class)->name('home');
+Route::get('privacy', PrivacyController::class)->name('privacy');
+Route::get('imprint', ImprintController::class)->name('imprint');
+Route::get('faq', [FaqController::class, 'index'])->name('faq');
+Route::get('team', TeamController::class)->name('team');
+Route::get('about-us', AboutUsController::class)->name('about');
+Route::get('locales', ChangeLanguageController::class)->name('locales');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::feature(FeatureFlag::ClipSubmission)->group(function () {
@@ -88,33 +38,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/reports', [ReportController::class, 'store'])->name('reports.store');
     });
 });
-
-Route::get('/team', TeamController::class)->name('team');
-
-Route::get('/locales', static function (Request $request) {
-    $lang = $request->input('locale', 'en');
-
-    if (! array_key_exists($lang, Config::get('app.locales'))) {
-        if (! $request->expectsJson()) {
-            return redirect()->back()->withErrors([
-                'locale' => 'Invalid locale selected',
-            ]);
-        }
-
-        abort(422);
-    }
-
-    app()->setLocale($lang);
-    session()?->put('locale', $lang);
-
-    if ($request->expectsJson()) {
-        return new JsonResponse([
-            'message' => __('Ok!'),
-        ], 200);
-    }
-
-    return redirect()->back();
-})->name('locales');
 
 require __DIR__.'/dashboard.php';
 require __DIR__.'/settings.php';
