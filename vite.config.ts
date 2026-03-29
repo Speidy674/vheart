@@ -41,6 +41,10 @@ export default defineConfig({
                 'resources/js/static/app.ts',
                 'resources/js/static/alpine.ts',
             ],
+            assets: [
+                'resources/images/**',
+                'resources/fonts/**/*.(woff2|woff|ttf)',
+            ],
             ssr: 'resources/js/ssr.tsx',
             refresh: true,
         }),
