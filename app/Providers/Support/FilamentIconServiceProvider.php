@@ -8,6 +8,7 @@ use App\Enums\Filament\LucideIcon;
 use Filament\Actions\View\ActionsIconAlias;
 use Filament\Forms\View\FormsIconAlias;
 use Filament\Infolists\View\InfolistsIconAlias;
+use Filament\Notifications\View\NotificationsIconAlias;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureActionsIcons();
         $this->configureFormsIcons();
         $this->configureInfolistIcons();
+        $this->configureNotificationsIcons();
     }
 
     private function configureActionsIcons(): void
@@ -106,6 +108,18 @@ class FilamentIconServiceProvider extends ServiceProvider
         FilamentIcon::register([
             InfolistsIconAlias::COMPONENTS_ICON_ENTRY_FALSE => LucideIcon::X,
             InfolistsIconAlias::COMPONENTS_ICON_ENTRY_TRUE => LucideIcon::Check,
+        ]);
+    }
+
+    private function configureNotificationsIcons(): void
+    {
+        FilamentIcon::register([
+            NotificationsIconAlias::DATABASE_MODAL_EMPTY_STATE => LucideIcon::BellOff,
+            NotificationsIconAlias::NOTIFICATION_CLOSE_BUTTON => LucideIcon::X,
+            NotificationsIconAlias::NOTIFICATION_DANGER => LucideIcon::CircleX,
+            NotificationsIconAlias::NOTIFICATION_INFO => LucideIcon::Info,
+            NotificationsIconAlias::NOTIFICATION_SUCCESS => LucideIcon::CircleCheck,
+            NotificationsIconAlias::NOTIFICATION_WARNING => LucideIcon::CircleAlert,
         ]);
     }
 }
