@@ -7,6 +7,7 @@ namespace App\Providers\Support;
 use App\Enums\Filament\LucideIcon;
 use Filament\Actions\View\ActionsIconAlias;
 use Filament\Forms\View\FormsIconAlias;
+use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +21,7 @@ class FilamentIconServiceProvider extends ServiceProvider
 
         $this->configureActionsIcons();
         $this->configureFormsIcons();
+        $this->configureInfolistIcons();
     }
 
     private function configureActionsIcons(): void
@@ -96,6 +98,14 @@ class FilamentIconServiceProvider extends ServiceProvider
             FormsIconAlias::COMPONENTS_TEXT_INPUT_ACTIONS_SHOW_PASSWORD => LucideIcon::Eye,
             FormsIconAlias::COMPONENTS_TOGGLE_BUTTONS_BOOLEAN_FALSE => LucideIcon::X,
             FormsIconAlias::COMPONENTS_TOGGLE_BUTTONS_BOOLEAN_TRUE => LucideIcon::Check,
+        ]);
+    }
+
+    private function configureInfolistIcons(): void
+    {
+        FilamentIcon::register([
+            InfolistsIconAlias::COMPONENTS_ICON_ENTRY_FALSE => LucideIcon::X,
+            InfolistsIconAlias::COMPONENTS_ICON_ENTRY_TRUE => LucideIcon::Check,
         ]);
     }
 }
