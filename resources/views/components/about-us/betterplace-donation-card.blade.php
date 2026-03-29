@@ -1,48 +1,3 @@
-@props([
-    'eventId' => 55712,
-])
-
-@php
-    use App\Support\BetterplaceHelper;
-    use Illuminate\Support\Facades\Http;
-
-    $cacheTtl = 300;
-
-    try {
-        $eventData = Cache::get('betterplace_event_' . $eventId);
-        $donationsData = Cache::get('betterplace_donations_' . $eventId);
-
-        if ($eventData === null || $donationsData === null) {
-            $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . $eventId . '.json');
-            $donationsResponse = Http::get(
-                'https://api.betterplace.org/de/api_v4/fundraising_events/' . $eventId . '/opinions.json',
-            );
-
-            if ($eventResponse->successful() && $donationsResponse->successful()) {
-                $eventData = $eventResponse->json();
-                $donationsData = $donationsResponse->json();
-                
-                Cache::put('betterplace_event_' . $eventId, $eventData, $cacheTtl);
-                Cache::put('betterplace_donations_' . $eventId, $donationsData, $cacheTtl);
-                
-                $error = '';
-            } else {
-                $error = __('betterplace.error');
-                $eventData = null;
-                $donationsData = ['data' => []];
-            }
-        } else {
-            $error = '';
-        }
-
-        $donations = $donationsData['data'];
-    } catch (Exception $e) {
-        $error = __('betterplace.error');
-        $eventData = null;
-        $donations = [];
-    }
-@endphp
-
 <section class="w-full">
     <div class="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-12 mb-8">
         <x-ui.card
@@ -80,7 +35,7 @@
                             </div>
                             <div
                                 class="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-center text-3xl font-bold text-transparent sm:text-4xl md:text-5xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
-                                {{ BetterplaceHelper::formatCurrency(($eventData['donated_amount_in_cents'] ?? 0) / 100) }} €
+                                {{ Number::currency((float) ($eventData['donated_amount_in_cents'] ?? 0) / 100, 'EUR', 'de', 2) }}
                             </div>
                         </div>
                     </div>
@@ -138,26 +93,16 @@
                         <div class="custom-scrollbar h-full max-h-[30rem] overflow-y-auto pr-2 lg:max-h-none">
                             @foreach ($donations as $donation)
                                 @php
-                                    $amount =
-                                        ($donation['donated_amount_in_cents'] ?? ($donation['amount_in_cents'] ?? 0)) /
-                                        100;
-                                    $name =
-                                        BetterplaceHelper::pickFirstString(
-                                            $donation['author']['name'] ?? null,
-                                            $donation['donator_name'] ?? null,
-                                        ) ?: 
-                                        __('betterplace.anonymous');
-                                    $image = BetterplaceHelper::pickFirstString(
-                                        $donation['author']['picture']['links'][0]['href'] ?? null,
-                                        $donation['donator_picture'] ?? null,
-                                    );
-                                    $message = BetterplaceHelper::pickFirstString($donation['message'] ?? null);
+                                    $amount = ($donation['donated_amount_in_cents'] ?? $donation['amount_in_cents'] ?? 0) / 100;
+                                    $name = $donation['author']['name'] ?? $donation['donator_name'] ?? __('betterplace.anonymous');
+                                    $image = $donation['author']['picture']['links'][0]['href'] ?? $donation['donator_picture'] ?? null;
+                                    $message = $donation['message'] ?? '';
                                 @endphp
                                 <div class="border-b border-gray-300/80 py-4 last:border-b-0 dark:border-white/15">
                                     <div class="flex items-start gap-4">
                                         <div
                                             class="w-20 shrink-0 bg-gradient-to-r from-purple-700 to-cyan-700 bg-clip-text text-base font-bold text-transparent dark:from-purple-300 dark:to-cyan-300">
-                                            {{ BetterplaceHelper::formatCurrency($amount) }} €
+                                            {{ Number::currency($amount, 'EUR', 'de', 2) }}
                                         </div>
 
                                         <div class="shrink-0">
