@@ -10,8 +10,8 @@ import AsyncAlpine from 'async-alpine';
 import youtubeEmbed from '@/static/components/embeds/youtube-embed';
 import image from '@/static/components/image';
 import reportButton from '@/static/components/ui/report/button';
-import baseEmbed from './components/embeds/base-embed';
-import twitchEmbed from './components/embeds/twitch-embed';
+import baseEmbed from './static/components/embeds/base-embed';
+import twitchEmbed from './static/components/embeds/twitch-embed';
 
 document.addEventListener('alpine:init', () => {
     const Alpine = window.Alpine;
