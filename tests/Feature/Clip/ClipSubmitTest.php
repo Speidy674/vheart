@@ -20,11 +20,10 @@ beforeEach(function () {
         'name' => 'Submitter',
     ]);
 
-    $broadcasterUser = User::factory()
-        ->create([
-            'id' => 201000, // Default for dto
-            'name' => 'Broadcaster',
-        ]);
+    $broadcasterUser = User::factory()->create([
+        'id' => 201000, // Default for dto
+        'name' => 'Broadcaster',
+    ]);
 
     $this->broadcaster = Broadcaster::create([
         'id' => $broadcasterUser->id,
@@ -33,19 +32,12 @@ beforeEach(function () {
     ]);
 
     $this->broadcasterWithoutPermission = User::factory()
-        ->create([
-            'id' => 201001,
-            'name' => 'Disallowed',
-        ])->broadcaster()->create();
+        ->create(['id' => 201001, 'name' => 'Disallowed'])
+        ->broadcaster()
+        ->create();
 
-    $this->category = Category::factory()->create([
-        'title' => 'Good Category',
-        'id' => 1, // Default for dto
-    ]);
-    $this->bannedCategory = Category::factory()->isBanned()->create([
-        'title' => 'Bad Category',
-        'id' => 2,
-    ]);
+    $this->category = Category::factory()->create(['title' => 'Good Category', 'id' => 1]);
+    $this->bannedCategory = Category::factory()->isBanned()->create(['title' => 'Bad Category', 'id' => 2]);
 
     $this->tags = Tag::factory()->count(5)->create();
     Gate::define('submit', static fn () => true);
@@ -56,7 +48,7 @@ beforeEach(function () {
         'id' => $this->clipId,
         'url' => $this->clipUrl,
         'broadcasterId' => $this->broadcaster->id,
-        'game_id' => $this->category->id,
+        'gameId' => $this->category->id,
     ]);
 
     Http::fake();
@@ -100,7 +92,7 @@ describe('input validation', function () {
             ->with(
                 Mockery::on(fn ($arg) => $arg->id === $dto->id),
                 Mockery::on(fn ($arg) => $arg->id === $this->submitter->id),
-                Mockery::type('array')
+                Mockery::type('array'),
             );
 
         $this->actingAs($this->submitter);
@@ -142,11 +134,10 @@ describe('input validation', function () {
 
 describe('broadcaster requirements', function () {
     test('fails if the broadcaster is not registered on the site', function () {
-        $invalidDto = makeClipDto(['broadcaster_id' => 999999]);
+        $invalidDto = makeClipDto(['broadcasterId' => 999999]);
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $invalidDto->url, $invalidDto);
         assumeClipToBeRequested($mock, $invalidDto);
-        $mock->shouldNotReceive('get');
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -157,11 +148,10 @@ describe('broadcaster requirements', function () {
     });
 
     test('fails if the broadcaster gave no permission for clips', function () {
-        $disallowedDto = makeClipDto(['broadcaster_id' => $this->broadcasterWithoutPermission->id]);
+        $disallowedDto = makeClipDto(['broadcasterId' => $this->broadcasterWithoutPermission->id]);
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $disallowedDto->url, $disallowedDto);
         assumeClipToBeRequested($mock, $disallowedDto);
-        $mock->shouldNotReceive('get');
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -175,15 +165,12 @@ describe('broadcaster requirements', function () {
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $this->clipUrl, $this->clipDto);
         assumeClipToBeRequested($mock, $this->clipDto);
-        $mock->shouldNotReceive('get');
 
-        $this->broadcaster
-            ->filters()
-            ->create([
-                'filterable_type' => $this->submitter->getMorphClass(),
-                'filterable_id' => $this->submitter->id,
-                'state' => false,
-            ]);
+        $this->broadcaster->filters()->create([
+            'filterable_type' => $this->submitter->getMorphClass(),
+            'filterable_id' => $this->submitter->id,
+            'state' => false,
+        ]);
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -197,15 +184,12 @@ describe('broadcaster requirements', function () {
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $this->clipUrl, $this->clipDto);
         assumeClipToBeRequested($mock, $this->clipDto);
-        $mock->shouldNotReceive('get');
 
-        $this->broadcaster
-            ->filters()
-            ->create([
-                'filterable_type' => new Category()->getMorphClass(),
-                'filterable_id' => $this->category->id,
-                'state' => false,
-            ]);
+        $this->broadcaster->filters()->create([
+            'filterable_type' => new Category()->getMorphClass(),
+            'filterable_id' => $this->category->id,
+            'state' => false,
+        ]);
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -218,11 +202,10 @@ describe('broadcaster requirements', function () {
 
 describe('website requirements', function () {
     test('fails if the game category is site banned', function () {
-        $dto = makeClipDto(['game_id' => $this->bannedCategory->id]);
+        $dto = makeClipDto(['gameId' => $this->bannedCategory->id]);
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $dto->url, $dto);
         assumeClipToBeRequested($mock, $dto);
-        $mock->shouldNotReceive('get');
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -233,12 +216,9 @@ describe('website requirements', function () {
     });
 
     test('fails if clip is already known to us', function () {
-        $this->broadcaster->clips()
-            ->create(
-                $this->clipDto->toModel([
-                    'submitter_id' => $this->broadcasterWithoutPermission->id,
-                ])
-            );
+        $this->broadcaster->clips()->create(
+            $this->clipDto->toModel(['submitter_id' => $this->broadcasterWithoutPermission->id])
+        );
 
         $mock = mockTwitchService();
         assumeClipUrlToBeParsed($mock, $this->clipDto->url, $this->clipDto);
@@ -246,12 +226,7 @@ describe('website requirements', function () {
 
         $this->mock(ImportClipAction::class)
             ->shouldReceive('execute')
-            ->never()
-            ->with(
-                Mockery::on(fn (ClipDto $arg) => $arg->id === $this->clipDto->id),
-                Mockery::on(fn (User $arg) => $arg->id === $this->submitter->id),
-                Mockery::type('array')
-            );
+            ->never();
 
         $this->actingAs($this->submitter)
             ->post(route('submitclip.store'), [
@@ -263,8 +238,6 @@ describe('website requirements', function () {
 
     test('fails if clip does not exist on twitch', function () {
         $mock = mockTwitchService();
-        $mock->shouldReceive('onUserTokenRefresh')->andReturnSelf();
-        $mock->shouldReceive('asUser')->andReturnSelf();
         assumeClipUrlToBeParsed($mock, $this->clipUrl, $this->clipId);
         assumeClipToBeRequested($mock, $this->clipId);
 
@@ -288,7 +261,7 @@ test('should allow submission if everything is ok', function () {
         ->with(
             Mockery::on(fn ($arg) => $arg->id === $this->clipDto->id),
             Mockery::on(fn ($arg) => $arg->id === $this->submitter->id),
-            Mockery::type('array')
+            Mockery::type('array'),
         );
 
     $this->actingAs($this->submitter)
@@ -302,17 +275,12 @@ test('should allow submission if everything is ok', function () {
         ->assertSessionHas('submit_message', __('clips.flash.submitted'));
 });
 
-function mockTwitchService(?ClipDto $dto = null): MockInterface
+function mockTwitchService(): MockInterface
 {
     $mock = Mockery::mock(TwitchService::class);
-    $mock->shouldReceive('onUserTokenRefresh')->andReturnSelf();
     $mock->shouldReceive('asUser')->andReturnSelf();
-
-    if ($dto) {
-        $mock->shouldReceive('getClipByID')
-            ->with($dto->id)
-            ->andReturn($dto);
-    }
+    $mock->shouldReceive('asSessionUser')->andReturnSelf();
+    $mock->shouldReceive('asApp')->andReturnSelf();
 
     app()->instance(TwitchService::class, $mock);
 
@@ -324,7 +292,9 @@ function mockTwitchService(?ClipDto $dto = null): MockInterface
  */
 function assumeClipUrlToBeParsed(MockInterface $mock, ?string $inputUrl, ClipDto|string|null $dtoOrId): MockInterface
 {
-    $mock->shouldReceive('parseClipId')->with($inputUrl)->andReturn($dtoOrId instanceof ClipDto ? $dtoOrId->id : $dtoOrId);
+    $mock->shouldReceive('parseClipId')
+        ->with($inputUrl)
+        ->andReturn($dtoOrId instanceof ClipDto ? $dtoOrId->id : $dtoOrId);
 
     return $mock;
 }
@@ -334,7 +304,12 @@ function assumeClipUrlToBeParsed(MockInterface $mock, ?string $inputUrl, ClipDto
  */
 function assumeClipToBeRequested(MockInterface $mock, ClipDto|string|null $dtoOrId): MockInterface
 {
-    $mock->shouldReceive('getClipById')->with($dtoOrId instanceof ClipDto ? $dtoOrId->id : $dtoOrId)->andReturn($dtoOrId instanceof ClipDto ? $dtoOrId : null);
+    $id = $dtoOrId instanceof ClipDto ? $dtoOrId->id : $dtoOrId;
+    $dto = $dtoOrId instanceof ClipDto ? $dtoOrId : null;
+
+    $mock->shouldReceive('getClip')
+        ->with($id)
+        ->andReturn($dto);
 
     return $mock;
 }
@@ -344,20 +319,20 @@ function makeClipDto(array $attributes = []): ClipDto
     return new ClipDto(
         id: $attributes['id'] ?? 'AwesomeClip',
         url: $attributes['url'] ?? 'https://clips.twitch.tv/AwesomeClip',
-        embed_url: $attributes['embed_url'] ?? 'https://clips.twitch.tv/embed?clip=AwesomeClip',
-        broadcaster_id: $attributes['broadcaster_id'] ?? 201000,
-        broadcaster_name: $attributes['broadcaster_name'] ?? 'Broadcaster',
-        creator_id: $attributes['creator_id'] ?? 101000,
-        creator_name: $attributes['creator_name'] ?? 'Submitter',
-        video_id: $attributes['video_id'] ?? 123,
-        game_id: $attributes['game_id'] ?? 1,
+        embedUrl: $attributes['embedUrl'] ?? 'https://clips.twitch.tv/embed?clip=AwesomeClip',
+        broadcasterId: $attributes['broadcasterId'] ?? 201000,
+        broadcasterName: $attributes['broadcasterName'] ?? 'Broadcaster',
+        creatorId: $attributes['creatorId'] ?? 101000,
+        creatorName: $attributes['creatorName'] ?? 'Submitter',
+        videoId: $attributes['videoId'] ?? 123,
+        gameId: $attributes['gameId'] ?? 1,
         language: $attributes['language'] ?? 'en',
         title: $attributes['title'] ?? 'Cool Clip',
-        view_count: $attributes['view_count'] ?? 100,
-        created_at: $attributes['created_at'] ?? now()->subHour(),
-        thumbnail_url: $attributes['thumbnail_url'] ?? 'http://thumb.jpg',
+        viewCount: $attributes['viewCount'] ?? 100,
+        createdAt: $attributes['createdAt'] ?? now()->subHour(),
+        thumbnailUrl: $attributes['thumbnailUrl'] ?? 'http://thumb.jpg',
         duration: $attributes['duration'] ?? 30.0,
-        vod_offset: $attributes['vod_offset'] ?? 10,
-        is_featured: $attributes['is_featured'] ?? false
+        vodOffset: $attributes['vodOffset'] ?? 10,
+        isFeatured: $attributes['isFeatured'] ?? false,
     );
 }

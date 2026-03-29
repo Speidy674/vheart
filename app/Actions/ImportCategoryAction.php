@@ -16,7 +16,7 @@ class ImportCategoryAction
             'id' => $category->id,
         ], [
             'title' => $category->name,
-            'box_art' => $category->box_art_url,
+            'box_art' => $category->boxArtUrl,
         ]);
     }
 }

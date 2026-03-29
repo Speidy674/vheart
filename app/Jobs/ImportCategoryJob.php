@@ -9,7 +9,7 @@ use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Services\Twitch\Data\GameDto;
-use App\Services\Twitch\TwitchEndpoints;
+use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -53,8 +53,10 @@ class ImportCategoryJob implements ShouldBeUniqueUntilProcessing, ShouldQueue
             'total' => $missingCategories->count(),
         ]);
 
-        $missingCategories->chunk(100)->each(function ($chunk) use ($twitchService, $importCategoryAction): void {
-            $categories = $twitchService->get(TwitchEndpoints::GetGames, [
+        $appTwitch = $twitchService->asApp();
+
+        $missingCategories->chunk(100)->each(function ($chunk) use ($appTwitch, $importCategoryAction): void {
+            $categories = $appTwitch->collection(TwitchEndpoints::GetGames, [
                 'id' => $chunk->values()->toArray(),
             ]);
 

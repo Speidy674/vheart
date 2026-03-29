@@ -31,9 +31,9 @@ class ClipSubmitController extends Controller
         $clipInfo = $request->clipInfo;
 
         User::updateOrCreate([
-            'id' => $clipInfo->creator_id,
+            'id' => $clipInfo->creatorId,
         ], [
-            'name' => $clipInfo->creator_name,
+            'name' => $clipInfo->creatorName,
         ]);
 
         $importClipAction->execute(

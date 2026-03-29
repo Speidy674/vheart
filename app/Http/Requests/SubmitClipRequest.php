@@ -9,7 +9,6 @@ use App\Models\Category;
 use App\Models\Clip;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Exceptions\TwitchApiException;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,13 +31,9 @@ class SubmitClipRequest extends FormRequest
     public ?string $clipId = null;
 
     public function __construct(
-        protected TwitchService $twitchService
+        protected TwitchService $twitchService,
     ) {
         parent::__construct();
-
-        $this->twitchService->onUserTokenRefresh(function ($token): void {
-            session()?->put('twitch_access_token', $token);
-        });
     }
 
     public function authorize(): bool
@@ -79,8 +74,8 @@ class SubmitClipRequest extends FormRequest
                 }
 
                 $this->clipInfo = $this->twitchService
-                    ->asUser($this->user(), session()?->get('twitch_access_token'))
-                    ->getClipByID($this->clipId);
+                    ->asSessionUser()
+                    ->getClip($this->clipId);
 
                 if (! $this->clipInfo instanceof ClipDto) {
                     $validator->errors()->add('clip_url', __('clips.errors.clip_not_found'));
@@ -95,7 +90,7 @@ class SubmitClipRequest extends FormRequest
                     ]));
                 }
 
-                if ($this->clipInfo->created_at->add(config('vheart.clips.submission.maximum_age'))->isPast()) {
+                if ($this->clipInfo->createdAt->add(config('vheart.clips.submission.maximum_age'))->isPast()) {
                     $validator->errors()->add('clip_url', __('clips.errors.too_old', [
                         'age' => config('vheart.clips.submission.maximum_age')->forHumans(),
                     ]));
@@ -104,7 +99,7 @@ class SubmitClipRequest extends FormRequest
                 // Check if the Category is Site-Banned
                 $isCategoryBanned = Category::query()
                     ->where('is_banned', true)
-                    ->where('id', $this->clipInfo->game_id)
+                    ->where('id', $this->clipInfo->gameId)
                     ->exists();
 
                 if ($isCategoryBanned) {
@@ -115,10 +110,10 @@ class SubmitClipRequest extends FormRequest
 
                 // Broadcaster can always bypass their own rules
                 // We only bypass submit restrictions here though, consent is still required to see and use them
-                if ($this->clipInfo->broadcaster_id === $this->user()->id) {
-                    Log::debug('Bypassing Submission restrictions, Broadcaster is submitting their own Clip.', [
+                if ($this->clipInfo->broadcasterId === $this->user()->id) {
+                    Log::debug('Bypassing submission restrictions, broadcaster is submitting their own clip.', [
                         'clip_id' => $this->clipInfo->id,
-                        'broadcaster_id' => $this->clipInfo->broadcaster_id,
+                        'broadcaster_id' => $this->clipInfo->broadcasterId,
                     ]);
 
                     if (! Broadcaster::query()
@@ -133,7 +128,7 @@ class SubmitClipRequest extends FormRequest
                     // also fetch other data if possible to minimize queries in one go
                     // broadcasters should never have enough data to make this a memory issue
                     $this->broadcaster = Broadcaster::query()
-                        ->where('id', $this->clipInfo->broadcaster_id)
+                        ->where('id', $this->clipInfo->broadcasterId)
                         ->whereGaveConsent()
                         ->with(['filters'])
                         ->first();
@@ -185,7 +180,7 @@ class SubmitClipRequest extends FormRequest
     {
         $user = $this->user();
         $broadcaster = $this->broadcaster;
-        $weAreBroadcaster = $this->broadcaster->id === $user->id;
+        $weAreBroadcaster = $broadcaster->id === $user->id;
 
         // Check if user is blacklisted
         if (in_array($user->id, $this->disallowedUsers ?? [], true)) {
@@ -207,21 +202,16 @@ class SubmitClipRequest extends FormRequest
         // Check if Broadcaster has allowed moderators to submit
         if (! $isAllowed && $broadcaster->submit_mods_allowed) {
             $isAllowed = $this->twitchService
-                ->asUser($user, session()?->get('twitch_access_token'))
-                ->isModeratorFor($this->broadcaster);
+                ->asSessionUser()
+                ->isModeratorFor($broadcaster);
         }
 
         // Check if Broadcaster has allowed VIPs to submit
         if (! $isAllowed && $broadcaster->submit_vip_allowed) {
             try {
-                $vipInfos = $this->twitchService
-                    ->asUser($this->broadcaster)
-                    ->onUserTokenRefresh()
-                    ->get(TwitchEndpoints::GetVIPs, [
-                        'user_id' => $user->id,
-                        'broadcaster_id' => $this->broadcaster->id,
-                    ]);
-                $isAllowed = ! empty($vipInfos['data']);
+                $isAllowed = $this->twitchService
+                    ->asUser($broadcaster)
+                    ->isVip($user);
             } catch (TwitchApiException $th) {
                 report($th);
 
@@ -237,7 +227,7 @@ class SubmitClipRequest extends FormRequest
      */
     protected function passesCategoryChecks(): bool
     {
-        $gameId = $this->clipInfo->game_id;
+        $gameId = $this->clipInfo->gameId;
 
         // Check if Broadcaster has banned the Category
         if (in_array($gameId, $this->disallowedCategories ?? [], true)) {
@@ -245,7 +235,7 @@ class SubmitClipRequest extends FormRequest
         }
 
         // Check if Broadcaster has enabled Category Whitelist (>0 entries)
-        if ($this->allowedCategories && count($this->allowedCategories) > 0) {
+        if ($this->allowedCategories) {
             // If whitelist has entries, check if category is whitelisted
             return in_array($gameId, $this->allowedCategories, true);
         }

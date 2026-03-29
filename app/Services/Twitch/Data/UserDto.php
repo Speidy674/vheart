@@ -10,62 +10,50 @@ use App\Services\Twitch\Enums\TwitchUserType;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 
-/* https://dev.twitch.tv/docs/api/reference#get-users */
+/* @link https://dev.twitch.tv/docs/api/reference#get-users */
 readonly class UserDto implements TwitchDtoInterface
 {
     public function __construct(
         public string $id,
         public string $login,
-        public string $display_name,
+        public string $displayName, // display_name
         public TwitchUserType $type,
-        public TwitchBroadcasterType $broadcaster_type,
+        public TwitchBroadcasterType $broadcasterType, // broadcaster_type
         public string $description,
-        public string $profile_image_url,
-        public string $offline_image_url,
+        public string $profileImageUrl, // profile_image_url
+        public string $offlineImageUrl, // offline_image_url
         public ?string $email,
-        public CarbonInterface $created_at,
+        public CarbonInterface $createdAt, // created_at
     ) {}
 
     public static function from(array $data): static
     {
-        $created_at = Carbon::parse($data['created_at']);
-        $userType = TwitchUserType::tryFrom($data['type']) ?? TwitchUserType::User;
-        $broadcasterType = TwitchBroadcasterType::tryFrom($data['broadcaster_type']) ?? TwitchBroadcasterType::Normal;
-        $email = empty($data['email']) ? null : $data['email'];
-
-        return new self(
+        return new static(
             id: $data['id'],
             login: $data['login'],
-            display_name: $data['display_name'],
-            type: $userType,
-            broadcaster_type: $broadcasterType,
+            displayName: $data['display_name'],
+            type: TwitchUserType::tryFrom($data['type']) ?? TwitchUserType::User,
+            broadcasterType: TwitchBroadcasterType::tryFrom($data['broadcaster_type']) ?? TwitchBroadcasterType::Normal,
             description: $data['description'],
-            profile_image_url: $data['profile_image_url'],
-            offline_image_url: $data['offline_image_url'],
-            email: $email,
-            created_at: $created_at,
+            profileImageUrl: $data['profile_image_url'],
+            offlineImageUrl: $data['offline_image_url'],
+            email: empty($data['email']) ? null : $data['email'],
+            createdAt: Carbon::parse($data['created_at']),
         );
     }
 
-    /**
-     * @return array<int, UserDto>
-     */
-    public static function fromArray(array $dataList): array
+    /** @return list<static> */
+    public static function fromCollection(array $response): array
     {
-        $result = [];
-        foreach ($dataList['data'] as $clip) {
-            $result[] = self::from($clip);
-        }
-
-        return $result;
+        return array_map(static::from(...), $response['data']);
     }
 
-    public function toModel(?array $data = null): array
+    public function toModel(array $extra = []): array
     {
         return array_merge([
             'id' => $this->id,
-            'name' => $this->display_name,
-            'avatar_url' => $this->profile_image_url,
-        ], $data ?? []);
+            'name' => $this->displayName,
+            'avatar_url' => $this->profileImageUrl,
+        ], $extra);
     }
 }

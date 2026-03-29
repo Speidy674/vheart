@@ -8,7 +8,7 @@ use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
-use App\Services\Twitch\TwitchEndpoints;
+use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;

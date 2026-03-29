@@ -4,163 +4,242 @@ declare(strict_types=1);
 
 namespace App\Services\Twitch;
 
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
 use App\Services\Twitch\Data\ClipDto;
+use App\Services\Twitch\Data\SimpleUserDto;
+use App\Services\Twitch\Data\UserDto;
+use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\Exceptions\TwitchApiException;
+use Closure;
+use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Promises\LazyPromise;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Throwable;
+use LogicException;
 
+/**
+ * Twitch API service.
+ *
+ * @example
+ *   // App-level token
+ *   app(TwitchService::class)->asApp()->getClip('SomeClipId');
+ *
+ *   // User-token with token refresh callback
+ *   app(TwitchService::class)
+ *       ->asUser($user, onRefresh: fn($at, $rt) => $user->update([...]))
+ *       // if we have a valid session we can use this instead:
+ *       ->asSessionUser()
+ *       ->getModeratedChannels();
+ */
 class TwitchService
 {
-    protected string $baseUrl = 'https://api.twitch.tv/helix';
-
-    protected string $authUrl = 'https://id.twitch.tv/oauth2/token';
-
-    protected string $clientId;
-
-    protected string $clientSecret;
-
-    protected ?string $userAccessToken = null;
-
-    protected ?string $userRefreshToken = null;
-
-    protected mixed $tokenUpdateCallback = null;
-
-    protected bool $forceUserTokenRefresh = false;
-
-    protected ?User $user = null;
+    public function __construct(
+        protected TwitchClient $client,
+    ) {}
 
     /**
-     * @throws TwitchApiException
-     */
-    public function __construct()
-    {
-        $this->clientId = config('services.twitch.client_id', '');
-        $this->clientSecret = config('services.twitch.client_secret', '');
-
-        if (($this->clientId === '' || $this->clientId === '0' || ($this->clientSecret === '' || $this->clientSecret === '0')) && app()->environment(['local', 'staging', 'production'])) {
-            throw TwitchApiException::ApplicationClientIdOrSecretNotConfiguredError();
-        }
-    }
-
-    /**
-     * Uses specified user access tokens by specific user
+     * Authenticates as a User.
+     * This will automatically update a $user's twitch_refresh_token if $user is an instance of User and you did not provide a custom closure.
      *
-     * If not specified, it will request an access token at least once.
+     * @param ?string $refreshToken
+     *          The Twitch Refresh Token, if a User or Broadcaster was provided, will be set to the users refresh token if not given.
+     * @param ?string $accessToken
+     *          The Twitch Access Token, if null we will request a new one based on the $refreshToken
+     * @param (Closure(string $accessToken, string $refreshToken, int $expiresIn): void)|null $onRefresh
+     *          Called automatically when the user token is refreshed.
      */
-    public function asUser(?User $user = null, ?string $access_token = null): self
+    public function asUser(User|Broadcaster|int $user, ?string $refreshToken = null, ?string $accessToken = null, ?Closure $onRefresh = null): self
     {
-        $newSelf = clone $this;
-
-        if (! $user instanceof User) {
-            $newSelf->user = null;
-            $newSelf->userRefreshToken = null;
-            $newSelf->userAccessToken = null;
-            $newSelf->forceUserTokenRefresh = false;
-
-            return $newSelf;
+        if($user instanceof User && ! $refreshToken) {
+            $refreshToken = $user->twitch_refresh_token;
         }
 
-        $newSelf->user = $user;
-        $newSelf->userRefreshToken = $user->twitch_refresh_token;
-        $newSelf->userAccessToken = $access_token;
-
-        if ($access_token === null) {
-            $newSelf->forceUserTokenRefresh = true;
+        if($user instanceof Broadcaster && ! $refreshToken) {
+            $refreshToken = $user->user->twitch_refresh_token;
+            $user = $user->user;
         }
 
-        return $newSelf;
-    }
+        $context = TwitchUserContext::forUser($user instanceof Model ? $user->id : $user, $refreshToken, $accessToken);
 
-    /**
-     * Uses specified user access tokens from a specific user
-     *
-     * @link https://dev.twitch.tv/docs/authentication/#user-access-tokens User access tokens
-     */
-    public function withUserToken(string $accessToken, ?string $refreshToken = null): self
-    {
-        $this->userAccessToken = $accessToken;
-        $this->userRefreshToken = $refreshToken;
-
-        return $this;
-    }
-
-    /**
-     * Uses specified user access tokens
-     *
-     * @link https://dev.twitch.tv/docs/authentication/#user-access-tokens User access tokens
-     */
-    public function onUserTokenRefresh(?callable $onRefresh = null): self
-    {
-        $this->tokenUpdateCallback = $onRefresh;
-
-        return $this;
-    }
-
-    /**
-     * Get Prepared headers for accessing the Twitch Api.
-     *
-     * In case we really need it for requests outside this service for some reason
-     *
-     * @throws ConnectionException
-     *
-     * @link https://dev.twitch.tv/docs/authentication/#passing-the-access-token-to-the-api Passing the access token to the API
-     */
-    public function getHeaders(?string $token = null): array
-    {
-        return [
-            'Client-ID' => $this->clientId,
-            'Authorization' => 'Bearer '.(
-                $token
-                ?? $this->userAccessToken
-                ?? $this->getAppAccessToken()
-            ),
-            'Content-Type' => 'application/json',
-        ];
-    }
-
-    /**
-     * Returns the App Access token
-     *
-     * This will request a fresh access token for our application from twitch.
-     * We Cache the access token (encrypted) for its lifetime. Validity can only be checked when used.
-     *
-     * @throws ConnectionException|TwitchApiException
-     *
-     * @link https://dev.twitch.tv/docs/authentication/#app-access-tokens App access tokens
-     */
-    public function getAppAccessToken(): string
-    {
-        if (Cache::has('twitch_access_token')) {
-            try {
-                return Crypt::decryptString(Cache::get('twitch_access_token'));
-            } catch (Throwable) {
-            }
+        if ($onRefresh instanceof Closure) {
+            $context = $context->withOnRefresh($onRefresh);
+        } elseif($user instanceof User && $refreshToken) {
+            $context = $context->withOnRefresh(
+                static fn (string $at, string $refreshToken) => $user->update(['twitch_refresh_token' => $refreshToken])
+            );
         }
 
-        $response = Http::post($this->authUrl, [
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'grant_type' => 'client_credentials',
+        return clone($this, [
+            'client' => $this->client->asUser($context),
         ]);
+    }
 
-        if ($response->failed()) {
-            throw TwitchApiException::ApplicationAuthenticationError();
+    /**
+     * Helper for asUser to use the currently authenticated user.
+     */
+    public function asSessionUser(?Closure $onRefresh = null): self
+    {
+        $user = auth()->user();
+
+        if(! $user) {
+            throw new LogicException('Cannot use TwitchService->asSessionUser() outside of authenticated context.');
         }
 
-        $data = $response->json();
-        $token = $data['access_token'];
-        $expiresIn = $data['expires_in'];
+        return $this->asUser($user,
+            refreshToken: $user->twitch_refresh_token,
+            accessToken: session()?->get('twitch_access_token'),
+            onRefresh: $onRefresh ?? static function(string $accessToken, string $refreshToken) use ($user): void {
+                $user->update(['twitch_refresh_token' => $refreshToken]);
+                session()->set('twitch_access_token', $accessToken);
+            }
+        );
+    }
 
-        Cache::put('twitch_access_token', Crypt::encryptString($token), $expiresIn - 60);
+    /**
+     * Authenticates as the Application
+     */
+    public function asApp(): self
+    {
+        return clone($this, [
+            'client' => $this->client->asApp(),
+        ]);
+    }
 
-        return $token;
+    /**
+     * @link https://dev.twitch.tv/docs/api/reference#get-users
+     *
+     * @return list<UserDto>
+     * @throws TwitchApiException|ConnectionException
+     */
+    public function getUsers(array $params = []): array
+    {
+        return $this->collection(TwitchEndpoints::GetUsers, $params);
+    }
+
+    /**
+     * Returns a single clip by its Twitch Clip ID, or null if it does not exist.
+     *
+     * @link https://dev.twitch.tv/docs/api/reference#get-clips
+     *
+     * @return ?ClipDto
+     * @throws ConnectionException
+     */
+    public function getClip(string $clipId): ?TwitchDtoInterface
+    {
+        try {
+            return array_first($this->collection(TwitchEndpoints::GetClips, ['id' => $clipId]));
+        } catch (TwitchApiException) {
+            return null;
+        }
+    }
+
+    /**
+     * @link https://dev.twitch.tv/docs/api/reference#get-clips
+     *
+     * @return list<ClipDto>
+     * @throws TwitchApiException|ConnectionException
+     */
+    public function getClips(array $params = []): array
+    {
+        return $this->collection(TwitchEndpoints::GetClips, $params);
+    }
+
+    /**
+     * Extracts a Twitch Clip ID from a URL or raw ID string.
+     *
+     * Returns null for non-clip URLs or empty input.
+     *
+     * Accepts:
+     *   - https://clips.twitch.tv/ClipId-abc123
+     *   - https://www.twitch.tv/channel/clip/ClipId-abc123
+     *   - https://clips.twitch.tv/embed?clip=ClipId-abc123&parent=x
+     *   - ClipId-abc123  (raw ID)
+     */
+    public function parseClipId(string $input): ?string
+    {
+        if (preg_match('/([A-Z][a-zA-Z0-9]*-[a-zA-Z0-9_-]+)/', $input, $matches)) {
+            return $matches[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns true if the current user is a moderator for the given broadcaster.
+     *
+     * **Must** be called with the User in `asUser()` because of API limitations.
+     *
+     * @link https://dev.twitch.tv/docs/api/reference#get-moderated-channels Get Moderated Channels Documentation
+     */
+    public function isModeratorFor(User|Broadcaster $broadcaster): bool
+    {
+        return in_array($broadcaster->id, $this->getModeratedChannels(), true);
+    }
+
+    /**
+     * Returns the list of channels the current user has moderator rights for.
+     *
+     * **Cached per user for 5 minutes.**
+     *
+     * @return list<positive-int>
+     * @link https://dev.twitch.tv/docs/api/reference#get-moderated-channels Get Moderated Channels Documentation
+     */
+    public function getModeratedChannels(): array
+    {
+        $userId = $this->requireUserContext()->userId;
+
+        return Cache::remember(
+            "twitch:moderated_channels:{$userId}",
+            now()->addMinutes(5),
+            fn (): array => array_map(
+                static fn(SimpleUserDto $simpleUserDto): int => $simpleUserDto->id,
+                $this->collection(TwitchEndpoints::GetModeratedChannels, [
+                    'user_id' => $userId,
+                    'first'   => 100,
+                ])
+            ),
+        );
+    }
+
+    /**
+     * Returns true if $user is a VIP in the broadcaster's channel.
+     *
+     * **Must** be called with the Broadcaster in `asUser()` because of API limitations.
+     *
+     * **Cached per broadcaster <-> user for 1 minute.**
+     *
+     * @link https://dev.twitch.tv/docs/api/reference#get-vips
+     */
+    public function isVip(User|Broadcaster $user): bool
+    {
+        $broadcasterId = $this->requireUserContext()->userId;
+        $userId = $user->id;
+
+        return Cache::remember(
+            "twitch:vip:{$broadcasterId}:{$userId}",
+            now()->addMinute(),
+            fn (): bool => count($this->collection(TwitchEndpoints::GetVIPs, [
+                'broadcaster_id' => $broadcasterId,
+                'user_id'        => $userId,
+            ])) > 0
+        );
+    }
+
+    /**
+     * GET From Twitch and convert the response to a DTO
+     *
+     * @template T of TwitchDtoInterface
+     * @param class-string<T> $dtoClass
+     * @return TwitchDtoInterface<T>
+     * @throws ConnectionException|TwitchApiException
+     */
+    public function getAs(string $dtoClass, TwitchEndpoints|string $endpoint, array $params = []): TwitchDtoInterface
+    {
+        return $dtoClass::from($this->get($endpoint, $params)->json());
     }
 
     /**
@@ -168,9 +247,22 @@ class TwitchService
      *
      * @throws ConnectionException|TwitchApiException
      */
-    public function get(string|TwitchEndpoints $endpoint, array $params = []): array|TwitchDtoInterface
+    public function get(TwitchEndpoints|string $endpoint, array $params = []): PromiseInterface|LazyPromise|Response
     {
-        return $this->request('GET', $endpoint, $params);
+        return $this->client->get($endpoint instanceof TwitchEndpoints ? $endpoint->value : $endpoint, $params);
+    }
+
+    /**
+     * POST to Twitch and convert the response to a DTO
+     *
+     * @template T of TwitchDtoInterface
+     * @param class-string<T> $dtoClass
+     * @return TwitchDtoInterface<T>
+     * @throws ConnectionException|TwitchApiException
+     */
+    public function postAs(string $dtoClass, TwitchEndpoints|string $endpoint, array $data): TwitchDtoInterface
+    {
+        return $dtoClass::from($this->post($endpoint, $data)->json());
     }
 
     /**
@@ -178,155 +270,38 @@ class TwitchService
      *
      * @throws ConnectionException|TwitchApiException
      */
-    public function post(string|TwitchEndpoints $endpoint, array $data = []): array|TwitchDtoInterface
+    public function post(TwitchEndpoints|string $endpoint, array $data): PromiseInterface|LazyPromise|Response
     {
-        return $this->request('POST', $endpoint, $data);
+        return $this->client->post($endpoint instanceof TwitchEndpoints ? $endpoint->value : $endpoint, $data);
     }
 
     /**
-     * Returns true if the given user is moderator for the given broadcaster.
+     * Fetches a collection endpoint and hydrates the response through its DTO.
      *
-     * This will always return false if no user was given.
+     * @return list<TwitchDtoInterface>
+     * @throws TwitchApiException|ConnectionException
      */
-    public function isModeratorFor(?User $broadCaster = null): bool
+    public function collection(TwitchEndpoints $endpoint, array $params = []): array
     {
-        if (! $this->user || ! $broadCaster) {
-            return false;
-        }
+        $dtoClass = $endpoint->dto()
+            ?? throw new LogicException("No DTO registered for [{$endpoint->value}].");
 
-        return in_array($broadCaster->id, array_column($this->getModeratedChannels(), 'broadcaster_id'), false);
+        return $dtoClass::fromCollection($this->client->get($endpoint->value, $params)->json());
     }
 
     /**
-     * Returns the list of Channels the current user has moderator permissions for.
-     *
-     * @return array<int, int>
+     * Fetches an endpoint and returns the raw response data.
+     * @throws TwitchApiException|ConnectionException
      */
-    public function getModeratedChannels(): array
+    public function rawData(TwitchEndpoints $endpoint, array $params = []): array
     {
-        if (! $this->user instanceof User) {
-            return [];
-        }
-
-        return Cache::remember(sha1('twitch:get:'.TwitchEndpoints::GetModeratedChannels->value.':'.$this->user->id), 300, fn () => $this->get(TwitchEndpoints::GetModeratedChannels, ['user_id' => $this->user->id, 'first' => 100])['data']);
+        return $this->client->get($endpoint->value, $params)->json() ?? [];
     }
 
-    /**
-     * Returns the Clip for this Twitch Clip id if it exists
-     */
-    public function getClipByID(?string $clipId): ?ClipDto
+    /** @throws LogicException */
+    private function requireUserContext(): TwitchUserContext
     {
-        try {
-            return array_first($this->get(TwitchEndpoints::GetClips, ['id' => $clipId]) ?? []);
-        } catch (Throwable) {
-            return null;
-        }
-    }
-
-    /**
-     * Parses the Clip ID from a given Url
-     */
-    public function parseClipId(string $clipUrl): ?string
-    {
-        if (preg_match('/([A-Z][a-zA-Z0-9]*-[a-zA-Z0-9_-]+)/', $clipUrl, $m)) {
-            return $m[0];
-        }
-
-        return null;
-    }
-
-    /**
-     * @throws ConnectionException|TwitchApiException
-     */
-    protected function request(
-        string $method,
-        string|TwitchEndpoints $endpoint,
-        array $params = [],
-        bool $allowRetry = true
-    ): array|TwitchDtoInterface {
-        if ($this->forceUserTokenRefresh) {
-            $this->tokenRefresh();
-        }
-
-        $dataTransferObject = null;
-
-        if ($endpoint instanceof TwitchEndpoints) {
-            $dataTransferObject = $endpoint->getDataTransferObject();
-        } else {
-            $dataTransferObject = TwitchEndpoints::tryFrom($endpoint)?->getDataTransferObject();
-        }
-
-        if (! is_string($endpoint)) {
-            $endpoint = $endpoint->value;
-        }
-
-        Log::debug("[Twitch Service] {$method} {$endpoint}",
-            ['isUserToken' => (bool) $this->userAccessToken, 'params' => $params]);
-
-        $client = Http::withHeaders($this->getHeaders());
-
-        $url = $this->baseUrl.'/'.mb_ltrim($endpoint, '/');
-
-        $response = mb_strtoupper($method) === 'GET' ? $client->get($url, $params) : $client->post($url, $params);
-
-        if ($allowRetry && $response->status() === 401 && $this->tokenRefresh()) {
-            return $this->request($method, $endpoint, $params, false);
-        }
-
-        if ($response->failed()) {
-            throw TwitchApiException::GenericApiResponseError($response);
-        }
-
-        if ($dataTransferObject) {
-            return $dataTransferObject::fromArray($response->json());
-        }
-
-        return $response->json();
-    }
-
-    /**
-     * @throws ConnectionException
-     */
-    protected function tokenRefresh(): bool
-    {
-        if ($this->userAccessToken || $this->forceUserTokenRefresh) {
-            if (! $this->userRefreshToken) {
-                return false;
-            }
-
-            $response = Http::post($this->authUrl, [
-                'grant_type' => 'refresh_token',
-                'refresh_token' => $this->userRefreshToken,
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $this->userAccessToken = $data['access_token'];
-                $this->userRefreshToken = $data['refresh_token'] ?? $this->userRefreshToken;
-                $expiresIn = $data['expires_in'] ?? 3600;
-
-                if (is_callable($this->tokenUpdateCallback)) {
-                    // notify caller about that one
-                    call_user_func($this->tokenUpdateCallback, $this->userAccessToken, $this->userRefreshToken,
-                        $expiresIn);
-                }
-
-                return true;
-            }
-
-            Log::error('Failed to refresh user token', [
-                'response' => $response->status(),
-                'body' => Str::limit($response->body(), 255),
-            ]);
-
-            return false;
-        }
-
-        // We forget the cache key so the next getAccessToken() call fetches a fresh one.
-        Cache::forget('twitch_access_token');
-
-        return true;
+        return $this->client->userContext()
+            ?? throw new LogicException('Call asUser() before accessing user-scoped Twitch endpoints.');
     }
 }

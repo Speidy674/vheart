@@ -2,11 +2,20 @@
 
 declare(strict_types=1);
 
+use App\Providers\AppServiceProvider;
+use App\Providers\CookiesServiceProvider;
+use App\Providers\Filament\AdminPanelProvider;
+use App\Providers\Filament\DashboardPanelProvider;
+use App\Providers\Support\FeatureFlagServiceProvider;
+use App\Providers\TwitchServiceProvider;
+use SocialiteProviders\Manager\ServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\Support\FeatureFlagServiceProvider::class,
-    App\Providers\CookiesServiceProvider::class,
-    App\Providers\Filament\AdminPanelProvider::class,
-    App\Providers\Filament\DashboardPanelProvider::class,
-    SocialiteProviders\Manager\ServiceProvider::class,
+    AppServiceProvider::class,
+    FeatureFlagServiceProvider::class,
+    CookiesServiceProvider::class,
+    AdminPanelProvider::class,
+    DashboardPanelProvider::class,
+    ServiceProvider::class,
+    TwitchServiceProvider::class,
 ];

@@ -6,9 +6,10 @@ namespace App\Services\Twitch\Contracts;
 
 interface TwitchDtoInterface
 {
-    public static function from(array $data);
+    public static function from(array $data): static;
 
-    public static function fromArray(array $dataList);
+    /** @return list<static> */
+    public static function fromCollection(array $response): array;
 
-    public function toModel(?array $data);
+    public function toModel(array $extra = []): array;
 }

@@ -14,8 +14,8 @@ use App\Models\Clip;
 use App\Models\Clip\Tag;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
+use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\Exceptions\TwitchApiException;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use App\Support\FeatureFlag\Feature;
 use Carbon\CarbonInterval;
@@ -121,8 +121,8 @@ class SubmitClipAction extends Action
 
                     $user = auth()->user();
                     $clipInfo = $twitchService
-                        ->asUser($user, session()?->get('twitch_access_token'))
-                        ->getClipByID($clipId);
+                        ->asSessionUser()
+                        ->getClip($clipId);
 
                     if (! $clipInfo instanceof ClipDto) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
@@ -267,7 +267,7 @@ class SubmitClipAction extends Action
 
         if (! $isAllowed && $broadcaster->submit_mods_allowed) {
             $isAllowed = $twitchService
-                ->asUser($user, session()?->get('twitch_access_token'))
+                ->asSessionUser()
                 ->isModeratorFor($broadcaster->user);
         }
 
@@ -275,7 +275,6 @@ class SubmitClipAction extends Action
             try {
                 $vipInfos = $twitchService
                     ->asUser($broadcaster->user)
-                    ->onUserTokenRefresh()
                     ->get(TwitchEndpoints::GetVIPs, [
                         'user_id' => $user->id,
                         'broadcaster_id' => $broadcaster->id,

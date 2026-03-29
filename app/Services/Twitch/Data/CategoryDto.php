@@ -6,42 +6,36 @@ namespace App\Services\Twitch\Data;
 
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
 
+/* @link https://dev.twitch.tv/docs/api/reference#search-categories */
 readonly class CategoryDto implements TwitchDtoInterface
 {
     public function __construct(
         public int $id,
         public string $name,
-        public string $box_art_url
+        public string $boxArtUrl, // box_art_url
     ) {}
 
     public static function from(array $data): static
     {
         return new static(
-            (int) $data['id'],
-            $data['name'],
-            $data['box_art_url'],
+            id: (int) $data['id'],
+            name: $data['name'],
+            boxArtUrl: $data['box_art_url'],
         );
     }
 
-    /**
-     * @return array<int, CategoryDto>
-     */
-    public static function fromArray(array $dataList): array
+    /** @return list<static> */
+    public static function fromCollection(array $response): array
     {
-        $result = [];
-        foreach ($dataList['data'] as $clip) {
-            $result[] = self::from($clip);
-        }
-
-        return $result;
+        return array_map(static::from(...), $response['data']);
     }
 
-    public function toModel(?array $data = null): array
+    public function toModel(array $extra = []): array
     {
         return array_merge([
             'id' => $this->id,
             'title' => $this->name,
-            'box_art' => $this->box_art_url,
-        ], $data ?? []);
+            'box_art' => $this->boxArtUrl,
+        ], $extra);
     }
 }

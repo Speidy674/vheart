@@ -7,7 +7,6 @@ namespace Database\Seeders;
 use App\Casts\TwitchAvatarCast;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
-use App\Services\Twitch\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Database\Seeder;
 
@@ -117,14 +116,13 @@ class TeamSeeder extends Seeder
 
         $this->command->info("Fetching total {$allUserIds->count()} users...");
 
-        /** @var UserDto[] $userDtos */
-        $userDtos = $twitchService->get(TwitchEndpoints::GetUsers, ['id' => $allUserIds->toArray()]);
+        $userDtos = $twitchService->asApp()->getUsers(['id' => $allUserIds->toArray()]);
 
         $usersData = collect($userDtos)->map(fn (UserDto $userDto): array => [
             'id' => $userDto->id,
-            'name' => $userDto->display_name,
-            'avatar_url' => TwitchAvatarCast::encode($userDto->profile_image_url),
-            'created_at' => $userDto->created_at,
+            'name' => $userDto->displayName,
+            'avatar_url' => TwitchAvatarCast::encode($userDto->profileImageUrl),
+            'created_at' => $userDto->createdAt,
             'updated_at' => now(),
         ])->toArray();
 
