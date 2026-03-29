@@ -27,9 +27,4 @@ export default defineConfig({
     build: {
         target: 'baseline-widely-available',
     },
-    oxc: {
-        jsx: {
-            runtime: 'automatic',
-        },
-    },
 });
