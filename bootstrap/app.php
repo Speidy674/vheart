@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Http\Middleware\AssignRequestId;
 use App\Http\Middleware\FeatureFlagGuard;
 use App\Http\Middleware\HandleAppearance;
-use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\StagingGateMiddleware;
 use App\Http\Middleware\ValidateSecFetchHeaders;
@@ -37,7 +36,6 @@ return Application::configure(basePath: dirname(__DIR__))
             append: [
                 ValidateSecFetchHeaders::class,
                 HandleAppearance::class,
-                HandleInertiaRequests::class,
                 AddLinkHeadersForPreloadedAssets::class,
             ], prepend: [
                 StagingGateMiddleware::class,
