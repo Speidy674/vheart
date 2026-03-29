@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
-    public function index(Request $request): View
+    public function __invoke(Request $request): View
     {
         $questions = FaqEntry::query()
             ->when($request->filled('search'), function (Builder $query) use ($request): void {

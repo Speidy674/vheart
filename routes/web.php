@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', IndexController::class)->name('home');
 Route::get('privacy', PrivacyController::class)->name('privacy');
 Route::get('imprint', ImprintController::class)->name('imprint');
-Route::get('faq', [FaqController::class, 'index'])->name('faq');
+Route::get('faq', FaqController::class)->name('faq');
 Route::get('team', TeamController::class)->name('team');
 Route::get('about-us', AboutUsController::class)->name('about');
 Route::get('locales', ChangeLanguageController::class)->name('locales');
