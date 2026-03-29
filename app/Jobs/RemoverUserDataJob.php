@@ -42,7 +42,7 @@ class RemoverUserDataJob implements ShouldQueue
         }
 
         if ($broadcaster = $user->broadcaster) {
-            DB::transaction(static function () use ($broadcaster) {
+            DB::transaction(static function () use ($broadcaster): void {
                 $broadcaster->members()->delete();
                 $broadcaster->filters()->delete();
 
