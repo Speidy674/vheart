@@ -42,7 +42,8 @@ return new class extends Migration
             $table->string('checksum', 73);
         });
 
-        DB::statement('
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement('
             CREATE OR REPLACE FUNCTION prevent_consent_log_mutation()
             RETURNS trigger AS $$
             BEGIN
@@ -51,11 +52,12 @@ return new class extends Migration
             $$ LANGUAGE plpgsql
         ');
 
-        DB::statement('
+            DB::statement('
             CREATE TRIGGER consent_logs_immutable
             BEFORE UPDATE OR DELETE ON broadcaster_consent_logs
             FOR EACH ROW EXECUTE FUNCTION prevent_consent_log_mutation()
         ');
+        }
 
         // BroadcasterTeamMember
         Schema::create('broadcaster_team_members', function (Blueprint $table): void {
