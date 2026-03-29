@@ -14,7 +14,7 @@ class ChangeLanguageController extends Controller
     {
         $lang = $request->input('locale', 'en');
 
-        if (! array_key_exists($lang, Config::get('app.locales'))) {
+        if (! array_key_exists((string) $lang, Config::get('app.locales'))) {
             if (! $request->expectsJson()) {
                 return redirect()->back()->withErrors([
                     'locale' => 'Invalid locale selected',

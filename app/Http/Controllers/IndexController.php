@@ -7,11 +7,14 @@ namespace App\Http\Controllers;
 use App\Enums\FeatureFlag;
 use App\Models\Clip;
 use App\Support\FeatureFlag\Feature;
+use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Routing\ResponseFactory;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): ResponseFactory|View
     {
         if (Feature::isActive(FeatureFlag::AboutUsAsIndex)) {
             return view('about-us');
@@ -19,7 +22,7 @@ class IndexController extends Controller
 
         $bestRated = Clip::query()
             ->where('created_at', '>', now()->subDays(30))
-            ->whereHas('votes', fn ($q) => $q->where('voted', true))
+            ->whereHas('votes', fn (Builder $q) => $q->where('voted', true))
             ->with('tags')
             ->withAbsoluteVoteCount()
             ->orderByDesc('absolute_votes')
