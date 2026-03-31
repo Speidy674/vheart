@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('avatar_url')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->boolean('clip_permission')->default(false);
             $table->text('twitch_refresh_token')->nullable();
 
             // Filament 2FA
