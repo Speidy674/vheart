@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('clips', function (Blueprint $table): void {
             $table->id();
-            $table->string('twitch_id')->index();
+            $table->string('twitch_id')->unique();
             $table->string('title');
             $table->string('thumbnail_url')->nullable();
             $table->unsignedBigInteger('broadcaster_id')->index();
