@@ -53,7 +53,7 @@ class ManageConsent extends Page
         $this->form->fill(
             collect(BroadcasterConsent::cases())
                 ->mapWithKeys(fn (BroadcasterConsent $case): array => [
-                    "consent_{$case->value}" => $this->getRecord()->consent->contains(fn (BroadcasterConsent $c): bool => $c === $case),
+                    "consent_{$case->value}" => $this->getRecord()->consent?->contains(fn (BroadcasterConsent $c): bool => $c === $case) ?? false,
                 ])
                 ->all()
         );

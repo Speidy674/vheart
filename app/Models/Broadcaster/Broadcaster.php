@@ -149,6 +149,14 @@ class Broadcaster extends Model implements HasAvatar
     }
 
     #[Scope]
+    protected function whereOnboarded(Builder $query): Builder
+    {
+        return $query
+            ->whereNotNull('onboarded_at')
+            ->wherePast('onboarded_at');
+    }
+
+    #[Scope]
     protected function whereGaveNoConsent(Builder $query): Builder
     {
         if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
