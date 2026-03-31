@@ -377,7 +377,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'twitch_refresh_token' => 'encrypted',
-            'rules' => 'array',
         ];
     }
 }
