@@ -72,6 +72,11 @@ class ClipPolicy
         return empty($user->deleted_at);
     }
 
+    public function feedback(User $user, Clip $clip): bool
+    {
+        return $user->can(Permission::CanSubmitClipFeedback);
+    }
+  
     public function flagAny(User $user, ?Broadcaster $broadcaster = null): bool
     {
         if ($user->id === $broadcaster?->id) {

@@ -74,6 +74,14 @@ return [
             'approved' => 'Approved',
             'blocked' => 'Blocked',
         ],
+        'clip-feedback-option' => [
+            'audio-too-quiet' => 'Audio too quiet',
+            'audio-too-loud' => 'Audio too loud',
+            'bad-audio-quality' => 'Bad Audio Quality',
+            'bad-video-quality' => 'Bad Video Quality',
+            'content-unavailable' => 'Content is not available anymore',
+            'other' => 'Other',
+        ],
     ],
     // Untouched
 

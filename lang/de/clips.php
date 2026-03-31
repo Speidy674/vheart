@@ -67,6 +67,17 @@ return [
         ],
     ],
 
+    'enums' => [
+        'clip-feedback-option' => [
+            'audio-too-quiet' => 'Ton zu leise',
+            'audio-too-loud' => 'Ton zu laut',
+            'bad-audio-quality' => 'Schlechte Audio-Qualität',
+            'bad-video-quality' => 'Schlechte Video-Qualität',
+            'content-unavailable' => 'Inhalt nicht mehr verfügbar',
+            'other' => 'Anderes',
+        ],
+    ],
+
     // Untouched
 
     'recent' => [

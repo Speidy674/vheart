@@ -125,6 +125,9 @@ enum Permission: string implements HasLabel
     #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
     case BypassBannedCategoryCheck = 'as_bypass_banned_category';
 
+    #[PermissionGroupAttribute(PermissionGroupEnum::ClipManagement)]
+    case CanSubmitClipFeedback = 'can_submit_clip_feedback';
+  
     #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
     case CanFlagClips = 'can_flag_clips';
 

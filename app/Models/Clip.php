@@ -38,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\HasComments;
@@ -49,7 +50,7 @@ use Kirschbaum\Commentions\HasComments;
 class Clip extends Model implements Commentable, ExternalProxyable
 {
     /** @use HasFactory<ClipFactory> */
-    use Auditable, HasComments, HasExternalProxy, HasFactory, Reportable;
+    use Auditable, HasComments, HasExternalProxy, HasFactory, Reportable, SoftDeletes;
 
     public static function getProxyIdentifierColumn(): string
     {
