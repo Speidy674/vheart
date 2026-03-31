@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Operation;
 use Illuminate\Support\Collection;
 
 class UserForm
@@ -59,7 +60,7 @@ class UserForm
 
                 Section::make('Overview')
                     ->icon(LucideIcon::ShieldCheck)
-                    ->visibleOn('view')
+                    ->visibleOn(Operation::View)
                     ->schema([
                         Grid::make(1)
                             ->schema([
