@@ -6,6 +6,7 @@ namespace App\Filament\Widgets;
 
 use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -22,7 +23,7 @@ class DashboardUsersOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         $totalUsers = User::count();
-        $totalBroadcasters = User::where('clip_permission', true)->count();
+        $totalBroadcasters = Broadcaster::query()->whereGaveConsent()->count();
 
         return [
             Stat::make('Total Users', number_format($totalUsers))
