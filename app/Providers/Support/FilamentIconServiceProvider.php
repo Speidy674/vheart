@@ -14,6 +14,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\View\SupportIconAlias;
 use Filament\Tables\View\TablesIconAlias;
 use Filament\View\PanelsIconAlias;
+use Filament\Widgets\View\WidgetsIconAlias;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentIconServiceProvider extends ServiceProvider
@@ -32,6 +33,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureSchemaIcons();
         $this->configureTablesIcons();
         $this->configureSupportIcons();
+        $this->configureWidgetsIcons();
     }
 
     private function configureActionsIcons(): void
@@ -227,6 +229,13 @@ class FilamentIconServiceProvider extends ServiceProvider
             SupportIconAlias::PAGINATION_PREVIOUS_BUTTON => LucideIcon::ChevronLeft,
             SupportIconAlias::PAGINATION_PREVIOUS_BUTTON_RTL => LucideIcon::ChevronRight,
             SupportIconAlias::SECTION_COLLAPSE_BUTTON => LucideIcon::ChevronUp,
+        ]);
+    }
+
+    private function configureWidgetsIcons(): void
+    {
+        FilamentIcon::register([
+            WidgetsIconAlias::CHART_WIDGET_FILTER => LucideIcon::Funnel,
         ]);
     }
 }
