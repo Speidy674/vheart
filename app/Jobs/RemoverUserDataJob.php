@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Broadcaster\BroadcasterConsentLog;
+use App\Models\BroadcasterFilter;
 use App\Models\Clip\Compilation;
+use App\Models\Clip\CompilationClip;
+use App\Models\Report;
 use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
+use Kirschbaum\Commentions\CommentReaction;
+use Kirschbaum\Commentions\CommentSubscription;
 
 class RemoverUserDataJob implements ShouldQueue
 {
@@ -62,6 +68,10 @@ class RemoverUserDataJob implements ShouldQueue
 
         $user->broadcasterTeamMembers()->delete();
         $user->notifications()->delete();
+        CommentSubscription::query()
+            ->where('subscriber_id', $this->userId)
+            ->where('subscribable_type', (new User)->getMorphClass())
+            ->delete();
 
         $user->updateQuietly([
             'email' => null,
@@ -73,12 +83,32 @@ class RemoverUserDataJob implements ShouldQueue
             'twitch_refresh_token' => null,
         ]);
 
-        $hasReferences = $user->votes()->exists()
-            || $user->reports()->exists()
+        $hasReferences =
+            $user->votes()->exists()
             || $user->comments()->exists()
-            || Compilation::where('user_id', $user->id)->exists();
+            || Compilation::query()
+                ->where('user_id', $user->id)
+                ->exists()
+            || CompilationClip::query()
+                ->where('added_by', $user->id)
+                ->orWhere('claimed_by', $user->id)
+                ->exists()
+            || BroadcasterFilter::query()
+                ->where('filterable_id', $user->id)
+                ->where('filterable_type', (new User)->getMorphClass())
+                ->exists()
+            || Report::query()
+                ->where(fn (Builder $builder) => $builder->where('reportable_id', $user->id)->where('reportable_type', (new User)->getMorphClass()))
+                ->orWhere('user_id', $user->id)
+                ->orWhere('claimed_by', $user->id)
+                ->exists();
 
         if (! $hasReferences) {
+            CommentReaction::query()
+                ->where('reactor_id', $this->userId)
+                ->where('reactor_type', (new User)->getMorphClass())
+                ->delete();
+
             // If there are no foreign key references we can safely force delete the user
             $user->forceDelete();
         }
