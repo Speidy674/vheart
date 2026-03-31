@@ -11,6 +11,7 @@ use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Notifications\View\NotificationsIconAlias;
 use Filament\Schemas\View\SchemaIconAlias;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\View\TablesIconAlias;
 use Filament\View\PanelsIconAlias;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,6 +29,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureNotificationsIcons();
         $this->configurePanelsIcons();
         $this->configureSchemaIcons();
+        $this->configureTablesIcons();
     }
 
     private function configureActionsIcons(): void
@@ -175,6 +177,35 @@ class FilamentIconServiceProvider extends ServiceProvider
             SchemaIconAlias::COMPONENTS_TABS_DROPDOWN_TRIGGER_BUTTON => LucideIcon::ChevronDown,
             SchemaIconAlias::COMPONENTS_TABS_MORE_TABS_BUTTON => LucideIcon::Ellipsis,
             SchemaIconAlias::COMPONENTS_WIZARD_COMPLETED_STEP => LucideIcon::Check,
+        ]);
+    }
+
+    private function configureTablesIcons(): void
+    {
+        FilamentIcon::register([
+            TablesIconAlias::ACTIONS_DISABLE_REORDERING => LucideIcon::Check,
+            TablesIconAlias::ACTIONS_ENABLE_REORDERING => LucideIcon::ArrowUpDown,
+            TablesIconAlias::ACTIONS_FILTER => LucideIcon::Funnel,
+            TablesIconAlias::ACTIONS_GROUP => LucideIcon::Layers,
+            TablesIconAlias::ACTIONS_OPEN_BULK_ACTIONS => LucideIcon::EllipsisVertical,
+            TablesIconAlias::ACTIONS_COLUMN_MANAGER => LucideIcon::Columns3,
+            TablesIconAlias::COLUMNS_COLLAPSE_BUTTON => LucideIcon::ChevronDown,
+            TablesIconAlias::COLUMNS_ICON_COLUMN_FALSE => LucideIcon::XCircle,
+            TablesIconAlias::COLUMNS_ICON_COLUMN_TRUE => LucideIcon::CheckCircle,
+            TablesIconAlias::EMPTY_STATE => LucideIcon::X,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_BOOLEAN => LucideIcon::CheckCircle,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_DATE => LucideIcon::Calendar,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_NUMBER => LucideIcon::Variable,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_RELATIONSHIP => LucideIcon::Expand,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_SELECT => LucideIcon::ChevronsUpDown,
+            TablesIconAlias::FILTERS_QUERY_BUILDER_CONSTRAINTS_TEXT => LucideIcon::Languages,
+            TablesIconAlias::FILTERS_REMOVE_ALL_BUTTON => LucideIcon::X,
+            TablesIconAlias::GROUPING_COLLAPSE_BUTTON => LucideIcon::ChevronUp,
+            TablesIconAlias::HEADER_CELL_SORT_ASC_BUTTON => LucideIcon::ArrowDownAZ,
+            TablesIconAlias::HEADER_CELL_SORT_BUTTON => LucideIcon::ArrowDownUp,
+            TablesIconAlias::HEADER_CELL_SORT_DESC_BUTTON => LucideIcon::ArrowUpAZ,
+            TablesIconAlias::REORDER_HANDLE => LucideIcon::Menu,
+            TablesIconAlias::SEARCH_FIELD => LucideIcon::Search,
         ]);
     }
 }
