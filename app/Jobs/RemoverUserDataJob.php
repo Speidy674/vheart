@@ -64,7 +64,6 @@ class RemoverUserDataJob implements ShouldQueue
         $user->notifications()->delete();
 
         $user->updateQuietly([
-            'name' => 'Deleted User',
             'email' => null,
             'email_verified_at' => null,
             'avatar_url' => null,
