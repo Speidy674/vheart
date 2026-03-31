@@ -44,13 +44,13 @@ class BroadcasterCommand extends Command
         $prefix = 'consent_';
 
         $currentConsent = $broadcaster->consent
-            ?->map(fn (BroadcasterConsent $c) => $prefix.$c->value)
+            ?->map(fn (BroadcasterConsent $c): string => $prefix.$c->value)
             ->all() ?? [];
 
         $consent = multiselect(
             label: 'Consent',
             options: collect(BroadcasterConsent::cases())
-                ->mapWithKeys(fn (BroadcasterConsent $c) => [$prefix.$c->value => $c->name])
+                ->mapWithKeys(fn (BroadcasterConsent $c): array => [$prefix.$c->value => $c->name])
                 ->all(),
             default: $currentConsent
         );
@@ -66,7 +66,7 @@ class BroadcasterCommand extends Command
             'submit_mods_allowed' => 'Mods',
         ];
         $currentSelections = collect($booleanFields)
-            ->filter(fn ($label, $field) => $broadcaster->{$field} === true)
+            ->filter(fn ($label, $field): bool => $broadcaster->{$field} === true)
             ->keys()
             ->all();
 
@@ -77,7 +77,7 @@ class BroadcasterCommand extends Command
             hint: 'Unselected will be disabled, Everyone will override other options.'
         );
 
-        foreach ($booleanFields as $field => $label) {
+        foreach (array_keys($booleanFields) as $field) {
             $broadcaster->{$field} = in_array($field, $selectedFields, true);
         }
 
