@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Clips\Pages;
 
+use App\Filament\Resources\Clips\Actions\Moderation\FlagClipAction;
+use App\Filament\Resources\Clips\Actions\Moderation\UnflagClipAction;
 use App\Filament\Resources\Clips\ClipResource;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
@@ -25,6 +27,8 @@ class EditClip extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            FlagClipAction::make(),
+            UnflagClipAction::make(),
             ActionGroup::make([
                 DeleteAction::make(),
             ]),

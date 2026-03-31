@@ -6,6 +6,8 @@ namespace App\Filament\Resources\Clips\Pages;
 
 use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
+use App\Filament\Resources\Clips\Actions\Moderation\FlagClipAction;
+use App\Filament\Resources\Clips\Actions\Moderation\UnflagClipAction;
 use App\Filament\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
@@ -34,6 +36,8 @@ class ViewClip extends ViewRecord
                 ->icon(LucideIcon::ExternalLink)
                 ->url(fn (Clip $clip): string => $clip->getClipUrl())
                 ->openUrlInNewTab(),
+            FlagClipAction::make(),
+            UnflagClipAction::make(),
             EditAction::make(),
         ];
     }

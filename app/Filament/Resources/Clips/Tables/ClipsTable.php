@@ -10,6 +10,8 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\ClipVoteType;
 use App\Enums\Filament\LucideIcon;
 use App\Filament\Filters\DateRangeFilter;
+use App\Filament\Resources\Clips\Actions\Moderation\FlagClipAction;
+use App\Filament\Resources\Clips\Actions\Moderation\UnflagClipAction;
 use App\Models\Clip;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -169,6 +171,8 @@ class ClipsTable
             ->defaultSort('votes_public', 'desc')
             ->recordActions([
                 ActionGroup::make([
+                    FlagClipAction::make(),
+                    UnflagClipAction::make(),
                     Action::make('attach_to_compilation')
                         ->label('admin/resources/clips.actions.attach_to_compilation.label')
                         ->translateLabel()
