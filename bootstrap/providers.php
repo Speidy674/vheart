@@ -9,7 +9,7 @@ use App\Providers\Filament\DashboardPanelProvider;
 use App\Providers\Support\FeatureFlagServiceProvider;
 use App\Providers\Support\FilamentIconServiceProvider;
 use App\Providers\TwitchServiceProvider;
-use SocialiteProviders\Manager\ServiceProvider;
+use SocialiteProviders\Manager\ServiceProvider as SocialiteServiceProvider;
 
 return [
     AppServiceProvider::class,
@@ -18,6 +18,6 @@ return [
     AdminPanelProvider::class,
     DashboardPanelProvider::class,
     FeatureFlagServiceProvider::class,
+    SocialiteServiceProvider::class,
     TwitchServiceProvider::class,
-    ServiceProvider::class,
 ];
