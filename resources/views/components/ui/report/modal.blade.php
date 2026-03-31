@@ -12,6 +12,7 @@
             <div class="space-y-1">
                 <h3 class="text-lg font-semibold">{{ __('reports.modal.success.title') }}</h3>
                 <p class="text-sm text-muted-foreground">{{ __('reports.modal.success.message') }}</p>
+                <p class="text-sm text-muted-foreground">{{ __('reports.modal.success.report-id') }} <span x-text="reportId" class="font-mono p-1"></span></p>
             </div>
 
             <button @click="closeModal()" class="w-full sm:w-auto inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors hover:bg-primary/90 bg-primary text-primary-foreground h-10 px-4 py-2">

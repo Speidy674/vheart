@@ -5,13 +5,18 @@ declare(strict_types=1);
 namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
+use App\Models\User;
+use App\Policies\Broadcaster\BroadcasterConsentLogPolicy;
 use Database\Factories\BroadcasterConsentLogFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use JsonException;
 use LogicException;
 
+#[UsePolicy(BroadcasterConsentLogPolicy::class)]
 class BroadcasterConsentLog extends Model
 {
     /** @use HasFactory<BroadcasterConsentLogFactory> */
@@ -38,6 +43,14 @@ class BroadcasterConsentLog extends Model
 
             return false;
         }
+    }
+
+    /**
+     * @return BelongsTo<User, $this>
+     */
+    public function changedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'changed_by');
     }
 
     protected static function booted(): void

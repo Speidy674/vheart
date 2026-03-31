@@ -14,4 +14,5 @@ enum PermissionGroup implements HasLabel
     case Other;
     case AdminSubmission;
     case ClipManagement;
+    case Moderation;
 }

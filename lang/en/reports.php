@@ -43,6 +43,7 @@ return [
         'success' => [
             'title' => 'Report successfully submitted',
             'message' => 'Thank you, your report has been submitted.',
+            'report-id' => 'Please provide the following ID for related questions: ',
             'ok' => 'Okay',
         ],
         'button' => 'Report :reportable',

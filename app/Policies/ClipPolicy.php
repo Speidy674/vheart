@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Policies;
 
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip;
 use App\Models\User;
 
@@ -74,5 +75,41 @@ class ClipPolicy
     public function feedback(User $user, Clip $clip): bool
     {
         return $user->can(Permission::CanSubmitClipFeedback);
+    }
+  
+    public function flagAny(User $user, ?Broadcaster $broadcaster = null): bool
+    {
+        if ($user->id === $broadcaster?->id) {
+            return true;
+        }
+
+        return $user->can(Permission::CanFlagClips);
+    }
+
+    public function unflagAny(User $user, ?Broadcaster $broadcaster = null): bool
+    {
+        if ($user->id === $broadcaster?->id) {
+            return true;
+        }
+
+        return $user->can(Permission::CanUnflagClips);
+    }
+
+    public function flag(User $user, Clip $clip): bool
+    {
+        if ($user->id === $clip->broadcaster_id) {
+            return true;
+        }
+
+        return $user->can(Permission::CanFlagClips);
+    }
+
+    public function unflag(User $user, Clip $clip): bool
+    {
+        if ($user->id === $clip->broadcaster_id) {
+            return true;
+        }
+
+        return $user->can(Permission::CanUnflagClips);
     }
 }

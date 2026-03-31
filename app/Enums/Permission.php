@@ -87,6 +87,30 @@ enum Permission: string implements HasLabel
     case RestoreAnyClip = 'restore_any_clip';
     case ForceDeleteAnyClip = 'force_delete_any_clip';
 
+    // Broadcaster
+    case ViewAnyBroadcaster = 'view_any_broadcaster';
+    case ViewBroadcaster = 'view_broadcaster';
+    case CreateBroadcaster = 'create_broadcaster';
+    case UpdateAnyBroadcaster = 'update_any_broadcaster';
+    case DeleteAnyBroadcaster = 'delete_any_broadcaster';
+    case RestoreAnyBroadcaster = 'restore_any_broadcaster';
+    case ForceDeleteAnyBroadcaster = 'force_delete_any_broadcaster';
+
+    // BroadcasterConsentLog
+    case ViewAnyBroadcasterConsentLog = 'view_any_broadcaster_consent_log';
+
+    // BroadcasterSubmissionFilter
+    case ViewAnyBroadcasterSubmissionFilter = 'view_any_broadcaster_submissinon_filter';
+    case CreateAnyBroadcasterSubmissionFilter = 'create_any_broadcaster_submissinon_filter';
+    case UpdateAnyBroadcasterSubmissionFilter = 'update_any_broadcaster_submissinon_filter';
+    case DeleteAnyBroadcasterSubmissionFilter = 'delete_any_broadcaster_submissinon_filter';
+
+    // BroadcasterTeamMember
+    case ViewAnyBroadcasterTeamMember = 'view_any_broadcaster_team_member';
+    case CreateAnyBroadcasterTeamMember = 'create_any_broadcaster_team_member';
+    case UpdateAnyBroadcasterTeamMember = 'update_any_broadcaster_team_member';
+    case DeleteAnyBroadcasterTeamMember = 'delete_any_broadcaster_team_member';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
@@ -103,6 +127,12 @@ enum Permission: string implements HasLabel
 
     #[PermissionGroupAttribute(PermissionGroupEnum::ClipManagement)]
     case CanSubmitClipFeedback = 'can_submit_clip_feedback';
+  
+    #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
+    case CanFlagClips = 'can_flag_clips';
+
+    #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
+    case CanUnflagClips = 'can_unflag_clips';
 
     public function getPermissionGroup(): string
     {
@@ -122,7 +152,7 @@ enum Permission: string implements HasLabel
             'delete_any_', 'delete_',
             'update_any_', 'update_',
             'view_any_', 'view_',
-            'create_',
+            'create_any_', 'create_',
         ];
 
         $groupName = str_replace($prefixes, '', $this->value, $count);

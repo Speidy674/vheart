@@ -6,14 +6,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Reports\StoreReportRequest;
 use App\Models\Report;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 class ReportController extends Controller
 {
-    public function store(StoreReportRequest $request): RedirectResponse
+    public function store(StoreReportRequest $request): JsonResponse
     {
-        Report::create(array_merge($request->validated(), ['user_id' => $request->user()->id]));
+        $report = Report::create(array_merge($request->validated(), ['user_id' => $request->user()->id]));
 
-        return back();
+        return new JsonResponse([
+            'reportId' => (string) $report->id,
+        ]);
     }
 }

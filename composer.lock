@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9938998480cf8c212be4f9749d9e0a8b",
+    "content-hash": "20195c5736348a5b2aa22ce94faea18b",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -551,67 +551,6 @@
                 }
             ],
             "time": "2026-03-16T11:29:23+00:00"
-        },
-        {
-            "name": "davidhsianturi/blade-bootstrap-icons",
-            "version": "v2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/davidhsianturi/blade-bootstrap-icons.git",
-                "reference": "e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/davidhsianturi/blade-bootstrap-icons/zipball/e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f",
-                "reference": "e4480e75c4c3b0b350dd8f3acf3dfc1bd9eb560f",
-                "shasum": ""
-            },
-            "require": {
-                "blade-ui-kit/blade-icons": "^1.6",
-                "illuminate/support": "^9.0|^10.0|^11.0|^12.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^7.0|^8.0|^9.0|^10.1",
-                "phpunit/phpunit": "^9.0|^10.5|^11.5"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Davidhsianturi\\BladeBootstrapIcons\\BladeBootstrapIconsServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Davidhsianturi\\BladeBootstrapIcons\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "David H. Sianturi",
-                    "email": "davidhsianturi@gmail.com",
-                    "homepage": "https://davidhsianturi.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A package to easily make use of Bootstrap Icons in your Laravel Blade views.",
-            "homepage": "https://github.com/davidhsianturi/blade-bootstrap-icons",
-            "keywords": [
-                "Bootstrap Icons",
-                "blade",
-                "laravel"
-            ],
-            "support": {
-                "issues": "https://github.com/davidhsianturi/blade-bootstrap-icons/issues",
-                "source": "https://github.com/davidhsianturi/blade-bootstrap-icons/tree/v2.1.0"
-            },
-            "time": "2025-06-18T12:39:09+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -5177,16 +5116,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "3.0.49",
+            "version": "3.0.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "6233a1e12584754e6b5daa69fe1289b47775c1b9"
+                "reference": "aa6ad8321ed103dc3624fb600a25b66ebf78ec7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/6233a1e12584754e6b5daa69fe1289b47775c1b9",
-                "reference": "6233a1e12584754e6b5daa69fe1289b47775c1b9",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/aa6ad8321ed103dc3624fb600a25b66ebf78ec7b",
+                "reference": "aa6ad8321ed103dc3624fb600a25b66ebf78ec7b",
                 "shasum": ""
             },
             "require": {
@@ -5267,7 +5206,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpseclib/phpseclib/issues",
-                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.49"
+                "source": "https://github.com/phpseclib/phpseclib/tree/3.0.50"
             },
             "funding": [
                 {
@@ -5283,7 +5222,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-01-27T09:17:28+00:00"
+            "time": "2026-03-19T02:57:58+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -9628,6 +9567,71 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.4.0"
             },
             "time": "2025-12-02T11:56:42+00:00"
+        },
+        {
+            "name": "ublabs/blade-simple-icons",
+            "version": "0.193.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ublabs/blade-simple-icons.git",
+                "reference": "7d018a8e068866a6a2a055a7a1a43440c23b2452"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ublabs/blade-simple-icons/zipball/7d018a8e068866a6a2a055a7a1a43440c23b2452",
+                "reference": "7d018a8e068866a6a2a055a7a1a43440c23b2452",
+                "shasum": ""
+            },
+            "require": {
+                "blade-ui-kit/blade-icons": "^1.1",
+                "illuminate/support": "^8.0|^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ublabs\\BladeSimpleIcons\\BladeSimpleIconsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ublabs\\BladeSimpleIcons\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adrián UB",
+                    "homepage": "https://github.com/adrian-ub"
+                }
+            ],
+            "description": "A package to easily make use of Simple Icons in your Laravel Blade views.",
+            "homepage": "https://github.com/ublabs/blade-simple-icons",
+            "keywords": [
+                "blade-simple-icons",
+                "laravel",
+                "ublabs"
+            ],
+            "support": {
+                "issues": "https://github.com/ublabs/blade-simple-icons/issues",
+                "source": "https://github.com/ublabs/blade-simple-icons/tree/0.193.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/adrian-ub",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-29T14:25:54+00:00"
         },
         {
             "name": "ueberdosis/tiptap-php",
