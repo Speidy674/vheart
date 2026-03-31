@@ -11,6 +11,7 @@ use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Notifications\View\NotificationsIconAlias;
 use Filament\Schemas\View\SchemaIconAlias;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\View\SupportIconAlias;
 use Filament\Tables\View\TablesIconAlias;
 use Filament\View\PanelsIconAlias;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +31,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configurePanelsIcons();
         $this->configureSchemaIcons();
         $this->configureTablesIcons();
+        $this->configureSupportIcons();
     }
 
     private function configureActionsIcons(): void
@@ -206,6 +208,25 @@ class FilamentIconServiceProvider extends ServiceProvider
             TablesIconAlias::HEADER_CELL_SORT_DESC_BUTTON => LucideIcon::ArrowUpAZ,
             TablesIconAlias::REORDER_HANDLE => LucideIcon::Menu,
             TablesIconAlias::SEARCH_FIELD => LucideIcon::Search,
+        ]);
+    }
+
+    private function configureSupportIcons(): void
+    {
+        FilamentIcon::register([
+            SupportIconAlias::BADGE_DELETE_BUTTON => LucideIcon::X,
+            SupportIconAlias::BREADCRUMBS_SEPARATOR => LucideIcon::ChevronRight,
+            SupportIconAlias::BREADCRUMBS_SEPARATOR_RTL => LucideIcon::ChevronLeft,
+            SupportIconAlias::MODAL_CLOSE_BUTTON => LucideIcon::X,
+            SupportIconAlias::PAGINATION_FIRST_BUTTON => LucideIcon::ChevronsLeft,
+            SupportIconAlias::PAGINATION_FIRST_BUTTON_RTL => LucideIcon::ChevronsRight,
+            SupportIconAlias::PAGINATION_LAST_BUTTON => LucideIcon::ChevronsRight,
+            SupportIconAlias::PAGINATION_LAST_BUTTON_RTL => LucideIcon::ChevronsLeft,
+            SupportIconAlias::PAGINATION_NEXT_BUTTON => LucideIcon::ChevronRight,
+            SupportIconAlias::PAGINATION_NEXT_BUTTON_RTL => LucideIcon::ChevronLeft,
+            SupportIconAlias::PAGINATION_PREVIOUS_BUTTON => LucideIcon::ChevronLeft,
+            SupportIconAlias::PAGINATION_PREVIOUS_BUTTON_RTL => LucideIcon::ChevronRight,
+            SupportIconAlias::SECTION_COLLAPSE_BUTTON => LucideIcon::ChevronUp,
         ]);
     }
 }
