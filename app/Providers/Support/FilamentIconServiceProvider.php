@@ -9,6 +9,7 @@ use Filament\Actions\View\ActionsIconAlias;
 use Filament\Forms\View\FormsIconAlias;
 use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Notifications\View\NotificationsIconAlias;
+use Filament\QueryBuilder\View\QueryBuilderIconAlias;
 use Filament\Schemas\View\SchemaIconAlias;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\View\SupportIconAlias;
@@ -34,6 +35,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureTablesIcons();
         $this->configureSupportIcons();
         $this->configureWidgetsIcons();
+        $this->configureQueryBuilderIcons();
     }
 
     private function configureActionsIcons(): void
@@ -236,6 +238,21 @@ class FilamentIconServiceProvider extends ServiceProvider
     {
         FilamentIcon::register([
             WidgetsIconAlias::CHART_WIDGET_FILTER => LucideIcon::Funnel,
+        ]);
+    }
+
+    private function configureQueryBuilderIcons(): void
+    {
+        FilamentIcon::register([
+            QueryBuilderIconAlias::ADD_RULE_ACTION => LucideIcon::Plus,
+            QueryBuilderIconAlias::CONSTRAINTS_BOOLEAN => LucideIcon::CheckCircle,
+            QueryBuilderIconAlias::CONSTRAINTS_DATE => LucideIcon::Calendar,
+            QueryBuilderIconAlias::CONSTRAINTS_NUMBER => LucideIcon::Variable,
+            QueryBuilderIconAlias::CONSTRAINTS_RELATIONSHIP => LucideIcon::Expand,
+            QueryBuilderIconAlias::CONSTRAINTS_SELECT => LucideIcon::ChevronsUpDown,
+            QueryBuilderIconAlias::CONSTRAINTS_TEXT => LucideIcon::Languages,
+            QueryBuilderIconAlias::OR_GROUP_BLOCK => LucideIcon::Slash,
+            QueryBuilderIconAlias::OR_GROUP_ADD_GROUP_ACTION => LucideIcon::Plus,
         ]);
     }
 }
