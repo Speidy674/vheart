@@ -101,6 +101,12 @@ enum Permission: string implements HasLabel
     #[PermissionGroupAttribute(PermissionGroupEnum::AdminSubmission)]
     case BypassBannedCategoryCheck = 'as_bypass_banned_category';
 
+    #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
+    case CanFlagClips = 'can_flag_clips';
+
+    #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
+    case CanUnflagClips = 'can_unflag_clips';
+
     public function getPermissionGroup(): string
     {
         static $cache = [];
