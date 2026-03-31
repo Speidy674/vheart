@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
-use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
@@ -23,7 +23,7 @@ class FetchMissingUsersCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Fetch missing users from twitch to keep data in a good state.';
+    protected $description = 'Fetch (missing) users and create broadcaster profiles with consent for testing';
 
     public function handle(TwitchService $twitchService): void
     {
@@ -34,6 +34,7 @@ class FetchMissingUsersCommand extends Command
         $missingIds = $broadcasterIds
             ->concat($creatorIds->toArray())
             ->concat($submitterIds->toArray())
+            ->reject(fn (int $id): bool => $id === 0)
             ->filter()
             ->unique()
             ->values();
@@ -46,9 +47,10 @@ class FetchMissingUsersCommand extends Command
 
         $totalBatches = ceil($missingIds->count() / 100);
         $currentBatch = 1;
+        $twitchApp = $twitchService->asApp();
 
-        $missingIds->chunk(100)->each(function (Collection $chunk) use ($twitchService, &$currentBatch, &$totalBatches): void {
-            $users = $twitchService->get(TwitchEndpoints::GetUsers, [
+        $missingIds->chunk(100)->each(function (Collection $chunk) use ($twitchApp, &$currentBatch, &$totalBatches): void {
+            $users = $twitchApp->getUsers([
                 'id' => $chunk->values()->toArray(),
             ]);
 
@@ -81,5 +83,8 @@ class FetchMissingUsersCommand extends Command
         });
 
         $this->info("Fetched {$missingIds->count()} users.");
+
+        $total = Broadcaster::upsert($missingIds->map(fn ($id): array => ['id' => $id, 'consent' => '[0]'])->toArray(), ['id']);
+        $this->info("Created {$total} broadcaster profiles.");
     }
 }
