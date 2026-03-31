@@ -70,7 +70,6 @@ class FetchMissingUsersCommand extends Command
                 ], [
                     'name' => 'Deleted User',
                     'email' => null,
-                    'clip_permission' => false,
                     'avatar_url' => 'https://api.dicebear.com/9.x/pixel-art/svg?seed='.$id,
                 ]);
 
