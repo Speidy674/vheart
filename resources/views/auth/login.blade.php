@@ -30,7 +30,7 @@
                     class="relative flex w-full items-center justify-center space-x-3 rounded-lg bg-linear-to-r from-purple-600 to-cyan-500 py-4 text-lg font-bold text-white shadow-lg transition-all duration-300 hover:from-purple-700 hover:to-cyan-600 hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-4 focus:ring-purple-500/50 disabled:opacity-50 disabled:pointer-events-none"
                 >
                     <div class="relative flex items-center justify-center" aria-hidden="true">
-                        <x-bi-twitch defer class="size-7" />
+                        <x-simpleicon-twitch defer class="size-7" />
                         <div class="absolute inset-0 bg-cyan-400/30 blur-sm"></div>
                     </div>
                     <span>
