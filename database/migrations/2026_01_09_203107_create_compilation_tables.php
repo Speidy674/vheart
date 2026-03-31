@@ -29,7 +29,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('clip_compilation', function (Blueprint $table): void {
+        Schema::create('compilation_clip', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('clip_id')->constrained();
             $table->foreignId('compilation_id')->constrained()->cascadeOnDelete();

@@ -178,11 +178,11 @@ class ClipsRelationManager extends RelationManager
                             $ids = array_diff($values, ['null']);
 
                             if (in_array('null', $values, true)) {
-                                $query->whereNull('clip_compilation.claimed_by');
+                                $query->whereNull('compilation_clips.claimed_by');
                             }
 
                             if ($ids !== []) {
-                                $query->orWhereIn('clip_compilation.claimed_by', $ids);
+                                $query->orWhereIn('compilation_clips.claimed_by', $ids);
                             }
                         });
                     }),
@@ -208,11 +208,11 @@ class ClipsRelationManager extends RelationManager
                             $ids = array_diff($values, ['null']);
 
                             if (in_array('null', $values, true)) {
-                                $query->whereNull('clip_compilation.added_by');
+                                $query->whereNull('compilation_clips.added_by');
                             }
 
                             if ($ids !== []) {
-                                $query->orWhereIn('clip_compilation.added_by', $ids);
+                                $query->orWhereIn('compilation_clips.added_by', $ids);
                             }
                         });
                     }),
@@ -238,7 +238,7 @@ class ClipsRelationManager extends RelationManager
                         blank: fn (Builder $query): Builder => $query,
                     ),
 
-                SelectFilter::make('clip_compilation.claim_status')
+                SelectFilter::make('compilation_clips.claim_status')
                     ->label('admin/resources/compilations.relation_managers.clips.filters.cutter_status')
                     ->translateLabel()
                     ->multiple()
