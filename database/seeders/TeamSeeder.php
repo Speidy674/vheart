@@ -78,7 +78,6 @@ class TeamSeeder extends Seeder
         44484822, // https://www.twitch.tv/pixeldesu
         51870314, // https://www.twitch.tv/JaxOffTV
         54011665, // https://www.twitch.tv/justplayerde
-        79873057, // https://www.twitch.tv/sejumarnie
         139951429, // https://www.twitch.tv/sleepytawi
         76615709, // https://www.twitch.tv/shuffgy
     ];
