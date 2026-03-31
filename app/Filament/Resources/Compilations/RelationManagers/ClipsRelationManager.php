@@ -15,10 +15,6 @@ use App\Filament\Resources\Clips\ClipResource;
 use App\Filament\Resources\Clips\Tables\ClipColumns;
 use App\Models\Clip;
 use App\Models\User;
-use App\Services\Twitch\Data\ClipDownloadDto;
-use App\Services\Twitch\Enums\TwitchEndpoints;
-use App\Services\Twitch\Exceptions\TwitchApiException;
-use App\Services\Twitch\TwitchService;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\AttachAction;
@@ -39,7 +35,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
-use Livewire\Component;
 
 class ClipsRelationManager extends RelationManager
 {
@@ -334,62 +329,6 @@ class ClipsRelationManager extends RelationManager
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.status_updated'))
                                 ->success()
                                 ->send();
-                        }),
-
-                    Action::make('download')
-                        ->hidden() // not required? only hide it for now
-                        ->label('admin/resources/clips.actions.download')
-                        ->translateLabel()
-                        ->icon(LucideIcon::Download)
-                        ->disabled(fn (Clip $record): bool => $record->pivot->claimed_by !== auth()->id())
-                        ->action(function (Clip $clip, TwitchService $twitchService, Component $livewire): bool {
-                            $broadCaster = $clip->broadcaster;
-
-                            if (! $broadCaster || empty($broadCaster->twitch_refresh_token) || $broadCaster->clip_permission === false) {
-                                Notification::make()
-                                    ->title(__('admin/resources/compilations.relation_managers.clips.notifications.download_error_title'))
-                                    ->body(__('admin/resources/compilations.relation_managers.clips.notifications.download_error_broadcaster'))
-                                    ->danger()
-                                    ->send();
-
-                                return false;
-                            }
-
-                            try {
-                                $response = $twitchService->asUser($clip->broadcaster)->get(TwitchEndpoints::GetClipsDownload,
-                                    [
-                                        'editor_id' => $clip->broadcaster_id,
-                                        'broadcaster_id' => $clip->broadcaster_id,
-                                        'clip_id' => $clip->twitch_id,
-                                    ]);
-                                /** @var ClipDownloadDto $download */
-                                $download = array_first($response);
-
-                                if (! $download) {
-                                    Notification::make()
-                                        ->title(__('admin/resources/compilations.relation_managers.clips.notifications.download_error_title'))
-                                        ->body(__('admin/resources/compilations.relation_managers.clips.notifications.download_error_not_found'))
-                                        ->danger()
-                                        ->send();
-
-                                    return false;
-                                }
-
-                                // thanks to cors we are very limited, user still has to download it manually
-                                // alternative would be downloading it to server and serving it as a proxy
-                                // that way we may have a permanent copy and cache, but also more traffic
-                                $livewire->js("window.open('{$download->landscape_download_url}', '_blank')");
-                            } catch (TwitchApiException $e) {
-                                Notification::make()
-                                    ->title(__('admin/resources/compilations.relation_managers.clips.notifications.download_error_title'))
-                                    ->body($e->getMessage())
-                                    ->danger()
-                                    ->send();
-
-                                return false;
-                            }
-
-                            return true;
                         }),
                     Action::make('copy_cutter_optimized_name')
                         ->label('admin/resources/compilations.relation_managers.clips.actions.copy_filename')
