@@ -10,6 +10,7 @@ use Filament\Forms\View\FormsIconAlias;
 use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Notifications\View\NotificationsIconAlias;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\View\PanelsIconAlias;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentIconServiceProvider extends ServiceProvider
@@ -24,6 +25,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureFormsIcons();
         $this->configureInfolistIcons();
         $this->configureNotificationsIcons();
+        $this->configurePanelsIcons();
     }
 
     private function configureActionsIcons(): void
@@ -122,4 +124,43 @@ class FilamentIconServiceProvider extends ServiceProvider
             NotificationsIconAlias::NOTIFICATION_WARNING => LucideIcon::CircleAlert,
         ]);
     }
+
+    private function configurePanelsIcons(): void
+    {
+        FilamentIcon::register([
+            PanelsIconAlias::GLOBAL_SEARCH_FIELD => LucideIcon::Search,
+            PanelsIconAlias::PAGES_DASHBOARD_ACTIONS_FILTER => LucideIcon::Funnel,
+            PanelsIconAlias::PAGES_DASHBOARD_NAVIGATION_ITEM => LucideIcon::Home,
+            PanelsIconAlias::PAGES_PASSWORD_RESET_REQUEST_PASSWORD_RESET_ACTIONS_LOGIN => LucideIcon::ArrowLeft,
+            PanelsIconAlias::PAGES_PASSWORD_RESET_REQUEST_PASSWORD_RESET_ACTIONS_LOGIN_RTL => LucideIcon::ArrowRight,
+            PanelsIconAlias::RESOURCES_PAGES_EDIT_RECORD_NAVIGATION_ITEM => LucideIcon::SquarePen,
+            PanelsIconAlias::RESOURCES_PAGES_MANAGE_RELATED_RECORDS_NAVIGATION_ITEM => LucideIcon::Layers,
+            PanelsIconAlias::RESOURCES_PAGES_VIEW_RECORD_NAVIGATION_ITEM => LucideIcon::Layers,
+            PanelsIconAlias::SIDEBAR_COLLAPSE_BUTTON => LucideIcon::ChevronLeft,
+            PanelsIconAlias::SIDEBAR_COLLAPSE_BUTTON_RTL => LucideIcon::ChevronRight,
+            PanelsIconAlias::SIDEBAR_EXPAND_BUTTON => LucideIcon::ChevronRight,
+            PanelsIconAlias::SIDEBAR_EXPAND_BUTTON_RTL => LucideIcon::ChevronLeft,
+            PanelsIconAlias::SIDEBAR_GROUP_COLLAPSE_BUTTON => LucideIcon::ChevronUp,
+            PanelsIconAlias::SUB_NAVIGATION_MOBILE_MENU_BUTTON => LucideIcon::ChevronDown,
+            PanelsIconAlias::TENANT_MENU_BILLING_BUTTON => LucideIcon::CreditCard,
+            PanelsIconAlias::TENANT_MENU_PROFILE_BUTTON => LucideIcon::Settings,
+            PanelsIconAlias::TENANT_MENU_REGISTRATION_BUTTON => LucideIcon::Plus,
+            PanelsIconAlias::TENANT_MENU_TOGGLE_BUTTON => LucideIcon::ChevronDown,
+            PanelsIconAlias::THEME_SWITCHER_LIGHT_BUTTON => LucideIcon::Sun,
+            PanelsIconAlias::THEME_SWITCHER_DARK_BUTTON => LucideIcon::Moon,
+            PanelsIconAlias::THEME_SWITCHER_SYSTEM_BUTTON => LucideIcon::Monitor,
+            PanelsIconAlias::TOPBAR_CLOSE_SIDEBAR_BUTTON => LucideIcon::X,
+            PanelsIconAlias::TOPBAR_OPEN_SIDEBAR_BUTTON => LucideIcon::Menu,
+            PanelsIconAlias::TOPBAR_GROUP_TOGGLE_BUTTON => LucideIcon::ChevronDown,
+            PanelsIconAlias::TOPBAR_OPEN_DATABASE_NOTIFICATIONS_BUTTON => LucideIcon::Bell,
+            PanelsIconAlias::SIDEBAR_OPEN_DATABASE_NOTIFICATIONS_BUTTON => LucideIcon::Bell,
+            PanelsIconAlias::USER_MENU_PROFILE_ITEM => LucideIcon::CircleUser,
+            PanelsIconAlias::USER_MENU_LOGOUT_BUTTON => LucideIcon::LogOut,
+            PanelsIconAlias::USER_MENU_TOGGLE_BUTTON => LucideIcon::ChevronUp,
+            PanelsIconAlias::WIDGETS_ACCOUNT_LOGOUT_BUTTON => LucideIcon::LogOut,
+            PanelsIconAlias::WIDGETS_FILAMENT_INFO_OPEN_DOCUMENTATION_BUTTON => LucideIcon::BookOpen,
+            PanelsIconAlias::WIDGETS_FILAMENT_INFO_OPEN_GITHUB_BUTTON => LucideIcon::Code,
+        ]);
+    }
+
 }
