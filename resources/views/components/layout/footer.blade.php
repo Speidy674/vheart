@@ -10,11 +10,11 @@
     ];
 
     static $navs = [
-        'privacy.footer' => '/privacy',
-        'imprint.footer' => '/imprint',
-        'faq' => '/faq',
-        'team' => '/team',
-        'about' => '/about-us'
+        'privacy.footer' => 'privacy',
+        'imprint.footer' => 'imprint',
+        'faq' => 'faq',
+        'team' => 'team',
+        'about' => 'about'
     ];
 @endphp
 
@@ -32,11 +32,11 @@
                 </span>
 
                 <div class="flex items-center gap-1 sm:gap-4 text-sm group-open:hidden">
-                    <x-layout.shared.link href="/privacy">
+                    <x-layout.shared.link href="{{ route('privacy') }}">
                         {{ __('footer.privacy.footer') }}
                     </x-layout.shared.link>
 
-                    <x-layout.shared.link href="/imprint">
+                    <x-layout.shared.link href="{{ route('imprint') }}">
                         {{ __('footer.imprint.footer') }}
                     </x-layout.shared.link>
                 </div>
@@ -87,7 +87,7 @@
 
             <nav class="flex flex-wrap justify-center gap-x-1 2xl:gap-x-4 gap-y-2">
                 @foreach($navs as $key => $path)
-                    <x-layout.shared.link :href="$path">
+                    <x-layout.shared.link :href="route($path)">
                         {{ __('footer.' . $key) }}
                     </x-layout.shared.link>
                 @endforeach
