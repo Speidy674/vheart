@@ -19,6 +19,10 @@ class RequiresBroadcasterProfile
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->routeIs('dashboard.onboarding')) {
+            return $next($request);
+        }
+
         $user = $request->user();
         $tenantId = $request->route('tenant');
         $isSelfTenant = ((int) $tenantId) === $user?->id;
