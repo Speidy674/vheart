@@ -153,7 +153,7 @@ class SubmitClipAction extends Action
 
                     /** @var CarbonInterval $maxClipAge */
                     $maxClipAge = config('vheart.clips.submission.maximum_age');
-                    if (! $bypassMaxAge && $maxClipAge && $clipInfo->created_at->add($maxClipAge)->isPast()) {
+                    if (! $bypassMaxAge && $maxClipAge && $clipInfo->createdAt->add($maxClipAge)->isPast()) {
                         Notification::make()->title(__('clips.errors.too_old', [
                             'age' => $maxClipAge->forHumans(),
                         ]))->danger()->send();
@@ -165,7 +165,7 @@ class SubmitClipAction extends Action
                     if (! $bypassCategoryBan) {
                         $isCategoryBanned = Category::query()
                             ->where('is_banned', true)
-                            ->where('id', $clipInfo->game_id)
+                            ->where('id', $clipInfo->gameId)
                             ->exists();
 
                         if ($isCategoryBanned) {
@@ -178,7 +178,7 @@ class SubmitClipAction extends Action
                     // Broadcaster
                     if (! $bypassBroadcasterConsent) {
                         $broadcaster = Broadcaster::query()
-                            ->where('id', $clipInfo->broadcaster_id)
+                            ->where('id', $clipInfo->broadcasterId)
                             ->whereGaveConsent()
                             ->with(['filters'])
                             ->first();
@@ -211,14 +211,14 @@ class SubmitClipAction extends Action
                         }
                     } else {
                         Broadcaster::firstOrCreate([
-                            'id' => $clipInfo->broadcaster_id,
+                            'id' => $clipInfo->broadcasterId,
                         ]);
                     }
 
                     User::updateOrCreate([
-                        'id' => $clipInfo->creator_id,
+                        'id' => $clipInfo->creatorId,
                     ], [
-                        'name' => $clipInfo->creator_name,
+                        'name' => $clipInfo->creatorName,
                     ]);
 
                     $importClipAction->execute($clipInfo, $user, $data['tags']);
@@ -292,7 +292,7 @@ class SubmitClipAction extends Action
 
     protected function passesCategoryChecks(ClipDto $clipInfo, array $disallowedCategories, array $allowedCategories): bool
     {
-        $gameId = $clipInfo->game_id;
+        $gameId = $clipInfo->gameId;
 
         if (in_array($gameId, $disallowedCategories, true)) {
             return false;
