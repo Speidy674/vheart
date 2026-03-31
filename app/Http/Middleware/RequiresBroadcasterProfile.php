@@ -23,7 +23,7 @@ class RequiresBroadcasterProfile
         $tenantId = $request->route('tenant');
         $isSelfTenant = ((int) $tenantId) === $user?->id;
 
-        if ((! $tenantId || $isSelfTenant) && ! Broadcaster::where('id', $user?->id)->exists()) {
+        if ((! $tenantId || $isSelfTenant) && ! Broadcaster::where('id', $user?->id)->whereOnboarded()->exists()) {
             return redirect()->guest(route('dashboard.onboarding'));
         }
 
