@@ -132,7 +132,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
      */
     public function compilations(): BelongsToMany
     {
-        return $this->belongsToMany(Compilation::class)
+        return $this->belongsToMany(Compilation::class, 'compilation_clip')
             ->using(CompilationClip::class)
             ->withPivot(CompilationClip::getPivotColumns())
             ->withTimestamps();
