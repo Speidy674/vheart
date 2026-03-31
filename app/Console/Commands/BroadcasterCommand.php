@@ -30,7 +30,11 @@ class BroadcasterCommand extends Command
         $id = search(
             label: 'User',
             options: fn (string $value) => $value !== ''
-                ? User::whereLike('name', "%{$value}%")->orWhere('id', (int) $value)->limit(50)->pluck('name', 'id')->all()
+                ? User::whereLike('name', "%{$value}%")
+                    ->orWhere('id', (int) $value)
+                    ->limit(50)
+                    ->pluck('name', 'id')
+                    ->all()
                 : []
         );
 

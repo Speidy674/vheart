@@ -58,7 +58,12 @@ class ImportClipCommand extends Command
 
         $selectedIds = multisearch(
             label: 'Search tags (1–3)',
-            options: fn (string $value) => Tag::where('name', 'ilike', "%{$value}%")->orWhere('id', (int) $value)->limit(10)->orderBy('id', 'desc')->pluck('name', 'id')->toArray(),
+            options: fn (string $value) => Tag::where('name', 'ilike', "%{$value}%")
+                ->orWhere('id', (int) $value)
+                ->limit(10)
+                ->orderBy('id', 'desc')
+                ->pluck('name', 'id')
+                ->all(),
             placeholder: 'Search Tags...',
             validate: fn (array $values): ?string => match (true) {
                 count($values) === 0 => 'At least one tag is required.',
