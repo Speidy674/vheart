@@ -9,6 +9,7 @@ use Filament\Actions\View\ActionsIconAlias;
 use Filament\Forms\View\FormsIconAlias;
 use Filament\Infolists\View\InfolistsIconAlias;
 use Filament\Notifications\View\NotificationsIconAlias;
+use Filament\Schemas\View\SchemaIconAlias;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\View\PanelsIconAlias;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,7 @@ class FilamentIconServiceProvider extends ServiceProvider
         $this->configureInfolistIcons();
         $this->configureNotificationsIcons();
         $this->configurePanelsIcons();
+        $this->configureSchemaIcons();
     }
 
     private function configureActionsIcons(): void
@@ -163,4 +165,16 @@ class FilamentIconServiceProvider extends ServiceProvider
         ]);
     }
 
+    private function configureSchemaIcons(): void
+    {
+        FilamentIcon::register([
+            SchemaIconAlias::COMPONENTS_CALLOUT_DANGER => LucideIcon::CircleX,
+            SchemaIconAlias::COMPONENTS_CALLOUT_INFO => LucideIcon::Info,
+            SchemaIconAlias::COMPONENTS_CALLOUT_SUCCESS => LucideIcon::CheckCircle,
+            SchemaIconAlias::COMPONENTS_CALLOUT_WARNING => LucideIcon::CircleAlert,
+            SchemaIconAlias::COMPONENTS_TABS_DROPDOWN_TRIGGER_BUTTON => LucideIcon::ChevronDown,
+            SchemaIconAlias::COMPONENTS_TABS_MORE_TABS_BUTTON => LucideIcon::Ellipsis,
+            SchemaIconAlias::COMPONENTS_WIZARD_COMPLETED_STEP => LucideIcon::Check,
+        ]);
+    }
 }
