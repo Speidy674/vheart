@@ -10,6 +10,7 @@ export interface ReportModalData {
     wasSuccessful: boolean;
     labelKey: string;
     currentLabel: string;
+    reportId: string | null;
     form: {
         errors: Record<string, string[]>;
     };
@@ -27,6 +28,7 @@ export default (labelKey: string): AlpineComponent<ReportModalData> => ({
     wasSuccessful: false,
     labelKey,
     currentLabel: '',
+    reportId: null,
     form: { errors: {} },
 
     getLabel(item): string {
@@ -71,11 +73,17 @@ export default (labelKey: string): AlpineComponent<ReportModalData> => ({
         }
 
         try {
-            await axios.post(ReportController.store().url, formData, {
-                headers: {
-                    Accept: 'application/json',
+            const response = await axios.post(
+                ReportController.store().url,
+                formData,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                    },
                 },
-            });
+            );
+
+            this.reportId = response.data?.reportId;
 
             this.wasSuccessful = true;
         } catch (error) {

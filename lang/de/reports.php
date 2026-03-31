@@ -43,6 +43,7 @@ return [
         'success' => [
             'title' => 'Erfolgreich gemeldet!',
             'message' => 'Wir werden uns darum kümmern.',
+            'report-id' => 'Bei fragen bitte folgende nummer angeben: ',
             'ok' => 'Verstanden',
         ],
         'button' => ':reportable Melden',

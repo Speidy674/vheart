@@ -27,6 +27,14 @@ enum ClipStatus: int implements HasColor, HasLabel
         };
     }
 
+    public function isWithheld(): bool
+    {
+        return match ($this) {
+            self::NeedApproval, self::Blocked => true,
+            default => false,
+        };
+    }
+
     private function getTranslatableEnumLabelPrefix(): string
     {
         return 'clips.enums';

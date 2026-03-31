@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +17,7 @@ class RoleSeeder extends Seeder
     {
         $roleCount = Role::count();
 
-        $superadmin = Role::firstOrCreate(
+        Role::firstOrCreate(
             ['id' => 0],
             [
                 'name' => ['de' => 'Super Admin', 'en' => 'Super Admin'],
@@ -28,14 +27,7 @@ class RoleSeeder extends Seeder
             ]
         );
 
-        $allPermissions = collect(Permission::cases())->pluck('value');
-
-        DB::table('role_permissions')->insertOrIgnore(
-            $allPermissions->map(fn (string $permission): array => [
-                'role_id' => $superadmin->id,
-                'permission' => $permission,
-            ])->toArray()
-        );
+        DB::table('role_permissions')->where('role_id', 0)->delete();
 
         if ($roleCount > 0) {
             return;

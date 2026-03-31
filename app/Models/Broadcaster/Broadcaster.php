@@ -10,10 +10,12 @@ use App\Enums\FeatureFlag;
 use App\Models\Clip;
 use App\Models\Traits\Auditable;
 use App\Models\User;
+use App\Policies\Broadcaster\BroadcasterPolicy;
 use App\Support\FeatureFlag\Feature;
 use Database\Factories\Broadcaster\BroadcasterFactory;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -25,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
+#[UsePolicy(BroadcasterPolicy::class)]
 class Broadcaster extends Model implements HasAvatar
 {
     use Auditable;
@@ -73,7 +76,7 @@ class Broadcaster extends Model implements HasAvatar
      */
     public function consentLogs(): HasMany
     {
-        return $this->hasMany(BroadcasterConsentLog::class)->orderBy('changed_at');
+        return $this->hasMany(BroadcasterConsentLog::class);
     }
 
     /**

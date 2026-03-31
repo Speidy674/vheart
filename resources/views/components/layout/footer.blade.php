@@ -1,20 +1,20 @@
 @php
     static $socials = [
-        ['label' => 'Github', 'href' => 'https://github.com/VHeart-Clips', 'light' => '#181717', 'dark' => '#FFFFFF', 'icon' => 'bi-github'],
-        ['label' => 'Discord', 'href' => 'https://discord.gg/vheart', 'light' => '#5865F2', 'dark' => '#5865F2', 'icon' => 'bi-discord'],
-        ['label' => 'Youtube', 'href' => 'https://www.youtube.com/@vheartclips', 'light' => '#FF0000', 'dark' => '#FF0000', 'icon' => 'bi-youtube'],
-        ['label' => 'Twitch', 'href' => 'https://www.twitch.tv/vheartclips', 'light' => '#9146FF', 'dark' => '#9146FF', 'icon' => 'bi-twitch'],
-        ['label' => 'Twitter / X', 'href' => 'https://x.com/VHeartClips', 'light' => '#000000', 'dark' => '#FFFFFF', 'icon' => 'bi-twitter-x'],
-        ['label' => 'Reddit', 'href' => 'https://www.reddit.com/r/VHeartClips/', 'light' => '#FF4500', 'dark' => '#FF4500', 'icon' => 'bi-reddit'],
-        ['label' => 'Bluesky', 'href' => 'https://bsky.app/profile/vheart.net', 'light' => '#1185FE', 'dark' => '#1185FE', 'icon' => 'bi-bluesky'],
+        ['label' => 'Github', 'href' => 'https://github.com/VHeart-Clips', 'light' => '#181717', 'dark' => '#FFFFFF', 'icon' => 'simpleicon-github'],
+        ['label' => 'Discord', 'href' => 'https://discord.gg/vheart', 'light' => '#5865F2', 'dark' => '#5865F2', 'icon' => 'simpleicon-discord'],
+        ['label' => 'Youtube', 'href' => 'https://www.youtube.com/@vheartclips', 'light' => '#FF0000', 'dark' => '#FF0000', 'icon' => 'simpleicon-youtube'],
+        ['label' => 'Twitch', 'href' => 'https://www.twitch.tv/vheartclips', 'light' => '#9146FF', 'dark' => '#9146FF', 'icon' => 'simpleicon-twitch'],
+        ['label' => 'Twitter / X', 'href' => 'https://x.com/VHeartClips', 'light' => '#000000', 'dark' => '#FFFFFF', 'icon' => 'simpleicon-x'],
+        ['label' => 'Reddit', 'href' => 'https://www.reddit.com/r/VHeartClips/', 'light' => '#FF4500', 'dark' => '#FF4500', 'icon' => 'simpleicon-reddit'],
+        ['label' => 'Bluesky', 'href' => 'https://bsky.app/profile/vheart.net', 'light' => '#1185FE', 'dark' => '#1185FE', 'icon' => 'simpleicon-bluesky'],
     ];
 
     static $navs = [
-        'privacy.footer' => '/privacy',
-        'imprint.footer' => '/imprint',
-        'faq' => '/faq',
-        'team' => '/team',
-        'about' => '/about-us'
+        'privacy.footer' => 'privacy',
+        'imprint.footer' => 'imprint',
+        'faq' => 'faq',
+        'team' => 'team',
+        'about' => 'about'
     ];
 @endphp
 
@@ -32,11 +32,11 @@
                 </span>
 
                 <div class="flex items-center gap-1 sm:gap-4 text-sm group-open:hidden">
-                    <x-layout.shared.link href="/privacy">
+                    <x-layout.shared.link href="{{ route('privacy') }}">
                         {{ __('footer.privacy.footer') }}
                     </x-layout.shared.link>
 
-                    <x-layout.shared.link href="/imprint">
+                    <x-layout.shared.link href="{{ route('imprint') }}">
                         {{ __('footer.imprint.footer') }}
                     </x-layout.shared.link>
                 </div>
@@ -87,7 +87,7 @@
 
             <nav class="flex flex-wrap justify-center gap-x-1 2xl:gap-x-4 gap-y-2">
                 @foreach($navs as $key => $path)
-                    <x-layout.shared.link :href="$path">
+                    <x-layout.shared.link :href="route($path)">
                         {{ __('footer.' . $key) }}
                     </x-layout.shared.link>
                 @endforeach
