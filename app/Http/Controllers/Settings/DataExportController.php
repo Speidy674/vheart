@@ -69,7 +69,7 @@ class DataExportController extends Controller
         ];
 
         return response()->streamDownload(
-            fn () => print json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            fn (): int => print json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             $user->id.'-export-data-'.now()->format('Y-m-d').'.json',
             ['Content-Type' => 'application/json']
         );
@@ -78,7 +78,7 @@ class DataExportController extends Controller
     private function votes(User $user): Collection
     {
         return $user->votes
-            ?->map(fn (Vote $vote) => [
+            ?->map(fn (Vote $vote): array => [
                 'clip_id' => $vote->clip?->twitch_id,
                 'type' => $vote->type,
                 'type_text' => ClipVoteType::tryFrom($vote->type)?->name ?? 'Unknown',
@@ -91,7 +91,7 @@ class DataExportController extends Controller
     private function userTeams(User $user): Collection
     {
         return $user->broadcasterTeamMembers
-            ?->map(fn ($member) => [
+            ?->map(fn ($member): array => [
                 'broadcaster_id' => $member->broadcaster_id,
                 'permissions' => $member->permissions?->map->name,
                 'joined_at' => $member->created_at?->toIso8601ZuluString(),
@@ -111,7 +111,7 @@ class DataExportController extends Controller
             )
             ->orderByDesc('created_at')
             ->get()
-            ->map(fn (Audit $audit) => [
+            ->map(fn (Audit $audit): array => [
                 'id' => $audit->id,
                 'causer_id' => $audit->causer_id,
                 'auditable_type' => $audit->auditable_type,
@@ -130,7 +130,7 @@ class DataExportController extends Controller
             ->withTrashed()
             ->where('user_id', $user->id)
             ->get()
-            ->map(fn (Clip\Compilation $compilation) => [
+            ->map(fn (Clip\Compilation $compilation): array => [
                 'title' => $compilation->title,
                 'description' => $compilation->description,
                 'status' => $compilation->status->value,
@@ -149,7 +149,7 @@ class DataExportController extends Controller
             ->withTrashed()
             ->where('user_id', $user->id)
             ->get()
-            ->map(fn (Report $report) => [
+            ->map(fn (Report $report): array => [
                 'id' => $report->id,
                 'reason' => $report->reason->value,
                 'reason_text' => $report->reason->getLabel(),
@@ -171,7 +171,7 @@ class DataExportController extends Controller
             ->whereIn('id', $ids)
             ->with(['tags:id,name', 'category:id,title'])
             ->get()
-            ->map(fn (Clip $clip) => [
+            ->map(fn (Clip $clip): array => [
                 'id' => $clip->twitch_id,
                 'title' => $clip->title,
                 'status' => $clip->status->value,
@@ -193,7 +193,7 @@ class DataExportController extends Controller
             ->where('broadcaster_id', $user->id)
             ->orderBy('changed_at')
             ->get()
-            ->map(fn (BroadcasterConsentLog $log) => [
+            ->map(fn (BroadcasterConsentLog $log): array => [
                 'state' => $log->state->map->name,
                 'changed_by' => $log->changed_by,
                 'change_reason' => $log->change_reason,
@@ -227,14 +227,14 @@ class DataExportController extends Controller
             'onboarded_at' => $broadcaster->onboarded_at?->toIso8601ZuluString(),
 
             'team_members' => $broadcaster->members
-                ?->map(fn (BroadcasterTeamMember $member) => [
+                ?->map(fn (BroadcasterTeamMember $member): array => [
                     'identifier' => $member->user_id,
                     'permissions' => $member->permissions,
                     'added_at' => $member->created_at?->toIso8601ZuluString(),
                 ]),
 
             'filters' => $broadcaster->filters
-                ?->map(fn (BroadcasterSubmissionFilter $filter) => [
+                ?->map(fn (BroadcasterSubmissionFilter $filter): array => [
                     'type' => $filter->filterable_type,
                     'identifier' => $filter->filterable_id,
                     'state' => $filter->state,
