@@ -16,6 +16,7 @@ use App\Models\Scopes\ClipPermissionScope;
 use App\Models\Scopes\ClipWithoutBannedCategoryScope;
 use App\Models\User;
 use App\Models\Vote;
+use App\Support\Audit\Auditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
@@ -34,6 +35,12 @@ class DataExportController extends Controller
             'votes' => fn (HasMany $q) => $q->with('clip:id,twitch_id'),
             'broadcasterTeamMembers',
         ]);
+
+        Auditor::make()
+            ->causer($user)
+            ->on($user)
+            ->event('data-export')
+            ->save();
 
         $data = [
             'exported_at' => now()->toIso8601ZuluString(),
