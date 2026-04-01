@@ -21,9 +21,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use JsonException;
 
 class DataExportController extends Controller
 {
+    /**
+     * @throws JsonException
+     */
     public function __invoke(Request $request)
     {
         $user = $request->user();
@@ -68,10 +72,12 @@ class DataExportController extends Controller
             'consent_logs' => $this->consentLogs($user),
         ];
 
-        return response()->streamDownload(
-            fn (): int => print json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
-            $user->id.'-export-data-'.now()->format('Y-m-d').'.json',
-            ['Content-Type' => 'application/json']
+        return Response(
+            json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+            headers: [
+                'Content-Type' => 'application/json',
+                'Content-Disposition' => 'attachment; filename="'.$user->id.'-export-data-'.now()->format('Y-m-d').'.json"',
+            ]
         );
     }
 
