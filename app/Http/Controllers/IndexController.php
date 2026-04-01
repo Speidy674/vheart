@@ -10,11 +10,15 @@ use App\Support\FeatureFlag\Feature;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Routing\ResponseFactory;
+use Illuminate\Http\Response;
+use Throwable;
 
 class IndexController extends Controller
 {
-    public function __invoke(Request $request): ResponseFactory|View
+    /**
+     * @throws Throwable
+     */
+    public function __invoke(Request $request): Response|View
     {
         if (Feature::isActive(FeatureFlag::AboutUsAsIndex)) {
             return view('about-us');
