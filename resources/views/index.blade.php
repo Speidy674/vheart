@@ -85,43 +85,48 @@
 
     @push('elements')
         <script>
+            const DEBOUNCE_MS = 1000;
+
             document.addEventListener('alpine:init', () => {
                 Alpine.data('clipsInfiniteLoader', () => ({
                     nextCursor: '{{ $discover->nextPageUrl() }}',
                     isLoading: false,
                     isError: false,
                     hasMore: {{ $discover->hasMorePages() ? 'true' : 'false' }},
+                    _debounceTimeout: null,
 
                     get loading() {
                         return this.isLoading && !this.isError;
                     },
 
                     loadMore() {
-                        if (this.isLoading || !this.hasMore || !this.nextCursor) return;
+                        if (this.isLoading || !this.hasMore || !this.nextCursor || this._debounceTimeout) return;
 
                         this.isLoading = true;
-                        this.isError = false;
 
-                        window.axios.get(this.nextCursor)
-                            .then(response => {
-                                const html = response.data;
-                                this.nextCursor = response.headers['x-next-page'];
-
-
-                                requestAnimationFrame(() => {
-                                    this.$refs.clipsContainer.insertAdjacentHTML('beforeend', html);
-                                    this.hasMore = !!this.nextCursor;
+                        this._debounceTimeout = setTimeout(() => {
+                            window.axios.get(this.nextCursor)
+                                .then(response => {
+                                    const html = response.data;
+                                    this.nextCursor = response.headers['x-next-page'];
+                                    requestAnimationFrame(() => {
+                                        this.$refs.clipsContainer.insertAdjacentHTML('beforeend', html);
+                                        this.hasMore = !!this.nextCursor;
+                                        this.isError = false;
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error loading clips: ', error);
+                                    this.isError = true;
+                                })
+                                .finally(() => {
                                     this.isLoading = false;
+                                    this._debounceTimeout = null;
                                 });
-                            })
-                            .catch(error => {
-                                console.error('Error loading clips: ', error);
-                                this.isError = true;
-                                this.isLoading = false;
-                            });
+                        }, DEBOUNCE_MS);
                     }
                 }));
-            })
+            });
         </script>
     @endpush
 </x-layout>
