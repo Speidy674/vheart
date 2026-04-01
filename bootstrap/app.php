@@ -13,7 +13,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Sentry\Laravel\Integration;
@@ -68,4 +70,19 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         Integration::handles($exceptions);
+
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            $retryAfter = $e->getHeaders()['Retry-After'] ?? 60;
+
+            if (! $request->expectsJson()
+                && $request->header('Referer')
+                && in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])
+            ) {
+                return back()
+                    ->with('error', "Too many requests. Try again in $retryAfter seconds.")
+                    ->withInput();
+            }
+
+            return response('Too many requests.', 429, $e->getHeaders());
+        });
     })->create();
