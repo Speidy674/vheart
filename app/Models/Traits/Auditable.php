@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models\Traits;
 
+use App\Models\Audit;
 use App\Support\Audit\Auditor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -142,11 +143,11 @@ trait Auditable
     /**
      * MorphMany Relationship to Audit log entries
      *
-     * @return MorphMany<Auditor, $this>
+     * @return MorphMany<Audit, $this>
      */
     public function audits(): MorphMany
     {
-        return $this->morphMany(Auditor::class, 'auditable');
+        return $this->morphMany(Audit::class, 'auditable');
     }
 
     /** @internal Used by Audit Logs, do not use directly. */
