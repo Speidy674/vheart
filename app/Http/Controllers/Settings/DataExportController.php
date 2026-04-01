@@ -20,6 +20,7 @@ use App\Support\Audit\Auditor;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use JsonException;
 
@@ -28,7 +29,7 @@ class DataExportController extends Controller
     /**
      * @throws JsonException
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): Response
     {
         $user = $request->user();
 
