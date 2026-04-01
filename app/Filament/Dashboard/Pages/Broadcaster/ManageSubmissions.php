@@ -74,7 +74,7 @@ class ManageSubmissions extends Page implements HasForms
                             ->label('dashboard/settings/manage-submissions.form.submit_user_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_user_allowed.description'))
                             ->translateLabel()
-                            ->afterStateUpdated(function (bool $state, Set $set) {
+                            ->afterStateUpdated(function (bool $state, Set $set): void {
                                 if ($state) {
                                     $set('submit_vip_allowed', true);
                                     $set('submit_mods_allowed', true);
@@ -85,7 +85,7 @@ class ManageSubmissions extends Page implements HasForms
                             ->label('dashboard/settings/manage-submissions.form.submit_vip_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_vip_allowed.description'))
                             ->translateLabel()
-                            ->afterStateUpdated(function (bool $state, Set $set) {
+                            ->afterStateUpdated(function (bool $state, Set $set): void {
                                 if (! $state) {
                                     $set('submit_user_allowed', false);
                                 }
@@ -95,7 +95,7 @@ class ManageSubmissions extends Page implements HasForms
                             ->label('dashboard/settings/manage-submissions.form.submit_mods_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_mods_allowed.description'))
                             ->translateLabel()
-                            ->afterStateUpdated(function (bool $state, Set $set) {
+                            ->afterStateUpdated(function (bool $state, Set $set): void {
                                 if (! $state) {
                                     $set('submit_user_allowed', false);
                                 }
