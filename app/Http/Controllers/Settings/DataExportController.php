@@ -76,7 +76,7 @@ class DataExportController extends Controller
             json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
             headers: [
                 'Content-Type' => 'application/json',
-                'Content-Disposition' => 'attachment; filename="'.$user->id.'-export-data-'.now()->format('Y-m-d').'.json"',
+                'Content-Disposition' => 'attachment; filename="'.$user->id.'-export-data-'.now()->format('Y-m-d_H-i-s').'.json"',
             ]
         );
     }
