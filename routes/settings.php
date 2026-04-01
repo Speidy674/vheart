@@ -22,7 +22,7 @@ Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserSettings)])
 
         Route::get('/export', DataExportController::class)
             ->middleware(['throttle:data-export'])
-            ->name('data-export');
+            ->name('.data-export');
 
         Route::delete('/', DeleteUserController::class)->name('.delete');
     });
