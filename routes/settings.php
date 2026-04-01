@@ -20,7 +20,7 @@ Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserSettings)])
             ]);
         });
 
-        Route::get('/export', DataExportController::class)
+        Route::post('/export', DataExportController::class)
             ->middleware(['throttle:data-export'])
             ->name('.data-export');
 

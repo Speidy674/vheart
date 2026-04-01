@@ -38,9 +38,7 @@
                     </p>
                 </div>
 
-                <form method="get" action="{{ route('user.settings.data-export') }}" class="space-y-6">
-                    @method('get')
-
+                <form method="post" action="{{ route('user.settings.data-export') }}" class="space-y-6">
                     <div class="flex items-center gap-4">
                         <x-ui.button type="submit" variant="outline">
                             {{ __('user.settings.data-export.submit') }}
