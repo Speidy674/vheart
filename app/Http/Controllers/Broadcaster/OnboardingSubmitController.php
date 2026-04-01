@@ -16,12 +16,13 @@ class OnboardingSubmitController extends Controller
 {
     public function __invoke(OnboardingRequest $request)
     {
-        $broadcaster = Broadcaster::updateOrCreate(['id' => auth()->id()], [
+        $broadcaster = Broadcaster::withTrashed()->updateOrCreate(['id' => auth()->id()], [
             'consent' => $request->array('consent'),
             'submit_user_allowed' => $request->boolean('everyone'),
             'submit_vip_allowed' => $request->boolean('vips'),
             'submit_mods_allowed' => $request->boolean('moderators'),
             'onboarded_at' => now(),
+            'deleted_at' => null,
         ]);
 
         BroadcasterConsentLog::create([
