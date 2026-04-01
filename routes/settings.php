@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Enums\FeatureFlag;
 use App\Http\Controllers\Auth\User\DeleteUserController;
+use App\Http\Controllers\Settings\DataExportController;
 use App\Http\Middleware\FeatureFlagGuard;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Http\Request;
@@ -18,6 +19,10 @@ Route::middleware(['auth', FeatureFlagGuard::of(FeatureFlag::UserSettings)])
                 'useTwoFactor' => $mfa->isEnabled($request->user()),
             ]);
         });
+
+        Route::get('/export', DataExportController::class)
+            ->middleware(['throttle:data-export'])
+            ->name('data-export');
 
         Route::delete('/', DeleteUserController::class)->name('.delete');
     });

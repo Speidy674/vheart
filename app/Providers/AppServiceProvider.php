@@ -218,6 +218,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($throttleKey);
         });
 
+        RateLimiter::for('data-export', static function (Request $request) {
+            return Limit::perHour(3)->by($request->user()->id);
+        });
+
         RateLimiter::for('image-proxy', static function (Request $request): Limit {
             $throttleKey = $request->user()?->id ?? sha1((string) $request->ip());
 
