@@ -172,6 +172,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     {
         return [
             'thumbnail_url' => TwitchClipThumbnailCast::class,
+            'date' => 'immutable_datetime',
             'status' => ClipStatus::class,
         ];
     }
