@@ -16,7 +16,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
@@ -73,20 +73,36 @@ class ManageSubmissions extends Page implements HasForms
                         Toggle::make('submit_user_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_user_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_user_allowed.description'))
-                            ->translateLabel(),
+                            ->translateLabel()
+                            ->afterStateUpdated(function (bool $state, Set $set) {
+                                if ($state) {
+                                    $set('submit_vip_allowed', true);
+                                    $set('submit_mods_allowed', true);
+                                }
+                                $this->autosave();
+                            }),
                         Toggle::make('submit_vip_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_vip_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_vip_allowed.description'))
                             ->translateLabel()
-                            ->disabled(fn (Get $get): bool => (bool) $get('submit_user_allowed')),
+                            ->afterStateUpdated(function (bool $state, Set $set) {
+                                if (! $state) {
+                                    $set('submit_user_allowed', false);
+                                }
+                                $this->autosave();
+                            }),
                         Toggle::make('submit_mods_allowed')
                             ->label('dashboard/settings/manage-submissions.form.submit_mods_allowed.label')
                             ->helperText(__('dashboard/settings/manage-submissions.form.submit_mods_allowed.description'))
                             ->translateLabel()
-                            ->disabled(fn (Get $get): bool => (bool) $get('submit_user_allowed')),
+                            ->afterStateUpdated(function (bool $state, Set $set) {
+                                if (! $state) {
+                                    $set('submit_user_allowed', false);
+                                }
+                                $this->autosave();
+                            }),
                     ])
-                        ->live()
-                        ->afterStateUpdated(fn () => $this->autosave()),
+                        ->live(),
                     ]),
             ])->statePath('data');
     }
