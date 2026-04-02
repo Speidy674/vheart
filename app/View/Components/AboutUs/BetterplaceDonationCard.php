@@ -12,6 +12,8 @@ use Illuminate\View\Component;
 
 class BetterplaceDonationCard extends Component
 {
+    private const int CACHE_TTL = 300;
+
     public ?string $error = null;
 
     public array $donations = [];
@@ -31,8 +33,6 @@ class BetterplaceDonationCard extends Component
 
     protected function loadData(): void
     {
-        $cacheTtl = 300;
-
         try {
             $eventData = Cache::get('betterplace_event_'.$this->eventId);
             $donationsData = Cache::get('betterplace_donations_'.$this->eventId);
@@ -45,8 +45,8 @@ class BetterplaceDonationCard extends Component
                     $eventData = $eventResponse->json();
                     $donationsData = $donationsResponse->json();
 
-                    Cache::put('betterplace_event_'.$this->eventId, $eventData, $cacheTtl);
-                    Cache::put('betterplace_donations_'.$this->eventId, $donationsData, $cacheTtl);
+                    Cache::put('betterplace_event_'.$this->eventId, $eventData, self::CACHE_TTL);
+                    Cache::put('betterplace_donations_'.$this->eventId, $donationsData, self::CACHE_TTL);
 
                     $this->error = null;
                 } else {
