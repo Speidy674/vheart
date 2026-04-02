@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\View\Components\AboutUs;
 
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\Component;
@@ -18,24 +21,29 @@ class BetterplaceDonationCard extends Component
         $this->loadData();
     }
 
+    public function render(): View
+    {
+        return view('components.about-us.betterplace-donation-card');
+    }
+
     protected function loadData(): void
     {
         $cacheTtl = 300;
 
         try {
-            $eventData = Cache::get('betterplace_event_' . $this->eventId);
-            $donationsData = Cache::get('betterplace_donations_' . $this->eventId);
+            $eventData = Cache::get('betterplace_event_'.$this->eventId);
+            $donationsData = Cache::get('betterplace_donations_'.$this->eventId);
 
             if ($eventData === null || $donationsData === null) {
-                $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . $this->eventId . '.json');
-                $donationsResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/' . $this->eventId . '/opinions.json');
+                $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/'.$this->eventId.'.json');
+                $donationsResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/'.$this->eventId.'/opinions.json');
 
                 if ($eventResponse->successful() && $donationsResponse->successful()) {
                     $eventData = $eventResponse->json();
                     $donationsData = $donationsResponse->json();
 
-                    Cache::put('betterplace_event_' . $this->eventId, $eventData, $cacheTtl);
-                    Cache::put('betterplace_donations_' . $this->eventId, $donationsData, $cacheTtl);
+                    Cache::put('betterplace_event_'.$this->eventId, $eventData, $cacheTtl);
+                    Cache::put('betterplace_donations_'.$this->eventId, $donationsData, $cacheTtl);
 
                     $this->error = '';
                 } else {
@@ -52,10 +60,5 @@ class BetterplaceDonationCard extends Component
             $this->eventData = null;
             $this->donations = [];
         }
-    }
-
-    public function render()
-    {
-        return view('components.about-us.betterplace-donation-card');
     }
 }
