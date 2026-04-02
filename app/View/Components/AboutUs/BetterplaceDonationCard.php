@@ -10,14 +10,19 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\Component;
+use RuntimeException;
 
 class BetterplaceDonationCard extends Component
 {
-    private const int CACHE_TTL = 300;
+    private const string BETTERPLACE_BASE = 'https://api.betterplace.org/de/api_v4/fundraising_events/';
 
     private const int HTTP_TIMEOUT = 2;
 
-    private const string BETTERPLACE_BASE = 'https://api.betterplace.org/de/api_v4/fundraising_events/';
+    // After how many seconds do we consider the data stale (and refresh in the background)
+    private const int CACHE_TTL_STALE = 300;
+
+    // After how many seconds do we want to force a refresh
+    private const int CACHE_TTL_INVALID = 86_400;
 
     public ?string $error = null;
 
@@ -39,36 +44,25 @@ class BetterplaceDonationCard extends Component
     protected function loadData(): void
     {
         try {
-            $eventData = Cache::get('betterplace_event_'.$this->eventId);
-            $donationsData = Cache::get('betterplace_donations_'.$this->eventId);
+            [$this->eventData, $this->donations] = Cache::flexible(
+                "betterplace_donation_card_{$this->eventId}",
+                [self::CACHE_TTL_STALE, self::CACHE_TTL_INVALID],
+                function (): array {
+                    [$eventResponse, $donationsResponse] = Http::timeout(self::HTTP_TIMEOUT)
+                        ->pool(fn (Pool $pool): array => [
+                            $pool->get(self::BETTERPLACE_BASE.$this->eventId.'.json'),
+                            $pool->get(self::BETTERPLACE_BASE.$this->eventId.'/opinions.json'),
+                        ]);
 
-            if ($eventData === null || $donationsData === null) {
-                [$eventResponse, $donationsResponse] = Http::pool(fn (Pool $pool) => [
-                    $pool->timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'.json'),
-                    $pool->timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'/opinions.json'),
-                ]);
+                    if (! $eventResponse->successful() || ! $donationsResponse->successful()) {
+                        throw new RuntimeException('Betterplace API request failed.');
+                    }
 
-                if ($eventResponse->successful() && $donationsResponse->successful()) {
-                    $eventData = $eventResponse->json();
-                    $donationsData = $donationsResponse->json();
-
-                    Cache::put('betterplace_event_'.$this->eventId, $eventData, self::CACHE_TTL);
-                    Cache::put('betterplace_donations_'.$this->eventId, $donationsData, self::CACHE_TTL);
-
-                    $this->error = null;
-                } else {
-                    $this->error = __('betterplace.error');
-                    $eventData = null;
-                    $donationsData = ['data' => []];
+                    return [$eventResponse->json(), $donationsResponse->json()['data'] ?? []];
                 }
-            }
-
-            $this->eventData = $eventData;
-            $this->donations = $donationsData['data'] ?? [];
+            );
         } catch (Exception) {
             $this->error = __('betterplace.error');
-            $this->eventData = null;
-            $this->donations = [];
         }
     }
 }
