@@ -48,7 +48,7 @@ class BetterplaceDonationCard extends Component
                     Cache::put('betterplace_event_'.$this->eventId, $eventData, $cacheTtl);
                     Cache::put('betterplace_donations_'.$this->eventId, $donationsData, $cacheTtl);
 
-                    $this->error = '';
+                    $this->error = null;
                 } else {
                     $this->error = __('betterplace.error');
                     $eventData = null;
