@@ -122,6 +122,7 @@ class ClipVoteController extends Controller
             ->flatten()
             ->filter()
             ->pluck('id')
+            ->shuffle()
             ->toArray();
 
         if ($clips !== []) {
