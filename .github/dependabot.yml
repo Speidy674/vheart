@@ -8,6 +8,8 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 2
     groups:
       laravel:
         patterns:
@@ -41,12 +43,11 @@ updates:
           - "patch"
     ignore:
       - dependency-name: "laravel/framework"
-        update-types: ["version-update:semver-major"]
+        update-types: [ "version-update:semver-major" ]
       - dependency-name: "filament/filament"
-        update-types: ["version-update:semver-major"]
+        update-types: [ "version-update:semver-major" ]
       - dependency-name: "php"
-        update-types: ["version-update:semver-major"]
-
+        update-types: [ "version-update:semver-major" ]
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -55,6 +56,8 @@ updates:
       time: "06:00"
       timezone: "Europe/Berlin"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 2
     groups:
       npm-dev:
         dependency-type: "development"
