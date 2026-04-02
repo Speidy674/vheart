@@ -77,7 +77,9 @@ class BetterplaceDonationCard extends Component
                     return [$event, $donations, null];
                 }
             );
-        } catch (Exception) {
+        } catch (Exception $exception) {
+            report($exception);
+
             return [null, null, __('betterplace.error')];
         }
     }
