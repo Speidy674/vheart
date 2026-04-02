@@ -72,7 +72,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
      */
     public function owner(): BelongsTo
     {
-        return $this->BelongsTo(User::class, 'broadcaster_id', 'id')->withTrashed();
+        return $this->belongsTo(User::class, 'broadcaster_id', 'id');
     }
 
     /**
@@ -80,7 +80,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
      */
     public function broadcaster(): BelongsTo
     {
-        return $this->belongsTo(Broadcaster::class)->withTrashed();
+        return $this->belongsTo(Broadcaster::class);
     }
 
     /**
@@ -92,14 +92,20 @@ class Clip extends Model implements Commentable, ExternalProxyable
         return "https://clips.twitch.tv/{$this->twitch_id}";
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function creator(): BelongsTo
     {
-        return $this->BelongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function submitter(): BelongsTo
     {
-        return $this->BelongsTo(User::class)->withTrashed();
+        return $this->belongsTo(User::class);
     }
 
     /**
