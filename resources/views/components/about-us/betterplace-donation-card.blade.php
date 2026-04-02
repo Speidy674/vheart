@@ -27,11 +27,11 @@
                             class="rounded-xl border border-gray-300/80 bg-white/60 p-6 dark:border-white/15 dark:bg-black/20">
                             <div
                                 class="mb-4 flex items-center justify-center gap-2 text-xs font-medium tracking-wider uppercase sm:text-sm">
-                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                <span class="size-1.5 rounded-full bg-emerald-500"></span>
                                 <span class="text-gray-800 dark:text-white/90">
                                     {{ __('betterplace.total') }}
                                 </span>
-                                <span class="h-1.5 w-1.5 rounded-full bg-cyan-500"></span>
+                                <span class="size-1.5 rounded-full bg-cyan-500"></span>
                             </div>
                             <div
                                 class="bg-linear-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-center text-3xl font-bold text-transparent sm:text-4xl md:text-5xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
@@ -102,9 +102,9 @@
                                         <div class="shrink-0">
                                             @if ($donation['image'])
                                                 <img src="{{ $donation['image'] }}" alt="{{ $donation['name'] }}"
-                                                    class="h-9 w-9 rounded-full border border-gray-300/80 object-cover dark:border-white/20" />
+                                                    class="size-9 rounded-full border border-gray-300/80 object-cover dark:border-white/20" />
                                             @else
-                                                <div class="h-9 w-9 rounded-full bg-emerald-400/80"></div>
+                                                <div class="size-9 rounded-full bg-emerald-400/80"></div>
                                             @endif
                                         </div>
 
@@ -131,7 +131,7 @@
                             target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto">
                             <button type="button"
                                 class="inline-flex items-center justify-center gap-2 whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-10 has-[>svg]:px-4 w-full rounded-full border-0 bg-linear-to-r from-emerald-500 via-teal-400 to-cyan-400 px-6 py-4 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:shadow-xl hover:shadow-emerald-500/25 sm:px-8 sm:py-5 sm:text-base">
-                                <x-lucide-heart class="inline-block mr-2 h-4 w-4 text-white" />
+                                <x-lucide-heart class="inline-block mr-2 size-4 text-white" />
                                 {{ __('betterplace.donate_now') }}
                             </button>
                         </a>
