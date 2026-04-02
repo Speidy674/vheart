@@ -12,11 +12,14 @@ use Illuminate\View\Component;
 
 class BetterplaceDonationCard extends Component
 {
+    public ?string $error = null;
+
+    public array $donations = [];
+
+    public ?array $eventData = null;
+
     public function __construct(
         public int $eventId = 55712,
-        public ?array $eventData = null,
-        public array $donations = [],
-        public ?string $error = null,
     ) {
         $this->loadData();
     }
