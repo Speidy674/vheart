@@ -49,9 +49,12 @@
                                 autocomplete="off"
                             />
 
-                            @error('clip_url')
-                            <p class="text-sm font-medium text-destructive mt-2">{{ $message }}</p>
-                            @enderror
+                            <x-ui.input.error>
+                                @error('clip_url') {{ $message }} @enderror
+                            </x-ui.input.error>
+                            <x-ui.input.error>
+                                {{ session('error') }}
+                            </x-ui.input.error>
                         </div>
 
                         <div class="space-y-2">
