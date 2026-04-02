@@ -6,6 +6,7 @@ namespace App\View\Components\AboutUs;
 
 use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\Component;
@@ -42,8 +43,10 @@ class BetterplaceDonationCard extends Component
             $donationsData = Cache::get('betterplace_donations_'.$this->eventId);
 
             if ($eventData === null || $donationsData === null) {
-                $eventResponse = Http::timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'.json');
-                $donationsResponse = Http::timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'/opinions.json');
+                [$eventResponse, $donationsResponse] = Http::pool(fn (Pool $pool) => [
+                    $pool->timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'.json'),
+                    $pool->timeout(self::HTTP_TIMEOUT)->get(self::BETTERPLACE_BASE.$this->eventId.'/opinions.json'),
+                ]);
 
                 if ($eventResponse->successful() && $donationsResponse->successful()) {
                     $eventData = $eventResponse->json();
