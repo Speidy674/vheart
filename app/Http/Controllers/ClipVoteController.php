@@ -120,6 +120,7 @@ class ClipVoteController extends Controller
         $clips = $broadcasters
             ->pluck('clips')
             ->flatten()
+            ->filter()
             ->pluck('id')
             ->toArray();
 
