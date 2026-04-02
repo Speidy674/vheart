@@ -50,11 +50,14 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->maxContentWidth(Width::ScreenTwoExtraLarge)
+            ->discoverResources(in: app_path('Filament/AdminPanel/Resources'), for: 'App\Filament\AdminPanel\Resources')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->discoverPages(in: app_path('Filament/AdminPanel/Pages'), for: 'App\Filament\AdminPanel\Pages')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
             ])
+            ->discoverWidgets(in: app_path('Filament/AdminPanel/Widgets'), for: 'App\Filament\AdminPanel\Widgets')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->databaseNotifications()
             ->userMenuItems([
