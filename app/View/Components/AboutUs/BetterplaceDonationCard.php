@@ -19,7 +19,7 @@ class BetterplaceDonationCard extends Component
     public ?array $eventData = null;
 
     public function __construct(
-        public int $eventId = 55712,
+        public readonly int $eventId = 55712,
     ) {
         $this->loadData();
     }
