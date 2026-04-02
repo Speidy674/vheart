@@ -13,6 +13,8 @@ enum DashboardNavigationItem implements HasLabel
 
     case ManageConsent;
     case ManageSubmissions;
+    case ManageUserFilter;
+    case ManageCategoryFilter;
 
     private function getTranslatableEnumLabelPrefix(): string
     {
