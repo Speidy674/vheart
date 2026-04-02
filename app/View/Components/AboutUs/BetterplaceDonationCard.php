@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Number;
 use Illuminate\View\Component;
 use RuntimeException;
 
@@ -24,27 +25,27 @@ class BetterplaceDonationCard extends Component
     // After how many seconds do we want to force a refresh
     private const int CACHE_TTL_INVALID = 86_400;
 
-    public ?string $error = null;
-
-    public array $donations = [];
-
-    public ?array $eventData = null;
-
     public function __construct(
         public readonly int $eventId = 55712,
     ) {}
 
     public function render(): View
     {
-        $this->loadData();
+        [$event, $donations, $error] = $this->loadData();
 
-        return view('components.about-us.betterplace-donation-card');
+        return view('components.about-us.betterplace-donation-card', [
+            'projectTitle' => $event['title'] ?? __('betterplace.title'),
+            'projectDescription' => $event['description'],
+            'projectAmount' => Number::currency($event['amount'], 'EUR', app()->getLocale(), 2),
+            'donations' => $donations,
+            'error' => $error,
+        ]);
     }
 
-    protected function loadData(): void
+    protected function loadData(): array
     {
         try {
-            [$this->eventData, $this->donations] = Cache::flexible(
+            return Cache::flexible(
                 "betterplace_donation_card_{$this->eventId}",
                 [self::CACHE_TTL_STALE, self::CACHE_TTL_INVALID],
                 function (): array {
@@ -58,11 +59,26 @@ class BetterplaceDonationCard extends Component
                         throw new RuntimeException('Betterplace API request failed.');
                     }
 
-                    return [$eventResponse->json(), $donationsResponse->json()['data'] ?? []];
+                    $event = [
+                        'title' => $eventResponse->json()['title'] ?? null,
+                        'description' => $eventResponse->json()['description'] ?? null,
+                        'amount' => ($eventResponse->json()['donated_amount_in_cents'] ?? 0) / 100,
+                    ];
+
+                    $donations = collect($donationsResponse->json()['data'] ?? [])
+                        ->map(fn (array $donation): array => [
+                            'name' => $donation['author']['name'] ?? $donation['donator_name'] ?? __('betterplace.anonymous'),
+                            'image' => $donation['author']['picture']['links'][0]['href'] ?? $donation['donator_picture'] ?? null,
+                            'message' => $donation['message'] ?? null,
+                            'amount' => ($donation['donated_amount_in_cents'] ?? $donation['amount_in_cents'] ?? 0) / 100,
+                        ])
+                        ->toArray();
+
+                    return [$event, $donations, null];
                 }
             );
         } catch (Exception) {
-            $this->error = __('betterplace.error');
+            return [null, null, __('betterplace.error')];
         }
     }
 }

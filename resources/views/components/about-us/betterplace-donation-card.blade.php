@@ -14,12 +14,12 @@
                     <div class="space-y-6">
                         <h2
                             class="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-2xl font-bold text-transparent sm:text-3xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
-                            {{ $eventData['title'] ?? __('betterplace.title') }}
+                            {{ $projectTitle }}
                         </h2>
 
-                        @if ($eventData['description'] ?? false)
+                        @if ($projectDescription)
                             <div class="text-sm leading-relaxed text-gray-800 md:text-base dark:text-white/90">
-                                {!! $eventData['description'] !!}
+                                {!! $projectDescription !!}
                             </div>
                         @endif
 
@@ -35,7 +35,7 @@
                             </div>
                             <div
                                 class="bg-gradient-to-r from-purple-700 via-gray-900 to-cyan-700 bg-clip-text text-center text-3xl font-bold text-transparent sm:text-4xl md:text-5xl dark:from-purple-300 dark:via-white dark:to-cyan-300">
-                                {{ Number::currency((float) ($eventData['donated_amount_in_cents'] ?? 0) / 100, 'EUR', 'de', 2) }}
+                                {{ $projectAmount }}
                             </div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                             {{ $error }}
                         </p>
                     </div>
-                @elseif(empty($donations))
+                @elseif($donations === [])
                     <div class="flex flex-1 items-center justify-center">
                         <p class="text-gray-800 dark:text-white/90">
                             {{ __('betterplace.no_donations_yet') }}
@@ -92,22 +92,16 @@
 
                         <div class="custom-scrollbar h-full max-h-[30rem] overflow-y-auto pr-2 lg:max-h-none">
                             @foreach ($donations as $donation)
-                                @php
-                                    $amount = ($donation['donated_amount_in_cents'] ?? $donation['amount_in_cents'] ?? 0) / 100;
-                                    $name = $donation['author']['name'] ?? $donation['donator_name'] ?? __('betterplace.anonymous');
-                                    $image = $donation['author']['picture']['links'][0]['href'] ?? $donation['donator_picture'] ?? null;
-                                    $message = $donation['message'] ?? '';
-                                @endphp
                                 <div class="border-b border-gray-300/80 py-4 last:border-b-0 dark:border-white/15">
                                     <div class="flex items-start gap-4">
                                         <div
                                             class="w-20 shrink-0 bg-gradient-to-r from-purple-700 to-cyan-700 bg-clip-text text-base font-bold text-transparent dark:from-purple-300 dark:to-cyan-300">
-                                            {{ Number::currency($amount, 'EUR', 'de', 2) }}
+                                            {{ Number::currency($donation['amount'], 'EUR', app()->getLocale(), 2) }}
                                         </div>
 
                                         <div class="shrink-0">
-                                            @if ($image)
-                                                <img src="{{ $image }}" alt="{{ $name }}"
+                                            @if ($donation['image'])
+                                                <img src="{{ $donation['image'] }}" alt="{{ $donation['name'] }}"
                                                     class="h-9 w-9 rounded-full border border-gray-300/80 object-cover dark:border-white/20" />
                                             @else
                                                 <div class="h-9 w-9 rounded-full bg-emerald-400/80"></div>
@@ -117,11 +111,11 @@
                                         <div class="min-w-0 flex-1">
                                             <div
                                                 class="truncate text-sm font-semibold text-gray-900 dark:text-white/90">
-                                                {{ $name }}
+                                                {{ $donation['name'] }}
                                             </div>
-                                            @if ($message)
+                                            @if ($donation['message'])
                                                 <div class="mt-1 line-clamp-3 text-xs break-words text-[#8ea0ff]">
-                                                    {{ $message }}
+                                                    {{ $donation['message'] }}
                                                 </div>
                                             @endif
                                         </div>
