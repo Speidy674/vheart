@@ -6,9 +6,12 @@ namespace App\Http\Controllers;
 
 use App\Enums\ClipVoteType;
 use App\Enums\Permission;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -102,17 +105,26 @@ class ClipVoteController extends Controller
         $session = $request->session();
         $clips = $session->get(self::SESSION_QUEUE_KEY, []);
 
-        if ($clips === []) {
-            $clips = Clip::query()
-                ->whereEligibleForVoting($user)
-                ->inRandomOrder()
-                ->limit(self::QUEUE_SIZE)
-                ->pluck('id')
-                ->toArray();
+        if ($clips !== []) {
+            return $clips;
+        }
 
-            if ($clips !== []) {
-                $session->put(self::SESSION_QUEUE_KEY, $clips);
-            }
+        $eligibleClips = static fn (HasMany|Builder $query): HasMany|Builder => $query->whereEligibleForVoting($user);
+
+        $broadcasters = Broadcaster::whereHas('clips', $eligibleClips)
+            ->inRandomOrder()
+            ->limit(self::QUEUE_SIZE)
+            ->with(['clips' => fn ($q) => $eligibleClips($q)->select('id', 'broadcaster_id')->inRandomOrder()->limit(1)])
+            ->get(['id']);
+
+        $clips = $broadcasters
+            ->pluck('clips')
+            ->flatten()
+            ->pluck('id')
+            ->toArray();
+
+        if ($clips !== []) {
+            $session->put(self::SESSION_QUEUE_KEY, $clips);
         }
 
         return $clips;
