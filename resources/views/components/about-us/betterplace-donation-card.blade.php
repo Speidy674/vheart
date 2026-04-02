@@ -18,7 +18,7 @@
                         </h2>
 
                         @if ($projectDescription)
-                            <div class="text-sm leading-relaxed text-gray-800 md:text-base dark:text-white/90">
+                            <div class="text-sm md:text-base prose dark:prose-invert">
                                 {!! $projectDescription !!}
                             </div>
                         @endif
