@@ -13,21 +13,21 @@ use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use UnitEnum;
 
-class ManageUserFilter extends Page
+class ManageCategoryFilter extends Page
 {
-    protected static string|null|BackedEnum $navigationIcon = LucideIcon::Users;
+    protected static string|null|BackedEnum $navigationIcon = LucideIcon::Folder;
 
     protected static ?int $navigationSort = 1000;
 
     protected static string|null|UnitEnum $navigationGroup = DashboardNavigationGroup::Settings;
 
-    protected string $view = 'filament.dashboard.pages.broadcaster.manage-user-filter';
+    protected string $view = 'filament.dashboard.pages.broadcaster.manage-category-filter';
 
     protected ?string $heading = '';
 
     public static function getNavigationLabel(): string
     {
-        return DashboardNavigationItem::ManageUserFilter->getLabel();
+        return DashboardNavigationItem::ManageCategoryFilter->getLabel();
     }
 
     public static function canAccess(): bool
@@ -38,6 +38,6 @@ class ManageUserFilter extends Page
 
     public function getTitle(): string|Htmlable
     {
-        return Filament::getTenant()->name.' - '.DashboardNavigationItem::ManageUserFilter->getLabel();
+        return Filament::getTenant()->name.' - '.DashboardNavigationItem::ManageCategoryFilter->getLabel();
     }
 }
