@@ -20,12 +20,12 @@ class BetterplaceDonationCard extends Component
 
     public function __construct(
         public readonly int $eventId = 55712,
-    ) {
-        $this->loadData();
-    }
+    ) {}
 
     public function render(): View
     {
+        $this->loadData();
+
         return view('components.about-us.betterplace-donation-card');
     }
 
