@@ -42,7 +42,7 @@ class BetterplaceDonationCard extends Component
         ]);
     }
 
-    protected function loadData(): array
+    private function loadData(): array
     {
         try {
             return Cache::flexible(
