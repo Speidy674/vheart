@@ -14,6 +14,8 @@ class BetterplaceDonationCard extends Component
 {
     private const int CACHE_TTL = 300;
 
+    private const string BETTERPLACE_BASE = 'https://api.betterplace.org/de/api_v4/fundraising_events/';
+
     public ?string $error = null;
 
     public array $donations = [];
@@ -38,8 +40,8 @@ class BetterplaceDonationCard extends Component
             $donationsData = Cache::get('betterplace_donations_'.$this->eventId);
 
             if ($eventData === null || $donationsData === null) {
-                $eventResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/'.$this->eventId.'.json');
-                $donationsResponse = Http::get('https://api.betterplace.org/de/api_v4/fundraising_events/'.$this->eventId.'/opinions.json');
+                $eventResponse = Http::get(self::BETTERPLACE_BASE.$this->eventId.'.json');
+                $donationsResponse = Http::get(self::BETTERPLACE_BASE.$this->eventId.'/opinions.json');
 
                 if ($eventResponse->successful() && $donationsResponse->successful()) {
                     $eventData = $eventResponse->json();
