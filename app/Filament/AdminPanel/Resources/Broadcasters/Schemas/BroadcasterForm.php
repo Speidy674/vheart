@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Services\Twitch\Data\ChannelDto;
 use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchService;
+use App\Support\Audit\Auditor;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -150,11 +151,21 @@ class BroadcasterForm
                 Hidden::make('twitch_id'),
             ])
             ->createOptionUsing(function (array $data): string {
-                return User::create([
-                    'name' => $data['twitch_name'],
-                    'avatar_url' => $data['twitch_avatar'],
-                    'id' => $data['twitch_id'],
-                ])->getKey();
+                $user = User::firstOrCreate(
+                    ['id' => $data['twitch_id']],
+                    [
+                        'name' => $data['twitch_name'],
+                        'avatar_url' => $data['twitch_avatar'],
+                        'id' => $data['twitch_id'],
+                    ]
+                );
+
+                Auditor::make()
+                    ->event('created')
+                    ->on($user)
+                    ->save();
+
+                return $user->getKey();
             })
             ->preload();
     }
