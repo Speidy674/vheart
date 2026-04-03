@@ -111,6 +111,9 @@ enum Permission: string implements HasLabel
     case UpdateAnyBroadcasterTeamMember = 'update_any_broadcaster_team_member';
     case DeleteAnyBroadcasterTeamMember = 'delete_any_broadcaster_team_member';
 
+    // Audit
+    case ViewAnyAudit = 'view_any_audit';
+
     // Non-Model stuff
     case JuryVote = 'jury_vote';
 
@@ -127,7 +130,7 @@ enum Permission: string implements HasLabel
 
     #[PermissionGroupAttribute(PermissionGroupEnum::ClipManagement)]
     case CanSubmitClipFeedback = 'can_submit_clip_feedback';
-  
+
     #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
     case CanFlagClips = 'can_flag_clips';
 
