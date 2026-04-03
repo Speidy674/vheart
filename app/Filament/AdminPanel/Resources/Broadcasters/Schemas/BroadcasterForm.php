@@ -169,7 +169,7 @@ class BroadcasterForm
                     ->on($user)
                     ->save();
 
-                return $user->getKey();
+                return (string) $user->getKey();
             })
             ->preload();
     }
