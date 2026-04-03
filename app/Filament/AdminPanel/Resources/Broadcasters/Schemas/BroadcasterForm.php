@@ -113,7 +113,9 @@ class BroadcasterForm
             ->label('User')
             ->searchable()
             ->createOptionAction(
-                fn (Action $action): Action => $action->authorize('importUser')
+                fn (Action $action): Action => $action
+                    ->authorize('importUser')
+                    ->modalDescription('Only import users who have previously interacted with the platform or given consent. Importing arbitrary Twitch users may violate GDPR or Twitch TOS.')
             )
             ->createOptionModalHeading('Import User')
             ->createOptionForm([
