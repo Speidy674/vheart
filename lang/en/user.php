@@ -10,6 +10,13 @@ return [
             'description' => 'To manage specific settings for your channel, please switch to the Broadcaster Dashboard.',
             'link' => 'Go to Broadcaster Dashboard',
         ],
+        'data-export' => [
+            'heading' => 'Your Data',
+            'subheading' => 'Download a copy of your data',
+            'description' => 'Download a copy of all personal data we have stored about your account.',
+            'confirmation' => 'Confirm using your Two-Factor Authentication',
+            'submit' => 'Download My Data',
+        ],
         'delete' => [
             'heading' => 'Delete Account',
             'subheading' => 'Are you sure you want to delete your account?',

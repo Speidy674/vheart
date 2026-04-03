@@ -209,6 +209,8 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('two-factor', static fn (Request $request): Limit => Limit::perMinute(5)->by($request->user()?->id ?? sha1((string) $request->ip())));
 
+        RateLimiter::for('data-export', static fn (Request $request) => Limit::perHour(3)->by($request->user()->id));
+
         RateLimiter::for('login', static function (Request $request): Limit {
             $throttleKey = sha1((string) $request->ip());
 

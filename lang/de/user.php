@@ -10,6 +10,13 @@ return [
             'description' => 'Um spezifische Einstellungen für deinen Kanal zu verwalten, wechsle bitte in das Broadcaster Dashboard.',
             'link' => 'Zum Broadcaster Dashboard',
         ],
+        'data-export' => [
+            'heading' => 'Deine Daten',
+            'subheading' => 'Kopie deiner Daten herunterladen',
+            'description' => 'Lade eine Kopie aller persönlichen Daten herunter, die wir zu deinem Konto gespeichert haben.',
+            'confirmation' => 'Gib zur Bestätigung deinen Zwei-Faktor Code ein',
+            'submit' => 'Meine Daten herunterladen',
+        ],
         'delete' => [
             'heading' => 'Konto Löschen',
             'subheading' => 'Möchtest du dein Konto wirklich löschen?',
