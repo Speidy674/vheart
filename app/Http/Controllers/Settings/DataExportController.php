@@ -175,6 +175,7 @@ class DataExportController extends Controller
             ->unique();
 
         return Clip::withTrashed()
+            ->withoutGlobalScopes([ClipPermissionScope::class, ClipWithoutBannedCategoryScope::class])
             ->whereIn('id', $ids)
             ->with(['tags:id,name', 'category:id,title'])
             ->get()
