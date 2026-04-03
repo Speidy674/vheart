@@ -12,6 +12,7 @@ use App\Services\Twitch\Data\ChannelDto;
 use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchService;
 use App\Support\Audit\Auditor;
+use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -111,6 +112,9 @@ class BroadcasterForm
             )
             ->label('User')
             ->searchable()
+            ->createOptionAction(
+                fn (Action $action) => $action->authorize('importUser')
+            )
             ->createOptionModalHeading('Create User')
             ->createOptionForm([
                 Select::make('twitch_user_id')
