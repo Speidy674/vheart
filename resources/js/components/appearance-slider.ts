@@ -36,7 +36,7 @@ export default (): AlpineComponent<AppearanceSliderData> => ({
         );
     },
     get activeIndex() {
-        if (! this.appearance) {
+        if (!this.appearance) {
             return -1;
         }
 

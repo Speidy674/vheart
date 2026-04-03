@@ -1,4 +1,3 @@
-import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
@@ -18,7 +17,7 @@ export interface NavGroup {
 
 export interface NavItem {
     title: string;
-    href: NonNullable<InertiaLinkProps['href']>;
+    href: string;
     icon?: LucideIcon | null;
     isActive?: boolean;
 }
@@ -42,7 +41,7 @@ export interface AuthenticatedUser {
     has_email_authentication: boolean;
     created_at: string;
     updated_at: string;
-    broadcaster?: Broadcaster
+    broadcaster?: Broadcaster;
 }
 
 export interface FaqEntryResource {
@@ -52,12 +51,11 @@ export interface FaqEntryResource {
     order: number;
 }
 
-
 export interface RoleUserListResource {
     id: number;
     name: string;
     weight: number;
-    users: PublicUser[]
+    users: PublicUser[];
 }
 
 export interface RoleResource {
@@ -86,7 +84,7 @@ export interface CategoryResource {
         medium: string;
         large: string;
         raw: string;
-    }
+    };
 }
 
 export interface PublicUser {
@@ -121,9 +119,9 @@ export interface DashboardData extends SharedData {
 }
 
 export interface Broadcaster {
-    consent: number[],
-    twitch_mod_permissions: number[],
-    submit_user_allowed: boolean,
-    submit_mods_allowed: boolean,
-    submit_vip_allowed: boolean,
+    consent: number[];
+    twitch_mod_permissions: number[];
+    submit_user_allowed: boolean;
+    submit_mods_allowed: boolean;
+    submit_vip_allowed: boolean;
 }

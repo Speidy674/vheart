@@ -1,7 +1,7 @@
 import { AlpineComponent } from 'alpinejs';
 import axios from 'axios';
 import ReportController from '@/actions/App/Http/Controllers/ReportController';
-import { ReportableItem } from '@/static/components/ui/report/button';
+import { ReportableItem } from '@/components/ui/report/button';
 
 export interface ReportModalData {
     selectedItem: ReportableItem | null;

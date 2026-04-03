@@ -101,7 +101,7 @@ class DashboardPanelProvider extends PanelProvider
             ])
             ->renderHook(
                 PanelsRenderHook::BODY_END,
-                fn (): string => '<script type="module" src="'.Vite::asset('resources/js/static/alpine.ts').'"></script>',
+                fn (): string => '<script type="module" src="'.Vite::asset('resources/js/alpine.ts').'"></script>',
             )
             ->authMiddleware([
                 Authenticate::class,

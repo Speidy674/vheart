@@ -7,11 +7,11 @@ import anchor from '@alpinejs/anchor';
 import intersect from '@alpinejs/intersect';
 import AsyncAlpine from 'async-alpine';
 
-import youtubeEmbed from '@/static/components/embeds/youtube-embed';
-import image from '@/static/components/image';
-import reportButton from '@/static/components/ui/report/button';
-import baseEmbed from './components/embeds/base-embed';
-import twitchEmbed from './components/embeds/twitch-embed';
+import youtubeEmbed from '@/components/embeds/youtube-embed';
+import image from '@/components/image';
+import reportButton from '@/components/ui/report/button';
+import baseEmbed from '@/components/embeds/base-embed';
+import twitchEmbed from '@/components/embeds/twitch-embed';
 
 document.addEventListener('alpine:init', () => {
     const Alpine = window.Alpine;
@@ -32,13 +32,10 @@ document.addEventListener('alpine:init', () => {
     // Make sure they use the x-load attribute to tell alpine that they are lazy/async
     // @see https://async-alpine.dev/docs/
     const asyncComponents: [string, () => Promise<unknown>][] = [
-        ['modal', () => import('@/static/components/ui/modal')],
-        ['reportModal', () => import('@/static/components/ui/report/modal')],
-        [
-            'appearanceSlider',
-            () => import('@/static/components/appearance-slider'),
-        ],
-        ['clipsSlider', () => import('@/static/components/index/clips-slider')],
+        ['modal', () => import('@/components/ui/modal')],
+        ['reportModal', () => import('@/components/ui/report/modal')],
+        ['appearanceSlider', () => import('@/components/appearance-slider')],
+        ['clipsSlider', () => import('@/components/index/clips-slider')],
     ];
 
     asyncComponents.forEach(([componentName, importFn]) => {
