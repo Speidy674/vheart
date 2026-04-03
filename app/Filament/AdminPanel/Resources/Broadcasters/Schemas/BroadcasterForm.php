@@ -123,7 +123,16 @@ class BroadcasterForm
                     ->searchable()
                     ->live()
                     ->getSearchResultsUsing(function (string $search, TwitchService $twitchService): array {
-                        return collect($twitchService->asSessionUser()->searchChannels($search, 100))
+                        $channels = collect($twitchService->asSessionUser()->searchChannels($search, 100));
+
+                        $existingIds = User::whereHas('broadcaster')
+                            ->whereIn('id', $channels->pluck('id'))
+                            ->pluck('id')
+                            ->map(fn ($id) => (string) $id)
+                            ->all();
+
+                        return $channels
+                            ->reject(fn (ChannelDto $c) => in_array((string) $c->id, $existingIds, true))
                             ->sortBy(fn (ChannelDto $c) => levenshtein(mb_strtolower($search), mb_strtolower($c->displayName)))
                             ->take(10)
                             ->mapWithKeys(fn (ChannelDto $c) => [$c->id => $c->displayName])
