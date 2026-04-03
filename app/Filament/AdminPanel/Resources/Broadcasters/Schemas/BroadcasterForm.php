@@ -165,7 +165,7 @@ class BroadcasterForm
                 );
 
                 Auditor::make()
-                    ->event('created')
+                    ->event($user->wasRecentlyCreated ? 'created' : 'updated')
                     ->on($user)
                     ->save();
 
