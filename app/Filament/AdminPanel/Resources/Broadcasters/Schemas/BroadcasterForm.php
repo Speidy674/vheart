@@ -13,6 +13,7 @@ use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchService;
 use App\Support\Audit\Auditor;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
@@ -160,6 +161,9 @@ class BroadcasterForm
                         $set('twitch_avatar', $user->profileImageUrl);
                         $set('twitch_id', $state);
                     }),
+                Checkbox::make('i_have_consent')
+                    ->label('I received consent from the user to import them')
+                    ->accepted(),
 
                 Hidden::make('twitch_name'),
                 Hidden::make('twitch_avatar'),
