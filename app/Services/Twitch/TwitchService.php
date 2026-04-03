@@ -134,7 +134,7 @@ class TwitchService
      */
     public function searchChannels(string $query, int $first = 20, bool $liveOnly = false, ?string $after = null): array
     {
-        if ($first < 1 || $first > 100) {
+        if ($first > 100) {
             throw new InvalidArgumentException('$first must be between 1 and 100.');
         }
 

@@ -113,7 +113,7 @@ class BroadcasterForm
             ->label('User')
             ->searchable()
             ->createOptionAction(
-                fn (Action $action) => $action->authorize('importUser')
+                fn (Action $action): Action => $action->authorize('importUser')
             )
             ->createOptionModalHeading('Import User')
             ->createOptionForm([
@@ -128,25 +128,25 @@ class BroadcasterForm
                         $existingIds = User::whereHas('broadcaster')
                             ->whereIn('id', $channels->pluck('id'))
                             ->pluck('id')
-                            ->map(fn ($id) => (string) $id)
+                            ->map(fn ($id): string => (string) $id)
                             ->all();
 
                         return $channels
-                            ->reject(fn (ChannelDto $c) => in_array((string) $c->id, $existingIds, true))
-                            ->sortBy(fn (ChannelDto $c) => levenshtein(mb_strtolower($search), mb_strtolower($c->displayName)))
+                            ->reject(fn (ChannelDto $c): bool => in_array((string) $c->id, $existingIds, true))
+                            ->sortBy(fn (ChannelDto $c): int => levenshtein(mb_strtolower($search), mb_strtolower($c->displayName)))
                             ->take(10)
-                            ->mapWithKeys(fn (ChannelDto $c) => [$c->id => $c->displayName])
+                            ->mapWithKeys(fn (ChannelDto $c): array => [$c->id => $c->displayName])
                             ->toArray();
                     })
                     ->getOptionLabelUsing(fn (?string $value, TwitchService $twitchService): ?string => User::find($value)?->name ?? self::getUser($value, $twitchService)?->displayName)
-                    ->afterStateUpdated(function (?string $state, Set $set, TwitchService $twitchService) {
+                    ->afterStateUpdated(function (?string $state, Set $set, TwitchService $twitchService): void {
                         if (! $state) {
                             return;
                         }
 
                         $user = self::getUser($state, $twitchService);
 
-                        if (! $user) {
+                        if (! $user instanceof UserDto) {
                             $set('twitch_name', null);
                             $set('twitch_avatar', null);
                             $set('twitch_id', null);
@@ -188,7 +188,7 @@ class BroadcasterForm
         return Cache::remember(
             self::class.":twitch_user_search:{$id}",
             now()->addMinute(),
-            static fn () => array_first($twitchService->asSessionUser()->getUsers(['id' => $id]))
+            static fn (): ?\App\Services\Twitch\Data\UserDto => array_first($twitchService->asSessionUser()->getUsers(['id' => $id]))
         );
     }
 }
