@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm ./bootstrap/cache/*.php
+
 echo "[Init] Running Migrations..."
 /app/artisan migrate --force
 
