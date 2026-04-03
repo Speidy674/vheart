@@ -115,7 +115,7 @@ class BroadcasterForm
             ->createOptionAction(
                 fn (Action $action) => $action->authorize('importUser')
             )
-            ->createOptionModalHeading('Create User')
+            ->createOptionModalHeading('Import User')
             ->createOptionForm([
                 Select::make('twitch_user_id')
                     ->label('Search Users on Twitch')
