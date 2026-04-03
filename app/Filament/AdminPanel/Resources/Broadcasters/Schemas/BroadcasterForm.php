@@ -129,7 +129,7 @@ class BroadcasterForm
                             ->mapWithKeys(fn (ChannelDto $c) => [$c->id => $c->displayName])
                             ->toArray();
                     })
-                    ->getOptionLabelUsing(fn (?string $value, TwitchService $twitchService): ?string => self::getUser($value, $twitchService)?->displayName)
+                    ->getOptionLabelUsing(fn (?string $value, TwitchService $twitchService): ?string => User::find($value)?->name ?? self::getUser($value, $twitchService)?->displayName)
                     ->afterStateUpdated(function (?string $state, Set $set, TwitchService $twitchService) {
                         if (! $state) {
                             return;
