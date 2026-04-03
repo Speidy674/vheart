@@ -7,7 +7,12 @@ namespace App\Filament\AdminPanel\Resources\Broadcasters\Schemas;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Enums\Filament\LucideIcon;
+use App\Models\User;
+use App\Services\Twitch\Data\ChannelDto;
+use App\Services\Twitch\Data\UserDto;
+use App\Services\Twitch\TwitchService;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -15,6 +20,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Operation;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class BroadcasterForm
 {
@@ -104,6 +110,61 @@ class BroadcasterForm
             )
             ->label('User')
             ->searchable()
+            ->createOptionModalHeading('Create User')
+            ->createOptionForm([
+                Select::make('twitch_user_id')
+                    ->label('Search Users on Twitch')
+                    ->required()
+                    ->searchable()
+                    ->live()
+                    ->getSearchResultsUsing(function (string $search, TwitchService $twitchService): array {
+                        return collect($twitchService->asSessionUser()->searchChannels($search, 100))
+                            ->sortBy(fn (ChannelDto $c) => levenshtein(mb_strtolower($search), mb_strtolower($c->displayName)))
+                            ->take(10)
+                            ->mapWithKeys(fn (ChannelDto $c) => [$c->id => $c->displayName])
+                            ->toArray();
+                    })
+                    ->getOptionLabelUsing(fn (?string $value, TwitchService $twitchService): ?string => self::getUser($value, $twitchService)?->displayName)
+                    ->afterStateUpdated(function (?string $state, Set $set, TwitchService $twitchService) {
+                        if (! $state) {
+                            return;
+                        }
+
+                        $user = self::getUser($state, $twitchService);
+
+                        if (! $user) {
+                            $set('twitch_name', null);
+                            $set('twitch_avatar', null);
+                            $set('twitch_id', null);
+
+                            return;
+                        }
+
+                        $set('twitch_name', $user->displayName);
+                        $set('twitch_avatar', $user->profileImageUrl);
+                        $set('twitch_id', $state);
+                    }),
+
+                Hidden::make('twitch_name'),
+                Hidden::make('twitch_avatar'),
+                Hidden::make('twitch_id'),
+            ])
+            ->createOptionUsing(function (array $data): string {
+                return User::create([
+                    'name' => $data['twitch_name'],
+                    'avatar_url' => $data['twitch_avatar'],
+                    'id' => $data['twitch_id'],
+                ])->getKey();
+            })
             ->preload();
+    }
+
+    private static function getUser(int|string $id, TwitchService $twitchService): ?UserDto
+    {
+        return Cache::remember(
+            self::class.":twitch_user_search:{$id}",
+            now()->addMinute(),
+            static fn () => array_first($twitchService->asSessionUser()->getUsers(['id' => $id]))
+        );
     }
 }
