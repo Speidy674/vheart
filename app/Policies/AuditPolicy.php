@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Enums\Permission;
@@ -15,7 +17,7 @@ class AuditPolicy
 
     public function view(User $user, Audit $audit): bool
     {
-        return false;
+        return $user->can(Permission::ViewAnyAudit);
     }
 
     public function create(User $user): bool
