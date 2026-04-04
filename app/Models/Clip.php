@@ -199,6 +199,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
         return $query
+            ->whereNull(['final_jury_votes', 'final_public_votes', 'final_score']) // ignore already archived clips entirely
             ->whereSubmittedAfter(now()->sub($maxAge))
             ->whereBroadcasterGavePermission()
             ->whereNotPublished()
