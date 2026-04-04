@@ -6,6 +6,7 @@ namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\RemovalRequestStatus;
 use App\Models\Clip;
+use App\Models\Traits\Auditable;
 use App\Models\User;
 use Database\Factories\Broadcaster\RemovalRequestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RemovalRequest extends Model
 {
+    use Auditable;
+
     /** @use HasFactory<RemovalRequestFactory> */
     use HasFactory;
 
