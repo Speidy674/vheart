@@ -8,6 +8,7 @@ use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use App\Models\Broadcaster\BroadcasterTeamMember;
+use App\Models\Broadcaster\RemovalRequest;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\Clip\Compilation;
@@ -141,6 +142,7 @@ class AppServiceProvider extends ServiceProvider
             'broadcaster' => Broadcaster::class,
             'broadcaster_submission_filter' => BroadcasterSubmissionFilter::class,
             'broadcaster_team_member' => BroadcasterTeamMember::class,
+            'broadcaster_removal_request' => RemovalRequest::class,
         ]);
 
         // Some logging for us so we can see if there are issues
