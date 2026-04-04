@@ -28,6 +28,9 @@ return new class extends Migration
             $table->unsignedTinyInteger('status')->default(0)->index();
             $table->string('language')->nullable();
             $table->timestamp('date');
+            $table->unsignedBigInteger('final_jury_votes')->nullable();
+            $table->unsignedBigInteger('final_public_votes')->nullable();
+            $table->unsignedBigInteger('final_score')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
