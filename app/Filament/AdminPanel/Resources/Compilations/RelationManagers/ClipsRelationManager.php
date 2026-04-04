@@ -51,7 +51,11 @@ class ClipsRelationManager extends RelationManager
                 'creator',
                 'submitter',
                 'claimer',
-            ]))
+            ])
+                ->withScore()
+                ->withPublicVoteCount()
+                ->withJuryVoteCount()
+            )
             ->recordTitleAttribute('title')
             ->columns([
                 Split::make([
