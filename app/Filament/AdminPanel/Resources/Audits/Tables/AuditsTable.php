@@ -64,7 +64,7 @@ class AuditsTable
                     ->searchable(),
 
                 TextColumn::make('user_agent')
-                    ->tooltip(fn (TextColumn $column): ?string => mb_strlen($column->getState()) > 40 ? $column->getState() : null)
+                    ->tooltip(fn (TextColumn $column): ?string => mb_strlen((string) $column->getState()) > 40 ? $column->getState() : null)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('User Agent')
                     ->limit(40)
