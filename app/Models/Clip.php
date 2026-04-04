@@ -350,6 +350,27 @@ class Clip extends Model implements Commentable, ExternalProxyable
     }
 
     /**
+     * Calculates the Clip Score as `score`
+     */
+    #[Scope]
+    protected function withScore(Builder $query): Builder
+    {
+        $juryMultiplier = config('vheart.clips.voting.jury_vote_multiplier', 10);
+
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(SUM(CASE WHEN type = ? THEN ? ELSE 1 END), 0)', [ClipVoteType::Jury->value, $juryMultiplier])
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('voted', true),
+            'score'
+        );
+    }
+
+    /**
      * Counts public votes as `public_votes`.
      */
     #[Scope]
