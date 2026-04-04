@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Clips\Schemas;
 
-use App\Enums\ClipVoteType;
 use App\Enums\Filament\LucideIcon;
 use App\Filament\AdminPanel\Resources\Users\UserResource;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
@@ -90,7 +89,7 @@ class ClipInfolist
 
                                 TextEntry::make('jury_votes')
                                     ->label(__('admin/resources/clips.table.columns.jury_votes'))
-                                    ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Jury)->whereVoted(true)->count())
+                                    ->state(fn (Clip $record) => $record->jury_votes ?? 0)
                                     ->icon(LucideIcon::Star)
                                     ->size(TextSize::Medium)
                                     ->badge()
@@ -98,7 +97,7 @@ class ClipInfolist
 
                                 TextEntry::make('public_votes')
                                     ->label(__('admin/resources/clips.table.columns.public_votes'))
-                                    ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Public)->whereVoted(true)->count())
+                                    ->state(fn (Clip $record) => $record->public_votes ?? 0)
                                     ->icon(LucideIcon::Users)
                                     ->size(TextSize::Medium)
                                     ->badge()
