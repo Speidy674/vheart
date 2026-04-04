@@ -100,7 +100,7 @@ class AuditsTable
                 DateRangeFilter::make('created_at'),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()->modalWidth(Width::ScreenTwoExtraLarge),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
