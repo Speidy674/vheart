@@ -37,6 +37,8 @@ return [
             'status' => 'Status',
             'jury_votes' => 'Jury Votes',
             'public_votes' => 'Public Votes',
+            'absolute_votes' => 'Absolute Votes',
+            'score' => 'Clip Score',
             'submitted_at' => 'Submitted At',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
