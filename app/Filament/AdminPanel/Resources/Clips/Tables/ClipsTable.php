@@ -55,9 +55,7 @@ class ClipsTable
 
                         Split::make([
                             ClipColumns::duration(),
-                            ClipColumns::juryVotes(),
-                            ClipColumns::publicVotes(),
-                            ClipColumns::score(),
+                            ClipColumns::voteStatistics(),
                             ClipColumns::status(),
                         ])->grow(false),
 

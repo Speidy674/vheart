@@ -112,6 +112,16 @@ class ClipColumns
             ->color('info');
     }
 
+    public static function voteStatistics(bool $score = true, bool $jury = true, bool $public = true, bool $absolute = false): Split
+    {
+        return Split::make(array_filter([
+            $score ? self::score() : null,
+            $jury ? self::juryVotes() : null,
+            $public ? self::publicVotes() : null,
+            $absolute ? self::absoluteVotes() : null,
+        ]));
+    }
+
     public static function status(string $column = 'status'): TextColumn
     {
         return TextColumn::make($column)
