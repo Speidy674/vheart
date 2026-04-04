@@ -67,8 +67,8 @@ class ClipColumns
     public static function juryVotes(string $column = 'jury_votes'): TextColumn
     {
         return TextColumn::make($column)
-            ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
-            ->label(__('admin/resources/clips.table.columns.votes_jury'))
+            ->tooltip(__('admin/resources/clips.table.columns.jury_votes'))
+            ->label(__('admin/resources/clips.table.columns.jury_votes'))
             ->icon(LucideIcon::Star)
             ->size(TextSize::Medium)
             ->sortable()
@@ -79,8 +79,8 @@ class ClipColumns
     public static function publicVotes(string $column = 'public_votes'): TextColumn
     {
         return TextColumn::make($column)
-            ->label(__('admin/resources/clips.table.columns.votes_public'))
-            ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
+            ->label(__('admin/resources/clips.table.columns.public_votes'))
+            ->tooltip(__('admin/resources/clips.table.columns.public_votes'))
             ->size(TextSize::Medium)
             ->icon(LucideIcon::Users)
             ->sortable()
