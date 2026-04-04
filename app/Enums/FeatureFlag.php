@@ -51,4 +51,8 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Toggles the Tenant Feature in the Broadcaster Dashboard')]
     #[DefaultFeatureFlagState(false)]
     case BroadcasterTenant = 'broadcaster_tenant';
+
+    #[Description('Enables the automatic clip archive schedule')]
+    #[DefaultFeatureFlagState(true)]
+    case ArchiveClipsSchedule = 'archive_clips_schedule';
 }
