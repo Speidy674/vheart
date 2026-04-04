@@ -88,6 +88,18 @@ class ClipColumns
             ->color('success');
     }
 
+    public static function absoluteVotes(string $column = 'absolute_votes'): TextColumn
+    {
+        return TextColumn::make($column)
+            ->label(__('admin/resources/clips.table.columns.absolute_votes'))
+            ->tooltip(__('admin/resources/clips.table.columns.absolute_votes'))
+            ->size(TextSize::Medium)
+            ->icon(LucideIcon::Users)
+            ->sortable()
+            ->badge()
+            ->color('success');
+    }
+
     public static function score(string $column = 'score'): TextColumn
     {
         return TextColumn::make($column)
