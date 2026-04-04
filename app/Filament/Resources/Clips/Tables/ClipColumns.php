@@ -88,6 +88,18 @@ class ClipColumns
             ->color('success');
     }
 
+    public static function score(string $column = 'score'): TextColumn
+    {
+        return TextColumn::make($column)
+            ->label(__('admin/resources/clips.table.columns.score'))
+            ->tooltip(__('admin/resources/clips.table.columns.score'))
+            ->size(TextSize::Medium)
+            ->icon(LucideIcon::BarChart)
+            ->sortable()
+            ->badge()
+            ->color('info');
+    }
+
     public static function status(string $column = 'status'): TextColumn
     {
         return TextColumn::make($column)
