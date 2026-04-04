@@ -355,7 +355,8 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withScore(Builder $query): Builder
     {
-        $juryMultiplier = config('vheart.clips.voting.jury_vote_multiplier', 10);
+        $juryWeight = (int) config('vheart.clips.scoring.jury_weight', 10);
+        $publicWeight = (int) config('vheart.clips.scoring.public_weight', 1);
 
         if (empty($query->getQuery()->columns)) {
             $query->addSelect($query->getModel()->getTable().'.*');
@@ -363,7 +364,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         return $query->selectSub(
             Vote::query()
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = ? THEN ? ELSE 1 END), 0)', [ClipVoteType::Jury->value, $juryMultiplier])
+                ->selectRaw('COALESCE(SUM(CASE WHEN type = ?::integer THEN ?::integer ELSE ?::integer END), 0)', [ClipVoteType::Jury->value, $juryWeight, $publicWeight])
                 ->whereColumn('clip_id', 'clips.id')
                 ->where('voted', true),
             'score'
