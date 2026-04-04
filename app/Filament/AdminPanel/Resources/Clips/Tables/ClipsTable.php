@@ -160,7 +160,7 @@ class ClipsTable
                     ->translateLabel(),
             ])
             ->filtersFormColumns(2)
-            ->defaultSort('public_votes', 'desc')
+            ->defaultSort('score', 'desc')
             ->recordActions([
                 ActionGroup::make([
                     ClipFeedbackAction::make(),
