@@ -17,5 +17,10 @@ return [
             'manage-consent' => 'Manage Consent',
             'manage-submissions' => 'Manage Submissions',
         ],
+        'removal-request-status' => [
+            'pending' => 'Pending',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+        ],
     ],
 ];
