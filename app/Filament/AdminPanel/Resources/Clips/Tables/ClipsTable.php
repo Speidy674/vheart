@@ -40,6 +40,7 @@ class ClipsTable
                 'creator',
                 'submitter',
             ])
+                ->withScore()
                 ->withPublicVoteCount()
                 ->withJuryVoteCount()
             )
@@ -56,6 +57,7 @@ class ClipsTable
                             ClipColumns::duration(),
                             ClipColumns::juryVotes(),
                             ClipColumns::publicVotes(),
+                            ClipColumns::score(),
                             ClipColumns::status(),
                         ])->grow(false),
 
