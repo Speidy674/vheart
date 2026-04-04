@@ -68,7 +68,7 @@ class ClipInfolist
                             ])
                             ->relationship('category'),
 
-                        Grid::make(3)
+                        Grid::make(4)
                             ->schema([
                                 TextEntry::make('duration')
                                     ->label(__('admin/resources/clips.table.columns.duration'))
@@ -80,16 +80,24 @@ class ClipInfolist
                                     ->badge()
                                     ->color('gray'),
 
-                                TextEntry::make('votes_jury')
-                                    ->label(__('admin/resources/clips.table.columns.votes_jury'))
+                                TextEntry::make('score')
+                                    ->label(__('admin/resources/clips.table.columns.score'))
+                                    ->state(fn (Clip $record) => $record->score ?? 0)
+                                    ->icon(LucideIcon::BarChart)
+                                    ->size(TextSize::Medium)
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('jury_votes')
+                                    ->label(__('admin/resources/clips.table.columns.jury_votes'))
                                     ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Jury)->whereVoted(true)->count())
                                     ->icon(LucideIcon::Star)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('warning'),
 
-                                TextEntry::make('votes_public')
-                                    ->label(__('admin/resources/clips.table.columns.votes_public'))
+                                TextEntry::make('public_votes')
+                                    ->label(__('admin/resources/clips.table.columns.public_votes'))
                                     ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Public)->whereVoted(true)->count())
                                     ->icon(LucideIcon::Users)
                                     ->size(TextSize::Medium)
