@@ -16,8 +16,8 @@ return [
             'maximum_age' => CarbonInterval::fromString((string) env('VHEART_CLIPS_VOTING_MAXIMUM_AGE', '6 months')),
         ],
         'scoring' => [
-            'jury_weight' => 10,
-            'public_weight' => 1,
+            'jury_weight' => (int) env('VHEART_CLIPS_SCORING_JURY_WEIGHT', 10),
+            'public_weight' => (int) env('VHEART_CLIPS_SCORING_PUBLIC_WEIGHT', 1),
         ],
     ],
 ];
