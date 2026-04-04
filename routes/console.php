@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Console\Commands\ArchiveClipVotesCommand;
 use App\Models\Audit;
 use Illuminate\Database\Console\PruneCommand;
 use Illuminate\Support\Facades\Schedule;
@@ -26,5 +27,10 @@ Schedule::call(static function () {
 Schedule::command(PruneCommand::class)
     ->name('Prune Models')
     ->description('Prune Models based on their Prune definition')
+    ->onOneServer()
+    ->daily();
+
+Schedule::command(ArchiveClipVotesCommand::class)
+    ->runInBackground()
     ->onOneServer()
     ->daily();
