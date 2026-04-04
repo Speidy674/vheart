@@ -12,10 +12,12 @@ use Database\Factories\Broadcaster\RemovalRequestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kirschbaum\Commentions\HasComments;
 
 class RemovalRequest extends Model
 {
     use Auditable;
+    use HasComments;
 
     /** @use HasFactory<RemovalRequestFactory> */
     use HasFactory;
