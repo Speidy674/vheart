@@ -39,11 +39,7 @@ class ClipsTable
                 'broadcaster',
                 'creator',
                 'submitter',
-            ])
-                ->withScore()
-                ->withPublicVoteCount()
-                ->withJuryVoteCount()
-            )
+            ]))
             ->columns([
                 Split::make([
                     Stack::make([
