@@ -8,12 +8,15 @@ use App\Enums\Broadcaster\RemovalRequestStatus;
 use App\Models\Clip;
 use App\Models\Traits\Auditable;
 use App\Models\User;
+use App\Policies\Broadcaster\RemovalRequestPolicy;
 use Database\Factories\Broadcaster\RemovalRequestFactory;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kirschbaum\Commentions\HasComments;
 
+#[UsePolicy(RemovalRequestPolicy::class)]
 class RemovalRequest extends Model
 {
     use Auditable;
