@@ -39,7 +39,6 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\ComponentAttributeBag;
-use Inertia\Inertia;
 use Kirschbaum\Commentions\Comment;
 use Kirschbaum\Commentions\Config;
 use SocialiteProviders\Manager\SocialiteWasCalled;
@@ -167,8 +166,6 @@ class AppServiceProvider extends ServiceProvider
             URL::forceHttps();
         }
 
-        Inertia::encryptHistory();
-
         Translatable::fallback('en');
         JsonResource::withoutWrapping();
 
@@ -212,6 +209,8 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('two-factor', static fn (Request $request): Limit => Limit::perMinute(5)->by($request->user()?->id ?? sha1((string) $request->ip())));
 
+        RateLimiter::for('data-export', static fn (Request $request) => Limit::perHour(3)->by($request->user()->id));
+
         RateLimiter::for('login', static function (Request $request): Limit {
             $throttleKey = sha1((string) $request->ip());
 
@@ -239,7 +238,5 @@ class AppServiceProvider extends ServiceProvider
         if (app()->isProduction() || str_starts_with((string) config('app.url'), 'https://')) {
             URL::forceHttps();
         }
-
-        Inertia::encryptHistory();
     }
 }

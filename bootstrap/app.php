@@ -5,14 +5,11 @@ declare(strict_types=1);
 use App\Http\Middleware\AssignRequestId;
 use App\Http\Middleware\FeatureFlagGuard;
 use App\Http\Middleware\HandleAppearance;
-use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\Localization;
 use App\Http\Middleware\StagingGateMiddleware;
-use App\Http\Middleware\ValidateSecFetchHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
@@ -32,18 +29,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state', 'vheart_cookie_consent']);
+        $middleware->preventRequestForgery(originOnly: true);
 
         $middleware->web(
             append: [
-                ValidateSecFetchHeaders::class,
                 HandleAppearance::class,
-                HandleInertiaRequests::class,
                 AddLinkHeadersForPreloadedAssets::class,
             ], prepend: [
                 StagingGateMiddleware::class,
                 Localization::class,
-            ], remove: [
-                ValidateCsrfToken::class,
             ]);
 
         $middleware->appendToPriorityList(
