@@ -7,7 +7,6 @@ namespace App\Filament\AdminPanel\Resources\Clips\Tables;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
-use App\Enums\ClipVoteType;
 use App\Enums\Filament\LucideIcon;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Management\ClipFeedbackAction;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\FlagClipAction;
@@ -40,15 +39,7 @@ class ClipsTable
                 'broadcaster',
                 'creator',
                 'submitter',
-            ])
-                ->withCount([
-                    'votes as votes_jury' => function (Builder $query): void {
-                        $query->where('type', ClipVoteType::Jury)->whereVoted(true);
-                    },
-                    'votes as votes_public' => function (Builder $query): void {
-                        $query->where('type', ClipVoteType::Public)->whereVoted(true);
-                    },
-                ]))
+            ]))
             ->columns([
                 Split::make([
                     Stack::make([
@@ -60,8 +51,7 @@ class ClipsTable
 
                         Split::make([
                             ClipColumns::duration(),
-                            ClipColumns::juryVotes('votes_jury'),
-                            ClipColumns::publicVotes('votes_public'),
+                            ClipColumns::voteStatistics(),
                             ClipColumns::status(),
                         ])->grow(false),
 
@@ -170,7 +160,7 @@ class ClipsTable
                     ->translateLabel(),
             ])
             ->filtersFormColumns(2)
-            ->defaultSort('votes_public', 'desc')
+            ->defaultSort('score', 'desc')
             ->recordActions([
                 ActionGroup::make([
                     ClipFeedbackAction::make(),

@@ -51,7 +51,11 @@ class ClipsRelationManager extends RelationManager
                 'creator',
                 'submitter',
                 'claimer',
-            ]))
+            ])
+                ->withScore()
+                ->withPublicVoteCount()
+                ->withJuryVoteCount()
+            )
             ->recordTitleAttribute('title')
             ->columns([
                 Split::make([
@@ -63,8 +67,7 @@ class ClipsRelationManager extends RelationManager
                         ClipColumns::title(),
                         Split::make([
                             ClipColumns::duration(),
-                            ClipColumns::juryVotes('votes_jury'),
-                            ClipColumns::publicVotes('votes_public'),
+                            ClipColumns::voteStatistics(),
                             ClipColumns::status()
                                 ->label('admin/resources/compilations.relation_managers.clips.columns.status_moderation')
                                 ->tooltip(__('admin/resources/compilations.relation_managers.clips.columns.status_moderation')),
