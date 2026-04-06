@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Clips\Schemas;
 
-use App\Enums\ClipVoteType;
 use App\Enums\Filament\LucideIcon;
 use App\Filament\AdminPanel\Resources\Users\UserResource;
 use App\Filament\Infolists\Components\TwitchEmbedEntry;
@@ -68,7 +67,7 @@ class ClipInfolist
                             ])
                             ->relationship('category'),
 
-                        Grid::make(3)
+                        Grid::make(4)
                             ->schema([
                                 TextEntry::make('duration')
                                     ->label(__('admin/resources/clips.table.columns.duration'))
@@ -80,17 +79,25 @@ class ClipInfolist
                                     ->badge()
                                     ->color('gray'),
 
-                                TextEntry::make('votes_jury')
-                                    ->label(__('admin/resources/clips.table.columns.votes_jury'))
-                                    ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Jury)->whereVoted(true)->count())
+                                TextEntry::make('score')
+                                    ->label(__('admin/resources/clips.table.columns.score'))
+                                    ->state(fn (Clip $record) => $record->score ?? 0)
+                                    ->icon(LucideIcon::BarChart)
+                                    ->size(TextSize::Medium)
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('jury_votes')
+                                    ->label(__('admin/resources/clips.table.columns.jury_votes'))
+                                    ->state(fn (Clip $record) => $record->jury_votes ?? 0)
                                     ->icon(LucideIcon::Star)
                                     ->size(TextSize::Medium)
                                     ->badge()
                                     ->color('warning'),
 
-                                TextEntry::make('votes_public')
-                                    ->label(__('admin/resources/clips.table.columns.votes_public'))
-                                    ->state(fn (Clip $record) => $record->votes()->where('type', ClipVoteType::Public)->whereVoted(true)->count())
+                                TextEntry::make('public_votes')
+                                    ->label(__('admin/resources/clips.table.columns.public_votes'))
+                                    ->state(fn (Clip $record) => $record->public_votes ?? 0)
                                     ->icon(LucideIcon::Users)
                                     ->size(TextSize::Medium)
                                     ->badge()

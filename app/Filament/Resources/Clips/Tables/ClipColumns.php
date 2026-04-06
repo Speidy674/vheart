@@ -58,7 +58,7 @@ class ClipColumns
             ->icon(LucideIcon::Clock)
             ->size(TextSize::Medium)
             ->sortable()
-            ->formatStateUsing(fn (int $state): string => gmdate('i:s', $state))
+            ->formatStateUsing(fn (int $state): string => round($state).'s')
             ->fontFamily(FontFamily::Mono)
             ->badge()
             ->color('gray');
@@ -67,8 +67,8 @@ class ClipColumns
     public static function juryVotes(string $column = 'jury_votes'): TextColumn
     {
         return TextColumn::make($column)
-            ->tooltip(__('admin/resources/clips.table.columns.votes_jury'))
-            ->label(__('admin/resources/clips.table.columns.votes_jury'))
+            ->tooltip(__('admin/resources/clips.table.columns.jury_votes'))
+            ->label(__('admin/resources/clips.table.columns.jury_votes'))
             ->icon(LucideIcon::Star)
             ->size(TextSize::Medium)
             ->sortable()
@@ -79,13 +79,47 @@ class ClipColumns
     public static function publicVotes(string $column = 'public_votes'): TextColumn
     {
         return TextColumn::make($column)
-            ->label(__('admin/resources/clips.table.columns.votes_public'))
-            ->tooltip(__('admin/resources/clips.table.columns.votes_public'))
+            ->label(__('admin/resources/clips.table.columns.public_votes'))
+            ->tooltip(__('admin/resources/clips.table.columns.public_votes'))
             ->size(TextSize::Medium)
             ->icon(LucideIcon::Users)
             ->sortable()
             ->badge()
             ->color('success');
+    }
+
+    public static function absoluteVotes(string $column = 'absolute_votes'): TextColumn
+    {
+        return TextColumn::make($column)
+            ->label(__('admin/resources/clips.table.columns.absolute_votes'))
+            ->tooltip(__('admin/resources/clips.table.columns.absolute_votes'))
+            ->size(TextSize::Medium)
+            ->icon(LucideIcon::Users)
+            ->sortable()
+            ->badge()
+            ->color('success');
+    }
+
+    public static function score(string $column = 'score'): TextColumn
+    {
+        return TextColumn::make($column)
+            ->label(__('admin/resources/clips.table.columns.score'))
+            ->tooltip(__('admin/resources/clips.table.columns.score'))
+            ->size(TextSize::Medium)
+            ->icon(LucideIcon::BarChart)
+            ->sortable()
+            ->badge()
+            ->color('info');
+    }
+
+    public static function voteStatistics(bool $score = true, bool $jury = true, bool $public = true, bool $absolute = false): Split
+    {
+        return Split::make(array_filter([
+            $score ? self::score() : null,
+            $jury ? self::juryVotes() : null,
+            $public ? self::publicVotes() : null,
+            $absolute ? self::absoluteVotes() : null,
+        ]));
     }
 
     public static function status(string $column = 'status'): TextColumn

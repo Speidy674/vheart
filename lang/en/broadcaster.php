@@ -19,5 +19,10 @@ return [
             'manage-user-filter' => 'Manage User Filter',
             'manage-category-filter' => 'Manage Category Filter',
         ],
+        'removal-request-status' => [
+            'pending' => 'Pending',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+        ],
     ],
 ];
