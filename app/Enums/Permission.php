@@ -137,6 +137,8 @@ enum Permission: string implements HasLabel
     #[PermissionGroupAttribute(PermissionGroupEnum::Moderation)]
     case CanUnflagClips = 'can_unflag_clips';
 
+    case CanImportUsers = 'can_import_user';
+
     public function getPermissionGroup(): string
     {
         static $cache = [];

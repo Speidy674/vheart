@@ -6,6 +6,7 @@ namespace App\Services\Twitch\Enums;
 
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
 use App\Services\Twitch\Data\CategoryDto;
+use App\Services\Twitch\Data\ChannelDto;
 use App\Services\Twitch\Data\ClipDownloadDto;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Data\GameDto;
@@ -104,6 +105,15 @@ enum TwitchEndpoints: string
     case SearchCategories = 'search/categories';
 
     /**
+     * Gets the channels that match the specified query and have streamed content within the past 6 months.
+     *
+     * - Requires an app access token or user access token.
+     *
+     * @link https://dev.twitch.tv/docs/api/reference#search-channels
+     */
+    case SearchChannels = 'search/channels';
+
+    /**
      * Gets information about one or more users.
      *
      * You may look up users using their user ID, login name, or both but the sum total of the number of users you may look up is 100. For example, you may specify 50 IDs and 50 names or 100 IDs or names, but you cannot specify 100 IDs and 100 names.
@@ -126,6 +136,7 @@ enum TwitchEndpoints: string
             self::SearchCategories => CategoryDto::class,
             self::GetGames => GameDto::class,
             self::GetClipsDownload => ClipDownloadDto::class,
+            self::SearchChannels => ChannelDto::class,
             self::GetUsers => UserDto::class,
             self::GetModeratedChannels, self::GetVIPs => SimpleUserDto::class,
             default => null,

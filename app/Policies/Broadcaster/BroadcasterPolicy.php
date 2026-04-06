@@ -25,6 +25,11 @@ class BroadcasterPolicy
         return $user->can(Permission::CreateBroadcaster);
     }
 
+    public function importUser(User $user): bool
+    {
+        return $user->can(Permission::CanImportUsers);
+    }
+
     public function update(User $user, Broadcaster $broadcaster): bool
     {
         return $user->can(Permission::UpdateAnyBroadcaster);

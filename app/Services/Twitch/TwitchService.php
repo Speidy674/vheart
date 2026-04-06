@@ -7,6 +7,7 @@ namespace App\Services\Twitch;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
+use App\Services\Twitch\Data\ChannelDto;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Data\SimpleUserDto;
 use App\Services\Twitch\Data\UserDto;
@@ -19,6 +20,7 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Promises\LazyPromise;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Cache;
+use InvalidArgumentException;
 use LogicException;
 
 /**
@@ -45,20 +47,20 @@ class TwitchService
      * Authenticates as a User.
      * This will automatically update a $user's twitch_refresh_token if $user is an instance of User and you did not provide a custom closure.
      *
-     * @param ?string $refreshToken
-     *          The Twitch Refresh Token, if a User or Broadcaster was provided, will be set to the users refresh token if not given.
-     * @param ?string $accessToken
-     *          The Twitch Access Token, if null we will request a new one based on the $refreshToken
-     * @param (Closure(string $accessToken, string $refreshToken, int $expiresIn): void)|null $onRefresh
-     *          Called automatically when the user token is refreshed.
+     * @param  ?string  $refreshToken
+     *                                 The Twitch Refresh Token, if a User or Broadcaster was provided, will be set to the users refresh token if not given.
+     * @param  ?string  $accessToken
+     *                                The Twitch Access Token, if null we will request a new one based on the $refreshToken
+     * @param  (Closure(string $accessToken, string $refreshToken, int $expiresIn): void)|null  $onRefresh
+     *                                                                                                      Called automatically when the user token is refreshed.
      */
     public function asUser(User|Broadcaster|int $user, ?string $refreshToken = null, ?string $accessToken = null, ?Closure $onRefresh = null): self
     {
-        if($user instanceof User && ! $refreshToken) {
+        if ($user instanceof User && ! $refreshToken) {
             $refreshToken = $user->twitch_refresh_token;
         }
 
-        if($user instanceof Broadcaster && ! $refreshToken) {
+        if ($user instanceof Broadcaster && ! $refreshToken) {
             $refreshToken = $user->user->twitch_refresh_token;
             $user = $user->user;
         }
@@ -67,13 +69,13 @@ class TwitchService
 
         if ($onRefresh instanceof Closure) {
             $context = $context->withOnRefresh($onRefresh);
-        } elseif($user instanceof User && $refreshToken) {
+        } elseif ($user instanceof User && $refreshToken) {
             $context = $context->withOnRefresh(
                 static fn (string $at, string $refreshToken) => $user->update(['twitch_refresh_token' => $refreshToken])
             );
         }
 
-        return clone($this, [
+        return clone ($this, [
             'client' => $this->client->asUser($context),
         ]);
     }
@@ -85,14 +87,14 @@ class TwitchService
     {
         $user = auth()->user();
 
-        if(! $user) {
+        if (! $user) {
             throw new LogicException('Cannot use TwitchService->asSessionUser() outside of authenticated context.');
         }
 
         return $this->asUser($user,
             refreshToken: $user->twitch_refresh_token,
             accessToken: session()?->get('twitch_access_token'),
-            onRefresh: $onRefresh ?? static function(string $accessToken, string $refreshToken) use ($user): void {
+            onRefresh: $onRefresh ?? static function (string $accessToken, string $refreshToken) use ($user): void {
                 $user->update(['twitch_refresh_token' => $refreshToken]);
                 session()->set('twitch_access_token', $accessToken);
             }
@@ -104,7 +106,7 @@ class TwitchService
      */
     public function asApp(): self
     {
-        return clone($this, [
+        return clone ($this, [
             'client' => $this->client->asApp(),
         ]);
     }
@@ -113,6 +115,7 @@ class TwitchService
      * @link https://dev.twitch.tv/docs/api/reference#get-users
      *
      * @return list<UserDto>
+     *
      * @throws TwitchApiException|ConnectionException
      */
     public function getUsers(array $params = []): array
@@ -121,11 +124,35 @@ class TwitchService
     }
 
     /**
+     * @link https://dev.twitch.tv/docs/api/reference#search-channels
+     *
+     * @param  positive-int  $first  The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page. The default is 20.
+     * @param  bool  $liveOnly  A Boolean value that determines whether the response includes only channels that are currently streaming live. Set to true to get only channels that are streaming live; otherwise, false to get live and offline channels. The default is false.
+     * @return list<ChannelDto>
+     *
+     * @throws TwitchApiException|ConnectionException
+     */
+    public function searchChannels(string $query, int $first = 20, bool $liveOnly = false, ?string $after = null): array
+    {
+        if ($first > 100) {
+            throw new InvalidArgumentException('$first must be between 1 and 100.');
+        }
+
+        return $this->collection(TwitchEndpoints::SearchChannels, array_filter([
+            'query' => $query,
+            'live_only' => $liveOnly ? 'true' : 'false',
+            'after' => $after,
+            'first' => $first,
+        ]));
+    }
+
+    /**
      * Returns a single clip by its Twitch Clip ID, or null if it does not exist.
      *
      * @link https://dev.twitch.tv/docs/api/reference#get-clips
      *
      * @return ?ClipDto
+     *
      * @throws ConnectionException
      */
     public function getClip(string $clipId): ?TwitchDtoInterface
@@ -141,6 +168,7 @@ class TwitchService
      * @link https://dev.twitch.tv/docs/api/reference#get-clips
      *
      * @return list<ClipDto>
+     *
      * @throws TwitchApiException|ConnectionException
      */
     public function getClips(array $params = []): array
@@ -186,6 +214,7 @@ class TwitchService
      * **Cached per user for 5 minutes.**
      *
      * @return list<positive-int>
+     *
      * @link https://dev.twitch.tv/docs/api/reference#get-moderated-channels Get Moderated Channels Documentation
      */
     public function getModeratedChannels(): array
@@ -196,10 +225,10 @@ class TwitchService
             "twitch:moderated_channels:{$userId}",
             now()->addMinutes(5),
             fn (): array => array_map(
-                static fn(SimpleUserDto $simpleUserDto): int => $simpleUserDto->id,
+                static fn (SimpleUserDto $simpleUserDto): int => $simpleUserDto->id,
                 $this->collection(TwitchEndpoints::GetModeratedChannels, [
                     'user_id' => $userId,
-                    'first'   => 100,
+                    'first' => 100,
                 ])
             ),
         );
@@ -224,7 +253,7 @@ class TwitchService
             now()->addMinute(),
             fn (): bool => count($this->collection(TwitchEndpoints::GetVIPs, [
                 'broadcaster_id' => $broadcasterId,
-                'user_id'        => $userId,
+                'user_id' => $userId,
             ])) > 0
         );
     }
@@ -233,8 +262,10 @@ class TwitchService
      * GET From Twitch and convert the response to a DTO
      *
      * @template T of TwitchDtoInterface
-     * @param class-string<T> $dtoClass
+     *
+     * @param  class-string<T>  $dtoClass
      * @return TwitchDtoInterface<T>
+     *
      * @throws ConnectionException|TwitchApiException
      */
     public function getAs(string $dtoClass, TwitchEndpoints|string $endpoint, array $params = []): TwitchDtoInterface
@@ -256,8 +287,10 @@ class TwitchService
      * POST to Twitch and convert the response to a DTO
      *
      * @template T of TwitchDtoInterface
-     * @param class-string<T> $dtoClass
+     *
+     * @param  class-string<T>  $dtoClass
      * @return TwitchDtoInterface<T>
+     *
      * @throws ConnectionException|TwitchApiException
      */
     public function postAs(string $dtoClass, TwitchEndpoints|string $endpoint, array $data): TwitchDtoInterface
@@ -279,6 +312,7 @@ class TwitchService
      * Fetches a collection endpoint and hydrates the response through its DTO.
      *
      * @return list<TwitchDtoInterface>
+     *
      * @throws TwitchApiException|ConnectionException
      */
     public function collection(TwitchEndpoints $endpoint, array $params = []): array
@@ -291,6 +325,7 @@ class TwitchService
 
     /**
      * Fetches an endpoint and returns the raw response data.
+     *
      * @throws TwitchApiException|ConnectionException
      */
     public function rawData(TwitchEndpoints $endpoint, array $params = []): array
