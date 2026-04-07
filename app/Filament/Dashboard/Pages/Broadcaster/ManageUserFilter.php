@@ -6,9 +6,11 @@ namespace App\Filament\Dashboard\Pages\Broadcaster;
 
 use App\Enums\Broadcaster\DashboardNavigationGroup;
 use App\Enums\Broadcaster\DashboardNavigationItem;
+use App\Enums\FeatureFlag;
 use App\Enums\Filament\LucideIcon;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
+use App\Support\FeatureFlag\Feature;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -57,7 +59,7 @@ class ManageUserFilter extends Page implements HasActions, HasSchemas, HasTable
     public static function canAccess(): bool
     {
         // later we can check for permission to this specific page here
-        return Filament::getTenant()?->id === auth()->user()?->id;
+        return Feature::isActive(FeatureFlag::BroadcasterUserSubmissionFilterManager) && Filament::getTenant()?->id === auth()->user()?->id;
     }
 
     public function getTitle(): string|Htmlable

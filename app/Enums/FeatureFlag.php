@@ -51,4 +51,8 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Toggles the Tenant Feature in the Broadcaster Dashboard')]
     #[DefaultFeatureFlagState(false)]
     case BroadcasterTenant = 'broadcaster_tenant';
+
+    #[Description('Toggles the Broadcaster User Submission Filter Manager in the Broadcaster Dashboard Settings')]
+    #[DefaultFeatureFlagState(false)]
+    case BroadcasterUserSubmissionFilterManager = 'broadcaster_user_submission_filter_manager';
 }
