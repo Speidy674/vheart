@@ -172,17 +172,6 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                                 ->sortBy(fn (array $item): int => levenshtein(mb_strtolower($search), mb_strtolower((string) $item['title'])))
                                 ->mapWithKeys(fn (array $item): array => [$item['id'] => $item['title']])->each(fn ($title, $id) => Log::info('Testing', ['id' => $id, 'title' => $title]));
                         })
-                    ->options(fn () => Category::query()
-                        ->whereNotExists(function ($query): void {
-                            $query->from('broadcaster_submission_filters')
-                                ->whereColumn('broadcaster_submission_filters.filterable_id', (new Category)->getTable().'.id')
-                                ->where('broadcaster_submission_filters.filterable_type', $this->getMorphClass())
-                                ->where('broadcaster_submission_filters.broadcaster_id', $this->getOwnerRecord()->id);
-                        })
-                        ->orderBy('created_at', 'desc')
-                        ->limit(5)
-                        ->pluck('title', 'id')
-                    )
                     ->getOptionLabelUsing(function (string $value, TwitchService $twitchService, ImportCategoryAction $importCategoryAction) {
                         if ($title = Category::find((int) $value)?->title) {
                             return $title;
