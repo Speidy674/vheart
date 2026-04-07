@@ -27,6 +27,6 @@ class TeamController extends Controller
             )
             ->get();
 
-        return view('team.index', ['total' => $total, 'roles' => $roles]);
+        return view('team.index', ['roles' => $roles]);
     }
 }
