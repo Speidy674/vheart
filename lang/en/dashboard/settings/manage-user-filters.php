@@ -5,6 +5,10 @@ declare(strict_types=1);
 return [
     'section' => [
         'description' => '',
+        'model' => [
+            'singular' => 'User Filter',
+            'plural' => 'User Filters',
+        ],
     ],
     'table' => [
         'name' => 'User',

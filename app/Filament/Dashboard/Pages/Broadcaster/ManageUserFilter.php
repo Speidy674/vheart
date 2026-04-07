@@ -107,6 +107,8 @@ class ManageUserFilter extends Page implements HasActions, HasSchemas, HasTable
             ])
             ->heading(DashboardNavigationItem::ManageUserFilter->getLabel())
             ->description(__('dashboard/settings/manage-user-filters.section.description'))
+            ->modelLabel(__('dashboard/settings/manage-user-filters.section.model.singular'))
+            ->pluralModelLabel(__('dashboard/settings/manage-user-filters.section.model.plural'))
             ->toolbarActions([
                 CreateAction::make()
                     ->schema([
