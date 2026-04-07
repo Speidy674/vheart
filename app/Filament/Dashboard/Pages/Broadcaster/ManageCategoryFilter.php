@@ -125,7 +125,9 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modelLabel(__('dashboard/settings/manage-category-filters.section.model.singular'))
+            ->pluralModelLabel(__('dashboard/settings/manage-category-filters.section.model.plural'));
     }
 
     /**
