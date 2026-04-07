@@ -84,7 +84,6 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                     ->label('')
                     ->imageHeight(100)
                     ->grow(false)
-                    ->translateLabel()
                     ->width(75),
                 TextColumn::make('filterable.title')
                     ->searchable(query: fn (Builder $query, string $search) => $query->whereHasMorph(
