@@ -9,9 +9,6 @@
                 </span>
             </h1>
             <div class="mx-auto h-1.5 w-24 rounded-full bg-linear-to-r from-purple-500 to-cyan-500"></div>
-            <p class="mt-8 text-sm font-bold tracking-[0.3em] text-purple-600 uppercase dark:text-cyan-400">
-                {{ __('team.total_members', ['count' => $total]) }}
-            </p>
         </div>
         <div class="space-y-32">
             @forelse($roles as $role)
