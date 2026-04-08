@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             InitialEpisodeSeeder::class,
             FaqSeeder::class,
             FeatureFlagSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }
