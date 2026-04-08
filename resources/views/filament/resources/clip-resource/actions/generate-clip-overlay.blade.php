@@ -1,6 +1,6 @@
 <div
     x-load
-    x-data="filamentClipOverlay(@js($initialState))"
+    x-data="filamentClipOverlay(@js($initialState), '{{ $identifier }}')"
     x-init="init()"
     class="mt-4 space-y-4"
 >

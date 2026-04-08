@@ -78,6 +78,11 @@ class GenerateClipOverlayAction extends Action
                         'avatar' => $record->broadcaster?->user?->proxiedContentUrl() ?? '',
                         'show_avatar' => true,
                     ],
+                    'identifier' => $record->id
+                        .'__'.Str::slug($record->broadcaster?->name ?? 'Unknown Broadcaster')
+                        .'__'.Str::slug($record->category?->title ?? 'Unknown Category')
+                        .'__'.Str::slug($record->claimer?->name ?? 'Unknown Cutter')
+                        .'__'.Str::slug($record->creator?->name ?? 'Unknown Creator'),
                 ]
             ))
             ->action(fn () => null);

@@ -1,11 +1,12 @@
 import domtoimage from 'dom-to-image-more';
 
-export default ($initialState) => ({
+export default ($initialState, identifier) => ({
     width: 1920,
     height: 1080,
     previewScale: 1,
     exportScale: 2,
     form: { ...$initialState },
+    identifier: identifier || 'nevergonnagiveyouup',
     _renderTimer: null,
     _lastDataUrl: null,
     _listener: null,
@@ -121,9 +122,10 @@ export default ($initialState) => ({
     async downloadOverlay(scale) {
         await this.render(false, scale);
         if (!this._lastDataUrl) return;
+        scale = scale || 1;
 
         const link = document.createElement('a');
-        link.download = `overlay-${this.width * scale}x${this.height * scale}-x${scale}.png`;
+        link.download = `${this.identifier}__${this.width * scale}x${this.height * scale}-x${scale}.png`;
         link.href = this._lastDataUrl;
         link.click();
     },
