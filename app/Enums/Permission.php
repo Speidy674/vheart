@@ -16,8 +16,6 @@ enum Permission: string implements HasLabel
 
     // User
     case ViewAnyUser = 'view_any_user';
-    case ViewUser = 'view_user';
-    case CreateUser = 'create_user';
     case UpdateAnyUser = 'update_any_user';
     case DeleteAnyUser = 'delete_any_user';
     case RestoreAnyUser = 'restore_any_user';

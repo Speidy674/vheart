@@ -29,8 +29,6 @@ class RolePermissionSeeder extends Seeder
 
     protected array $moderatorPermissions = [
         Permission::ViewAnyUser,
-        Permission::ViewUser,
-        Permission::CreateUser,
         Permission::UpdateAnyUser,
         Permission::DeleteAnyUser,
         Permission::RestoreAnyUser,
@@ -72,7 +70,6 @@ class RolePermissionSeeder extends Seeder
 
     protected array $cutterPermissions = [
         Permission::ViewAnyUser,
-        Permission::ViewUser,
         Permission::ViewAnyCompilation,
         Permission::ViewCompilation,
         Permission::CreateCompilation,
