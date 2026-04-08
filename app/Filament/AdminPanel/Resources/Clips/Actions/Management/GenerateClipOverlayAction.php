@@ -85,7 +85,7 @@ class GenerateClipOverlayAction extends Action
                         .'__'.Str::slug($record->creator?->name ?? 'Unknown Creator'),
                 ]
             ))
-            ->action(fn () => null);
+            ->action(null);
     }
 
     public static function getDefaultName(): ?string
