@@ -10,11 +10,11 @@ use App\Enums\ExternalContentProxyType;
 use App\Enums\FeatureFlag;
 use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
-use App\Models\Broadcaster\BroadcasterTeamMember;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
+use App\Models\Traits\User\UserRelationships;
 use App\Policies\UserPolicy;
 use App\Services\Twitch\TwitchService;
 use App\Support\FeatureFlag\Feature;
@@ -33,10 +33,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -59,6 +55,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
+    use UserRelationships;
     use InteractsWithAppAuthentication;
     use InteractsWithAppAuthenticationRecovery;
     use Notifiable;
@@ -149,14 +146,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     }
 
     /**
-     * @return BelongsToMany<Role, $this, Pivot>
-     */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_roles');
-    }
-
-    /**
      * The role with the highest weight on this user
      */
     public function getRole(): ?Role
@@ -216,38 +205,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return $this->proxiedContentUrl();
     }
 
-    /**
-     * @return HasMany<Vote, $this>
-     */
-    public function votes(): HasMany
-    {
-        return $this->hasMany(Vote::class);
-    }
-
-    /**
-     * @return HasMany<Clip, $this>
-     */
-    public function broadcastedClips(): HasMany
-    {
-        return $this->hasMany(Clip::class, 'broadcaster_id');
-    }
-
-    /**
-     * @return HasMany<Clip, $this>
-     */
-    public function createdClips(): HasMany
-    {
-        return $this->hasMany(Clip::class, 'creator_id');
-    }
-
-    /**
-     * @return HasMany<Clip, $this>
-     */
-    public function submittedClips(): HasMany
-    {
-        return $this->hasMany(Clip::class, 'submitter_id');
-    }
-
     public function hasVerifiedEmail(): bool
     {
         if (is_null($this->email)) {
@@ -256,14 +213,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         }
 
         return parent::hasVerifiedEmail();
-    }
-
-    /**
-     * @return HasOne<Broadcaster, $this>
-     */
-    public function broadcaster(): HasOne
-    {
-        return $this->hasOne(Broadcaster::class, 'id');
     }
 
     public function canAccessPanel(Panel $panel): bool
@@ -303,14 +252,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     public function getProxyType(): ExternalContentProxyType
     {
         return ExternalContentProxyType::TwitchUser;
-    }
-
-    /**
-     * @return HasMany<BroadcasterTeamMember, $this>
-     */
-    public function broadcasterTeamMembers(): HasMany
-    {
-        return $this->hasMany(BroadcasterTeamMember::class);
     }
 
     public function canAccessTenant(Model $tenant): bool
