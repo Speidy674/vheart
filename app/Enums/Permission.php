@@ -23,8 +23,6 @@ enum Permission: string implements HasLabel
 
     // Report
     case ViewAnyReport = 'view_any_report';
-    case ViewReport = 'view_report';
-    case CreateReport = 'create_report';
     case UpdateAnyReport = 'update_any_report';
     case DeleteAnyReport = 'delete_any_report';
     case RestoreAnyReport = 'restore_any_report';

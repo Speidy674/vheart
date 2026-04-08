@@ -33,8 +33,6 @@ class RolePermissionSeeder extends Seeder
         Permission::DeleteAnyUser,
         Permission::RestoreAnyUser,
         Permission::ViewAnyReport,
-        Permission::ViewReport,
-        Permission::CreateReport,
         Permission::UpdateAnyReport,
         Permission::DeleteAnyReport,
         Permission::RestoreAnyReport,
