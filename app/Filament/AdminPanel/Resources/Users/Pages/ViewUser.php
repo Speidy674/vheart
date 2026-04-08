@@ -31,9 +31,7 @@ class ViewUser extends ViewRecord
                 ->modalWidth(Width::SevenExtraLarge),
             Action::make('2fa_reset')
                 ->label('Remove 2FA')
-                ->hidden(function (User $record): bool {
-                    return $record->app_authentication_secret === null;
-                })
+                ->hidden(fn (User $record): bool => $record->app_authentication_secret === null)
                 ->authorize('update')
                 ->requiresConfirmation()
                 ->action(function (User $user): void {
