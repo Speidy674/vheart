@@ -31,12 +31,4 @@ return new class extends Migration
             $table->unique(['role_id', 'permission']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('user_roles');
-    }
 };
