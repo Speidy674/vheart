@@ -51,6 +51,11 @@ class UserPolicy
         return $user->can(Permission::UpdateAnyUser);
     }
 
+    public function comment(User $user, User $model): bool
+    {
+        return $user->can(Permission::ViewAnyComment);
+    }
+
     public function delete(User $user, User $model): Response
     {
         if ($model->id === self::SystemUser) {
