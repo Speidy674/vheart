@@ -149,7 +149,7 @@ class RolePermissionSeeder extends Seeder
             return;
         }
 
-        $adminPermissions = array_filter(Permission::cases(), fn (Permission $value) => ! in_array($value, $this->adminPermissionsBlacklist));
+        $adminPermissions = array_filter(Permission::cases(), fn (Permission $value): bool => ! in_array($value, $this->adminPermissionsBlacklist));
 
         $permissionMapping = [
             1 => $adminPermissions, // Administrator
@@ -169,7 +169,7 @@ class RolePermissionSeeder extends Seeder
                 continue;
             }
 
-            $permissions = array_map(fn (Permission $permission) => ['permission' => $permission], $permissions);
+            $permissions = array_map(fn (Permission $permission): array => ['permission' => $permission], $permissions);
 
             $role->permissions()->createMany($permissions);
         }
