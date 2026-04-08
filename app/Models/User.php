@@ -7,18 +7,14 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Casts\TwitchAvatarCast;
 use App\Enums\ExternalContentProxyType;
-use App\Enums\FeatureFlag;
-use App\Enums\Permission;
-use App\Models\Broadcaster\Broadcaster;
 use App\Models\Contracts\ExternalProxyable;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
+use App\Models\Traits\User\UserFilamentConfiguration;
 use App\Models\Traits\User\UserPermissions;
 use App\Models\Traits\User\UserRelationships;
 use App\Policies\UserPolicy;
-use App\Services\Twitch\TwitchService;
-use App\Support\FeatureFlag\Feature;
 use Database\Factories\UserFactory;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
@@ -29,22 +25,17 @@ use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasDefaultTenant;
 use Filament\Models\Contracts\HasName;
 use Filament\Models\Contracts\HasTenants;
-use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Vite;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\HasComments;
 
-// We tell laravel where to find the policy class
-// While the name convention should allow auto-detection, we want to stay explicit to make it clear.
 #[UsePolicy(UserPolicy::class)]
 class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasDefaultTenant, HasName, HasTenants, MustVerifyEmail
 {
@@ -60,6 +51,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     use Notifiable;
     use Reportable;
     use SoftDeletes;
+    use UserFilamentConfiguration;
     use UserPermissions;
     use UserRelationships;
 
@@ -74,8 +66,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     protected array $auditExcludeEvents = ['created'];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
      * @var list<string>
      */
     protected $hidden = [
@@ -124,16 +114,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return parent::setRelation($relation, $value);
     }
 
-    public function getFilamentName(): string
-    {
-        return $this->name;
-    }
-
-    public function getFilamentAvatarUrl(): ?string
-    {
-        return $this->proxiedContentUrl();
-    }
-
     public function hasVerifiedEmail(): bool
     {
         if (is_null($this->email)) {
@@ -144,26 +124,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return parent::hasVerifiedEmail();
     }
 
-    public function canAccessPanel(Panel $panel): bool
-    {
-        if ($panel->getId() === 'dashboard') {
-            return true;
-        }
-
-        return $this->canAny([
-            Permission::ViewAnyFaqEntry,
-            Permission::ViewAnyClip,
-            Permission::ViewAnyRole,
-            Permission::ViewAnyUser,
-            Permission::ViewAnyCategory,
-            Permission::ViewAnyReport,
-            Permission::ViewAnyCompilation,
-        ]);
-    }
-
-    /**
-     * Tell Filament we dont have a password
-     */
     public function getPasswordAttribute(): ?string
     {
         return null;
@@ -181,56 +141,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     public function getProxyType(): ExternalContentProxyType
     {
         return ExternalContentProxyType::TwitchUser;
-    }
-
-    public function canAccessTenant(Model $tenant): bool
-    {
-        if ($tenant->id === $this->id) {
-            return true;
-        }
-
-        if (! Feature::isActive(FeatureFlag::BroadcasterTenant)) {
-            return false;
-        }
-
-        if ($this->broadcasterTeamMembers()->pluck('broadcaster_id')->contains($tenant->id)) {
-            return true;
-        }
-
-        $twitchService = app(TwitchService::class);
-
-        // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
-
-        return $twitchService
-            ->asSessionUser()
-            ->isModeratorFor($tenant->user);
-    }
-
-    /**
-     * @return array<Model> | Collection
-     */
-    public function getTenants(Panel $panel): array|Collection
-    {
-        if ($panel->getId() !== 'dashboard' || ! Feature::isActive(FeatureFlag::BroadcasterTenant)) {
-            return [];
-        }
-
-        $broadcasterIds = $this->broadcasterTeamMembers()->pluck('broadcaster_id');
-        if ($this->broadcaster) {
-            $broadcasterIds->add($this->broadcaster->id);
-        }
-
-        $twitchService = app(TwitchService::class);
-        $broadcasterIds->push($twitchService->asSessionUser()->getModeratedChannels());
-
-        // TODO: check if any twitch permission is set on broadcaster to allow twitch mods access
-
-        return Broadcaster::findMany($broadcasterIds->unique());
-    }
-
-    public function getDefaultTenant(Panel $panel): ?Model
-    {
-        return $this->broadcaster;
     }
 
     /**
