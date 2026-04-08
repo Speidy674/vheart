@@ -56,7 +56,6 @@ enum Permission: string implements HasLabel
 
     // Tag
     case ViewAnyTag = 'view_any_tag';
-    case ViewTag = 'view_tag';
     case CreateTag = 'create_tag';
     case UpdateAnyTag = 'update_any_tag';
     case DeleteAnyTag = 'delete_any_tag';
