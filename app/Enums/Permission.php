@@ -68,7 +68,6 @@ enum Permission: string implements HasLabel
 
     // Clips
     case ViewAnyClip = 'view_any_clip';
-    case ViewClip = 'view_clip';
     case CreateClip = 'create_clip';
     case UpdateAnyClip = 'update_any_clip';
     case DeleteAnyClip = 'delete_any_clip';

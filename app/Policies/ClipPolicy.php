@@ -24,7 +24,7 @@ class ClipPolicy
      */
     public function view(User $user, Clip $clip): bool
     {
-        return $user->can(Permission::ViewClip);
+        return $user->can(Permission::ViewAnyClip);
     }
 
     /**
@@ -76,7 +76,7 @@ class ClipPolicy
     {
         return $user->can(Permission::CanSubmitClipFeedback);
     }
-  
+
     public function flagAny(User $user, ?Broadcaster $broadcaster = null): bool
     {
         if ($user->id === $broadcaster?->id) {
