@@ -20,13 +20,10 @@
         flex-shrink: 0;
         width: 62px;
         height: 62px;
-        border-radius: 50%;
-        border: 4px solid #E91E8C;
         overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(233, 30, 140, 0.12);
     }
 
     #overlay-avatar-img {
@@ -34,6 +31,8 @@
         height: 100%;
         object-fit: cover;
         display: none;
+        border-radius: 50%;
+        border: 4px solid #E91E8C;
     }
 
     .overlay-text-container {
@@ -142,7 +141,7 @@
 <div id="overlay-card">
     <div id="overlay-avatar-wrap">
         <img id="overlay-avatar-img" alt="" crossorigin="anonymous" />
-        <x-lucide-user id="overlay-avatar-fallback"/>
+        <img src="{{ \Illuminate\Support\Facades\Vite::asset('resources/images/svg/logo-light.svg') }}" alt="" id="overlay-avatar-fallback" />
     </div>
     <div class="overlay-text-container">
         <div id="overlay-broadcaster"></div>
