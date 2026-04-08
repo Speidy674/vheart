@@ -76,7 +76,6 @@ enum Permission: string implements HasLabel
 
     // Broadcaster
     case ViewAnyBroadcaster = 'view_any_broadcaster';
-    case ViewBroadcaster = 'view_broadcaster';
     case CreateBroadcaster = 'create_broadcaster';
     case UpdateAnyBroadcaster = 'update_any_broadcaster';
     case DeleteAnyBroadcaster = 'delete_any_broadcaster';
