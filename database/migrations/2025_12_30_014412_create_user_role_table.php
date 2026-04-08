@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('user_roles', function (Blueprint $table): void {
@@ -30,13 +27,5 @@ return new class extends Migration
             $table->string('permission');
             $table->unique(['role_id', 'permission']);
         });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('user_roles');
     }
 };

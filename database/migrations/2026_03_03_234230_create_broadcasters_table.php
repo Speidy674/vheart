@@ -87,5 +87,27 @@ return new class extends Migration
 
             $table->unique(['broadcaster_id', 'filterable_type', 'filterable_id'], 'broadcaster_filter_unique_index');
         });
+
+        // Broadcaster/RemovalRequest
+        Schema::create('removal_requests', function (Blueprint $table): void {
+            $table->id();
+
+            $table->unsignedBigInteger('broadcaster_id');
+            $table->foreignId('clip_id')->constrained()->restrictOnDelete();
+
+            $table->unsignedInteger('status')->default(0);
+            $table->text('details')->nullable();
+
+            $table->timestamp('claimed_at')->nullable();
+            $table->foreignId('claimed_by')->nullable()->constrained('users');
+
+            $table->timestamp('resolved_at')->nullable();
+            $table->foreignId('resolved_by')->nullable()->constrained('users');
+
+            $table->timestamps();
+
+            $table->index(['broadcaster_id', 'status']);
+            $table->index('clip_id');
+        });
     }
 };
