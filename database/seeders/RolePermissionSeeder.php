@@ -37,7 +37,6 @@ class RolePermissionSeeder extends Seeder
         Permission::DeleteAnyReport,
         Permission::RestoreAnyReport,
         Permission::ViewAnyCompilation,
-        Permission::ViewCompilation,
         Permission::ViewAnyCategory,
         Permission::ViewCategory,
         Permission::UpdateAnyCategory,
@@ -69,7 +68,6 @@ class RolePermissionSeeder extends Seeder
     protected array $cutterPermissions = [
         Permission::ViewAnyUser,
         Permission::ViewAnyCompilation,
-        Permission::ViewCompilation,
         Permission::CreateCompilation,
         Permission::ViewAnyCategory,
         Permission::ViewCategory,
@@ -90,7 +88,6 @@ class RolePermissionSeeder extends Seeder
 
     protected array $itPermissions = [
         Permission::ViewAnyCompilation,
-        Permission::ViewCompilation,
         Permission::CreateCompilation,
         Permission::UpdateAnyCompilation,
         Permission::DeleteAnyCompilation,

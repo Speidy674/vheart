@@ -30,7 +30,6 @@ enum Permission: string implements HasLabel
 
     // Compilation
     case ViewAnyCompilation = 'view_any_compilation';
-    case ViewCompilation = 'view_compilation';
     case CreateCompilation = 'create_compilation';
     case UpdateAnyCompilation = 'update_any_compilation';
     case DeleteAnyCompilation = 'delete_any_compilation';
