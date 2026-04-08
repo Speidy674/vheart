@@ -123,7 +123,7 @@ export default ($initialState) => ({
         if (!this._lastDataUrl) return;
 
         const link = document.createElement('a');
-        link.download = `overlay-${this.width}x${this.height}-x${this.exportScale}.png`;
+        link.download = `overlay-${this.width * scale}x${this.height * scale}-x${scale}.png`;
         link.href = this._lastDataUrl;
         link.click();
     },
