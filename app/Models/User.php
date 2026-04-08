@@ -101,19 +101,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return parent::refresh();
     }
 
-    /*
-     * Hook into some relationship logic to clear our cache
-     */
-    public function setRelation($relation, $value): self
-    {
-        if ($relation === 'roles') {
-            $this->permissionCache = null;
-            $this->importantRoleCache = null;
-        }
-
-        return parent::setRelation($relation, $value);
-    }
-
     public function hasVerifiedEmail(): bool
     {
         if (is_null($this->email)) {

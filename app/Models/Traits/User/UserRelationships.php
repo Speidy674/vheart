@@ -75,4 +75,17 @@ trait UserRelationships
     {
         return $this->hasMany(BroadcasterTeamMember::class);
     }
+
+    /*
+     * Hook into some relationship logic to clear our cache
+     */
+    public function setRelation($relation, $value): self
+    {
+        if ($relation === 'roles') {
+            $this->permissionCache = null;
+            $this->importantRoleCache = null;
+        }
+
+        return parent::setRelation($relation, $value);
+    }
 }
