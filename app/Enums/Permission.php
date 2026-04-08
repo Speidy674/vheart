@@ -43,7 +43,6 @@ enum Permission: string implements HasLabel
 
     // Faq Entry
     case ViewAnyFaqEntry = 'view_any_faq_entry';
-    case ViewFaqEntry = 'view_faq_entry';
     case CreateFaqEntry = 'create_faq_entry';
     case UpdateAnyFaqEntry = 'update_any_faq_entry';
     case DeleteAnyFaqEntry = 'delete_any_faq_entry';
