@@ -12,7 +12,7 @@ class ImportCategoryAction
 {
     public function execute(GameDto|CategoryDto $category): Category
     {
-        return Category::firstOrCreate([
+        return Category::updateOrCreate([
             'id' => $category->id,
         ], [
             'title' => $category->name,
