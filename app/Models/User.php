@@ -14,6 +14,7 @@ use App\Models\Contracts\ExternalProxyable;
 use App\Models\Traits\Auditable;
 use App\Models\Traits\HasExternalProxy;
 use App\Models\Traits\Reportable;
+use App\Models\Traits\User\UserPermissions;
 use App\Models\Traits\User\UserRelationships;
 use App\Policies\UserPolicy;
 use App\Services\Twitch\TwitchService;
@@ -37,7 +38,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Vite;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
@@ -55,12 +55,13 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
-    use UserRelationships;
     use InteractsWithAppAuthentication;
     use InteractsWithAppAuthenticationRecovery;
     use Notifiable;
     use Reportable;
     use SoftDeletes;
+    use UserPermissions;
+    use UserRelationships;
 
     public $incrementing = false;
 
@@ -87,11 +88,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     protected $rememberTokenName;
 
-    protected ?Role $importantRoleCache = null;
-
-    /** @var array<int,Permission>|null */
-    protected ?array $permissionCache = null;
-
     public static function getProxyUrlColumn(): string
     {
         return 'avatar_url';
@@ -102,76 +98,9 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         return 'png';
     }
 
-    /**
-     * @return array<int, Permission>
-     */
-    public function permissions(): array
-    {
-        // We only want to fetch it once per instance
-        // this cache will be cleared if we change anything though
-        if ($this->permissionCache !== null) {
-            return $this->permissionCache;
-        }
-
-        // aggregate all permissions based on our roles
-        // join role_permissions with user_roles where role_id = role_id
-        // where user_id = X
-        // only return unique/distinct 'role_permissions.permission' values, if 2 roles have the same permission we only need it once
-        $rawPermissions = DB::table('role_permissions')
-            ->join('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
-            ->where('user_roles.user_id', $this->id)
-            ->distinct()
-            ->pluck('role_permissions.permission');
-
-        return $this->permissionCache = $rawPermissions
-            ->map(fn ($perm) => Permission::tryFrom($perm))
-            ->filter()
-            ->values()
-            ->toArray();
-    }
-
     public function getAppAuthenticationHolderName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * Assign a single Role to the user
-     */
-    public function assignRole(int|string|Role $role): void
-    {
-        $this->roles()->attach($role);
-        $this->permissionCache = null;
-        $this->importantRoleCache = null;
-    }
-
-    /**
-     * The role with the highest weight on this user
-     */
-    public function getRole(): ?Role
-    {
-        if ($this->importantRoleCache instanceof Role) {
-            return $this->importantRoleCache;
-        }
-
-        // Use already cached state if possible
-        if ($this->relationLoaded('roles')) {
-            $this->importantRoleCache = $this->roles->sortByDesc('weight')->first();
-        } else {
-            $this->importantRoleCache = $this->roles()->orderByDesc('weight')->first();
-        }
-
-        return $this->importantRoleCache;
-    }
-
-    /**
-     * Sync Roles to the user
-     */
-    public function syncRoles(array $roles): void
-    {
-        $this->roles()->sync($roles);
-        $this->permissionCache = null;
-        $this->importantRoleCache = null;
     }
 
     public function refresh(): self
