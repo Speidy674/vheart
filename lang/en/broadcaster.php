@@ -16,6 +16,8 @@ return [
         'dashboard-navigation-item' => [
             'manage-consent' => 'Manage Consent',
             'manage-submissions' => 'Manage Submissions',
+            'manage-user-filter' => 'Manage User Filter',
+            'manage-category-filter' => 'Manage Category Filter',
         ],
         'removal-request-status' => [
             'pending' => 'Pending',

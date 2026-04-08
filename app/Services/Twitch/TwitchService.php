@@ -7,6 +7,7 @@ namespace App\Services\Twitch;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
+use App\Services\Twitch\Data\CategoryDto;
 use App\Services\Twitch\Data\ChannelDto;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\Data\SimpleUserDto;
@@ -121,6 +122,34 @@ class TwitchService
     public function getUsers(array $params = []): array
     {
         return $this->collection(TwitchEndpoints::GetUsers, $params);
+    }
+
+    /**
+     * @link https://dev.twitch.tv/docs/api/reference#search-categories
+     *
+     * @param  positive-int  $first  The maximum number of items to return per page in the response. The minimum page size is 1 item per page and the maximum is 100 items per page. The default is 20.
+     * @return list<CategoryDto>
+     *
+     * @throws TwitchApiException|ConnectionException
+     */
+    public function searchCategories(string $query, int $first = 20, ?string $after = null): array
+    {
+        if ($first > 100) {
+            throw new InvalidArgumentException('$first must be between 1 and 100.');
+        }
+
+        $query = collect(explode(' ', mb_strtolower(mb_trim($query))))->sort()->implode(' ');
+        $queryHashed = hash('sha256', $query);
+
+        return Cache::remember(
+            "twitch:search:categories:$queryHashed:$first",
+            now()->addHour(),
+            fn (): array => $this->collection(TwitchEndpoints::SearchCategories, array_filter([
+                'query' => $query,
+                'after' => $after,
+                'first' => $first,
+            ]))
+        );
     }
 
     /**

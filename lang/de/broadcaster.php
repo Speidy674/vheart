@@ -16,6 +16,8 @@ return [
         'dashboard-navigation-item' => [
             'manage-consent' => 'Zustimmung Verwalten',
             'manage-submissions' => 'Einsendungen Verwalten',
+            'manage-user-filter' => 'User Filter Verwalten',
+            'manage-category-filter' => 'Kategorie Filter Verwalten',
         ],
     ],
 ];
