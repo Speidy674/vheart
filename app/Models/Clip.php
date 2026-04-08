@@ -199,6 +199,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
         return $query
+            ->whereNotArchived()
             ->whereSubmittedAfter(now()->sub($maxAge))
             ->whereBroadcasterGavePermission()
             ->whereNotPublished()
@@ -208,6 +209,42 @@ class Clip extends Model implements Commentable, ExternalProxyable
                 ->whereNotSubmittedBy($user)
                 ->whereNoVotesFrom($user)
             );
+    }
+
+    #[Scope]
+    protected function whereArchived(Builder $query): Builder
+    {
+        return $query->whereNotNull(['final_jury_votes', 'final_public_votes', 'final_score']);
+    }
+
+    #[Scope]
+    protected function whereNotArchived(Builder $query): Builder
+    {
+        return $query->whereNull(['final_jury_votes', 'final_public_votes', 'final_score']);
+    }
+
+    /**
+     * Get Clips that should be archived
+     *
+     * We will allow a 1 week buffer before we permanently archive clips though, just in case something changes
+     */
+    #[Scope]
+    protected function whereEligibleForArchival(Builder $query): Builder
+    {
+        /** @var CarbonInterval $maxAge */
+        $maxAge = config('vheart.clips.voting.maximum_age');
+
+        return $query
+            ->whereNotArchived()
+            ->where(function (Builder $query) use ($maxAge): void {
+                $query
+                    ->where('created_at', '<', now()->sub($maxAge)->subWeek())
+                    ->orWhereHas('compilations',
+                        fn (Builder $q) => $q
+                            ->whereIn('compilations.status', CompilationStatus::getVoteDisabledCases())
+                            ->where('compilations.updated_at', '<', now()->subWeek())
+                    );
+            });
     }
 
     /**

@@ -14,4 +14,5 @@ return [
     'reporting' => env('FEATURE_REPORTING', null),
     'about_us_as_index' => env('FEATURE_ABOUT_US_AS_INDEX', null),
     'broadcaster_tenant' => env('FEATURE_BROADCASTER_TENANT', null),
+    'archive_clips_schedule' => env('FEATURE_ARCHIVE_CLIPS_SCHEDULE', null),
 ];

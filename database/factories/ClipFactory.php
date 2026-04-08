@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Enums\Clips\ClipStatus;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\User;
@@ -28,6 +29,11 @@ class ClipFactory extends Factory
             'category_id' => Category::factory(),
             'duration' => fake()->randomFloat(2, 5, 30),
             'date' => fake()->dateTimeBetween('-1 year'),
+            'thumbnail_url' => fake()->imageUrl(),
+            'status' => ClipStatus::Unknown,
+            'final_jury_votes' => null,
+            'final_public_votes' => null,
+            'final_score' => null,
         ];
     }
 }
