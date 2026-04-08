@@ -38,12 +38,8 @@ enum Permission: string implements HasLabel
 
     // Category
     case ViewAnyCategory = 'view_any_category';
-    case ViewCategory = 'view_category';
     case CreateCategory = 'create_category';
     case UpdateAnyCategory = 'update_any_category';
-    case DeleteAnyCategory = 'delete_any_category';
-    case RestoreAnyCategory = 'restore_any_category';
-    case ForceDeleteAnyCategory = 'force_delete_any_category';
 
     // Faq Entry
     case ViewAnyFaqEntry = 'view_any_faq_entry';
