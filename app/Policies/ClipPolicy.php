@@ -43,6 +43,11 @@ class ClipPolicy
         return $user->can(Permission::UpdateAnyClip);
     }
 
+    public function comment(User $user, Clip $clip): bool
+    {
+        return $user->can(Permission::ViewAnyComment);
+    }
+
     /**
      * Determine whether the user can delete the model.
      */
@@ -76,7 +81,7 @@ class ClipPolicy
     {
         return $user->can(Permission::CanSubmitClipFeedback);
     }
-  
+
     public function flagAny(User $user, ?Broadcaster $broadcaster = null): bool
     {
         if ($user->id === $broadcaster?->id) {
