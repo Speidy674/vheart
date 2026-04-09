@@ -36,6 +36,9 @@ use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Kirschbaum\Commentions\HasComments;
 
+/**
+ * @property int $id
+ */
 #[UsePolicy(UserPolicy::class)]
 class User extends Authenticatable implements Commentable, Commenter, ExternalProxyable, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasAvatar, HasDefaultTenant, HasName, HasTenants, MustVerifyEmail
 {
