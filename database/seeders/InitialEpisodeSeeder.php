@@ -854,7 +854,7 @@ class InitialEpisodeSeeder extends Seeder
             'slug' => 'episode-13',
             'youtube_url' => '',
             'status' => CompilationStatus::Scheduled,
-            'created_at' => '2026-03-13 16:00:00',
+            'created_at' => '2026-04-10 16:00:00',
             'clips' => [
                 'EnergeticTangibleMoonTheRinger-eCI91imaNBVXs-oX',
                 'ObservantTrappedWasabiSoBayed-2eKof02ChTME3rdW',
