@@ -48,7 +48,7 @@ class CompilationsTable
                     ->toggleable()
                     ->toggledHiddenByDefault(),
             ])
-            ->defaultSort('id', 'desc')
+            ->defaultSort('compilations.id', 'desc')
             ->filtersFormWidth(Width::Large)
             ->filtersFormColumns(2)
             ->filters([
