@@ -24,7 +24,7 @@ class ClipPolicy
      */
     public function view(User $user, Clip $clip): bool
     {
-        return $user->can(Permission::ViewClip);
+        return $user->can(Permission::ViewAnyClip);
     }
 
     /**
