@@ -36,6 +36,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
+/**
+ * @method Clip\Compilation getOwnerRecord
+ */
 class ClipsRelationManager extends RelationManager
 {
     protected static string $relationship = 'clips';
