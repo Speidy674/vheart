@@ -28,6 +28,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Exceptions\Halt;
 
 class SubmitClipAction extends Action
 {
@@ -233,6 +234,8 @@ class SubmitClipAction extends Action
                         ->success()
                         ->send();
 
+                } catch (Halt $e) {
+                    throw $e;
                 } catch (Exception $e) {
                     report($e);
 
