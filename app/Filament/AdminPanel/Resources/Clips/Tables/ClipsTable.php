@@ -176,6 +176,7 @@ class ClipsTable
                                 ->label('Compilation')
                                 ->searchable()
                                 ->options(fn (Clip $record) => Clip\Compilation::query()
+                                    ->orderBy('created_at', 'desc')
                                     ->whereNotIn('id', $record->compilations()->pluck('compilations.id'))
                                     ->pluck('title', 'id'))
                                 ->preload()
