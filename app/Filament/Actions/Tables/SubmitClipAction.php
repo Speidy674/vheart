@@ -234,6 +234,8 @@ class SubmitClipAction extends Action
                         ->send();
 
                 } catch (Exception $e) {
+                    report($e);
+
                     Notification::make()
                         ->title(__('admin/resources/clips.notifications.submit_error'))
                         ->body($e->getMessage())
