@@ -7,6 +7,7 @@ namespace App\Filament\AdminPanel\Resources\Compilations\RelationManagers;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Filament\LucideIcon;
+use App\Enums\Permission;
 use App\Events\Admin\Compilations\CompilationClipClaimed;
 use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
 use App\Events\Admin\Compilations\CompilationClipUnclaimed;
@@ -407,5 +408,14 @@ class ClipsRelationManager extends RelationManager
             ])
             ->paginated(false)
             ->openRecordUrlInNewTab();
+    }
+
+    private function isCompilationReadOnly(): bool
+    {
+        if (auth()->user()->id === $this->getOwnerRecord()->user_id || auth()->user()->can(Permission::UpdateAnyCompilation)) {
+            return false;
+        }
+
+        return $this->getOwnerRecord()->isReadOnly();
     }
 }
