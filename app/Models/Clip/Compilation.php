@@ -51,6 +51,11 @@ class Compilation extends Model implements Commentable, FilamentResourceful
             ->withTimestamps();
     }
 
+    public function isReadOnly(): bool
+    {
+        return $this->status->isScheduled() || $this->status->isPublic();
+    }
+
     protected function casts(): array
     {
         return [
