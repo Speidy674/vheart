@@ -418,4 +418,13 @@ class ClipsRelationManager extends RelationManager
 
         return $this->getOwnerRecord()->isReadOnly();
     }
+
+    private function getReadOnlyHint(): ?string
+    {
+        if ($this->isCompilationReadOnly()) {
+            return __('admin/resources/compilations.relation_managers.clips.notifications.readonly');
+        }
+
+        return null;
+    }
 }
