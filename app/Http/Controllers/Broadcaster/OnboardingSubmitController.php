@@ -33,7 +33,9 @@ class OnboardingSubmitController extends Controller
             'changed_at' => now(),
         ]);
 
-        $fallbackRoute = Feature::isActive(FeatureFlag::UserDashboard) ? Filament::getPanel('dashboard')->getUrl($broadcaster) : route('home');
+        $fallbackRoute = Feature::isActive(FeatureFlag::UserDashboard)
+            ? Filament::getPanel('dashboard')->getUrl($broadcaster)
+            : route('home');
 
         return redirect()->intended($fallbackRoute);
     }
