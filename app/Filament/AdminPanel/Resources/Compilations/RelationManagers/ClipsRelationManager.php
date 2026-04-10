@@ -281,6 +281,8 @@ class ClipsRelationManager extends RelationManager
                     ->modalWidth(Width::SevenExtraLarge),
                 ActionGroup::make([
                     Action::make('claim')
+                        ->disabled(fn () => $this->isCompilationReadOnly())
+                        ->tooltip(fn () => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.claim')
                         ->translateLabel()
                         ->icon(LucideIcon::Lock)
@@ -311,6 +313,8 @@ class ClipsRelationManager extends RelationManager
                         }),
 
                     Action::make('status')
+                        ->disabled(fn () => $this->isCompilationReadOnly())
+                        ->tooltip(fn () => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.status.title')
                         ->translateLabel()
                         ->icon(LucideIcon::Clipboard)
@@ -369,6 +373,8 @@ class ClipsRelationManager extends RelationManager
                                 ->send();
                         }),
                     Action::make('unclaim')
+                        ->disabled(fn () => $this->isCompilationReadOnly())
+                        ->tooltip(fn () => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.unclaim')
                         ->translateLabel()
                         ->color('warning')
