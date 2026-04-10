@@ -219,6 +219,12 @@ class Clip extends Model implements Commentable, ExternalProxyable
     }
 
     #[Scope]
+    protected function whereNotBlocked(Builder $query): Builder
+    {
+        return $query->whereNot('status', ClipStatus::Blocked);
+    }
+
+    #[Scope]
     protected function whereNotArchived(Builder $query): Builder
     {
         return $query->whereNull(['final_jury_votes', 'final_public_votes', 'final_score']);
