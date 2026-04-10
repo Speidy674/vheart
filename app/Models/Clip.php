@@ -203,6 +203,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
             ->whereNotArchived()
             ->whereSubmittedAfter(now()->sub($maxAge))
             ->whereBroadcasterGavePermission()
+            ->whereNotBlocked()
             ->whereNotPublished()
             ->when($user, fn (Builder $query) => $query
                 ->whereNotBroadcastBy($user)
