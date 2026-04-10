@@ -114,7 +114,7 @@ class SubmitClipAction extends Action
                     if (! $clipId) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     $user = auth()->user();
@@ -125,7 +125,7 @@ class SubmitClipAction extends Action
                     if (! $clipInfo instanceof ClipDto) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     $bypassBroadcasterConsent = Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent) || (auth()->user()?->can(Permission::BypassConsentCheck) && $data['broadcaster_consent']);
@@ -136,7 +136,7 @@ class SubmitClipAction extends Action
                     if (Clip::query()->where('twitch_id', $clipInfo->id)->exists()) {
                         Notification::make()->title(__('clips.errors.clip_already_known'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     /** @var int $minClipDuration */
@@ -146,7 +146,7 @@ class SubmitClipAction extends Action
                             'seconds' => $minClipDuration,
                         ]))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     /** @var CarbonInterval $maxClipAge */
@@ -156,7 +156,7 @@ class SubmitClipAction extends Action
                             'age' => $maxClipAge->forHumans(),
                         ]))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     // Check Site Category Ban
@@ -169,7 +169,7 @@ class SubmitClipAction extends Action
                         if ($isCategoryBanned) {
                             Notification::make()->title(__('clips.errors.category_blocked'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
                     }
 
@@ -184,7 +184,7 @@ class SubmitClipAction extends Action
                         if (! $broadcaster) {
                             Notification::make()->title(__('clips.errors.broadcaster_not_allowed'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
 
                         $userType = $user->getMorphClass();
@@ -199,13 +199,13 @@ class SubmitClipAction extends Action
                         if (! $this->passesUserChecks($user, $broadcaster, $disallowedUsers, $allowedUsers, $twitchService)) {
                             Notification::make()->title(__('clips.errors.user_not_allowed_for_broadcaster'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
 
                         if (! $this->passesCategoryChecks($clipInfo, $disallowedCategories, $allowedCategories)) {
                             Notification::make()->title(__('clips.errors.category_blocked'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
                     } else {
 
