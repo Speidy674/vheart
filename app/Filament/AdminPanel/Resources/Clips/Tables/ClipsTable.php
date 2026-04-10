@@ -179,10 +179,8 @@ class ClipsTable
                                     ->orderBy('created_at', 'desc')
                                     ->whereNotIn('id', $record->compilations()->pluck('compilations.id'))
                                     ->whereNotIn('compilations.status', CompilationStatus::getVoteDisabledCases())
-                                    ->whereNot(function (Builder $builder) {
-                                        return $builder->where('compilations.status', CompilationStatus::Internal)
-                                            ->whereNot('compilations.user_id', auth()->id());
-                                    })
+                                    ->whereNot(fn(Builder $builder) => $builder->where('compilations.status', CompilationStatus::Internal)
+                                        ->whereNot('compilations.user_id', auth()->id()))
                                     ->pluck('title', 'id'))
                                 ->preload()
                                 ->required(),

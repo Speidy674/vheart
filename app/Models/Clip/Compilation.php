@@ -53,7 +53,11 @@ class Compilation extends Model implements Commentable, FilamentResourceful
 
     public function isReadOnly(): bool
     {
-        return $this->status->isScheduled() || $this->status->isPublic();
+        if ($this->status->isScheduled()) {
+            return true;
+        }
+
+        return $this->status->isPublic();
     }
 
     protected function casts(): array
