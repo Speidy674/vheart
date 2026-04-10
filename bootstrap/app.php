@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -60,7 +61,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->prepend(AssignRequestId::class);
-        $middleware->trustProxies('*');
+        $middleware->trustProxies(
+            at: '*',
+            headers: SymfonyRequest::HEADER_X_FORWARDED_TRAEFIK
+        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         Integration::handles($exceptions);
