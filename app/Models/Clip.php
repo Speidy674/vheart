@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\HasComments;
 
@@ -194,7 +195,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         if (! Feature::isActive(FeatureFlag::ClipVoting)) {
             // Since the feature got disabled, make it impossible to get anything to vote on
-            return $query->whereRaw('1 = 0');
+            return $query->whereRaw(DB::raw('1 = 0'));
         }
 
         // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
@@ -202,6 +203,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
             ->whereNotArchived()
             ->whereSubmittedAfter(now()->sub($maxAge))
             ->whereBroadcasterGavePermission()
+            ->whereNotBlocked()
             ->whereNotPublished()
             ->when($user, fn (Builder $query) => $query
                 ->whereNotBroadcastBy($user)
@@ -215,6 +217,12 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function whereArchived(Builder $query): Builder
     {
         return $query->whereNotNull(['final_jury_votes', 'final_public_votes', 'final_score']);
+    }
+
+    #[Scope]
+    protected function whereNotBlocked(Builder $query): Builder
+    {
+        return $query->whereNot('status', ClipStatus::Blocked);
     }
 
     #[Scope]
@@ -287,7 +295,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function whereBroadcasterDeniedPermission(Builder $query): Builder
     {
         if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
-            return $query->whereRaw('1 = 0');
+            return $query->whereRaw(DB::raw('1 = 0'));
         }
 
         return $query->whereDoesntHave('broadcaster',

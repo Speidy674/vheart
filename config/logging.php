@@ -137,6 +137,11 @@ return [
             'level' => 'warning',
         ],
 
+        'sentry_logs' => [
+            'driver' => 'sentry_logs',
+            'level' => env('LOG_LEVEL', 'info'),
+        ],
+
     ],
 
 ];
