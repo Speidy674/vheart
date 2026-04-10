@@ -116,13 +116,26 @@ class Broadcaster extends Model implements HasAvatar
         });
 
         static::updating(static function (self $broadcaster): void {
-            if (! $broadcaster->isDirty('consent') && $broadcaster->id !== auth()->id()) {
+            if (! $broadcaster->isDirty('consent') || $broadcaster->id !== auth()->id()) {
+                return;
+            }
+
+            $newState = $broadcaster->consent->values()
+                ->map(fn (BroadcasterConsent $e) => $e->value)
+                ->all();
+
+            $alreadyLogged = $broadcaster->consentLogs()
+                ->where('state', json_encode($newState, JSON_THROW_ON_ERROR))
+                ->latest('changed_at')
+                ->exists();
+
+            if ($alreadyLogged) {
                 return;
             }
 
             BroadcasterConsentLog::create([
                 'broadcaster_id' => $broadcaster->id,
-                'state' => $broadcaster->consent->values(),
+                'state' => $newState,
                 'changed_by' => auth()->id(),
                 'changed_at' => now(),
             ]);
