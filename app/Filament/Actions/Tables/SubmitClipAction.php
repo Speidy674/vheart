@@ -237,8 +237,8 @@ class SubmitClipAction extends Action
                     report($e);
 
                     Notification::make()
-                        ->title(__('admin/resources/clips.notifications.submit_error'))
-                        ->body($e->getMessage())
+                        ->title(__('admin/resources/clips.notifications.submit_error.title'))
+                        ->body(__('admin/resources/clips.notifications.submit_error.body'))
                         ->danger()
                         ->send();
                 }
