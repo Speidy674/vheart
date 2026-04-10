@@ -16,7 +16,9 @@ class OnboardingController extends Controller
     public function __invoke(Request $request)
     {
         if (Broadcaster::query()->where('id', $request->user()->id)->whereOnboarded()->exists()) {
-            return Feature::isActive(FeatureFlag::UserDashboard) ? redirect()->to(Filament::getPanel('dashboard')->getUrl()) : redirect()->route('home');
+            return Feature::isActive(FeatureFlag::UserDashboard)
+                ? redirect()->to(Filament::getPanel('dashboard')->getUrl())
+                : redirect()->route('home');
         }
 
         return view('broadcaster.onboarding');
