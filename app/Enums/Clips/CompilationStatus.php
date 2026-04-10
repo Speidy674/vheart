@@ -81,4 +81,9 @@ enum CompilationStatus: string implements HasLabel
     {
         return in_array($this->name, self::getPublicCases(), true);
     }
+
+    public function isScheduled(): bool
+    {
+        return $this === self::Scheduled;
+    }
 }
