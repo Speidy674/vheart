@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Kirschbaum\Commentions\Contracts\Commentable;
 use Kirschbaum\Commentions\HasComments;
 
@@ -194,7 +195,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         if (! Feature::isActive(FeatureFlag::ClipVoting)) {
             // Since the feature got disabled, make it impossible to get anything to vote on
-            return $query->whereRaw('1 = 0');
+            return $query->whereRaw(DB::raw('1 = 0'));
         }
 
         // Make sure to sort the rules in a way that allows the biggest scope to filter the most first
@@ -287,7 +288,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
     protected function whereBroadcasterDeniedPermission(Builder $query): Builder
     {
         if (Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent)) {
-            return $query->whereRaw('1 = 0');
+            return $query->whereRaw(DB::raw('1 = 0'));
         }
 
         return $query->whereDoesntHave('broadcaster',
