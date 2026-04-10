@@ -59,10 +59,10 @@ enum CompilationStatus: string implements HasLabel
     public static function getVoteDisabledCases(): array
     {
         return [
-            CompilationStatus::Scheduled,
-            CompilationStatus::Unlisted,
-            CompilationStatus::Published,
-            CompilationStatus::Archived,
+            self::Scheduled,
+            self::Unlisted,
+            self::Published,
+            self::Archived,
         ];
     }
 
