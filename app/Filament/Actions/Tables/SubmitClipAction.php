@@ -241,6 +241,8 @@ class SubmitClipAction extends Action
                         ->body(__('admin/resources/clips.notifications.submit_error.body'))
                         ->danger()
                         ->send();
+
+                    $this->halt(true);
                 }
             });
     }
