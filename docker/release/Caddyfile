@@ -19,7 +19,6 @@
 {$CADDY_EXTRA_CONFIG}
 
 {$CADDY_SERVER_SERVER_NAME} {
-    trusted_proxies static private_ranges
     client_ip_headers X-Real-IP X-Forwarded-For
 
     log {
