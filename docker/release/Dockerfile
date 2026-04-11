@@ -48,7 +48,8 @@ COPY --from=build /app /app
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache \
-    && echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy
+    && echo "trusted_proxies static private_ranges" > /etc/caddy/trusted_proxies.caddy \
+    && echo "client_ip_headers X-Real-IP X-Forwarded-For" >> /etc/caddy/trusted_proxies.caddy
 
 
 COPY docker/release/Caddyfile /etc/caddy/Caddyfile
