@@ -231,12 +231,12 @@ class SubmitClipAction extends Action
                     $clip = $importClipAction->execute($clipInfo, $user, $data['tags']);
 
                     if ($bypassBroadcasterConsent) {
-                        $broadcasterExists = Broadcaster::query()
+                        $broadcasterConsentExists = Broadcaster::query()
                             ->where('id', $clipInfo->broadcasterId)
                             ->whereJsonLength('consent', '>', '0')
                             ->exists();
 
-                        if (! $broadcasterExists) {
+                        if (! $broadcasterConsentExists) {
                             $clip->update([
                                 'status' => ClipStatus::NeedApproval,
                             ]);
