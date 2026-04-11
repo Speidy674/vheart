@@ -20,7 +20,7 @@
         <div class="flex items-center gap-1 flex-1 justify-start">
             <span class="inline-flex shrink-0 items-center gap-1 p-2 sm:py-3 text-lg select-none font-mono" title="{{ __('clips.vote.aside.total_votes') }}" >
                 <x-lucide-heart defer class="size-8 text-destructive"/>
-                <span x-text="votes">{{ $clip->public_votes ?? 0 }}</span>
+                <span x-text="votes">{{ $clip->absolute_votes ?? 0 }}</span>
             </span>
         </div>
 
@@ -85,7 +85,7 @@
                     clipTwitchId: '{{ $clip?->twitch_id ?? '' }}',
                     clipId: {{ $clip?->id ?? 'null' }},
                     hasClip: {{ $clip ? 'true' : 'false' }},
-                    votes: {{ $clip?->public_votes ?? 0 }},
+                    votes: {{ $clip?->absolute_votes ?? 0 }},
                     isLoading: false,
                     timer: null,
                     reportItems: @if($clip) [{ type: 'clip', id: {{ $clip->id }}}] @else null @endif ,

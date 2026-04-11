@@ -51,7 +51,8 @@ class PublicClipResource extends JsonResource
                 'id' => $this->vod_id,
                 'offset' => $this->vod_offset,
             ]),
-            'votes' => $this->whenCounted('votes', default: 0),
+
+            'votes' => $this->absolute_votes ?? 0,
             'clip_duration' => $this->duration,
             'clipped_at' => $this->date,
             'submitted_at' => $this->created_at,

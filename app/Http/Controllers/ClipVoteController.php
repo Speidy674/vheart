@@ -33,7 +33,7 @@ class ClipVoteController extends Controller
 
         $clip = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withPublicVoteCount()
+            ->withAbsoluteVoteCount()
             ->find($clipIdToVote);
 
         return view('clips.vote', [
@@ -77,7 +77,7 @@ class ClipVoteController extends Controller
 
         $clip = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withPublicVoteCount()
+            ->withAbsoluteVoteCount()
             ->find($this->getNextClipId($request));
 
         return new JsonResponse($clip?->toResource());
