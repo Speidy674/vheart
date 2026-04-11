@@ -8,17 +8,17 @@ use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
 use App\Models\Clip\Compilation;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Compilation>
  */
+#[UseModel(Compilation::class)]
 class CompilationFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -30,7 +30,7 @@ class CompilationFactory extends Factory
             'user_id' => User::factory(),
             'title' => $title,
             'slug' => $slug,
-            'type' => CompilationType::Manual,
+            'type' => CompilationType::LongVideo,
             'status' => CompilationStatus::Planned,
             'description' => fake()->paragraph(),
             'youtube_url' => fake()->url(),
