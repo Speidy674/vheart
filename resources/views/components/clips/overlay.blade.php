@@ -96,7 +96,7 @@
 
     #overlay-labels {
         position: absolute;
-        top: calc(96px + 10px);
+        top: calc(96px + 14px);
         left: 30px;
         display: flex;
         align-items: center;
