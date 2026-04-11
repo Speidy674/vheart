@@ -124,7 +124,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
         $url = $this->getAttribute(static::getProxyUrlColumn());
 
         if (! $url) {
-            return "https://api.dicebear.com/9.x/glass/svg?seed=$this->id";
+            return Vite::asset('resources/images/png/mani.png');
         }
 
         return $this->generateExternalProxyUrl($width, $height);
