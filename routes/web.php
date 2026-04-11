@@ -26,7 +26,7 @@ Route::get('locales', ChangeLanguageController::class)->name('locales');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::feature(FeatureFlag::ClipSubmission)->group(function () {
         Route::get('/submit', [ClipSubmitController::class, 'create'])->name('submitclip.create');
-        Route::post('/submit', [ClipSubmitController::class, 'store'])->middleware(['throttle:5,1'])->name('submitclip.store');
+        Route::post('/submit', [ClipSubmitController::class, 'store'])->name('submitclip.store');
     });
 
     Route::feature(FeatureFlag::ClipVoting)->group(function () {
