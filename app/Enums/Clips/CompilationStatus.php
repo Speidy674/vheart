@@ -59,10 +59,10 @@ enum CompilationStatus: string implements HasLabel
     public static function getVoteDisabledCases(): array
     {
         return [
-            CompilationStatus::Scheduled,
-            CompilationStatus::Unlisted,
-            CompilationStatus::Published,
-            CompilationStatus::Archived,
+            self::Scheduled,
+            self::Unlisted,
+            self::Published,
+            self::Archived,
         ];
     }
 
@@ -71,7 +71,7 @@ enum CompilationStatus: string implements HasLabel
      */
     public function isVisible(): bool
     {
-        return in_array($this->name, self::getVisibleCases(), true);
+        return in_array($this, self::getVisibleCases(), true);
     }
 
     /**
@@ -79,6 +79,11 @@ enum CompilationStatus: string implements HasLabel
      */
     public function isPublic(): bool
     {
-        return in_array($this->name, self::getPublicCases(), true);
+        return in_array($this, self::getPublicCases(), true);
+    }
+
+    public function isScheduled(): bool
+    {
+        return $this === self::Scheduled;
     }
 }

@@ -7,6 +7,7 @@ namespace App\Filament\AdminPanel\Resources\Compilations\RelationManagers;
 use App\Enums\Clips\ClipStatus;
 use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Filament\LucideIcon;
+use App\Enums\Permission;
 use App\Events\Admin\Compilations\CompilationClipClaimed;
 use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
 use App\Events\Admin\Compilations\CompilationClipUnclaimed;
@@ -36,6 +37,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
+/**
+ * @method Clip\Compilation getOwnerRecord
+ */
 class ClipsRelationManager extends RelationManager
 {
     protected static string $relationship = 'clips';
@@ -277,6 +281,8 @@ class ClipsRelationManager extends RelationManager
                     ->modalWidth(Width::SevenExtraLarge),
                 ActionGroup::make([
                     Action::make('claim')
+                        ->disabled(fn (): bool => $this->isCompilationReadOnly())
+                        ->tooltip(fn (): ?string => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.claim')
                         ->translateLabel()
                         ->icon(LucideIcon::Lock)
@@ -307,6 +313,8 @@ class ClipsRelationManager extends RelationManager
                         }),
 
                     Action::make('status')
+                        ->disabled(fn (): bool => $this->isCompilationReadOnly())
+                        ->tooltip(fn (): ?string => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.status.title')
                         ->translateLabel()
                         ->icon(LucideIcon::Clipboard)
@@ -365,6 +373,8 @@ class ClipsRelationManager extends RelationManager
                                 ->send();
                         }),
                     Action::make('unclaim')
+                        ->disabled(fn (): bool => $this->isCompilationReadOnly())
+                        ->tooltip(fn (): ?string => $this->getReadOnlyHint())
                         ->label('admin/resources/compilations.relation_managers.clips.actions.unclaim')
                         ->translateLabel()
                         ->color('warning')
@@ -404,5 +414,23 @@ class ClipsRelationManager extends RelationManager
             ])
             ->paginated(false)
             ->openRecordUrlInNewTab();
+    }
+
+    private function isCompilationReadOnly(): bool
+    {
+        if (auth()->user()->id === $this->getOwnerRecord()->user_id || auth()->user()->can(Permission::UpdateAnyCompilation)) {
+            return false;
+        }
+
+        return $this->getOwnerRecord()->isReadOnly();
+    }
+
+    private function getReadOnlyHint(): ?string
+    {
+        if ($this->isCompilationReadOnly()) {
+            return __('admin/resources/compilations.relation_managers.clips.notifications.readonly');
+        }
+
+        return null;
     }
 }
