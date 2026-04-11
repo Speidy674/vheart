@@ -33,16 +33,13 @@ class CopyClipNameAction extends Action
                     return;
                 }
 
-                // enforce windows friendly file names
-                $sanitize = static fn (string $value): string => preg_replace('/[\\/:*?"<>|]+/', '-', $value) |> Str::squish(...);
+                $broadcaster = $clip->owner->name;
+                $cutter = $clip->claimer?->name ?? 'Unknown Cutter';
+                $clipper = $clip->creator?->name ?? 'Unknown Clipper';
+                $category = $clip->category->title;
+                $episode = $livewire->getOwnerRecord()?->title ?? 'Unknown Episode';
 
-                $broadcaster = $sanitize($clip->owner->name);
-                $cutter = $sanitize($clip->claimer?->name ?? 'Unknown Cutter');
-                $clipper = $sanitize($clip->creator?->name ?? 'Unknown Clipper');
-                $category = $sanitize($clip->category->title);
-                $episode = $sanitize($livewire->getOwnerRecord()?->title ?? 'Unknown Episode');
-
-                $filename = "[$clip->id]{$broadcaster}__{$category}__{$cutter}__{$clipper}__{$episode}.mp4";
+                $filename = $this->sanitizeFilename("[$clip->id]{$broadcaster}__{$category}__{$cutter}__{$clipper}__{$episode}.mp4");
                 $livewire->js('window.navigator.clipboard.writeText('.json_encode($filename, JSON_THROW_ON_ERROR).');');
 
                 Notification::make()
@@ -56,5 +53,32 @@ class CopyClipNameAction extends Action
     public static function getDefaultName(): ?string
     {
         return 'copyClipName';
+    }
+
+    // https://stackoverflow.com/a/42058764 by mgutt. License - CC BY-SA 4.0
+    private function sanitizeFilename(string $filename): string
+    {
+        $filename = preg_replace(
+            pattern: '~
+                [<>:"/\\\|?*]|        # file system reserved https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+                [\x00-\x1F]|          # control characters http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx
+                [\x7F\xA0\xAD]|       # non-printing characters DEL, NO-BREAK SPACE, SOFT HYPHEN
+                [#\[\]@!$&\'()+,;=]|  # URI reserved https://www.rfc-editor.org/rfc/rfc3986#section-2.2
+                [{}^\~`]              # URL unsafe characters https://www.ietf.org/rfc/rfc1738.txt
+            ~x',
+            replacement: '-',
+            subject: $filename
+        );
+        $filename = Str::ltrim($filename, '.-');
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        $name = pathinfo($filename, PATHINFO_FILENAME);
+        $maxLength = 255 - ($ext ? Str::length($ext) + 1 : 0);
+
+        return mb_strcut(
+            string: $name,
+            start: 0,
+            length: $maxLength,
+            encoding: mb_detect_encoding($filename) ?: 'UTF-8'
+        ).($ext ? '.'.$ext : '');
     }
 }
