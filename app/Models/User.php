@@ -118,7 +118,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     public function proxiedContentUrl(?int $width = null, ?int $height = null): ?string
     {
-        if (! $this->exists || $this->id === 0) {
+        if (! $this->exists || $this->id === 0 || ! $this->getAttribute(static::getProxyUrlColumn())) {
             return Vite::asset('resources/images/png/mani.png');
         }
 

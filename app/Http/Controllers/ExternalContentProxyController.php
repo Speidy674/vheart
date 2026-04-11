@@ -23,6 +23,8 @@ class ExternalContentProxyController extends Controller
     {
         $resource = $type->getResource($identifier);
 
+        abort_if(! $resource, 404);
+
         $response = Http::withOptions(['stream' => true])
             ->timeout(5)
             ->get($resource);
