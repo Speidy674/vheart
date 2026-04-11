@@ -13,6 +13,7 @@ use App\Events\Admin\Compilations\CompilationClipStatusUpdated;
 use App\Events\Admin\Compilations\CompilationClipUnclaimed;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Management\GenerateClipOverlayAction;
 use App\Filament\AdminPanel\Resources\Clips\ClipResource;
+use App\Filament\AdminPanel\Resources\Compilations\Actions\CopyClipNameAction;
 use App\Filament\Resources\Clips\Tables\ClipColumns;
 use App\Models\Clip;
 use App\Models\User;
@@ -34,7 +35,6 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Kirschbaum\Commentions\Filament\Actions\CommentsAction;
 
 /**
@@ -344,34 +344,7 @@ class ClipsRelationManager extends RelationManager
                                 ->success()
                                 ->send();
                         }),
-                    Action::make('copy_cutter_optimized_name')
-                        ->label('admin/resources/compilations.relation_managers.clips.actions.copy_filename')
-                        ->translateLabel()
-                        ->icon(LucideIcon::ClipboardList)
-                        ->color('gray')
-                        ->tooltip(__('admin/resources/compilations.relation_managers.clips.actions.copy_filename_tooltip'))
-                        ->action(function (Clip $clip, $livewire): void {
-                            $title = Str::limit($clip->title, 50, '');
-
-                            if (! $clip->owner) {
-                                Notification::make()
-                                    ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copy_failed_title'))
-                                    ->body(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copy_failed_no_broadcaster'))
-                                    ->danger()
-                                    ->send();
-
-                                return;
-                            }
-
-                            $filename = "[{$clip->id}] {$clip->owner->name} - {$clip->category->title} - {$title}.mp4";
-                            $livewire->js("window.navigator.clipboard.writeText('{$filename}');");
-
-                            Notification::make()
-                                ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copied'))
-                                ->body($filename)
-                                ->success()
-                                ->send();
-                        }),
+                    CopyClipNameAction::make(),
                     Action::make('unclaim')
                         ->disabled(fn (): bool => $this->isCompilationReadOnly())
                         ->tooltip(fn (): ?string => $this->getReadOnlyHint())
