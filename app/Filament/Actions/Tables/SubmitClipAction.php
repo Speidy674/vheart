@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Actions\Tables;
 
 use App\Actions\ImportClipAction;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\FeatureFlag;
 use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
@@ -227,7 +228,20 @@ class SubmitClipAction extends Action
                         'name' => $clipInfo->creatorName,
                     ]);
 
-                    $importClipAction->execute($clipInfo, $user, $data['tags']);
+                    $clip = $importClipAction->execute($clipInfo, $user, $data['tags']);
+
+                    if ($bypassBroadcasterConsent) {
+                        $broadcasterConsentExists = Broadcaster::query()
+                            ->where('id', $clipInfo->broadcasterId)
+                            ->whereJsonLength('consent', '>', '0')
+                            ->exists();
+
+                        if (! $broadcasterConsentExists) {
+                            $clip->update([
+                                'status' => ClipStatus::NeedApproval,
+                            ]);
+                        }
+                    }
 
                     Notification::make()
                         ->title(__('clips.flash.submitted'))
