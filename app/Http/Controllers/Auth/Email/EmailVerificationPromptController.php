@@ -6,9 +6,10 @@ namespace App\Http\Controllers\Auth\Email;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 
-class EmailVerificationPromptController extends Controller implements HasMiddleware
+#[Middleware('auth:web')]
+class EmailVerificationPromptController extends Controller
 {
     public function __invoke(Request $request)
     {
@@ -17,10 +18,5 @@ class EmailVerificationPromptController extends Controller implements HasMiddlew
         }
 
         return view('auth.verify-email');
-    }
-
-    public static function middleware(): array
-    {
-        return ['auth:web'];
     }
 }

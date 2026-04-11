@@ -7,13 +7,14 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 
 /**
  * Logout duh
  */
-class DestroyAuthenticatedSessionController extends Controller implements HasMiddleware
+#[Middleware('auth:web')]
+class DestroyAuthenticatedSessionController extends Controller
 {
     public function __invoke(Request $request): RedirectResponse
     {
@@ -25,10 +26,5 @@ class DestroyAuthenticatedSessionController extends Controller implements HasMid
         }
 
         return to_route('home');
-    }
-
-    public static function middleware(): array
-    {
-        return ['auth:web'];
     }
 }
