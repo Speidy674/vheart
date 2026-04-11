@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Models\Broadcaster\BroadcasterConsentLog;
-use App\Models\BroadcasterFilter;
+use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\Report;
@@ -14,22 +14,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Queue\Attributes\Backoff;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Kirschbaum\Commentions\CommentReaction;
 use Kirschbaum\Commentions\CommentSubscription;
 
+#[Tries(3)]
+#[Backoff(60)]
 class RemoverUserDataJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-
-    public int $tries = 3;
-
-    public int $backoff = 60;
 
     public function __construct(
         private readonly int $userId,
@@ -93,7 +93,7 @@ class RemoverUserDataJob implements ShouldQueue
                 ->where('added_by', $user->id)
                 ->orWhere('claimed_by', $user->id)
                 ->exists()
-            || BroadcasterFilter::query()
+            || BroadcasterSubmissionFilter::query()
                 ->where('filterable_id', $user->id)
                 ->where('filterable_type', (new User)->getMorphClass())
                 ->exists()
