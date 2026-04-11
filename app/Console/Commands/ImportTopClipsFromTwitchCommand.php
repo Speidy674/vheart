@@ -7,17 +7,17 @@ namespace App\Console\Commands;
 use App\Actions\ImportClipAction;
 use App\Models\User;
 use App\Services\Twitch\TwitchService;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('app:import-top-clips-from-twitch')]
+#[Description('Import top 100 clips from Twitch (Just Chatting)')]
 class ImportTopClipsFromTwitchCommand extends Command
 {
     private const int JUST_CHATTING_CATEGORY_ID = 509658;
 
     private const int LIMIT = 100;
-
-    protected $signature = 'app:import-top-clips-from-twitch';
-
-    protected $description = 'Import top 100 clips from Twitch (Just Chatting)';
 
     public function handle(TwitchService $twitchService, ImportClipAction $importClipAction): int
     {
