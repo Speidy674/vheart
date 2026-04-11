@@ -71,7 +71,7 @@ enum CompilationStatus: string implements HasLabel
      */
     public function isVisible(): bool
     {
-        return in_array($this->name, self::getVisibleCases(), true);
+        return in_array($this, self::getVisibleCases(), true);
     }
 
     /**
@@ -79,7 +79,7 @@ enum CompilationStatus: string implements HasLabel
      */
     public function isPublic(): bool
     {
-        return in_array($this->name, self::getPublicCases(), true);
+        return in_array($this, self::getPublicCases(), true);
     }
 
     public function isScheduled(): bool
