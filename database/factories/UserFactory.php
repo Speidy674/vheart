@@ -6,16 +6,16 @@ namespace Database\Factories;
 
 use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<User>
  */
+#[UseModel(User::class)]
 class UserFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array

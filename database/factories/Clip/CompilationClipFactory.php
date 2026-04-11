@@ -9,11 +9,13 @@ use App\Models\Clip;
 use App\Models\Clip\Compilation;
 use App\Models\Clip\CompilationClip;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<CompilationClip>
  */
+#[UseModel(CompilationClip::class)]
 class CompilationClipFactory extends Factory
 {
     public function definition(): array

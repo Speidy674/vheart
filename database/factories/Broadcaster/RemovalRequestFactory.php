@@ -8,11 +8,13 @@ use App\Enums\Broadcaster\RemovalRequestStatus;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\RemovalRequest;
 use App\Models\Clip;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<RemovalRequest>
  */
+#[UseModel(RemovalRequest::class)]
 class RemovalRequestFactory extends Factory
 {
     /**

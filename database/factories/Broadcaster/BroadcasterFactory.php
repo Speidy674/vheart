@@ -8,12 +8,14 @@ use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
 /**
  * @extends Factory<Broadcaster>
  */
+#[UseModel(Broadcaster::class)]
 class BroadcasterFactory extends Factory
 {
     /**
