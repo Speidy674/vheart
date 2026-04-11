@@ -11,6 +11,7 @@ use App\Policies\TagPolicy;
 use Database\Factories\Clip\TagFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,6 +20,7 @@ use Spatie\Translatable\HasTranslations;
 
 #[UsePolicy(TagPolicy::class)]
 #[UseResource(TagResource::class)]
+#[WithoutTimestamps]
 class Tag extends Model
 {
     use Auditable;
@@ -27,9 +29,6 @@ class Tag extends Model
     use HasFactory;
 
     use HasTranslations;
-
-    /** @var bool */
-    public $timestamps = false;
 
     public array $translatable = [
         'name',
