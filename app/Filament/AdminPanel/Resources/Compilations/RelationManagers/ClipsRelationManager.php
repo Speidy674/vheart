@@ -343,8 +343,6 @@ class ClipsRelationManager extends RelationManager
                         ->color('gray')
                         ->tooltip(__('admin/resources/compilations.relation_managers.clips.actions.copy_filename_tooltip'))
                         ->action(function (Clip $clip, $livewire): void {
-                            $title = Str::limit($clip->title, 50, '');
-
                             if (! $clip->owner) {
                                 Notification::make()
                                     ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copy_failed_title'))
@@ -355,8 +353,18 @@ class ClipsRelationManager extends RelationManager
                                 return;
                             }
 
-                            $filename = "[{$clip->id}] {$clip->owner->name} - {$clip->category->title} - {$title}.mp4";
-                            $livewire->js("window.navigator.clipboard.writeText('{$filename}');");
+                            // enforce windows friendly file names
+                            $sanitize = static fn (string $value): string => preg_replace('/[\\/:*?"<>|]+/', '-', $value)
+                                    |> Str::squish(...);
+
+                            $broadcaster = $sanitize($clip->owner->name);
+                            $cutter = $sanitize($clip->claimer?->name ?? 'Unknown Cutter');
+                            $clipper = $sanitize($clip->creator?->name ?? 'Unknown Clipper');
+                            $category = $sanitize($clip->category->title);
+                            $episode = $sanitize($this->getOwnerRecord()?->title ?? 'Unknown Episode');
+
+                            $filename = "[$clip->id]{$broadcaster}__{$category}__{$cutter}__{$clipper}__{$episode}.mp4";
+                            $livewire->js('window.navigator.clipboard.writeText('.json_encode($filename, JSON_THROW_ON_ERROR).');');
 
                             Notification::make()
                                 ->title(__('admin/resources/compilations.relation_managers.clips.notifications.filename_copied'))
