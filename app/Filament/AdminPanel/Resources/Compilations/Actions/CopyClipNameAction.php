@@ -39,7 +39,7 @@ class CopyClipNameAction extends Action
                 $category = $clip->category->title;
                 $episode = $livewire->getOwnerRecord()?->title ?? 'Unknown Episode';
 
-                $filename = $this->sanitizeFilename("[$clip->id]{$broadcaster}__{$category}__{$cutter}__{$clipper}__{$episode}.mp4");
+                $filename = $this->sanitizeFilename("{$clip->id}__{$broadcaster}__{$category}__{$cutter}__{$clipper}__{$episode}.mp4");
                 $livewire->js('window.navigator.clipboard.writeText('.json_encode($filename, JSON_THROW_ON_ERROR).');');
 
                 Notification::make()
