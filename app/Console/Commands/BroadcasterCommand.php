@@ -7,24 +7,18 @@ namespace App\Console\Commands;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\search;
 
+#[Signature('app:broadcaster')]
+#[Description('Create or Update a broadcaster profile for a user')]
 class BroadcasterCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'app:broadcaster';
-
-    /**
-     * @var string
-     */
-    protected $description = 'Create or Update a broadcaster profile for a user';
-
     public function handle(): int
     {
         $id = search(

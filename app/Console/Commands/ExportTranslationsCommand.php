@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use Exception;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
+#[Signature('translations:export')]
+#[Description('Export and convert Laravel translations to i18n compatible static json files.')]
 class ExportTranslationsCommand extends Command
 {
-    protected $signature = 'translations:export';
-
-    protected $description = 'Export and convert Laravel translations to i18n compatible static json files.';
-
     public function handle(): void
     {
         $this->info('Starting translation export...');

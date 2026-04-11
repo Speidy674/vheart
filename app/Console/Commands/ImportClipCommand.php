@@ -10,6 +10,8 @@ use App\Models\Clip\Tag;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\TwitchService;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
@@ -17,18 +19,10 @@ use function Laravel\Prompts\multisearch;
 use function Laravel\Prompts\spin;
 use function Laravel\Prompts\text;
 
+#[Signature('app:clip')]
+#[Description('Import a Clip (Bypasses any restrictions, too lazy to implement them here too)')]
 class ImportClipCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'app:clip';
-
-    /**
-     * @var string
-     */
-    protected $description = 'Import a Clip (Bypasses any restrictions, too lazy to implement them here too)';
-
     public function handle(TwitchService $twitchService, ImportClipAction $importClipAction): int
     {
         $appService = $twitchService->asApp();
