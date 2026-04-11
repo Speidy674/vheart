@@ -72,13 +72,13 @@ class CopyClipNameAction extends Action
         $filename = Str::ltrim($filename, '.-');
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         $name = pathinfo($filename, PATHINFO_FILENAME);
-        $maxLength = 255 - ($ext ? Str::length($ext) + 1 : 0);
+        $maxLength = 255 - ($ext !== '' && $ext !== '0' ? Str::length($ext) + 1 : 0);
 
         return mb_strcut(
             string: $name,
             start: 0,
             length: $maxLength,
             encoding: mb_detect_encoding($filename) ?: 'UTF-8'
-        ).($ext ? '.'.$ext : '');
+        ).($ext !== '' && $ext !== '0' ? '.'.$ext : '');
     }
 }
