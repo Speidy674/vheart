@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::feature(FeatureFlag::ClipVoting)->group(function () {
         Route::get('/vote', [ClipVoteController::class, 'create'])->name('vote');
-        Route::post('/vote', [ClipVoteController::class, 'store'])->middleware('throttle:10,1')->name('vote.submit');
+        Route::post('/vote', [ClipVoteController::class, 'store'])->name('vote.submit');
     });
 
     Route::feature(FeatureFlag::Reports)->group(function () {
