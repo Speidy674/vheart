@@ -8,12 +8,14 @@ use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterSubmissionFilter;
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @extends Factory<BroadcasterSubmissionFilter>
  */
+#[UseModel(BroadcasterSubmissionFilter::class)]
 class BroadcasterSubmissionFilterFactory extends Factory
 {
     /**
