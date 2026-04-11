@@ -7,22 +7,18 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 
 /**
  * Shows the Login Prompt
  */
-class CreateAuthenticatedSessionController extends Controller implements HasMiddleware
+#[Middleware('guest')]
+class CreateAuthenticatedSessionController extends Controller
 {
     public function __invoke(Request $request): View
     {
         return view('auth.login', [
             'status' => $request->session()->get('status'),
         ]);
-    }
-
-    public static function middleware(): array
-    {
-        return ['guest'];
     }
 }
