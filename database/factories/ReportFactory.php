@@ -10,16 +10,16 @@ use App\Enums\Reports\ResolveAction;
 use App\Models\Clip;
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<Report>
  */
+#[UseModel(Report::class)]
 class ReportFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
