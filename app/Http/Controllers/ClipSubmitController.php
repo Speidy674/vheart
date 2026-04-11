@@ -14,7 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 
-#[Middleware('throttle:5,1')]
+#[Middleware('throttle:5,1', only: ['store'])]
 class ClipSubmitController extends Controller
 {
     public function create(): View
