@@ -93,7 +93,7 @@ class RemoverUserDataJob implements ShouldQueue
                 ->where('added_by', $user->id)
                 ->orWhere('claimed_by', $user->id)
                 ->exists()
-            || BroadcasterFilter::query()
+            || BroadcasterSubmissionFilter::query()
                 ->where('filterable_id', $user->id)
                 ->where('filterable_type', (new User)->getMorphClass())
                 ->exists()
