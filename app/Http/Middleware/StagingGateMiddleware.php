@@ -27,11 +27,7 @@ class StagingGateMiddleware
         $cookieSession = $cookiePrefix.'_session';
         $cookieIntended = $cookiePrefix.'_intended';
 
-        $currentUser = $request->cookie($cookieSession, false);
-
-        if ($currentUser) {
-            $userId = (int) explode(':', $currentUser)[0];
-
+        if ($userId = $request->cookie($cookieSession, false)) {
             $hasRole = DB::table('user_roles')
                 ->where('user_id', $userId)
                 ->exists();
@@ -51,7 +47,7 @@ class StagingGateMiddleware
             $intendedUrl = $request->cookie($cookieIntended, route('home'));
 
             return redirect()->intended($intendedUrl)->withCookies([
-                Cookie::make($cookieSession, $twitchUser->id.':'.$twitchUser->user['login'], 60 * 24),
+                Cookie::make($cookieSession, $twitchUser->id, 60 * 24),
                 Cookie::forget($cookieIntended),
             ]);
         }
