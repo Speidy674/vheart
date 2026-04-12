@@ -8,6 +8,9 @@ use App\Models\Audit;
 use App\Support\FeatureFlag\Feature;
 use Illuminate\Database\Console\PruneCommand;
 use Illuminate\Support\Facades\Schedule;
+use Spatie\Backup\Commands\BackupCommand;
+use Spatie\Backup\Commands\CleanupCommand;
+use Spatie\Backup\Commands\MonitorCommand;
 
 Schedule::call(static function () {
     Audit::query()
@@ -38,6 +41,6 @@ Schedule::command(ArchiveClipVotesCommand::class)
     ->onOneServer()
     ->daily();
 
-Schedule::command('backup:run --isolated')->runInBackground()->onOneServer()->hourly();
-Schedule::command('backup:clean --isolated')->runInBackground()->onOneServer()->daily()->at('00:15');
-Schedule::command('backup:monitor --isolated')->runInBackground()->onOneServer()->dailyAt('00:30');
+Schedule::command(BackupCommand::class)->runInBackground()->onOneServer()->hourly();
+Schedule::command(CleanupCommand::class)->runInBackground()->onOneServer()->daily()->at('00:15');
+Schedule::command(MonitorCommand::class)->runInBackground()->onOneServer()->dailyAt('00:30');
