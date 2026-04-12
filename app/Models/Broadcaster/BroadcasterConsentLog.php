@@ -7,7 +7,7 @@ namespace App\Models\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Models\User;
 use App\Policies\Broadcaster\BroadcasterConsentLogPolicy;
-use Database\Factories\BroadcasterConsentLogFactory;
+use Database\Factories\Broadcaster\BroadcasterConsentLogFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
