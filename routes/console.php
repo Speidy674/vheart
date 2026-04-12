@@ -37,3 +37,5 @@ Schedule::command(ArchiveClipVotesCommand::class)
     ->runInBackground()
     ->onOneServer()
     ->daily();
+
+Schedule::command('backup:run --isolated')->runInBackground()->onOneServer()->hourly();
