@@ -56,9 +56,8 @@ class StagingGateMiddleware
             ]);
         }
 
-        // simple QOL of remembering where we are to redirect back to it later
-        $intendedCookie = Cookie::make($cookieIntended, $request->fullUrl(), 10);
-
-        return Socialite::driver('twitch')->redirect()->withCookie($intendedCookie);
+        return Socialite::driver('twitch')
+            ->redirect()
+            ->withCookie(Cookie::make($cookieIntended, $request->fullUrl(), 10));
     }
 }
