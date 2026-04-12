@@ -33,11 +33,9 @@ class StagingGateMiddleware
         }
 
         if ($userId = $request->cookie($cookieSession, false)) {
-            $hasRole = DB::table('user_roles')
-                ->where('user_id', $userId)
-                ->exists();
+            abort_unless($this->userHasAnyRole($userId), 403);
 
-            abort_unless($hasRole, 403);
+            Cookie::queue(Cookie::make($cookieAccess, '1', 60));
 
             return $next($request);
         }
@@ -63,5 +61,12 @@ class StagingGateMiddleware
         return Socialite::driver('twitch')
             ->redirect()
             ->withCookie(Cookie::make($cookieIntended, $request->fullUrl(), 10));
+    }
+
+    private function userHasAnyRole(int|string $userId): bool
+    {
+        return DB::table('user_roles')
+            ->where('user_id', $userId)
+            ->exists();
     }
 }
