@@ -8,34 +8,34 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\Response;
 
 class StagingGateMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
      * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $cookiePrefix = 'vheart_staging';
-        $cookieSession = $cookiePrefix.'_session';
-        $cookieIntended = $cookiePrefix.'_intended';
-
-        $whitelist = config('app.staging-whitelist', []);
-        $currentUser = $request->cookie($cookieSession, false);
-
         if (! app()->environment('staging')) {
             return $next($request);
         }
 
-        if ($currentUser) {
-            [$twitchId, $twitchName] = explode(':', $currentUser);
-            if (! in_array($twitchId, $whitelist, true) && ! in_array($twitchName, $whitelist, true)) {
-                abort(403);
-            }
+        $cookiePrefix = 'vheart_staging';
+        $cookieSession = $cookiePrefix.'_session';
+        $cookieAccess = $cookiePrefix.'_access';
+        $cookieIntended = $cookiePrefix.'_intended';
+
+        if ($request->cookie($cookieAccess, false)) {
+            return $next($request);
+        }
+
+        if ($userId = $request->cookie($cookieSession, false)) {
+            abort_unless($this->userHasAnyRole($userId), 403);
+
+            Cookie::queue(Cookie::make($cookieAccess, '1', 60));
 
             return $next($request);
         }
@@ -47,17 +47,26 @@ class StagingGateMiddleware
                 return Socialite::driver('twitch')->redirect();
             }
 
+            abort_unless($this->userHasAnyRole($twitchUser->id), 403);
+
             $intendedUrl = $request->cookie($cookieIntended, route('home'));
 
             return redirect()->intended($intendedUrl)->withCookies([
-                Cookie::make($cookieSession, $twitchUser->id.':'.$twitchUser->user['login'], 60 * 24),
+                Cookie::make($cookieSession, $twitchUser->id, 60 * 24),
+                Cookie::make($cookieAccess, '1', 60),
                 Cookie::forget($cookieIntended),
             ]);
         }
 
-        // simple QOL of remembering where we are to redirect back to it later
-        $intendedCookie = Cookie::make($cookieIntended, $request->fullUrl(), 10);
+        return Socialite::driver('twitch')
+            ->redirect()
+            ->withCookie(Cookie::make($cookieIntended, $request->fullUrl(), 10));
+    }
 
-        return Socialite::driver('twitch')->redirect()->withCookie($intendedCookie);
+    private function userHasAnyRole(int|string $userId): bool
+    {
+        return DB::table('user_roles')
+            ->where('user_id', $userId)
+            ->exists();
     }
 }
