@@ -32,12 +32,17 @@ class StagingGateMiddleware
             return $next($request);
         }
 
-        if ($userId = $request->cookie($cookieSession, false)) {
-            abort_unless($this->userHasAnyRole($userId), 403);
+        $userId = $request->cookie($cookieSession, false);
 
+        if ($userId && filter_var($userId, FILTER_VALIDATE_INT)) {
+            abort_unless($this->userHasAnyRole((int) $userId), 403);
             Cookie::queue(Cookie::make($cookieAccess, '1', 60));
 
             return $next($request);
+        }
+
+        if ($userId !== false) {
+            Cookie::queue(Cookie::forget($cookieSession));
         }
 
         if ($request->is('auth/twitch/callback')) {
