@@ -25,7 +25,12 @@ class StagingGateMiddleware
 
         $cookiePrefix = 'vheart_staging';
         $cookieSession = $cookiePrefix.'_session';
+        $cookieAccess = $cookiePrefix.'_access';
         $cookieIntended = $cookiePrefix.'_intended';
+
+        if ($request->cookie($cookieAccess, false)) {
+            return $next($request);
+        }
 
         if ($userId = $request->cookie($cookieSession, false)) {
             $hasRole = DB::table('user_roles')
@@ -44,10 +49,13 @@ class StagingGateMiddleware
                 return Socialite::driver('twitch')->redirect();
             }
 
+            abort_unless($this->userHasAnyRole($twitchUser->id), 403);
+
             $intendedUrl = $request->cookie($cookieIntended, route('home'));
 
             return redirect()->intended($intendedUrl)->withCookies([
                 Cookie::make($cookieSession, $twitchUser->id, 60 * 24),
+                Cookie::make($cookieAccess, '1', 60),
                 Cookie::forget($cookieIntended),
             ]);
         }
