@@ -10,6 +10,8 @@ RUN install-php-extensions \
     redis \
     zip
 
+RUN apk add --no-cache postgresql-client
+
 WORKDIR /app
 ENV TZ=Europe/Berlin \
     APP_ENV=production \
