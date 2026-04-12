@@ -8,11 +8,13 @@ use App\Enums\Clips\ClipStatus;
 use App\Models\Category;
 use App\Models\Clip;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<Clip>
  */
+#[UseModel(Clip::class)]
 class ClipFactory extends Factory
 {
     /**

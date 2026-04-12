@@ -10,12 +10,13 @@ use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 
 /**
  * Shows the 2FA Verification Prompt
  */
-class TwoFactorPromptController extends Controller implements HasMiddleware
+#[Middleware('guest')]
+class TwoFactorPromptController extends Controller
 {
     public function __invoke(TwoFactorChallengeRequest $request, AppAuthentication $mfa): View|RedirectResponse
     {
@@ -29,10 +30,5 @@ class TwoFactorPromptController extends Controller implements HasMiddleware
         $request->session()->keep(['auth_2fa_id']);
 
         return view('auth.two-factor');
-    }
-
-    public static function middleware(): array
-    {
-        return ['guest'];
     }
 }

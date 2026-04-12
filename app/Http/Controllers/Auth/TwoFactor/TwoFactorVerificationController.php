@@ -8,14 +8,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\TwoFactorSubmitRequest;
 use App\Models\User;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
-use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Verifies the 2FA input is valid and authenticates the user if so
  */
-class TwoFactorVerificationController extends Controller implements HasMiddleware
+#[Middleware('guest')]
+#[Middleware('throttle:two-factor')]
+class TwoFactorVerificationController extends Controller
 {
     public function __invoke(TwoFactorSubmitRequest $request, AppAuthentication $mfa): RedirectResponse
     {
@@ -31,13 +33,5 @@ class TwoFactorVerificationController extends Controller implements HasMiddlewar
         Auth::login($user);
 
         return redirect()->intended(route('home'));
-    }
-
-    public static function middleware(): array
-    {
-        return [
-            'guest',
-            'throttle:two-factor',
-        ];
     }
 }

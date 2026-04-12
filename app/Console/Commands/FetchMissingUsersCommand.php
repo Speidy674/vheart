@@ -10,21 +10,15 @@ use App\Models\Scopes\ClipPermissionScope;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\TwitchService;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
+#[Signature('app:fetch-missing-users')]
+#[Description('Fetch (missing) users and create broadcaster profiles with consent for testing')]
 class FetchMissingUsersCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'app:fetch-missing-users';
-
-    /**
-     * @var string
-     */
-    protected $description = 'Fetch (missing) users and create broadcaster profiles with consent for testing';
-
     public function handle(TwitchService $twitchService): void
     {
         $broadcasterIds = Clip::withoutGlobalScope(ClipPermissionScope::class)->doesntHave('broadcaster')->pluck('broadcaster_id');

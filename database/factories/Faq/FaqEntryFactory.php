@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Factories\Faq;
 
-use App\Models\FaQ\FaqEntry;
+use App\Models\Faq\FaqEntry;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<FaqEntry>
  */
+#[UseModel(FaqEntry::class)]
 class FaqEntryFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array

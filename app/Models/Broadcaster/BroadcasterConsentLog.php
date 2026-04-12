@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Policies\Broadcaster\BroadcasterConsentLogPolicy;
 use Database\Factories\Broadcaster\BroadcasterConsentLogFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,12 +18,11 @@ use JsonException;
 use LogicException;
 
 #[UsePolicy(BroadcasterConsentLogPolicy::class)]
+#[WithoutTimestamps]
 class BroadcasterConsentLog extends Model
 {
     /** @use HasFactory<BroadcasterConsentLogFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     public function isValid(): bool
     {

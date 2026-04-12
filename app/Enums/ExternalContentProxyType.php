@@ -29,7 +29,7 @@ enum ExternalContentProxyType: string
         };
     }
 
-    public function getResource(string $identifier): string
+    public function getResource(string $identifier): ?string
     {
         $size = null;
         $dbId = $identifier;
@@ -43,6 +43,10 @@ enum ExternalContentProxyType: string
         $model = $modelClass::where($modelClass::getProxyIdentifierColumn(), $dbId)->firstOrFail();
 
         $url = $model->getAttribute($modelClass::getProxyUrlColumn());
+
+        if (! $url) {
+            return null;
+        }
 
         if ($size && $url) {
             return str_replace('{width}x{height}', $size, $url);

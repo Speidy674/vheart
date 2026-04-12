@@ -7,16 +7,17 @@ namespace Database\Factories;
 use App\Enums\ClipVoteType;
 use App\Models\Clip;
 use App\Models\User;
+use App\Models\Vote;
+use Illuminate\Database\Eloquent\Factories\Attributes\UseModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Vote>
+ * @extends Factory<Vote>
  */
+#[UseModel(Vote::class)]
 class VoteFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array

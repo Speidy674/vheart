@@ -28,12 +28,12 @@ class ReportsTable
                 TextColumn::make('reason')
                     ->wrap()
                     ->limit(50)
+                    ->badge()
                     ->sortable(),
 
                 TextColumn::make('reportable')
                     ->formatStateUsing(fn (Model $record) => $record->reportable->{$record->reportable->getReportableTitleAttribute()})
                     ->url(fn (Model $record) => Filament::getResourceUrl($record->reportable, 'view'))
-                    ->badge()
                     ->openUrlInNewTab(),
 
                 TextColumn::make('reporter.name')

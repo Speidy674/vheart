@@ -83,6 +83,7 @@ return [
                 'filename_copy_failed_title' => 'Could not copy filename',
                 'filename_copy_failed_no_broadcaster' => 'Broadcaster profile not found',
                 'status_updated' => 'Status has been updated',
+                'readonly' => 'This Compilation is scheduled or published and can only be updated by its owner.',
             ],
         ],
     ],

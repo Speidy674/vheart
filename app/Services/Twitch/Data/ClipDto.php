@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Twitch\Data;
 
 use App\Services\Twitch\Contracts\TwitchDtoInterface;
+use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use Illuminate\Support\Carbon;
 
 /* @link https://dev.twitch.tv/docs/api/reference#get-clips */
 readonly class ClipDto implements TwitchDtoInterface
@@ -47,7 +47,7 @@ readonly class ClipDto implements TwitchDtoInterface
             language: $data['language'],
             title: $data['title'],
             viewCount: (int) $data['view_count'],
-            createdAt: Carbon::parse($data['created_at']),
+            createdAt: CarbonImmutable::parse($data['created_at']),
             thumbnailUrl: $data['thumbnail_url'],
             duration: (float) $data['duration'],
             vodOffset: $data['vod_offset'] ?? null,

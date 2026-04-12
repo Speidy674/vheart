@@ -91,5 +91,9 @@ return [
         'actions' => [
             'attached_to_compilation' => 'Attached to Compilation',
         ],
+        'submit_error' => [
+            'title' => 'Could not import clip',
+            'body' => 'An unexpected error occurred. Please try again. If the problem persists, try logging out and back in.',
+        ],
     ],
 ];

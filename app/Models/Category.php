@@ -13,12 +13,14 @@ use App\Policies\CategoryPolicy;
 use Database\Factories\CategoryFactory;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
+use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[UsePolicy(CategoryPolicy::class)]
 #[UseResource(CategoryResource::class)]
+#[WithoutIncrementing]
 class Category extends Model implements ExternalProxyable
 {
     use Auditable;
@@ -34,8 +36,6 @@ class Category extends Model implements ExternalProxyable
         'is_banned' => false,
         'box_art' => self::PLACEHOLDER_BOX_ART,
     ];
-
-    public $incrementing = false;
 
     public static function getProxyUrlColumn(): string
     {

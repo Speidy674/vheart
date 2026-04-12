@@ -28,6 +28,7 @@ use Filament\Models\Contracts\HasTenants;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -41,6 +42,7 @@ use Kirschbaum\Commentions\HasComments;
  * @property int $id
  */
 #[UsePolicy(UserPolicy::class)]
+#[WithoutIncrementing]
 #[Hidden([
     'password',
     'app_authentication_secret',
@@ -65,8 +67,6 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     use UserFilamentConfiguration;
     use UserPermissions;
     use UserRelationships;
-
-    public $incrementing = false;
 
     protected array $auditExclude = [
         'name',
@@ -118,8 +118,8 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
 
     public function proxiedContentUrl(?int $width = null, ?int $height = null): ?string
     {
-        if (! $this->exists || $this->id === 0) {
-            return Vite::asset('resources/images/png/cat.png');
+        if (! $this->exists || $this->id === 0 || ! $this->getAttribute(static::getProxyUrlColumn())) {
+            return Vite::asset('resources/images/png/mani.png');
         }
 
         return $this->generateExternalProxyUrl($width, $height);

@@ -14,8 +14,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Attributes\Controllers\Middleware;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Middleware('throttle:10,1', only: ['store'])]
 class ClipVoteController extends Controller
 {
     private const string SESSION_QUEUE_KEY = 'CLIP_VOTE_QUEUE';
@@ -31,7 +33,7 @@ class ClipVoteController extends Controller
 
         $clip = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withPublicVoteCount()
+            ->withAbsoluteVoteCount()
             ->find($clipIdToVote);
 
         return view('clips.vote', [
@@ -75,7 +77,7 @@ class ClipVoteController extends Controller
 
         $clip = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withPublicVoteCount()
+            ->withAbsoluteVoteCount()
             ->find($this->getNextClipId($request));
 
         return new JsonResponse($clip?->toResource());

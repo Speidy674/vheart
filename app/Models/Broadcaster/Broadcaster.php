@@ -16,6 +16,7 @@ use Database\Factories\Broadcaster\BroadcasterFactory;
 use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Illuminate\Database\Eloquent\Attributes\WithoutIncrementing;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -28,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
 #[UsePolicy(BroadcasterPolicy::class)]
+#[WithoutIncrementing]
 class Broadcaster extends Model implements HasAvatar
 {
     use Auditable;
@@ -36,8 +38,6 @@ class Broadcaster extends Model implements HasAvatar
     use HasFactory;
 
     use SoftDeletes;
-
-    public $incrementing = false;
 
     /**
      * @return BelongsTo<User, $this>

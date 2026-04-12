@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Actions\Tables;
 
 use App\Actions\ImportClipAction;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\FeatureFlag;
 use App\Enums\Filament\LucideIcon;
 use App\Enums\Permission;
@@ -28,6 +29,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Exceptions\Halt;
 
 class SubmitClipAction extends Action
 {
@@ -114,7 +116,7 @@ class SubmitClipAction extends Action
                     if (! $clipId) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     $user = auth()->user();
@@ -125,7 +127,7 @@ class SubmitClipAction extends Action
                     if (! $clipInfo instanceof ClipDto) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     $bypassBroadcasterConsent = Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent) || (auth()->user()?->can(Permission::BypassConsentCheck) && $data['broadcaster_consent']);
@@ -136,7 +138,7 @@ class SubmitClipAction extends Action
                     if (Clip::query()->where('twitch_id', $clipInfo->id)->exists()) {
                         Notification::make()->title(__('clips.errors.clip_already_known'))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     /** @var int $minClipDuration */
@@ -146,7 +148,7 @@ class SubmitClipAction extends Action
                             'seconds' => $minClipDuration,
                         ]))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     /** @var CarbonInterval $maxClipAge */
@@ -156,7 +158,7 @@ class SubmitClipAction extends Action
                             'age' => $maxClipAge->forHumans(),
                         ]))->danger()->send();
 
-                        return;
+                        $this->halt();
                     }
 
                     // Check Site Category Ban
@@ -169,7 +171,7 @@ class SubmitClipAction extends Action
                         if ($isCategoryBanned) {
                             Notification::make()->title(__('clips.errors.category_blocked'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
                     }
 
@@ -184,7 +186,7 @@ class SubmitClipAction extends Action
                         if (! $broadcaster) {
                             Notification::make()->title(__('clips.errors.broadcaster_not_allowed'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
 
                         $userType = $user->getMorphClass();
@@ -199,13 +201,13 @@ class SubmitClipAction extends Action
                         if (! $this->passesUserChecks($user, $broadcaster, $disallowedUsers, $allowedUsers, $twitchService)) {
                             Notification::make()->title(__('clips.errors.user_not_allowed_for_broadcaster'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
 
                         if (! $this->passesCategoryChecks($clipInfo, $disallowedCategories, $allowedCategories)) {
                             Notification::make()->title(__('clips.errors.category_blocked'))->danger()->send();
 
-                            return;
+                            $this->halt();
                         }
                     } else {
 
@@ -226,19 +228,38 @@ class SubmitClipAction extends Action
                         'name' => $clipInfo->creatorName,
                     ]);
 
-                    $importClipAction->execute($clipInfo, $user, $data['tags']);
+                    $clip = $importClipAction->execute($clipInfo, $user, $data['tags']);
+
+                    if ($bypassBroadcasterConsent) {
+                        $broadcasterConsentExists = Broadcaster::query()
+                            ->where('id', $clipInfo->broadcasterId)
+                            ->whereJsonLength('consent', '>', '0')
+                            ->exists();
+
+                        if (! $broadcasterConsentExists) {
+                            $clip->update([
+                                'status' => ClipStatus::NeedApproval,
+                            ]);
+                        }
+                    }
 
                     Notification::make()
                         ->title(__('clips.flash.submitted'))
                         ->success()
                         ->send();
 
+                } catch (Halt $e) {
+                    throw $e;
                 } catch (Exception $e) {
+                    report($e);
+
                     Notification::make()
-                        ->title(__('admin/resources/clips.notifications.submit_error'))
-                        ->body($e->getMessage())
+                        ->title(__('admin/resources/clips.notifications.submit_error.title'))
+                        ->body(__('admin/resources/clips.notifications.submit_error.body'))
                         ->danger()
                         ->send();
+
+                    $this->halt(true);
                 }
             });
     }
