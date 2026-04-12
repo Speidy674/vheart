@@ -40,3 +40,4 @@ Schedule::command(ArchiveClipVotesCommand::class)
 
 Schedule::command('backup:run --isolated')->runInBackground()->onOneServer()->hourly();
 Schedule::command('backup:clean --isolated')->runInBackground()->onOneServer()->daily()->at('00:15');
+Schedule::command('backup:monitor --isolated')->runInBackground()->onOneServer()->dailyAt('00:30');
