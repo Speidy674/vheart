@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Broadcasters\Pages;
 
-use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Filament\AdminPanel\Resources\Broadcasters\BroadcasterResource;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterConsentLog;
@@ -37,12 +36,9 @@ class EditBroadcaster extends EditRecord
         /** @var Broadcaster $broadcaster */
         $broadcaster = $this->record;
 
-        $newState = $broadcaster->consent->values()
-            ->map(fn (BroadcasterConsent $e) => $e->value)
-            ->all();
-
-        $alreadyLogged = $broadcaster
-            ->latestConsentLog?->getRawOriginal('state') === json_encode($newState, JSON_THROW_ON_ERROR);
+        $alreadyLogged = $broadcaster->consent
+            ->diff($broadcaster->latestConsentLog?->state ?? collect())
+            ->isEmpty();
 
         if ($alreadyLogged) {
             return;
@@ -50,7 +46,7 @@ class EditBroadcaster extends EditRecord
 
         BroadcasterConsentLog::create([
             'broadcaster_id' => $broadcaster->id,
-            'state' => $newState,
+            'state' => $broadcaster->consent,
             'changed_by' => auth()->id(),
             'changed_at' => now(),
         ]);
