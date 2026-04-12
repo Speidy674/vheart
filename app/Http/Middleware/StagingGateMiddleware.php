@@ -8,6 +8,7 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,14 +27,16 @@ class StagingGateMiddleware
         $cookieSession = $cookiePrefix.'_session';
         $cookieIntended = $cookiePrefix.'_intended';
 
-        $whitelist = config('app.staging-whitelist', []);
         $currentUser = $request->cookie($cookieSession, false);
 
         if ($currentUser) {
-            [$twitchId, $twitchName] = explode(':', $currentUser);
-            if (! in_array($twitchId, $whitelist, true) && ! in_array($twitchName, $whitelist, true)) {
-                abort(403);
-            }
+            $userId = (int) explode(':', $currentUser)[0];
+
+            $hasRole = DB::table('user_roles')
+                ->where('user_id', $userId)
+                ->exists();
+
+            abort_unless($hasRole, 403);
 
             return $next($request);
         }
