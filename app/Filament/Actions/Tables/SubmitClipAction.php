@@ -153,7 +153,7 @@ class SubmitClipAction extends Action
 
                     /** @var CarbonInterval $maxClipAge */
                     $maxClipAge = config('vheart.clips.submission.maximum_age');
-                    if (! $bypassMaxAge && $maxClipAge && $clipInfo->createdAt->add($maxClipAge)->isPast()) {
+                    if (! $bypassMaxAge && $maxClipAge && $clipInfo->createdAt->clone()->add($maxClipAge)->isPast()) {
                         Notification::make()->title(__('clips.errors.too_old', [
                             'age' => $maxClipAge->forHumans(),
                         ]))->danger()->send();
