@@ -33,7 +33,10 @@ class ReportsTable
 
                 TextColumn::make('reportable')
                     ->formatStateUsing(fn (Model $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
-                    ->url(fn (Model $record): bool => $record->reportable && Filament::getResourceUrl($record->reportable, 'view'))
+                    ->url(fn (Model $record): ?string => $record->reportable
+                        ? Filament::getResourceUrl($record->reportable, 'view')
+                        : null
+                    )
                     ->placeholder('Deleted Item')
                     ->openUrlInNewTab(),
 
