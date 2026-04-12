@@ -18,16 +18,16 @@ class StagingGateMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (! app()->environment('staging')) {
+            return $next($request);
+        }
+
         $cookiePrefix = 'vheart_staging';
         $cookieSession = $cookiePrefix.'_session';
         $cookieIntended = $cookiePrefix.'_intended';
 
         $whitelist = config('app.staging-whitelist', []);
         $currentUser = $request->cookie($cookieSession, false);
-
-        if (! app()->environment('staging')) {
-            return $next($request);
-        }
 
         if ($currentUser) {
             [$twitchId, $twitchName] = explode(':', $currentUser);
