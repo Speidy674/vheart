@@ -32,8 +32,9 @@ class ReportsTable
                     ->sortable(),
 
                 TextColumn::make('reportable')
-                    ->formatStateUsing(fn (Model $record) => $record->reportable->{$record->reportable->getReportableTitleAttribute()})
-                    ->url(fn (Model $record) => Filament::getResourceUrl($record->reportable, 'view'))
+                    ->formatStateUsing(fn (Model $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
+                    ->url(fn (Model $record) => $record->reportable && Filament::getResourceUrl($record->reportable, 'view'))
+                    ->placeholder('Deleted Item')
                     ->openUrlInNewTab(),
 
                 TextColumn::make('reporter.name')
