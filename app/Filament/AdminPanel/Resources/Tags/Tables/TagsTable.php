@@ -27,6 +27,7 @@ class TagsTable
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('clips_count'),
+                TextColumn::make('order')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
