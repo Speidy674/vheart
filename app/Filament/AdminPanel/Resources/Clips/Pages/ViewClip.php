@@ -13,6 +13,7 @@ use App\Filament\AdminPanel\Resources\Clips\ClipResource;
 use App\Models\Clip;
 use App\Models\User;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Enums\Width;
@@ -26,21 +27,33 @@ class ViewClip extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            AttachToCompilationAction::make(),
+            Action::make('open_twitch')
+                ->label(__('admin/resources/clips.actions.view_on_twitch'))
+                ->icon(LucideIcon::ExternalLink)
+                ->url(fn (Clip $clip): string => $clip->getClipUrl())
+                ->openUrlInNewTab(),
+
+            ActionGroup::make([
+                AttachToCompilationAction::make(),
+                ClipFeedbackAction::make(),
+            ])
+                ->label('Management')
+                ->button(),
+
+            ActionGroup::make([
+                FlagClipAction::make(),
+                UnflagClipAction::make(),
+            ])
+                ->label('Moderation')
+                ->button(),
+
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
                 ->authorize('comment')
                 ->perPage(4)
                 ->loadMoreIncrementsBy(8)
                 ->modalWidth(Width::SevenExtraLarge),
-            Action::make('open_twitch')
-                ->label(__('admin/resources/clips.actions.view_on_twitch'))
-                ->icon(LucideIcon::ExternalLink)
-                ->url(fn (Clip $clip): string => $clip->getClipUrl())
-                ->openUrlInNewTab(),
-            ClipFeedbackAction::make(),
-            FlagClipAction::make(),
-            UnflagClipAction::make(),
+
             EditAction::make(),
         ];
     }
