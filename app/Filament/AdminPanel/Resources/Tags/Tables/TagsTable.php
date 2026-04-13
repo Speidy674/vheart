@@ -21,9 +21,13 @@ class TagsTable
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query->withCount('clips'))
+            ->reorderable('order')
+            ->defaultSort('order')
+            ->paginated(false)
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('clips_count'),
+                TextColumn::make('order')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

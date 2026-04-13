@@ -65,6 +65,7 @@ class SubmitClipAction extends Action
                     ->maxItems(3)
                     ->options(fn () => Tag::query()
                         ->whereLocale('name', app()->getLocale())
+                        ->orderBy('order')
                         ->pluck('name', 'id')
                     )
                     ->required(),
