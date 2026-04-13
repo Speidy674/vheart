@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Resources\Clips\Pages;
 
 use App\Enums\Filament\LucideIcon;
+use App\Filament\AdminPanel\Resources\Clips\Actions\Management\AttachToCompilationAction;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Management\ClipFeedbackAction;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\FlagClipAction;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\UnflagClipAction;
@@ -25,6 +26,7 @@ class ViewClip extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            AttachToCompilationAction::make(),
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
                 ->authorize('comment')
