@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Clips\RelationManagers;
 
-use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Filament\AdminPanel\Resources\Compilations\CompilationResource;
-use Filament\Actions\AttachAction;
-use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -20,7 +17,7 @@ class CompilationsRelationManager extends RelationManager
 
     public function isReadOnly(): bool
     {
-        return false;
+        return true;
     }
 
     public function table(Table $table): Table
@@ -53,18 +50,6 @@ class CompilationsRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])->headerActions([
-                AttachAction::make()
-                    ->preloadRecordSelect()
-                    ->schema(fn (AttachAction $action): array => [
-                        $action->getRecordSelect(),
-                        Select::make('claim_status')
-                            ->label('admin/resources/compilations.relation_managers.clips.columns.status_cutter')
-                            ->translateLabel()
-                            ->options(CompilationClipClaimStatus::class)
-                            ->default(CompilationClipClaimStatus::Pending)
-                            ->required(),
-                    ]),
             ]);
     }
 }
