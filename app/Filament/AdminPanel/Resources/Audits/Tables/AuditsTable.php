@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Resources\Audits\Tables;
 
 use App\Enums\Filament\LucideIcon;
+use App\Filament\Actions\ResourceLinkAction;
 use App\Filament\Filters\DateRangeFilter;
 use App\Models\Audit;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
+use Filament\Support\Enums\IconSize;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -99,6 +102,21 @@ class AuditsTable
             ])
             ->recordActions([
                 ViewAction::make()->modalWidth(Width::ScreenTwoExtraLarge),
+                ActionGroup::make([
+                    ResourceLinkAction::make('viewCauser')
+                        ->label('Actor')
+                        ->openUrlInNewTab()
+                        ->relationship('causer'),
+                    ResourceLinkAction::make('viewAuditable')
+                        ->label('Resource')
+                        ->openUrlInNewTab()
+                        ->relationship('auditable'),
+                ])
+                    ->icon(LucideIcon::ExternalLink)
+                    ->iconSize(IconSize::Small)
+                    ->label('Open')
+                    ->color('gray')
+                    ->link(),
             ])
             ->filtersFormWidth(Width::ExtraLarge);
     }

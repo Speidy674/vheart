@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Users\Pages;
 
+use App\Filament\Actions\ResourceLinkAction;
 use App\Filament\AdminPanel\Resources\Users\UserResource;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -23,6 +24,9 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            ResourceLinkAction::make('broadcasterLink')
+                ->relationship('broadcaster')
+                ->label('Broadcaster'),
             CommentsAction::make()
                 ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get())
                 ->authorize('comment')

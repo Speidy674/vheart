@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Resources\Reports\Schemas;
 
 use App\Enums\Filament\LucideIcon;
+use App\Filament\Actions\ResourceLinkAction;
 use App\Models\Report;
 use App\Models\User;
-use Filament\Actions\Action;
-use Filament\Facades\Filament;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
@@ -71,11 +70,10 @@ class ReportInfolist
 
                             Section::make('Reported Content')
                                 ->headerActions([
-                                    Action::make('view')
-                                        ->color('info')
-                                        ->icon(LucideIcon::ExternalLink)
-                                        ->disabled(fn (Model $record): bool => self::getResourceUrl($record->reportable) === null)
-                                        ->url(fn (Model $record): ?string => self::getResourceUrl($record->reportable), shouldOpenInNewTab: true),
+                                    ResourceLinkAction::make('view_reportable')
+                                        ->relationship('reportable')
+                                        ->openUrlInNewTab()
+                                        ->color('info'),
                                 ])
                                 ->icon(LucideIcon::Eye)
                                 ->columns(2)
@@ -97,14 +95,22 @@ class ReportInfolist
                                 ->icon(LucideIcon::Users)
                                 ->schema([
                                     TextEntry::make('reporter.name')
-                                        ->url(fn (Model $record): ?string => self::getResourceUrl($record->reporter), true)
+                                        ->hintAction(
+                                            ResourceLinkAction::make('reporterLink')
+                                                ->openUrlInNewTab()
+                                                ->relationship('reporter')
+                                        )
                                         ->label('Reporter')
                                         ->icon(LucideIcon::User)
                                         ->weight(FontWeight::Bold)
                                         ->color('gray'),
 
                                     TextEntry::make('claimer.name')
-                                        ->url(fn (Model $record): ?string => self::getResourceUrl($record->claimer), true)
+                                        ->hintAction(
+                                            ResourceLinkAction::make('claimerLink')
+                                                ->openUrlInNewTab()
+                                                ->relationship('claimer')
+                                        )
                                         ->label('Claimed By')
                                         ->icon(LucideIcon::ShieldCheck)
                                         ->placeholder('Unclaimed')
@@ -112,7 +118,11 @@ class ReportInfolist
                                         ->color('gray'),
 
                                     TextEntry::make('resolver.name')
-                                        ->url(fn (Model $record): ?string => self::getResourceUrl($record->resolver), true)
+                                        ->hintAction(
+                                            ResourceLinkAction::make('resolverLink')
+                                                ->openUrlInNewTab()
+                                                ->relationship('resolver')
+                                        )
                                         ->label('Resolved By')
                                         ->icon(LucideIcon::BadgeCheck)
                                         ->placeholder('Unresolved')
@@ -155,14 +165,5 @@ class ReportInfolist
                             ->mentionables(fn (Model $record) => User::query()->whereHas('roles')->get()),
                     ]),
             ]);
-    }
-
-    private static function getResourceUrl(?Model $model): ?string
-    {
-        if (! $model || Filament::getModelResource($model) === null) {
-            return null;
-        }
-
-        return Filament::getResourceUrl($model, 'view');
     }
 }
