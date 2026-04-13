@@ -60,7 +60,7 @@ class ResourceLinkAction extends Action
             return null;
         }
 
-        $chain = $this->preferredPage === 'index' ? ['index'] : [$this->preferredPage, $this->preferredPage === 'view' ? 'edit' : 'view', 'index'];
+        $chain = $this->preferredPage === 'index' ? ['index'] : [$this->preferredPage, $this->preferredPage === 'view' ? 'edit' : 'view'];
 
         foreach ($chain as $page) {
             $ability = match ($page) {
