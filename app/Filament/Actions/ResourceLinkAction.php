@@ -60,9 +60,23 @@ class ResourceLinkAction extends Action
             return null;
         }
 
-        $chain = $this->preferredPage === 'list' ? ['index'] : [$this->preferredPage, $this->preferredPage === 'view' ? 'edit' : 'view', 'index'];
+        $chain = $this->preferredPage === 'index' ? ['index'] : [$this->preferredPage, $this->preferredPage === 'view' ? 'edit' : 'view', 'index'];
 
         foreach ($chain as $page) {
+            $ability = match ($page) {
+                'edit' => 'update',
+                'index' => 'viewAny',
+                default => 'view',
+            };
+
+            $can = $ability === 'viewAny'
+                ? auth()->user()->can($ability, $related::class)
+                : auth()->user()->can($ability, $related);
+
+            if (! $can) {
+                continue;
+            }
+
             try {
                 return Filament::getResourceUrl($related, $page);
             } catch (InvalidArgumentException) {
