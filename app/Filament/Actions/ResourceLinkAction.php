@@ -22,8 +22,8 @@ class ResourceLinkAction extends Action
         parent::setUp();
 
         $this->icon(LucideIcon::ExternalLink)
-            ->url(fn (Model $record) => $this->resolveUrl($record))
-            ->visible(fn (Model $record) => $this->resolveUrl($record) !== null)
+            ->url(fn (Model $record): ?string => $this->resolveUrl($record))
+            ->visible(fn (Model $record): bool => $this->resolveUrl($record) !== null)
             ->label('View');
     }
 
@@ -49,7 +49,7 @@ class ResourceLinkAction extends Action
     protected function resolveUrl(Model $record): ?string
     {
         $related = value($this->via, $record)
-                |> (static fn ($rel) => explode('.', $rel))
+                |> (static fn ($rel): array => explode('.', (string) $rel))
                 |> (static fn ($segments) => array_reduce($segments, static fn ($carry, $segment) => $carry instanceof Model ? $carry->{$segment} : null, $record));
 
         if (! $related instanceof Model) {
