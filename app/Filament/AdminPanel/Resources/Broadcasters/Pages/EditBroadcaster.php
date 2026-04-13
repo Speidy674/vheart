@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Broadcasters\Pages;
 
+use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Filament\AdminPanel\Resources\Broadcasters\BroadcasterResource;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Broadcaster\BroadcasterConsentLog;
@@ -36,8 +37,8 @@ class EditBroadcaster extends EditRecord
         /** @var Broadcaster $broadcaster */
         $broadcaster = $this->record;
 
-        $alreadyLogged = $broadcaster->consent
-            ->diff($broadcaster->latestConsentLog?->state ?? collect())
+        $alreadyLogged = $broadcaster->consent->map(fn (BroadcasterConsent $consent) => $consent->value)
+            ->diff($broadcaster->latestConsentLog?->state->map(fn (BroadcasterConsent $consent) => $consent->value) ?? collect())
             ->isEmpty();
 
         if ($alreadyLogged) {
