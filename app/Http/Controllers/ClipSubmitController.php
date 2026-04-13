@@ -21,6 +21,7 @@ class ClipSubmitController extends Controller
     {
         $tags = Tag::query()
             ->whereLocale('name', app()->getLocale())
+            ->orderBy('order')
             ->get();
 
         return view('clips.submit', ['tags' => $tags]);
