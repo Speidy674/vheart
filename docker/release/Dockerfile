@@ -45,6 +45,9 @@ FROM base AS runner
 
 LABEL maintainer="VHeart IT Team" description="VHeart Website"
 
+ARG RELEASE=local
+ENV SENTRY_RELEASE=$RELEASE
+
 COPY --from=build /app /app
 
 RUN mkdir -p storage/framework/sessions storage/framework/views storage/framework/cache \
