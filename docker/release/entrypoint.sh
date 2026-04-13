@@ -4,6 +4,7 @@ set -e  # Exit immediately if any command fails
 INSTANCE=${CONTAINER_ROLE:-web}
 
 echo "[Entrypoint] Starting $INSTANCE..."
+echo "[Entrypoint] Release: ${SENTRY_RELEASE:-unknown}"
 
 # Force resolve service names to IPs and append to /etc/hosts.
 # This bypasses the Alpine DNS resolver which often times out (1s) on IPv6.
