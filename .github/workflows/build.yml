@@ -17,6 +17,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DB_CONNECTION: pgsql
+      DB_DATABASE: laravel
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      BROADCAST_DRIVER: log
+      CACHE_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+
     services:
       postgres:
         image: postgres:18-alpine
