@@ -29,6 +29,7 @@ class UpdateUserAction extends Action
             ->translateLabel()
             ->icon(LucideIcon::RefreshCcw)
             ->requiresConfirmation()
+            ->hidden(fn (Model $record): bool => $this->evaluate($this->userResolver ?? $record) === null)
             ->action(function (Model $record, array $data, TwitchService $twitchService): void {
                 $target = $this->evaluate($this->userResolver ?? $record);
 
