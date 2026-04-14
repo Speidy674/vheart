@@ -417,7 +417,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         return $query->selectSub(
             Vote::query()
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = ?::integer THEN ?::integer ELSE ?::integer END), 0)', [ClipVoteType::Jury->value, $juryWeight, $publicWeight])
+                ->selectRaw('COALESCE(final_score,SUM(CASE WHEN type = ?::integer THEN ?::integer ELSE ?::integer END), 0)', [ClipVoteType::Jury->value, $juryWeight, $publicWeight])
                 ->whereColumn('clip_id', 'clips.id')
                 ->where('voted', true),
             'score'
