@@ -16,5 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('order')->default(DB::raw("nextval('tags_order_seq')"));
             $table->index(['order', 'id']);
         });
+
+        DB::unprepared('ALTER SEQUENCE tags_order_seq OWNED BY tags.order');
     }
 };
