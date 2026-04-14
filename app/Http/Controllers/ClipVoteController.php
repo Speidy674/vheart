@@ -33,7 +33,6 @@ class ClipVoteController extends Controller
 
         $clip = Clip::query()
             ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withAbsoluteVoteCount()
             ->find($clipIdToVote);
 
         return view('clips.vote', [
