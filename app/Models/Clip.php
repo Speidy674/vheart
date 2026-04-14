@@ -389,9 +389,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withAbsoluteVoteCount(Builder $query): Builder
     {
-        return $query->withCount([
-            'votes as absolute_votes' => fn ($q) => $q->where('voted', true),
-        ]);
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(final_jury_votes + final_public_votes,COUNT(*), 0)')
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('voted', true),
+            'absolute_votes'
+        );
     }
 
     /**
