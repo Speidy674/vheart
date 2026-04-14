@@ -20,6 +20,7 @@ class UpdateUserAction extends Action
 
         $this
             ->label('Update User')
+            ->authorize('update')
             ->translateLabel()
             ->icon(LucideIcon::RefreshCcw)
             ->requiresConfirmation()
