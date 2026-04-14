@@ -430,14 +430,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withPublicVoteCount(Builder $query): Builder
     {
-        return $query->withCount(
-            [
-                'votes as public_votes' => function (Builder $query): void {
-                    $query
-                        ->where('voted', true)
-                        ->where('type', ClipVoteType::Public);
-                },
-            ]
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(final_public_votes,COUNT(*), 0)')
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('type', ClipVoteType::Public)
+                ->where('voted', true),
+            'public_votes'
         );
     }
 
