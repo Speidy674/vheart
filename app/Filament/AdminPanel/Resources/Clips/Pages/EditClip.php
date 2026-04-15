@@ -9,6 +9,7 @@ use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\UnflagClipAction;
 use App\Filament\AdminPanel\Resources\Clips\ClipResource;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Support\Htmlable;
 
@@ -30,6 +31,7 @@ class EditClip extends EditRecord
             FlagClipAction::make(),
             UnflagClipAction::make(),
             ActionGroup::make([
+                RestoreAction::make(),
                 DeleteAction::make(),
             ]),
         ];
