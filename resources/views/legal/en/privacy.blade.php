@@ -4,10 +4,10 @@ This privacy policy explains what personal data we process when you use this web
 
 ## Controller / Responsible
 
-Jennifer Matern
-c/o POSTFLEX PFX-484-794
-Emsdettener Straße 10
-48268 Greven
+Jennifer Matern \
+c/o POSTFLEX PFX-484-794 \
+Emsdettener Straße 10 \
+48268 Greven \
 Germany
 
 **Email:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)

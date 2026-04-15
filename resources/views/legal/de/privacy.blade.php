@@ -5,10 +5,10 @@ zu welchen Zwecken dies geschieht und welche Rechte Ihnen zustehen.
 
 ## Verantwortlicher
 
-Jennifer Matern
-c/o POSTFLEX PFX-484-794
-Emsdettener Straße 10
-48268 Greven
+Jennifer Matern \
+c/o POSTFLEX PFX-484-794 \
+Emsdettener Straße 10 \
+48268 Greven \
 Deutschland
 
 **E-Mail:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
