@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Resources\Users\Actions;
 
 use App\Enums\Filament\LucideIcon;
+use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\User;
 use App\Services\Twitch\Data\UserDto;
@@ -27,7 +28,7 @@ class UpdateUserAction extends Action
 
         $this
             ->label(fn (Model $record): string => is_int($this->resolveTarget($record)) ? 'Create User' : 'Update User')
-            ->authorize('update')
+            ->authorize(Permission::CanImportUsers)
             ->translateLabel()
             ->icon(LucideIcon::RefreshCcw)
             ->requiresConfirmation()
