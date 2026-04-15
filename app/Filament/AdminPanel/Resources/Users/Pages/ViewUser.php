@@ -6,6 +6,7 @@ namespace App\Filament\AdminPanel\Resources\Users\Pages;
 
 use App\Filament\Actions\ResourceLinkAction;
 use App\Filament\AdminPanel\Resources\Users\UserResource;
+use App\Filament\AdminPanel\Resources\Users\Widgets\UserVotesWidget;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -48,6 +49,13 @@ class ViewUser extends ViewRecord
             DeleteAction::make()->label('Disable User'),
             ForceDeleteAction::make(),
             RestoreAction::make()->label('Restore User'),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            UserVotesWidget::class,
         ];
     }
 }
