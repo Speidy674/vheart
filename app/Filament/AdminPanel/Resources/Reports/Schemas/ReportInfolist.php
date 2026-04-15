@@ -141,13 +141,25 @@ class ReportInfolist
                                     TextEntry::make('claimed_at')
                                         ->label('Claimed')
                                         ->dateTime()
-                                        ->placeholder('-'),
+                                        ->placeholder('-')
+                                        ->hint(fn ($record) => $record->claimed_at
+                                            ? $record->created_at->diffForHumans($record->claimed_at, true)
+                                            : $record->created_at->diffForHumans(now(), true)
+                                        )
+                                        ->hintColor('gray')
+                                        ->hintIcon(fn (Report $record): LucideIcon => $record->claimed_at ? LucideIcon::Clock : LucideIcon::Timer),
 
                                     TextEntry::make('resolved_at')
                                         ->label('Resolved')
                                         ->dateTime()
                                         ->placeholder('-')
-                                        ->color(fn ($state): string => $state ? 'success' : 'gray'),
+                                        ->color(fn ($state): string => $state ? 'success' : 'gray')
+                                        ->hint(fn ($record) => $record->resolved_at
+                                            ? $record->created_at->diffForHumans($record->resolved_at, true)
+                                            : $record->created_at->diffForHumans(now(), true)
+                                        )
+                                        ->hintColor('gray')
+                                        ->hintIcon(fn (Report $record): LucideIcon => $record->resolved_at ? LucideIcon::Clock : LucideIcon::Timer),
 
                                     TextEntry::make('updated_at')
                                         ->label('Last Activity')
