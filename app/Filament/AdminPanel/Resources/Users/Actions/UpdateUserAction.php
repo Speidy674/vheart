@@ -30,7 +30,7 @@ class UpdateUserAction extends Action
             ->label(fn (Model $record): string => is_int($this->resolveTarget($record)) ? 'Create User' : 'Update User')
             ->authorize(Permission::CanImportUsers)
             ->translateLabel()
-            ->icon(LucideIcon::RefreshCcw)
+            ->icon(fn (Model $record): LucideIcon => is_int($this->resolveTarget($record)) ? LucideIcon::Plus : LucideIcon::RefreshCcw)
             ->requiresConfirmation()
             ->hidden(fn (Model $record): bool => $this->resolveTarget($record) === null)
             ->action(function (Model $record, array $data, TwitchService $twitchService): void {
