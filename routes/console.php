@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Console\Commands\ArchiveClipVotesCommand;
+use App\Console\Commands\CreateWeeklyEpisodes;
 use App\Enums\FeatureFlag;
 use App\Models\Audit;
 use App\Support\FeatureFlag\Feature;
@@ -44,3 +45,5 @@ Schedule::command(ArchiveClipVotesCommand::class)
 Schedule::command(BackupCommand::class)->runInBackground()->onOneServer()->hourly();
 Schedule::command(CleanupCommand::class)->runInBackground()->onOneServer()->daily()->at('00:15');
 Schedule::command(MonitorCommand::class)->runInBackground()->onOneServer()->dailyAt('00:30');
+
+Schedule::command(CreateWeeklyEpisodes::class)->onOneServer()->daily();
