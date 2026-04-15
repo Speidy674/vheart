@@ -4,10 +4,10 @@ Angaben gemäß § 5 DDG
 
 ## Anbieter
 
-Jennifer Matern
-c/o POSTFLEX PFX-484-794
-Emsdettener Straße 10
-48268 Greven
+Jennifer Matern \
+c/o POSTFLEX PFX-484-794 \
+Emsdettener Straße 10 \
+48268 Greven \
 Deutschland
 
 **E-Mail:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
