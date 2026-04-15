@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Compilations\Tables;
 
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Clips\CompilationType;
+use App\Models\Clip\Compilation;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -14,6 +16,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Schemas\Components\Fieldset;
+use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -34,6 +37,81 @@ class CompilationsTable
                     ->translateLabel()
                     ->wrap()
                     ->searchable(),
+                TextColumn::make('clips_count')
+                    ->label('admin/resources/compilations.table.columns.clips_count')
+                    ->fontFamily(FontFamily::Mono)
+                    ->counts('clips')
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+
+                TextColumn::make('clips_count_pending')
+                    ->counts(['clips as clips_count_pending' => fn (Builder $builder) => $builder->where('claim_status', CompilationClipClaimStatus::Pending)])
+                    ->label('admin/resources/compilations.table.columns.clips_count_pending')
+                    ->color(fn (int $state): ?string => $state > 0 ? 'danger' : null)
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+                TextColumn::make('clips_count_in_progress')
+                    ->counts(['clips as clips_count_in_progress' => fn (Builder $builder) => $builder->where('claim_status', CompilationClipClaimStatus::InProgress)])
+                    ->label('admin/resources/compilations.table.columns.clips_count_in_progress')
+                    ->color(fn (int $state): ?string => $state > 0 ? 'warning' : null)
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+                TextColumn::make('clips_count_completed')
+                    ->counts(['clips as clips_count_completed' => fn (Builder $builder) => $builder->where('claim_status', CompilationClipClaimStatus::Completed)])
+                    ->label('admin/resources/compilations.table.columns.clips_count_completed')
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+
+                TextColumn::make('clips_sum_duration')
+                    ->formatStateUsing(fn (float $state): string => gmdate('i:s', (int) $state))
+                    ->label('admin/resources/compilations.table.columns.clips_sum_duration')
+                    ->sum('clips', 'duration')
+                    ->placeholder('No Clips :(')
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+                TextColumn::make('clips_est_duration')
+                    ->formatStateUsing(fn (float $state): string => gmdate('i:s', (int) floor($state * 0.6)))
+                    ->label('admin/resources/compilations.table.columns.clips_est_duration')
+                    ->sum('clips as clips_est_duration', 'duration')
+                    ->toggleable(isToggledHiddenByDefault: true) // hidden by default because its likely very off, but nice to have i guess
+                    ->placeholder('No Clips :(')
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+                TextColumn::make('clips_avg_duration')
+                    ->label('admin/resources/compilations.table.columns.clips_avg_duration')
+                    ->formatStateUsing(fn (int $state): string => round($state).'s')
+                    ->avg('clips', 'duration')
+                    ->placeholder('No Clips :(')
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+
+                TextColumn::make('progress')
+                    ->label('admin/resources/compilations.table.columns.progress')
+                    ->getStateUsing(fn (Compilation $record): float|int => $record->clips_count > 0
+                        ? round(($record->clips_count_completed / $record->clips_count) * 100)
+                        : 0
+                    )
+                    ->suffix('%')
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->placeholder('No Clips :(')
+                    ->fontFamily(FontFamily::Mono)
+                    ->translateLabel()
+                    ->alignCenter()
+                    ->sortable(),
+
                 TextColumn::make('user.name')
                     ->label('admin/resources/compilations.table.columns.created_by')
                     ->translateLabel(),
