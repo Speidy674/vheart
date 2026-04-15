@@ -19,23 +19,25 @@ class UpdateUserAction extends Action
 {
     protected ?Closure $userResolver = null;
 
+    protected bool $createBroadcaster = false;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this
-            ->label('Update User')
+            ->label(fn (Model $record): string => is_int($this->resolveTarget($record)) ? 'Create User' : 'Update User')
             ->authorize('update')
             ->translateLabel()
             ->icon(LucideIcon::RefreshCcw)
             ->requiresConfirmation()
-            ->hidden(fn (Model $record): bool => $this->evaluate($this->userResolver ?? $record) === null)
+            ->hidden(fn (Model $record): bool => $this->resolveTarget($record) === null)
             ->action(function (Model $record, array $data, TwitchService $twitchService): void {
-                $target = $this->evaluate($this->userResolver ?? $record);
+                $target = $this->resolveTarget($record);
 
                 /** @var UserDto|null $userDto */
                 $userDto = array_first(
-                    $twitchService->asSessionUser()->getUsers(['id' => [$target->id]])
+                    $twitchService->asSessionUser()->getUsers(['id' => [$target instanceof Model ? $target->id : $target]])
                 );
 
                 if (! $userDto) {
@@ -49,10 +51,21 @@ class UpdateUserAction extends Action
                 }
 
                 match (true) {
+                    is_numeric($target) => User::updateOrCreate(['id' => $target], $userDto->toModel()),
                     $target instanceof Broadcaster => $target->user->update($userDto->toModel()),
                     $target instanceof User => $target->update($userDto->toModel()),
-                    default => throw new InvalidArgumentException('Invalid model for UpdateUserAction, only allowed are User or Broadcaster, we got '.get_class($target)),
+                    default => throw new InvalidArgumentException(
+                        'Invalid model for UpdateUserAction, only allowed are User, Broadcaster or integer, got '.get_class($target)
+                    ),
                 };
+
+                if ($this->createBroadcaster) {
+                    match (true) {
+                        is_numeric($target) => Broadcaster::updateOrCreate(['id' => $target]),
+                        $target instanceof User => Broadcaster::updateOrCreate(['id' => $target->id]),
+                        default => null,
+                    };
+                }
             })
             ->successNotificationTitle('User has been refreshed, avatar may be cached.');
     }
@@ -67,5 +80,21 @@ class UpdateUserAction extends Action
         $this->userResolver = $resolver;
 
         return $this;
+    }
+
+    public function shouldCreateBroadcaster(bool $value = true): static
+    {
+        $this->createBroadcaster = $value;
+
+        return $this;
+    }
+
+    private function resolveTarget(Model $record): Model|int|null
+    {
+        if (! $this->userResolver) {
+            return $record;
+        }
+
+        return $this->evaluate($this->userResolver);
     }
 }
