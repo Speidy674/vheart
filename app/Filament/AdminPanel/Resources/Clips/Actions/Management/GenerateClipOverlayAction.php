@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Resources\Clips\Actions\Management;
 
 use App\Enums\Filament\LucideIcon;
+use App\Filament\AdminPanel\Resources\Users\Actions\UpdateUserAction;
 use App\Models\Clip;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
@@ -42,18 +43,43 @@ class GenerateClipOverlayAction extends Action
                     ->label('Broadcaster Name')
                     ->maxLength(25)
                     ->live()
+                    ->hintAction(
+                        UpdateUserAction::make('broadcasterUpdate')
+                            ->resolveUserUsing(fn (Clip $record) => $record->broadcaster ?? $record->broadcaster_id)
+                            ->shouldCreateBroadcaster()
+                            ->after(function (Clip $record, Component $livewire): void {
+                                $record->load('broadcaster');
+                                $livewire->mountedActions[0]['data']['broadcaster'] = $record->broadcaster?->name ?? 'Unknown Broadcaster';
+                            })
+                    )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
 
                 TextInput::make('clipper')
                     ->label('Clipper Name')
                     ->maxLength(25)
                     ->live()
+                    ->hintAction(
+                        UpdateUserAction::make('clipperUpdate')
+                            ->resolveUserUsing(fn (Clip $record) => $record->creator ?? $record->creator_id)
+                            ->after(function (Clip $record, Component $livewire): void {
+                                $record->load('creator');
+                                $livewire->mountedActions[0]['data']['clipper'] = $record->creator?->name ?? '';
+                            })
+                    )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
 
                 TextInput::make('cutter')
                     ->label('Cutter Name')
                     ->maxLength(25)
                     ->live()
+                    ->hintAction(
+                        UpdateUserAction::make('cutterUpdate')
+                            ->resolveUserUsing(fn (Clip $record) => $record->claimer ?? $record->claimed_by)
+                            ->after(function (Clip $record, Component $livewire): void {
+                                $record->load('cutter');
+                                $livewire->mountedActions[0]['data']['cutter'] = $record->cutter?->name ?? '';
+                            })
+                    )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
 
                 TextInput::make('category')

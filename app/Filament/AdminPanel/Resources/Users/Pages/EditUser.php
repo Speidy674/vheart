@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Users\Pages;
 
+use App\Filament\AdminPanel\Resources\Users\Actions\UpdateUserAction;
 use App\Filament\AdminPanel\Resources\Users\UserResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
@@ -18,6 +19,7 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            UpdateUserAction::make(),
             ViewAction::make(),
             DeleteAction::make()->label('Disable User'),
             ForceDeleteAction::make(),
