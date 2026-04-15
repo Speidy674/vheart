@@ -46,4 +46,4 @@ Schedule::command(BackupCommand::class)->runInBackground()->onOneServer()->hourl
 Schedule::command(CleanupCommand::class)->runInBackground()->onOneServer()->daily()->at('00:15');
 Schedule::command(MonitorCommand::class)->runInBackground()->onOneServer()->dailyAt('00:30');
 
-Schedule::command(CreateWeeklyEpisodesCommand::class)->onOneServer()->daily();
+Schedule::command(CreateWeeklyEpisodesCommand::class)->onOneServer()->dailyAt('06:00');
