@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
+use Illuminate\Support\Collection;
 
 class ViewReport extends ViewRecord
 {
@@ -31,26 +32,40 @@ class ViewReport extends ViewRecord
                 ->visible(fn (Report $record): bool => $record->claimed_by === null && $record->status === ReportStatus::Pending)
                 ->authorize('claim')
                 ->action(function (Report $record): void {
-                    $record->update([
+                    $data = [
                         'status' => ReportStatus::InReview,
                         'claimed_by' => auth()->id(),
                         'claimed_at' => now(),
-                    ]);
+                    ];
+
+                    $record->update($data);
+                    $this->getDuplicates($record, ReportStatus::Pending)
+                        ->each(fn (Report $report) => $report->update($data));
                 }),
+
             Action::make('unclaim')
                 ->requiresConfirmation()
                 ->label('Unclaim')
                 ->icon(LucideIcon::LockOpen)
-                ->color('info')
-                ->visible(fn (Report $record): bool => $record->claimed_by !== null && $record->status === ReportStatus::InReview)
+                ->color('warning')
+                ->visible(fn (Report $record): bool => $record->claimed_by === auth()->id() && $record->status === ReportStatus::InReview)
                 ->authorize('claim')
                 ->action(function (Report $record): void {
-                    $record->update([
+                    $data = [
                         'status' => ReportStatus::Pending,
                         'claimed_by' => null,
                         'claimed_at' => null,
-                    ]);
+                    ];
+
+                    $record->update($data);
+                    $this->getDuplicates($record, ReportStatus::InReview)
+                        ->each(fn (Report $report) => $report->update([
+                            'status' => ReportStatus::Pending,
+                            'claimed_by' => null,
+                            'claimed_at' => null,
+                        ]));
                 }),
+
             Action::make('resolve')
                 ->requiresConfirmation()
                 ->label('Resolve')
@@ -73,12 +88,22 @@ class ViewReport extends ViewRecord
                     $record->update([
                         'status' => ReportStatus::Resolved,
                         'resolve_action' => $data['action'],
-                        'resolve_description' => $data['reason'],
+                        'resolve_description' => $data['reason'] ?? null,
                         'resolved_by' => auth()->id(),
                         'resolved_at' => now(),
                         'deleted_at' => now(),
                     ]);
                 }),
         ];
+    }
+
+    private function getDuplicates(Report $record, ReportStatus $status): Collection
+    {
+        return Report::query()
+            ->where('status', $status)
+            ->where('reportable_type', $record->reportable_type)
+            ->where('reportable_id', $record->reportable_id)
+            ->when($status === ReportStatus::InReview, fn ($q) => $q->where('claimed_by', auth()->id()))
+            ->get();
     }
 }
