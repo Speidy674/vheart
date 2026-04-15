@@ -385,7 +385,7 @@ class ClipsRelationManager extends RelationManager
                     DetachBulkAction::make(),
                 ]),
             ])
-            ->paginated(false)
+            ->paginated(fn (): bool => $this->getOwnerRecord()->clips()->count() >= 100)
             ->openRecordUrlInNewTab();
     }
 
