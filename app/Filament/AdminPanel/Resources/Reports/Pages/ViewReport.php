@@ -15,6 +15,7 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Support\Enums\Width;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ViewReport extends ViewRecord
@@ -88,7 +89,7 @@ class ViewReport extends ViewRecord
                     $record->update([
                         'status' => ReportStatus::Resolved,
                         'resolve_action' => $data['action'],
-                        'resolve_description' => $data['reason'] ?? null,
+                        'resolve_description' => $data['reason'],
                         'resolved_by' => auth()->id(),
                         'resolved_at' => now(),
                         'deleted_at' => now(),
@@ -103,7 +104,7 @@ class ViewReport extends ViewRecord
             ->where('status', $status)
             ->where('reportable_type', $record->reportable_type)
             ->where('reportable_id', $record->reportable_id)
-            ->when($status === ReportStatus::InReview, fn ($q) => $q->where('claimed_by', auth()->id()))
+            ->when($status === ReportStatus::InReview, fn (Builder $q): Builder => $q->where('claimed_by', auth()->id()))
             ->get();
     }
 }
