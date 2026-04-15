@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 #[Signature('episodes:create-weekly')]
 #[Description('Create episode compilations for current and next week if not exists')]
-class CreateWeeklyEpisodes extends Command
+class CreateWeeklyEpisodesCommand extends Command
 {
     public function handle(): void
     {
