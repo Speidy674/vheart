@@ -39,8 +39,8 @@ class UserVotesWidget extends ChartWidget
     protected function getData(): array
     {
         [$start, $perPeriod, $labelFn] = match ($this->filter ?? 'week') {
-            'month' => [now()->subDays(29)->startOfDay(), 'perDay', fn (string $d) => Carbon::parse($d)->format('d M')],
-            default => [now()->subDays(6)->startOfDay(), 'perDay', fn (string $d) => Carbon::parse($d)->format('D')],
+            'month' => [now()->subDays(29)->startOfDay(), 'perDay', fn (string $d): string => Carbon::parse($d)->format('d M')],
+            default => [now()->subDays(6)->startOfDay(), 'perDay', fn (string $d): string => Carbon::parse($d)->format('D')],
         };
 
         $trend = Trend::query(Vote::query()->where('user_id', $this->record->getKey()))
@@ -50,7 +50,7 @@ class UserVotesWidget extends ChartWidget
 
         return [
             'datasets' => [[
-                'data' => $trend->map(fn (TrendValue $v) => $v->aggregate)->toArray(),
+                'data' => $trend->map(fn (TrendValue $v): mixed => $v->aggregate)->toArray(),
                 'borderColor' => 'rgb(100, 100, 240)',
                 'backgroundColor' => 'rgba(100, 100, 240, 0.08)',
                 'borderWidth' => 2,
@@ -59,7 +59,7 @@ class UserVotesWidget extends ChartWidget
                 'fill' => true,
                 'tension' => 0.4,
             ]],
-            'labels' => $trend->map(fn (TrendValue $v) => $labelFn($v->date))->toArray(),
+            'labels' => $trend->map(fn (TrendValue $v): string => $labelFn($v->date))->toArray(),
         ];
     }
 
