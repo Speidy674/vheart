@@ -18,6 +18,16 @@ return [
             'created_by' => 'Created By',
             'status' => 'Status',
             'type' => 'Type',
+
+            'clips_count' => 'Total Clips',
+            'clips_count_pending' => 'Pending',
+            'clips_count_in_progress' => 'In Progress',
+            'clips_count_completed' => 'Completed',
+            'clips_sum_duration' => 'Total Duration',
+            'clips_avg_duration' => 'Avg Duration',
+            'clips_est_duration' => 'Est. Length',
+
+            'progress' => 'Progress',
         ],
         'filters' => [
             'created_by' => 'Created By',
