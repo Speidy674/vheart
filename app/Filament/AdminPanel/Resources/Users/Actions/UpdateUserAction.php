@@ -56,7 +56,7 @@ class UpdateUserAction extends Action
                     $target instanceof Broadcaster => $target->user->update($userDto->toModel()),
                     $target instanceof User => $target->update($userDto->toModel()),
                     default => throw new InvalidArgumentException(
-                        'Invalid model for UpdateUserAction, only allowed are User, Broadcaster or integer, got '.get_class($target)
+                        'Invalid model for UpdateUserAction, only allowed are User, Broadcaster or integer, got '.$target::class
                     ),
                 };
 
@@ -92,7 +92,7 @@ class UpdateUserAction extends Action
 
     private function resolveTarget(Model $record): Model|int|null
     {
-        if (! $this->userResolver) {
+        if (! $this->userResolver instanceof Closure) {
             return $record;
         }
 
