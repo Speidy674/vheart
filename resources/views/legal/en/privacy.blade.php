@@ -4,14 +4,14 @@ This privacy policy explains what personal data we process when you use this web
 
 ## Controller / Responsible
 
-VHeart \
-XXXX XXXX \
-XXXX XXXX \
-XXXX XXXX \
+Jennifer Matern
+c/o POSTFLEX PFX-484-794
+Emsdettener Straße 10
+48268 Greven
 Germany
 
 **Email:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
-**Phone:** [-------](tel:-------)
+**Phone:** [015128096729](tel:015128096729)
 
 ## How do we use cookies?
 

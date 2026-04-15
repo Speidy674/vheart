@@ -4,14 +4,14 @@ Angaben gemäß § 5 DDG
 
 ## Anbieter
 
-VHeart \
-XXXX XXXX \
-XXXX XXXX \
-XXXX XXXX \
+Jennifer Matern
+c/o POSTFLEX PFX-484-794
+Emsdettener Straße 10
+48268 Greven
 Deutschland
 
 **E-Mail:** [vheartorga@gmail.com](mailto:vheartorga@gmail.com)
-**Telefon:** [-------](tel:-------)
+**Telefon:** [015128096729](tel:015128096729)
 
 ## Haftung für Inhalte
 
