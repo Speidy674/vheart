@@ -17,11 +17,16 @@
         :data-clip="hasClip ? 'true' : 'false'"
         class="sticky bottom-18 w-full max-w-3xl mx-auto flex flex-row items-center bg-white/75 dark:bg-black/80    border border-muted    ring-black/5 ring-1 dark:ring-0    backdrop-blur-md rounded-2xl    shadow-xl dark:shadow-none    transition-all duration-300 ease-out data-[clip=false]:opacity-0 data-[clip=false]:translate-y-4 data-[clip=false]:pointer-events-none"
     >
-        <div class="flex items-center gap-1 flex-1 justify-start">
-            <span class="inline-flex shrink-0 items-center gap-1 p-2 sm:py-3 text-lg select-none font-mono" title="{{ __('clips.vote.aside.total_votes') }}" >
-                <x-lucide-heart defer class="size-8 text-destructive"/>
-                <span x-text="votes">{{ $clip->absolute_votes ?? 0 }}</span>
-            </span>
+        <div class="flex items-center gap-1 flex-1 justify-start sm:py-3 pl-2 sm:pl-4">
+            <template x-if="hasBroadcaster">
+                <a href="https://twitch.tv/{{ $clip->owner?->name ?? '' }}" x-bind:href="clipBroadcasterUrl" target="_blank" class="flex items-center gap-1">
+                    <img :src="$clip->owner?->proxiedContentUrl() ?? ''" x-bind:src="clipBroadcasterAvatar" class="h-6 sm:h-8 rounded-full" />
+                    <span class="truncate max-w-26 sm:max-w-50" x-text="clipBroadcasterName">{{ $clip->owner?->name ?? '' }}</span>
+                </a>
+            </template>
+            <template x-if="!hasBroadcaster">
+                <x-ui.branding.logo class="h-6 sm:h-8 rounded-full" />
+            </template>
         </div>
 
         <div class="flex shrink-0 items-center justify-center gap-3 py-2 sm:gap-4 sm:py-3">
@@ -84,6 +89,10 @@
                     timeLeft: 0,
                     clipTwitchId: '{{ $clip?->twitch_id ?? '' }}',
                     clipId: {{ $clip?->id ?? 'null' }},
+                    clipBroadcasterAvatar: '{{ $clip?->owner?->proxiedContentUrl() ?? '' }}',
+                    clipBroadcasterUrl: 'https://twitch.tv/{{ $clip?->owner?->name ?? '' }}',
+                    clipBroadcasterName: '{{ $clip?->owner?->name ?? '' }}',
+                    hasBroadcaster: {{ $clip?->owner ? 'true' : 'false' }},
                     hasClip: {{ $clip ? 'true' : 'false' }},
                     votes: {{ $clip?->absolute_votes ?? 0 }},
                     isLoading: false,
@@ -128,12 +137,20 @@
                                 this.clipId = nextClip.id;
                                 this.votes = nextClip.votes || 0;
                                 this.reportItems = [{ type: 'clip', id: this.clipId}];
+                                this.clipBroadcasterAvatar = nextClip.broadcaster.avatar;
+                                this.clipBroadcasterUrl = 'https://twitch.tv/'+nextClip.broadcaster.name;
+                                this.clipBroadcasterName = nextClip.broadcaster.name;
+                                this.hasBroadcaster = nextClip.broadcaster ? true : false;
                                 this.startTimer(nextClip.clip_duration * 0.3);
                             } else {
                                 this.hasClip = false;
                                 this.clipTwitchId = '';
                                 this.clipId = null;
                                 this.reportItems = null;
+                                this.clipBroadcasterAvatar = '';
+                                this.clipBroadcasterUrl = '';
+                                this.clipBroadcasterName = '';
+                                this.hasBroadcaster = false;
                             }
                         } catch (error) {
                             console.error('Failed to submit vote:', error);
