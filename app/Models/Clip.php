@@ -389,9 +389,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withAbsoluteVoteCount(Builder $query): Builder
     {
-        return $query->withCount([
-            'votes as absolute_votes' => fn ($q) => $q->where('voted', true),
-        ]);
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(final_jury_votes + final_public_votes,COUNT(*), 0)')
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('voted', true),
+            'absolute_votes'
+        );
     }
 
     /**
@@ -409,7 +417,7 @@ class Clip extends Model implements Commentable, ExternalProxyable
 
         return $query->selectSub(
             Vote::query()
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = ?::integer THEN ?::integer ELSE ?::integer END), 0)', [ClipVoteType::Jury->value, $juryWeight, $publicWeight])
+                ->selectRaw('COALESCE(final_score,SUM(CASE WHEN type = ?::integer THEN ?::integer ELSE ?::integer END), 0)', [ClipVoteType::Jury->value, $juryWeight, $publicWeight])
                 ->whereColumn('clip_id', 'clips.id')
                 ->where('voted', true),
             'score'
@@ -422,14 +430,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withPublicVoteCount(Builder $query): Builder
     {
-        return $query->withCount(
-            [
-                'votes as public_votes' => function (Builder $query): void {
-                    $query
-                        ->where('voted', true)
-                        ->where('type', ClipVoteType::Public);
-                },
-            ]
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(final_public_votes,COUNT(*), 0)')
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('type', ClipVoteType::Public)
+                ->where('voted', true),
+            'public_votes'
         );
     }
 
@@ -439,14 +450,17 @@ class Clip extends Model implements Commentable, ExternalProxyable
     #[Scope]
     protected function withJuryVoteCount(Builder $query): Builder
     {
-        return $query->withCount(
-            [
-                'votes as jury_votes' => function (Builder $query): void {
-                    $query
-                        ->where('voted', true)
-                        ->where('type', ClipVoteType::Jury);
-                },
-            ]
+        if (empty($query->getQuery()->columns)) {
+            $query->addSelect($query->getModel()->getTable().'.*');
+        }
+
+        return $query->selectSub(
+            Vote::query()
+                ->selectRaw('COALESCE(final_jury_votes,COUNT(*), 0)')
+                ->whereColumn('clip_id', 'clips.id')
+                ->where('type', ClipVoteType::Jury)
+                ->where('voted', true),
+            'jury_votes'
         );
     }
 
