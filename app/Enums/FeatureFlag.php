@@ -55,8 +55,13 @@ enum FeatureFlag: string implements HasLabel
     #[Description('Enables the automatic clip archive schedule')]
     #[DefaultFeatureFlagState(true)]
     case ArchiveClipsSchedule = 'archive_clips_schedule';
-  
+
     #[Description('Toggles the Broadcaster User Submission Filter Manager in the Broadcaster Dashboard Settings')]
     #[DefaultFeatureFlagState(false)]
     case BroadcasterUserSubmissionFilterManager = 'broadcaster_user_submission_filter_manager';
+
+    #[Description('Toggles some hidden debug tools')]
+    #[DefaultFeatureFlagState(false)]
+    #[Environment(['local', 'staging'])]
+    case Debug = 'debug';
 }
