@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Compilations\Actions;
 
+use App\Enums\Clips\CompilationClipClaimStatus;
 use App\Enums\Clips\CompilationStatus;
 use App\Enums\Filament\LucideIcon;
 use App\Models\Clip;
@@ -19,7 +20,7 @@ class MoveToCompilationAction extends Action
         $this
             ->label('admin/resources/compilations.relation_managers.clips.actions.move_to_compilation')
             ->translateLabel()
-            ->authorize(fn (Clip $clip, $livewire): bool => $clip->claimed_by === null || $clip->claimed_by === auth()->id() || auth()->user()->can('update', $livewire->getOwnerRecord()))
+            ->authorize(fn (Clip $clip, $livewire): bool => $clip->claimed_by === null || ($clip->claimed_by === auth()->id() && $clip->status !== CompilationClipClaimStatus::Completed) || auth()->user()->can('update', $livewire->getOwnerRecord()))
             ->icon(LucideIcon::ArrowRight)
             ->schema([
                 Select::make('compilation_id')
