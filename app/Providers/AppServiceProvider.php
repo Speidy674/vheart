@@ -91,11 +91,7 @@ class AppServiceProvider extends ServiceProvider
                 return null;
             }
 
-            if ($user->getRole()?->id === 0) {
-                return true;
-            }
-
-            return in_array($requestedPermission, $user->permissions());
+            return in_array($requestedPermission, $user->permissions()) || $user->isSuperAdmin();
         });
     }
 
