@@ -14,6 +14,7 @@
 	servers {
         client_ip_headers X-Real-IP X-Forwarded-For
 		import trusted_proxies.caddy
+        trusted_proxies_strict
 	}
 }
 
