@@ -97,6 +97,7 @@ class User extends Authenticatable implements Commentable, Commenter, ExternalPr
     {
         $this->permissionCache = null;
         $this->importantRoleCache = null;
+        $this->isSuperAdminCache = null;
 
         return parent::refresh();
     }
