@@ -93,6 +93,10 @@ class AppServiceProvider extends ServiceProvider
 
             return in_array($requestedPermission, $user->permissions()) || $user->isSuperAdmin();
         });
+
+        Gate::define('superadmin', static function (User $user) {
+            return $user->isSuperAdmin();
+        });
     }
 
     private function configureVite(): void
