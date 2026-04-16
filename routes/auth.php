@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Auth\CreateAuthenticatedSessionController;
 use App\Http\Controllers\Auth\DestroyAuthenticatedSessionController;
 use App\Http\Controllers\Auth\Email\EmailVerificationController;
@@ -11,6 +12,9 @@ use App\Http\Controllers\Auth\OAuth\HandleAuthProviderCallbackController;
 use App\Http\Controllers\Auth\OAuth\RedirectToAuthProviderController;
 use App\Http\Controllers\Auth\TwoFactor\TwoFactorPromptController;
 use App\Http\Controllers\Auth\TwoFactor\TwoFactorVerificationController;
+use App\Http\Controllers\Debug\IpDebugController;
+use App\Http\Controllers\Debug\OctaneDebugController;
+use App\Http\Middleware\FeatureFlagGuard;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')
@@ -47,3 +51,6 @@ Route::prefix('email')
         Route::post('verification-notification', EmailVerificationNotificationController::class)
             ->name('send');
     });
+
+Route::get('/debug/ip', IpDebugController::class)->middleware(['auth:web', FeatureFlagGuard::of(FeatureFlag::Debug)]);
+Route::get('/debug/octane', OctaneDebugController::class)->middleware(['auth:web', FeatureFlagGuard::of(FeatureFlag::Debug)]);
