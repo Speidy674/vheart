@@ -38,7 +38,7 @@ class OctaneDebugController extends Controller
             'request_isolation' => [
                 'request_instance_id' => spl_object_id(request()),
                 'app_instance_id' => spl_object_id(app()),
-                'request_class' => get_class(request()),
+                'request_class' => request()::class,
             ],
             'octane' => [
                 'concurrency' => config('octane.max_execution_time'),
@@ -72,7 +72,7 @@ class OctaneDebugController extends Controller
                 'db_driver' => config('database.default'),
             ],
             'db' => [
-                'connected' => (function () {
+                'connected' => (static function (): true|string {
                     try {
                         DB::connection()->getPdo();
 
@@ -83,7 +83,7 @@ class OctaneDebugController extends Controller
                 })(),
             ],
             'redis' => [
-                'connected' => (function () {
+                'connected' => (static function (): true|string {
                     try {
                         Redis::ping();
 
