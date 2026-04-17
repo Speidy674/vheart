@@ -36,7 +36,7 @@ class GenerateClipOverlayAction extends Action
                 'clipper' => $record->creator?->name ?? '',
                 'cutter' => $record->claimer?->name ?? '',
                 'avatar' => $record->broadcaster?->user?->proxiedContentUrl() ?? '',
-                'show_avatar' => true,
+                'show_avatar' => $this->shouldEnableAvatar($record->broadcaster?->user?->avatar_url),
             ])
             ->schema([
                 TextInput::make('broadcaster')
@@ -97,12 +97,12 @@ class GenerateClipOverlayAction extends Action
                 'filament.resources.clip-resource.actions.generate-clip-overlay',
                 [
                     'initialState' => [
-                        'broadcaster' => Str::limit($record->broadcaster?->name ?? 'Unknown Broadcaster', 18),
-                        'category' => Str::limit($record->category?->title ?? 'Unknown Category', 40),
-                        'clipper' => Str::limit($record->creator?->name ?? '', 18),
-                        'cutter' => Str::limit($record->claimer?->name ?? '', 18),
+                        'broadcaster' => $this->userName($record->broadcaster?->name, 'Unknown Broadcaster'),
+                        'category' => $this->categoryName($record->category?->title ?? 'Unknown Category'),
+                        'clipper' => $this->userName($record->creator?->name),
+                        'cutter' => $this->userName($record->claimer?->name),
                         'avatar' => $record->broadcaster?->user?->proxiedContentUrl() ?? '',
-                        'show_avatar' => true,
+                        'show_avatar' => $this->shouldEnableAvatar($record->broadcaster?->user?->avatar_url),
                     ],
                     'identifier' => $record->id
                         .'__'.Str::slug($record->broadcaster?->name ?? 'Unknown Broadcaster')
@@ -122,12 +122,27 @@ class GenerateClipOverlayAction extends Action
     private function buildOverlayState(Get $get): array
     {
         return [[
-            'broadcaster' => Str::limit($get('broadcaster'), 18),
-            'category' => Str::limit($get('category'), 40),
-            'clipper' => Str::limit($get('clipper'), 18),
-            'cutter' => Str::limit($get('cutter'), 18),
+            'broadcaster' => $this->userName($get('broadcaster'), 'Unknown Broadcaster'),
+            'category' => $this->categoryName($get('category')),
+            'clipper' => $this->userName($get('clipper')),
+            'cutter' => $this->userName($get('cutter')),
             'avatar' => $get('avatar'),
             'show_avatar' => $get('show_avatar'),
         ]];
+    }
+
+    private function userName(?string $value, string $default = ''): string
+    {
+        return Str::limit($value ?? $default, 18);
+    }
+
+    private function categoryName(?string $value): string
+    {
+        return Str::limit($value ?? 'Unknown Category', 40);
+    }
+
+    private function shouldEnableAvatar(?string $value): bool
+    {
+        return (bool) $value;
     }
 }
