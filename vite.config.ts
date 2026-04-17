@@ -43,6 +43,13 @@ export default defineConfig({
                 excludeReplayShadowDom: true,
                 excludeReplayWorker: true,
             },
+            sourcemaps: {
+                filesToDeleteAfterUpload: [
+                    './**/*.map',
+                    '.*/**/public/**/*.map',
+                    './dist/**/client/**/*.map',
+                ],
+            },
         }),
     ],
     build: {
