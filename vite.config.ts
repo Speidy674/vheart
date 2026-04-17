@@ -1,4 +1,5 @@
 import { wayfinder } from '@laravel/vite-plugin-wayfinder';
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import laravel from 'laravel-vite-plugin';
 import { defineConfig } from 'vite';
@@ -29,8 +30,23 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
+        sentryVitePlugin({
+            org: 'vheart',
+            project: 'website-frontend',
+            url: 'https://glitchtip.vheart.net/',
+            release: {
+                name: process.env.VITE_SENTRY_RELEASE ?? 'dev',
+            },
+            bundleSizeOptimizations: {
+                excludeDebugStatements: true,
+                excludeReplayIframe: true,
+                excludeReplayShadowDom: true,
+                excludeReplayWorker: true,
+            },
+        }),
     ],
     build: {
         target: 'baseline-widely-available',
+        sourcemap: true,
     },
 });
