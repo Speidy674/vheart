@@ -144,7 +144,7 @@ class GenerateClipOverlayAction extends Action
 
     private function categoryName(?string $value): string
     {
-        return Str::limit($value ?? 'Unknown Category', 40);
+        return Str::limit($value ?? 'Unknown Category', 39);
     }
 
     private function shouldEnableAvatar(?string $value): bool
