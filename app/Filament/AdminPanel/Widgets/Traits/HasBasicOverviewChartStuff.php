@@ -26,6 +26,7 @@ trait HasBasicOverviewChartStuff
             'week' => 'Last 7 days',
             'month' => 'Last 30 days',
             'year' => 'Last year',
+            'all' => 'All time',
         ];
     }
 
@@ -63,7 +64,16 @@ trait HasBasicOverviewChartStuff
             ->get();
     }
 
-    protected function getCurrentFilter(): array
+    protected function getAllTimeStart(?string $table): CarbonInterface
+    {
+        if ($firstRecord = DB::table($table)->min('created_at')) {
+            return Carbon::parse($firstRecord)->startOfMonth();
+        }
+
+        return now()->startOfYear();
+    }
+
+    protected function getCurrentFilter(?string $table = null): array
     {
         return match ($this->filter ?? 'day') {
             'day' => [
@@ -78,6 +88,11 @@ trait HasBasicOverviewChartStuff
             ],
             'year' => [
                 now()->subMonths(11)->startOfMonth(),
+                '1 month',
+                fn (string $d): string => Carbon::parse($d)->format('M Y'),
+            ],
+            'all' => [
+                $this->getAllTimeStart($table),
                 '1 month',
                 fn (string $d): string => Carbon::parse($d)->format('M Y'),
             ],
