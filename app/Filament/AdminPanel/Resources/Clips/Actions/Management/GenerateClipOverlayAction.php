@@ -90,6 +90,7 @@ class GenerateClipOverlayAction extends Action
                 Toggle::make('show_avatar')
                     ->label('Show Avatar')
                     ->default(true)
+                    ->disabled(fn (Clip $record): bool => ! $this->shouldEnableAvatar($record->broadcaster?->user?->avatar_url))
                     ->live()
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
             ])
