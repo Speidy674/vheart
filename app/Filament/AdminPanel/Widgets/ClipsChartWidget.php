@@ -24,7 +24,7 @@ class ClipsChartWidget extends ChartWidget
         [$start, $interval, $labelFn] = $this->getCurrentFilter('clips');
 
         $end = $this->filter === 'day' ? now()->endOfHour() : now()->endOfDay();
-        $results = $this->getBaseQuery('clips', $start, $end, $interval);
+        $results = $this->executeQuery('clips', $start, $end, $interval);
 
         return [
             'datasets' => [[

@@ -24,7 +24,7 @@ class UsersChartWidget extends ChartWidget
         [$start, $interval, $labelFn] = $this->getCurrentFilter('votes');
 
         $end = $this->filter === 'day' ? now()->endOfHour() : now()->endOfDay();
-        $results = $this->getBaseQuery('users', $start, $end, $interval);
+        $results = $this->executeQuery('users', $start, $end, $interval);
 
         return [
             'datasets' => [[

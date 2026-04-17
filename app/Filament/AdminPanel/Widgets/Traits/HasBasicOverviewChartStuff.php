@@ -6,6 +6,8 @@ namespace App\Filament\AdminPanel\Widgets\Traits;
 
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 trait HasBasicOverviewChartStuff
@@ -30,7 +32,16 @@ trait HasBasicOverviewChartStuff
         ];
     }
 
-    protected function getBaseQuery(string $table, CarbonInterface $start, CarbonInterface $end, string $interval)
+    protected function executeQuery(string $table, CarbonInterface $start, CarbonInterface $end, string $interval)
+    {
+        $filter = $this->filter ?? 'day';
+        $ttl = $filter === 'day' ? now()->addMinute() : now()->addHour();
+        $cacheKey = 'AdminPanel:charts:'.static::class.":$table:$filter";
+
+        return Cache::remember($cacheKey, $ttl, fn () => $this->getBaseQuery($table, $start, $end, $interval));
+    }
+
+    protected function getBaseQuery(string $table, CarbonInterface $start, CarbonInterface $end, string $interval): Collection
     {
         $truncUnit = match ($interval) {
             '1 month' => 'month',
