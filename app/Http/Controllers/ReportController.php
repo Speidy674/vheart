@@ -16,7 +16,7 @@ class ReportController extends Controller
     {
         $report = Report::create(array_merge($request->validated(), ['user_id' => $request->user()->id]));
 
-        DiscordAlert::to('moderation')->message('@here', [[
+        DiscordAlert::to('moderation')->message('<@1494691682422226996>', [[
             'title' => 'New Report',
             'url' => Filament::getPanel('admin')->getResourceUrl($report, 'view'),
             'color' => '#e71d73',
