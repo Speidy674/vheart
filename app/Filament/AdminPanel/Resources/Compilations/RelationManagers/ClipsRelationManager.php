@@ -257,6 +257,7 @@ class ClipsRelationManager extends RelationManager
             ->headerActions([
                 AttachAction::make()
                     ->recordSelectSearchColumns(['title', 'id'])
+                    ->recordTitle(fn (Clip $clip): string => "[$clip->id] $clip->title")
                     ->preloadRecordSelect()
                     ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
