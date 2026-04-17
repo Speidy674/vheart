@@ -72,6 +72,9 @@ jobs:
         run: |
           npm ci
           npm run build
+        env:
+          VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+          VITE_SENTRY_RELEASE: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
 
       - name: Dump Autoloader
         run: composer dump-autoload --optimize
