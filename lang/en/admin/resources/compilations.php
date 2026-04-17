@@ -76,6 +76,7 @@ return [
                 'unclaim' => 'Unclaim',
                 'copy_filename' => 'Copy Filename',
                 'copy_filename_tooltip' => 'Copy standardized filename for editors',
+                'move_to_compilation' => 'Move to Compilation',
                 'status' => [
                     'title' => 'Update Status',
                 ],
@@ -94,6 +95,7 @@ return [
                 'filename_copy_failed_no_broadcaster' => 'Broadcaster profile not found',
                 'status_updated' => 'Status has been updated',
                 'readonly' => 'This Compilation is scheduled or published and can only be updated by its owner.',
+                'moved_to_compilation' => 'Successfully moved to compilation.',
             ],
         ],
     ],

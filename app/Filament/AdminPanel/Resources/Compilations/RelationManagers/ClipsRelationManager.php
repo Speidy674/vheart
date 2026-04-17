@@ -14,6 +14,7 @@ use App\Events\Admin\Compilations\CompilationClipUnclaimed;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Management\GenerateClipOverlayAction;
 use App\Filament\AdminPanel\Resources\Clips\ClipResource;
 use App\Filament\AdminPanel\Resources\Compilations\Actions\CopyClipNameAction;
+use App\Filament\AdminPanel\Resources\Compilations\Actions\MoveToCompilationAction;
 use App\Filament\Resources\Clips\Tables\ClipColumns;
 use App\Models\Clip;
 use App\Models\User;
@@ -377,6 +378,7 @@ class ClipsRelationManager extends RelationManager
                                 ->success()
                                 ->send();
                         }),
+                    MoveToCompilationAction::make(),
                     DetachAction::make(),
                 ]),
             ])
