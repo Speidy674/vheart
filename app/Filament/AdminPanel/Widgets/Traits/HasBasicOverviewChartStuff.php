@@ -78,7 +78,7 @@ trait HasBasicOverviewChartStuff
     protected function getAllTimeStart(?string $table): CarbonInterface
     {
         if ($firstRecord = DB::table($table)->min('created_at')) {
-            return Carbon::parse($firstRecord)->startOfMonth();
+            return Carbon::parse($firstRecord)->startOfYear();
         }
 
         return now()->startOfYear();
