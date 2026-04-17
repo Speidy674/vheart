@@ -50,6 +50,8 @@ class GenerateClipOverlayAction extends Action
                             ->after(function (Clip $record, Get $get, Component $livewire): void {
                                 $record->load('broadcaster');
                                 $livewire->mountedActions[0]['data']['broadcaster'] = $record->broadcaster?->name ?? 'Unknown Broadcaster';
+                                $livewire->mountedActions[0]['data']['avatar'] = $record->broadcaster?->user?->proxiedContentUrl() ?? '';
+                                $livewire->mountedActions[0]['data']['show_avatar'] = $this->shouldEnableAvatar($record->broadcaster?->user?->avatar_url);
                                 $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get));
                             })
                     )
