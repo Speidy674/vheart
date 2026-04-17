@@ -21,7 +21,7 @@ class ReportsChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        [$start, $interval, $labelFn] = $this->getCurrentFilter();
+        [$start, $interval, $labelFn] = $this->getCurrentFilter('reports');
 
         $end = $this->filter === 'day' ? now()->endOfHour() : now()->endOfDay();
         $results = $this->getBaseQuery('reports', $start, $end, $interval);

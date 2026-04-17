@@ -21,7 +21,7 @@ class BroadcastersChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        [$start, $interval, $labelFn] = $this->getCurrentFilter();
+        [$start, $interval, $labelFn] = $this->getCurrentFilter('broadcasters');
 
         $end = $this->filter === 'day' ? now()->endOfHour() : now()->endOfDay();
         $results = $this->getBaseQuery('broadcasters', $start, $end, $interval);
