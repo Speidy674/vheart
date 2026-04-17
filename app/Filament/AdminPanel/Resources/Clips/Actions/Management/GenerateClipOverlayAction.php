@@ -47,9 +47,10 @@ class GenerateClipOverlayAction extends Action
                         UpdateUserAction::make('broadcasterUpdate')
                             ->resolveUserUsing(fn (Clip $record) => $record->broadcaster ?? $record->broadcaster_id)
                             ->shouldCreateBroadcaster()
-                            ->after(function (Clip $record, Component $livewire): void {
+                            ->after(function (Clip $record, Get $get, Component $livewire): void {
                                 $record->load('broadcaster');
                                 $livewire->mountedActions[0]['data']['broadcaster'] = $record->broadcaster?->name ?? 'Unknown Broadcaster';
+                                $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get));
                             })
                     )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
@@ -61,9 +62,10 @@ class GenerateClipOverlayAction extends Action
                     ->hintAction(
                         UpdateUserAction::make('clipperUpdate')
                             ->resolveUserUsing(fn (Clip $record) => $record->creator ?? $record->creator_id)
-                            ->after(function (Clip $record, Component $livewire): void {
+                            ->after(function (Clip $record, Get $get, Component $livewire): void {
                                 $record->load('creator');
                                 $livewire->mountedActions[0]['data']['clipper'] = $record->creator?->name ?? '';
+                                $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get));
                             })
                     )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
@@ -75,9 +77,10 @@ class GenerateClipOverlayAction extends Action
                     ->hintAction(
                         UpdateUserAction::make('cutterUpdate')
                             ->resolveUserUsing(fn (Clip $record) => $record->claimer ?? $record->claimed_by)
-                            ->after(function (Clip $record, Component $livewire): void {
+                            ->after(function (Clip $record, Get $get, Component $livewire): void {
                                 $record->load('cutter');
                                 $livewire->mountedActions[0]['data']['cutter'] = $record->cutter?->name ?? '';
+                                $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get));
                             })
                     )
                     ->afterStateUpdated(fn (Get $get, Component $livewire) => $livewire->dispatch('clip-overlay-updated', ...$this->buildOverlayState($get))),
