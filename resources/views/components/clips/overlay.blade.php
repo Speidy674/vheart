@@ -44,7 +44,7 @@
 
     #overlay-broadcaster {
         position: absolute;
-        top: -4px;
+        top: -6px;
         left: 0;
         right: 0;
         font-family: 'Montserrat', sans-serif;
@@ -59,7 +59,7 @@
 
     #overlay-category-container {
         position: absolute;
-        top: 28px;
+        top: 26px;
         left: 0;
         right: 0;
         display: flex;
