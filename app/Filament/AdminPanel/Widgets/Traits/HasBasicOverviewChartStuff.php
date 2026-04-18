@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace App\Filament\AdminPanel\Widgets\Traits;
 
 use Carbon\CarbonInterface;
+use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * @mixin ChartWidget
+ */
 trait HasBasicOverviewChartStuff
 {
     public ?string $filter = 'day';
