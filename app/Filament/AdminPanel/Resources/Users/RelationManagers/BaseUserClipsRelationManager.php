@@ -15,7 +15,6 @@ use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -114,19 +113,6 @@ abstract class BaseUserClipsRelationManager extends RelationManager
                     ->multiple()
                     ->label('admin/resources/compilations.relation_managers.clips.filters.category')
                     ->translateLabel(),
-
-                TernaryFilter::make('was_removed')
-                    ->label('admin/resources/compilations.relation_managers.clips.filters.was_removed.label')
-                    ->translateLabel()
-                    ->nullable()
-                    ->placeholder(__('admin/resources/compilations.relation_managers.clips.filters.was_removed.placeholder'))
-                    ->trueLabel(__('admin/resources/compilations.relation_managers.clips.filters.was_removed.true'))
-                    ->falseLabel(__('admin/resources/compilations.relation_managers.clips.filters.was_removed.false'))
-                    ->queries(
-                        true: fn (Builder $query) => $query->whereNotNull('removed_at'),
-                        false: fn (Builder $query) => $query->whereNull('removed_at'),
-                        blank: fn (Builder $query): Builder => $query,
-                    ),
 
                 SelectFilter::make('clips.status')
                     ->label('admin/resources/compilations.relation_managers.clips.filters.clip_status')
