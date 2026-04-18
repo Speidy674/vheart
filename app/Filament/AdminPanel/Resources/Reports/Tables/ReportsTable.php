@@ -57,6 +57,7 @@ class ReportsTable
 
                 TextColumn::make('claimer.name')
                     ->label('Claimed By')
+                    ->placeholder('Unclaimed')
                     ->toggleable(),
 
                 TextColumn::make('resolve_action')
