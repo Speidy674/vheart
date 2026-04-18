@@ -6,6 +6,7 @@ namespace App\Filament\AdminPanel\Resources\Broadcasters\Schemas;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Filament\LucideIcon;
 use App\Models\User;
 use App\Services\Twitch\Data\ChannelDto;
@@ -46,6 +47,13 @@ class BroadcasterForm
                     ->gridDirection('row')
                     ->label('Given Consents')
                     ->columns(2),
+
+                Select::make('default_clip_status')
+                    ->options(
+                        collect(ClipStatus::defaultableOptions())
+                            ->mapWithKeys(fn (ClipStatus $status) => [$status->value => $status->getLabel()])
+                            ->toArray()
+                    ),
 
                 CheckboxList::make('twitch_mod_permissions')
                     ->options(BroadcasterPermission::class)
