@@ -23,7 +23,6 @@ enum ClipStatus: int implements HasColor, HasLabel
     public static function defaultableOptions(): array
     {
         return [
-            self::Unknown,
             self::Approved,
             self::NeedApproval,
         ];
