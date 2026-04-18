@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 trait HasBasicOverviewChartStuff
 {
+    public ?string $filter = 'day';
+
     protected int|string|array $columnSpan = 2;
 
     protected static ?int $sort = 999;
