@@ -83,7 +83,7 @@ abstract class BaseUserClipsRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('broadcaster')
                     ->relationship('owner', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->broadcastedClips->pluck('broadcaster_id')))
+                        $this->getOwnerRecord()->{$this::$relationship}()->pluck('broadcaster_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
@@ -91,7 +91,7 @@ abstract class BaseUserClipsRelationManager extends RelationManager
                     ->translateLabel(),
                 SelectFilter::make('creator')
                     ->relationship('creator', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->createdClips->pluck('creator_id')))
+                        $this->getOwnerRecord()->{$this::$relationship}()->pluck('creator_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
@@ -99,7 +99,7 @@ abstract class BaseUserClipsRelationManager extends RelationManager
                     ->translateLabel(),
                 SelectFilter::make('submitter')
                     ->relationship('submitter', 'name', fn (Builder $query) => $query->whereIn('id',
-                        $this->getOwnerRecord()->submittedClips->pluck('submitter_id')))
+                        $this->getOwnerRecord()->{$this::$relationship}()->pluck('submitter_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
