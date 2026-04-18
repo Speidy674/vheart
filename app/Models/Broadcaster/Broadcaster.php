@@ -10,6 +10,7 @@ use App\Enums\Clips\ClipStatus;
 use App\Enums\FeatureFlag;
 use App\Models\Clip;
 use App\Models\Traits\Auditable;
+use App\Models\Traits\Reportable;
 use App\Models\User;
 use App\Policies\Broadcaster\BroadcasterPolicy;
 use App\Support\FeatureFlag\Feature;
@@ -38,6 +39,7 @@ class Broadcaster extends Model implements HasAvatar
     /** @use HasFactory<BroadcasterFactory> */
     use HasFactory;
 
+    use Reportable;
     use SoftDeletes;
 
     /**
