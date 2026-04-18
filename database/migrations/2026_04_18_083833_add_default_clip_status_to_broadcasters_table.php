@@ -11,7 +11,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('broadcasters', static function (Blueprint $table) {
+        Schema::table('broadcasters', static function (Blueprint $table): void {
             $table->unsignedTinyInteger('default_clip_status')->default(ClipStatus::Unknown);
         });
     }
