@@ -6,6 +6,7 @@ namespace App\Models\Broadcaster;
 
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\BroadcasterPermission;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\FeatureFlag;
 use App\Models\Clip;
 use App\Models\Traits\Auditable;
@@ -145,6 +146,7 @@ class Broadcaster extends Model implements HasAvatar
             'submit_mods_allowed' => 'boolean',
             'submit_vip_allowed' => 'boolean',
             'onboarded_at' => 'datetime',
+            'default_clip_status' => ClipStatus::class,
         ];
     }
 
