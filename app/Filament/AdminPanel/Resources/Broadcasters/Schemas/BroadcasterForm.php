@@ -51,6 +51,7 @@ class BroadcasterForm
                 Select::make('default_clip_status')
                     ->options(
                         collect(ClipStatus::defaultableOptions())
+                            ->prepend(ClipStatus::Unknown)
                             ->mapWithKeys(fn (ClipStatus $status): array => [$status->value => $status->getLabel()])
                             ->toArray()
                     ),
