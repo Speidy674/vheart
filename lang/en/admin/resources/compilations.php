@@ -80,6 +80,9 @@ return [
                 'status' => [
                     'title' => 'Update Status',
                 ],
+                'attach_clip' => [
+                    'status' => 'Status',
+                ],
             ],
             'notifications' => [
                 'claimed' => [

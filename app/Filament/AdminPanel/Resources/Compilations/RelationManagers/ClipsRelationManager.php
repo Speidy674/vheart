@@ -256,11 +256,13 @@ class ClipsRelationManager extends RelationManager
             ->filtersFormColumns(2)
             ->headerActions([
                 AttachAction::make()
+                    ->recordSelectSearchColumns(['title', 'id'])
+                    ->recordTitle(fn (Clip $clip): string => "[$clip->id] $clip->title")
                     ->preloadRecordSelect()
                     ->schema(fn (AttachAction $action): array => [
                         $action->getRecordSelect(),
                         Select::make('claim_status')
-                            ->label('admin/resources/compilations.relation_managers.clips.columns.status')
+                            ->label('admin/resources/compilations.relation_managers.clips.actions.attach_clip.status')
                             ->translateLabel()
                             ->options(CompilationClipClaimStatus::class)
                             ->default(CompilationClipClaimStatus::Pending)
