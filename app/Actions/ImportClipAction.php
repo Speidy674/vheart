@@ -19,6 +19,7 @@ class ImportClipAction
 {
     public function execute(ClipDto $clip, ?User $user = null, ?array $tags = null): Clip
     {
+        /** @var Clip $clipModel */
         $clipModel = Clip::firstOrCreate([
             'twitch_id' => $clip->id,
         ], $clip->toModel([
