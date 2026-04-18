@@ -25,7 +25,8 @@ use Illuminate\Support\Str;
 use UnitEnum;
 
 /**
- * @property-read Schema $form
+ * @property-read Schema $consentForm
+ * @property-read Schema $defaultClipStatusForm
  */
 class ManageConsent extends Page implements HasForms
 {
