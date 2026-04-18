@@ -44,7 +44,7 @@ class ReportsTable
 
                 TextColumn::make('reportable')
                     ->description(fn (Report $record): ?string => $record->reportable
-                        ? class_basename($record->reportable::class)
+                        ? class_basename($record->reportable::class).($record->reportable && $record->reportable->trashed() ? (' (Removed)') : '')
                         : null
                     )
                     ->formatStateUsing(fn (Report $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
