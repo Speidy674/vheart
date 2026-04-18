@@ -66,8 +66,9 @@ class ReportsTable
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
+                    ->description(fn (Report $record) => $record->created_at->toFormattedDayDateString())
+                    ->sortable()
+                    ->since(),
             ])
             ->filters([
                 SelectFilter::make('status')
