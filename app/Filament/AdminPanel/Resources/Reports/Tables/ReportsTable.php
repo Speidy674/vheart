@@ -21,6 +21,10 @@ class ReportsTable
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('status')
                     ->badge()
                     ->color('gray')
