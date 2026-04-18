@@ -106,8 +106,8 @@ abstract class BaseUserClipsRelationManager extends RelationManager
                     ->label('admin/resources/compilations.relation_managers.clips.filters.submitter')
                     ->translateLabel(),
                 SelectFilter::make('category')
-//                    ->relationship('category', 'title',
-//                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->clips()->pluck('category_id')))
+                    ->relationship('category', 'title',
+                        fn (Builder $query) => $query->whereIn('id', $this->getOwnerRecord()->{$this::$relationship}()->pluck('category_id')))
                     ->searchable()
                     ->preload()
                     ->multiple()
