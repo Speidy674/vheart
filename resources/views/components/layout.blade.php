@@ -9,7 +9,7 @@
 
         function applyAppearance() {
             const cookieMatch = document.cookie.match(/(?:^|; )appearance=([^;]*)/);
-            const appearance = localStorage.getItem('appearance') || (cookieMatch ? cookieMatch[1] : null) || '{{ $appearance ?? "system" }}';
+            const appearance = localStorage.getItem('theme') || (cookieMatch ? cookieMatch[1] : null) || '{{ $appearance ?? "system" }}';
             const isDark = appearance === 'dark' || (appearance === 'system' && mediaQuery?.matches);
 
             document.documentElement.classList.toggle('dark', isDark);
