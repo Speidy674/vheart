@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Actions;
 
+use App\Enums\Clips\ClipStatus;
 use App\Events\ClipSubmitted;
 use App\Jobs\ImportCategoryJob;
+use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
@@ -21,6 +23,7 @@ class ImportClipAction
             'twitch_id' => $clip->id,
         ], $clip->toModel([
             'submitter_id' => $user?->id,
+            'status' => Broadcaster::select('default_clip_status')->find($clip->broadcasterId)?->default_clip_status ?? ClipStatus::Unknown,
         ]));
 
         if (is_array($tags)) {
