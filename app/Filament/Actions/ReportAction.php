@@ -33,7 +33,7 @@ class ReportAction extends Action
             ->label(function (?Model $record): string {
                 $target = $this->resolveReportable($record);
 
-                if (! $target) {
+                if (! $target instanceof Model) {
                     return __('reports.modal.title', ['reportable' => 'Resource']);
                 }
 
@@ -100,7 +100,7 @@ class ReportAction extends Action
 
     protected function resolveReportable(?Model $record): ?Model
     {
-        if ($record === null) {
+        if (! $record instanceof Model) {
             return null;
         }
 
@@ -126,7 +126,7 @@ class ReportAction extends Action
 
             Textarea::make('description')
                 ->label('reports.modal.inputs.description.label')
-                ->required(fn (Get $get) => $get('reason') === ReportReason::Other)
+                ->required(fn (Get $get): bool => $get('reason') === ReportReason::Other)
                 ->maxLength(1000)
                 ->translateLabel()
                 ->rows(3),

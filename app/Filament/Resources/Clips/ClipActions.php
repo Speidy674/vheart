@@ -15,15 +15,15 @@ class ClipActions
     {
         return ActionGroup::make([
             ReportAction::make()
-                ->hidden(fn (Clip $record) => ! $record->broadcaster_id || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id())
+                ->hidden(fn (Clip $record): bool => ! $record->broadcaster_id || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id())
                 ->icon(LucideIcon::Film),
             ReportAction::make('report_broadcaster')
-                ->hidden(fn (Clip $record) => ! $record->broadcaster || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id())
+                ->hidden(fn (Clip $record): bool => ! $record->broadcaster || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id())
                 ->reportable(fn (Clip $record) => $record->broadcaster)
                 ->reportableAlias('Broadcaster')
                 ->icon(LucideIcon::Video),
             ReportAction::make('report_submitter')
-                ->hidden(fn (Clip $record) => ! $record->submitter
+                ->hidden(fn (Clip $record): bool => ! $record->submitter
                     || $record->submitter_id === 0
                     || $record->submitter_id === $record->creator_id
                     || $record->broadcaster_id === $record->creator_id
@@ -33,7 +33,7 @@ class ClipActions
                 ->reportableAlias('Submitter')
                 ->icon(LucideIcon::User),
             ReportAction::make('report_clipper')
-                ->hidden(fn (Clip $record) => ! $record->creator
+                ->hidden(fn (Clip $record): bool => ! $record->creator
                     || $record->broadcaster_id === $record->creator_id
                     || $record->creator_id === auth()->id()
                 )
