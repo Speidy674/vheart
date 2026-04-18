@@ -16,6 +16,10 @@ class ClipActions
         return ActionGroup::make([
             ReportAction::make()
                 ->hidden(fn (Clip $record) => ! $record->broadcaster_id || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id()),
+            ReportAction::make('report_broadcaster')
+                ->hidden(fn (Clip $record) => ! $record->broadcaster || $record->broadcaster_id === 0 || $record->broadcaster_id === auth()->id())
+                ->reportable(fn (Clip $record) => $record->broadcaster)
+                ->reportableAlias('Broadcaster'),
             ReportAction::make('report_submitter')
                 ->hidden(fn (Clip $record) => ! $record->submitter || $record->submitter_id === 0 || $record->submitter_id === auth()->id())
                 ->reportable(fn (Clip $record) => $record->submitter)
