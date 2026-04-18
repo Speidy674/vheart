@@ -11,6 +11,7 @@ use App\Filament\AdminPanel\Resources\Clips\Actions\Management\ClipFeedbackActio
 use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\FlagClipAction;
 use App\Filament\AdminPanel\Resources\Clips\Actions\Moderation\UnflagClipAction;
 use App\Filament\Filters\DateRangeFilter;
+use App\Filament\Resources\Clips\ClipActions;
 use App\Filament\Resources\Clips\Tables\ClipColumns;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\EditAction;
@@ -156,6 +157,7 @@ class ClipsTable
             ->filtersFormColumns(4)
             ->defaultSort('score', 'desc')
             ->recordActions([
+                ClipActions::reportableActionGroup(),
                 ActionGroup::make([
                     ClipFeedbackAction::make(),
                     FlagClipAction::make(),
