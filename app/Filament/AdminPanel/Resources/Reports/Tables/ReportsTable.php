@@ -75,6 +75,17 @@ class ReportsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ActionGroup::make([
+                    ResourceLinkAction::make()
+                        ->relationship('reporter')
+                        ->label('View Reporter'),
+                    ResourceLinkAction::make()
+                        ->relationship('reportable')
+                        ->label('View Reportable'),
+                ])
+                    ->label('View')
+                    ->link()
+                    ->icon(LucideIcon::ExternalLink),
                 ViewAction::make(),
             ])
             ->toolbarActions([]);
