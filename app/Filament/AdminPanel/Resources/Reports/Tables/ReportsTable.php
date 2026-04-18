@@ -4,22 +4,29 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Reports\Tables;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
+use App\Filament\Actions\ResourceLinkAction;
+use App\Models\Report;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
-use Filament\Facades\Filament;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReportsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
+                'reportable' => fn ($q) => $q->withTrashed(),
+                'reporter' => fn ($q) => $q->withTrashed(),
+            ]))
             ->columns([
                 TextColumn::make('id')
                     ->searchable()
