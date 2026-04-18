@@ -23,12 +23,20 @@ class ClipActions
                 ->reportableAlias('Broadcaster')
                 ->icon(LucideIcon::Video),
             ReportAction::make('report_submitter')
-                ->hidden(fn (Clip $record) => ! $record->submitter || $record->submitter_id === 0 || $record->submitter_id === $record->creator_id || $record->submitter_id === auth()->id())
+                ->hidden(fn (Clip $record) => ! $record->submitter
+                    || $record->submitter_id === 0
+                    || $record->submitter_id === $record->creator_id
+                    || $record->broadcaster_id === $record->creator_id
+                    || $record->submitter_id === auth()->id()
+                )
                 ->reportable(fn (Clip $record) => $record->submitter)
                 ->reportableAlias('Submitter')
                 ->icon(LucideIcon::User),
             ReportAction::make('report_clipper')
-                ->hidden(fn (Clip $record) => ! $record->creator || $record->creator_id === auth()->id())
+                ->hidden(fn (Clip $record) => ! $record->creator
+                    || $record->broadcaster_id === $record->creator_id
+                    || $record->creator_id === auth()->id()
+                )
                 ->reportable(fn (Clip $record) => $record->creator)
                 ->reportableAlias('Clipper')
                 ->icon(LucideIcon::Scissors),
