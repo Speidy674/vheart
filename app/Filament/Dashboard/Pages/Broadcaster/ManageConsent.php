@@ -78,6 +78,7 @@ class ManageConsent extends Page implements HasForms
                 ->description(__('dashboard/settings/manage-consent.sections.default_clip_status.description'))
                 ->schema([Form::make([
                     Radio::make('default_clip_status')
+                        ->hiddenLabel()
                         ->options(
                             collect(ClipStatus::defaultableOptions())
                                 ->mapWithKeys(fn (ClipStatus $status): array => [$status->value => $status->getLabel()])
