@@ -7,25 +7,34 @@ namespace App\Filament\Dashboard\Pages\Broadcaster;
 use App\Enums\Broadcaster\BroadcasterConsent;
 use App\Enums\Broadcaster\DashboardNavigationGroup;
 use App\Enums\Broadcaster\DashboardNavigationItem;
+use App\Enums\Clips\ClipStatus;
 use App\Enums\Filament\LucideIcon;
 use App\Models\Broadcaster\Broadcaster;
 use BackedEnum;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 /**
  * @property-read Schema $form
  */
-class ManageConsent extends Page
+class ManageConsent extends Page implements HasForms
 {
+    use InteractsWithForms;
+
     /** @var array<string, mixed>|null */
-    public ?array $data = [];
+    public ?array $consentFormData = [];
+
+    public ?array $defaultClipStatusFormData = [];
 
     protected static string|null|BackedEnum $navigationIcon = LucideIcon::Settings;
 
@@ -50,38 +59,71 @@ class ManageConsent extends Page
 
     public function mount(): void
     {
-        $this->form->fill(
+        $this->consentForm->fill(
             collect(BroadcasterConsent::cases())
                 ->mapWithKeys(fn (BroadcasterConsent $case): array => [
                     "consent_{$case->value}" => $this->getRecord()->consent?->contains(fn (BroadcasterConsent $c): bool => $c === $case) ?? false,
                 ])
                 ->all()
         );
+        $this->defaultClipStatusForm->fill($this->getRecord()->only(['default_clip_status']));
     }
 
-    public function form(Schema $schema): Schema
+    public function defaultClipStatusForm(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Section::make(DashboardNavigationItem::ManageConsent->getLabel())
-                    ->description(__('dashboard/settings/manage-consent.section.description'))
-                    ->schema([Form::make(
-                        collect(BroadcasterConsent::cases())
-                            ->map(fn (BroadcasterConsent $case): Toggle => Toggle::make("consent_{$case->value}")
-                                ->label($case->getLabel())
-                                ->live()
-                                ->afterStateUpdated(fn () => $this->autosave())
-                            )
-                            ->all()
-                    ),
-                    ]),
-            ])
-            ->statePath('data');
+        return $schema->components([
+            Section::make('default_clip_status')
+                ->heading(__('dashboard/settings/manage-consent.sections.default_clip_status.label'))
+                ->description(__('dashboard/settings/manage-consent.sections.default_clip_status.description'))
+                ->schema([Form::make([
+                    Radio::make('default_clip_status')
+                        ->options(
+                            collect(ClipStatus::defaultableOptions())
+                                ->mapWithKeys(fn (ClipStatus $status): array => [$status->value => $status->getLabel()])
+                                ->toArray()
+                        )
+                        ->descriptions(
+                            collect(ClipStatus::defaultableOptions())
+                                ->mapWithKeys(fn (ClipStatus $status): array => [$status->value => __('onboarding.setup.default_clip_status.options.'.Str::snake($status->name))])
+                                ->toArray()
+                        ),
+                ])
+                    ->live()
+                    ->afterStateUpdated(fn () => $this->defaultClipStatusFormAutosave()),
+                ]),
+        ])->statePath('defaultClipStatusFormData');
     }
 
-    public function autosave(): void
+    public function defaultClipStatusFormAutosave(): void
     {
-        $state = $this->form->getRawState();
+        $state = $this->defaultClipStatusForm->getState();
+        $this->getRecord()->update($state);
+        $this->getRecord()->refresh();
+        $this->mount();
+    }
+
+    public function consentForm(Schema $schema): Schema
+    {
+        return $schema->components([
+            Section::make(DashboardNavigationItem::ManageConsent->getLabel())
+                ->description(__('dashboard/settings/manage-consent.sections.consent.description'))
+                ->schema([Form::make(
+                    collect(BroadcasterConsent::cases())
+                        ->map(fn (BroadcasterConsent $case): Toggle => Toggle::make("consent_{$case->value}")
+                            ->label($case->getLabel())
+                            ->live()
+                            ->afterStateUpdated(fn () => $this->consentFormAutosave())
+                        )
+                        ->all()
+                ),
+                ]),
+        ])
+            ->statePath('consentFormData');
+    }
+
+    public function consentFormAutosave(): void
+    {
+        $state = $this->consentForm->getRawState();
 
         $consent = collect(BroadcasterConsent::cases())
             ->filter(fn (BroadcasterConsent $case) => $state["consent_{$case->value}"] ?? false)
@@ -97,5 +139,13 @@ class ManageConsent extends Page
     public function getRecord(): Model
     {
         return Filament::getTenant();
+    }
+
+    protected function getForms(): array
+    {
+        return [
+            'consentForm',
+            'defaultClipStatusForm',
+        ];
     }
 }

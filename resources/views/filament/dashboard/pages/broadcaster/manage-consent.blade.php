@@ -1,3 +1,4 @@
 <x-filament::page>
-    {{ $this->form }}
+    {{ $this->consentForm }}
+    {{ $this->defaultClipStatusForm }}
 </x-filament::page>
