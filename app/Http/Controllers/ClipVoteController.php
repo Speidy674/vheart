@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\GenerateVotingQueueAction;
 use App\Enums\ClipVoteType;
 use App\Enums\Permission;
-use App\Models\Broadcaster\Broadcaster;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
@@ -22,7 +20,7 @@ class ClipVoteController extends Controller
 {
     private const string SESSION_QUEUE_KEY = 'CLIP_VOTE_QUEUE';
 
-    private const int QUEUE_SIZE = 20;
+    public function __construct(private readonly GenerateVotingQueueAction $generateVotingQueue) {}
 
     /**
      * Show the form for creating the resource.
@@ -102,7 +100,6 @@ class ClipVoteController extends Controller
      */
     protected function getVoteQueue(Request $request): array
     {
-        $user = $request->user();
         $session = $request->session();
         $clips = $session->get(self::SESSION_QUEUE_KEY, []);
 
@@ -110,21 +107,7 @@ class ClipVoteController extends Controller
             return $clips;
         }
 
-        $eligibleClips = static fn (HasMany|Builder $query): HasMany|Builder => $query->whereEligibleForVoting($user);
-
-        $broadcasters = Broadcaster::whereHas('clips', $eligibleClips)
-            ->inRandomOrder()
-            ->limit(self::QUEUE_SIZE)
-            ->with(['clips' => fn ($q) => $eligibleClips($q)->select('id', 'broadcaster_id')->inRandomOrder()->limit(1)])
-            ->get(['id']);
-
-        $clips = $broadcasters
-            ->pluck('clips')
-            ->flatten()
-            ->filter()
-            ->pluck('id')
-            ->shuffle()
-            ->toArray();
+        $clips = $this->generateVotingQueue->execute($request->user());
 
         if ($clips !== []) {
             $session->put(self::SESSION_QUEUE_KEY, $clips);
