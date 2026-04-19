@@ -13,6 +13,9 @@ class GenerateVotingQueueAction
 {
     private const int QUEUE_SIZE = 50;
 
+    /**
+     * @return list<positive-int> Clip Ids
+     */
     public function execute(Authenticatable $user): array
     {
         $broadcasters = Broadcaster::query()
