@@ -16,12 +16,10 @@ class GenerateVotingQueueAction
 
     public function execute(Authenticatable $user): array
     {
-        $eligibleClips = static fn (HasMany|Builder $query): HasMany|Builder => $query->whereEligibleForVoting($user);
-
-        $broadcasters = Broadcaster::whereHas('clips', $eligibleClips)
+        $broadcasters = Broadcaster::whereHas('clips', $this->eligibleClips($user))
             ->inRandomOrder()
             ->limit(self::QUEUE_SIZE)
-            ->with(['clips' => fn (HasMany $q): HasMany => $eligibleClips($q)->select('id', 'broadcaster_id')->inRandomOrder()->limit(1)])
+            ->with(['clips' => fn (HasMany $q): HasMany => $this->eligibleClips($user)($q)->select('id', 'broadcaster_id')->inRandomOrder()->limit(1)])
             ->get(['id']);
 
         return $broadcasters
