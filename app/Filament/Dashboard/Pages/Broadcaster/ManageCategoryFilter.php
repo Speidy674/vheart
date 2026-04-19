@@ -63,7 +63,7 @@ class ManageCategoryFilter extends Page implements HasTable
     public static function canAccess(): bool
     {
         // later we can check for permission to this specific page here
-        return Filament::getTenant()?->id === auth()->user()?->id;
+        return self::getOwnerRecord()?->id === auth()->user()?->id;
     }
 
     /**
@@ -76,7 +76,7 @@ class ManageCategoryFilter extends Page implements HasTable
 
     public function getTitle(): string|Htmlable
     {
-        return Filament::getTenant()->name.' - '.DashboardNavigationItem::ManageCategoryFilter->getLabel();
+        return self::getOwnerRecord()->name.' - '.DashboardNavigationItem::ManageCategoryFilter->getLabel();
     }
 
     public function table(Table $table): Table
