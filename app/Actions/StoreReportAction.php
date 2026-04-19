@@ -15,7 +15,7 @@ use Spatie\DiscordAlerts\Facades\DiscordAlert;
 
 class StoreReportAction
 {
-    public function __invoke(Model|StoreReportRequest $reportableOrStoreReportRequest, ?ReportReason $reason = null, ?string $description = null, ?User $user = null): Report
+    public function execute(Model|StoreReportRequest $reportableOrStoreReportRequest, ?ReportReason $reason = null, ?string $description = null, ?User $user = null): Report
     {
         $usingFormRequest = $reportableOrStoreReportRequest instanceof StoreReportRequest;
 
