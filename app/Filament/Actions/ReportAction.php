@@ -47,7 +47,7 @@ class ReportAction extends Action
                 return;
             }
 
-            $report = $storeReportAction($target, $data['reason'], $data['description'] ?? null, auth()->user());
+            $report = $storeReportAction->execute($target, $data['reason'], $data['description'] ?? null, auth()->user());
 
             Notification::make()
                 ->title(__('reports.modal.success.title'))

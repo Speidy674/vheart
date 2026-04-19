@@ -12,7 +12,7 @@ class ReportController extends Controller
 {
     public function store(StoreReportRequest $request, StoreReportAction $storeReportAction): JsonResponse
     {
-        $report = $storeReportAction($request);
+        $report = $storeReportAction->execute($request);
 
         return new JsonResponse([
             'reportId' => (string) $report->id,
