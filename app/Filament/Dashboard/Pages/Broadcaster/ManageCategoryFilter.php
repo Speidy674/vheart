@@ -16,7 +16,6 @@ use App\Services\Twitch\Data\GameDto;
 use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\TwitchService;
 use BackedEnum;
-use Filament\Actions\BulkActionGroup;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -125,9 +124,7 @@ class ManageCategoryFilter extends Page implements HasTable
             ->description(__('dashboard/settings/manage-category-filters.section.description'))
             ->toolbarActions([
                 $this->makeCreateAction(),
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                DeleteBulkAction::make(),
             ])
             ->modelLabel(__('dashboard/settings/manage-category-filters.section.model.singular'))
             ->pluralModelLabel(__('dashboard/settings/manage-category-filters.section.model.plural'));
