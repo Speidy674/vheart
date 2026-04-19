@@ -66,6 +66,14 @@ class ManageCategoryFilter extends Page implements HasTable
         return Filament::getTenant()?->id === auth()->user()?->id;
     }
 
+    /**
+     * @return Broadcaster
+     */
+    public static function getOwnerRecord(): Model
+    {
+        return Filament::getTenant();
+    }
+
     public function getTitle(): string|Htmlable
     {
         return Filament::getTenant()->name.' - '.DashboardNavigationItem::ManageCategoryFilter->getLabel();
@@ -127,14 +135,6 @@ class ManageCategoryFilter extends Page implements HasTable
             ->pluralModelLabel(__('dashboard/settings/manage-category-filters.section.model.plural'));
     }
 
-    /**
-     * @return Broadcaster
-     */
-    public function getOwnerRecord(): Model
-    {
-        return Filament::getTenant();
-    }
-
     private static function getCategoryMorphClass(): string
     {
         return (new Category)->getMorphClass();
@@ -157,7 +157,7 @@ class ManageCategoryFilter extends Page implements HasTable
                                     $query->from('broadcaster_submission_filters')
                                         ->whereColumn('broadcaster_submission_filters.filterable_id', (new Category)->getTable().'.id')
                                         ->where('broadcaster_submission_filters.filterable_type', $this::getCategoryMorphClass())
-                                        ->where('broadcaster_submission_filters.broadcaster_id', $this->getOwnerRecord()->id);
+                                        ->where('broadcaster_submission_filters.broadcaster_id', $this::getOwnerRecord()->id);
                                 })
                                 ->limit(5)
                                 ->pluck('title', 'id')
@@ -212,7 +212,7 @@ class ManageCategoryFilter extends Page implements HasTable
                     ->offColor('danger'),
             ])
             ->mutateDataUsing(function (array $data): array {
-                $data['broadcaster_id'] = $this->getOwnerRecord()->id;
+                $data['broadcaster_id'] = $this::getOwnerRecord()->id;
                 $data['filterable_type'] = $this::getCategoryMorphClass();
 
                 return $data;
@@ -221,7 +221,7 @@ class ManageCategoryFilter extends Page implements HasTable
 
     private function getBaseQuery(): Builder
     {
-        $tenant = $this->getOwnerRecord();
+        $tenant = $this::getOwnerRecord();
 
         return $tenant->filters()->getQuery()->where('filterable_type', $this::getCategoryMorphClass());
     }
