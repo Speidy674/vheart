@@ -62,7 +62,7 @@ class ManageCategoryFilter extends Page implements HasTable
     public static function canAccess(): bool
     {
         // later we can check for permission to this specific page here
-        return self::getBroadcaster()?->id === auth()->user()?->id;
+        return self::getBroadcaster()?->id === auth()->id();
     }
 
     public static function getBroadcaster(): ?Broadcaster
