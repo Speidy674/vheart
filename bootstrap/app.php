@@ -62,7 +62,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->prepend(AssignRequestId::class);
         $middleware->trustProxies(
-            at: '*',
+            at: [
+                '127.0.0.1',
+                '10.0.0.0/8',
+                '172.16.0.0/12',
+                '192.168.0.0/16',
+            ],
             headers: SymfonyRequest::HEADER_X_FORWARDED_FOR |
             SymfonyRequest::HEADER_X_FORWARDED_HOST |
             SymfonyRequest::HEADER_X_FORWARDED_PORT |
