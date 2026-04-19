@@ -4,23 +4,34 @@ declare(strict_types=1);
 
 namespace App\Filament\AdminPanel\Resources\Reports\Tables;
 
+use App\Enums\Filament\LucideIcon;
 use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
+use App\Filament\Actions\ResourceLinkAction;
+use App\Models\Report;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
-use Filament\Facades\Filament;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReportsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
+                'reportable' => fn ($q) => $q->withTrashed(),
+                'reporter' => fn ($q) => $q->withTrashed(),
+            ]))
             ->columns([
+                TextColumn::make('id')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('status')
                     ->badge()
                     ->color('gray')
@@ -32,13 +43,13 @@ class ReportsTable
                     ->sortable(),
 
                 TextColumn::make('reportable')
-                    ->formatStateUsing(fn (Model $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
-                    ->url(fn (Model $record): ?string => $record->reportable
-                        ? Filament::getResourceUrl($record->reportable, 'view')
+                    ->description(fn (Report $record): ?string => $record->reportable
+                        ? class_basename($record->reportable::class).($record->reportable && $record->reportable->trashed() ? (' (Removed)') : '')
                         : null
                     )
-                    ->placeholder('Deleted Item')
-                    ->openUrlInNewTab(),
+                    ->formatStateUsing(fn (Report $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
+                    ->color(fn (Report $record): string => $record->reportable && ! $record->reportable->trashed() ? 'primary' : 'gray')
+                    ->placeholder('Deleted :('),
 
                 TextColumn::make('reporter.name')
                     ->label('Reported By')
@@ -46,6 +57,7 @@ class ReportsTable
 
                 TextColumn::make('claimer.name')
                     ->label('Claimed By')
+                    ->placeholder('Unclaimed')
                     ->toggleable(),
 
                 TextColumn::make('resolve_action')
@@ -55,8 +67,9 @@ class ReportsTable
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable(),
+                    ->description(fn (Report $record) => $record->created_at->toFormattedDayDateString())
+                    ->sortable()
+                    ->since(),
             ])
             ->filters([
                 SelectFilter::make('status')
@@ -71,6 +84,17 @@ class ReportsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+                ActionGroup::make([
+                    ResourceLinkAction::make()
+                        ->relationship('reporter')
+                        ->label('View Reporter'),
+                    ResourceLinkAction::make()
+                        ->relationship('reportable')
+                        ->label('View Reportable'),
+                ])
+                    ->label('View')
+                    ->link()
+                    ->icon(LucideIcon::ExternalLink),
                 ViewAction::make(),
             ])
             ->toolbarActions([]);
