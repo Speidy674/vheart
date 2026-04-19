@@ -135,6 +135,11 @@ class ManageCategoryFilter extends Page implements HasTable
         return Filament::getTenant();
     }
 
+    private static function getMorphClass(): string
+    {
+        return (new Category)->getMorphClass();
+    }
+
     private function makeCreateAction(): CreateAction
     {
         return CreateAction::make()
@@ -151,7 +156,7 @@ class ManageCategoryFilter extends Page implements HasTable
                                 ->whereNotExists(function ($query): void {
                                     $query->from('broadcaster_submission_filters')
                                         ->whereColumn('broadcaster_submission_filters.filterable_id', (new Category)->getTable().'.id')
-                                        ->where('broadcaster_submission_filters.filterable_type', $this->getMorphClass())
+                                        ->where('broadcaster_submission_filters.filterable_type', $this::getMorphClass())
                                         ->where('broadcaster_submission_filters.broadcaster_id', $this->getOwnerRecord()->id);
                                 })
                                 ->limit(5)
@@ -208,21 +213,16 @@ class ManageCategoryFilter extends Page implements HasTable
             ])
             ->mutateDataUsing(function (array $data): array {
                 $data['broadcaster_id'] = $this->getOwnerRecord()->id;
-                $data['filterable_type'] = $this->getMorphClass();
+                $data['filterable_type'] = $this::getMorphClass();
 
                 return $data;
             });
-    }
-
-    private function getMorphClass(): string
-    {
-        return (new Category)->getMorphClass();
     }
 
     private function getBaseQuery(): Builder
     {
         $tenant = $this->getOwnerRecord();
 
-        return $tenant->filters()->getQuery()->where('filterable_type', $this->getMorphClass());
+        return $tenant->filters()->getQuery()->where('filterable_type', $this::getMorphClass());
     }
 }
