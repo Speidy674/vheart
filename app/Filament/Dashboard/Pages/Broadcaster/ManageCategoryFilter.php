@@ -39,7 +39,6 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use UnitEnum;
 
 class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTable
@@ -172,7 +171,7 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                             return $category->reject(fn (array $item): bool => in_array((string) $item['id'], $existingIds, true))
                                 ->values()
                                 ->sortBy(fn (array $item): int => levenshtein(mb_strtolower($search), mb_strtolower((string) $item['title'])))
-                                ->mapWithKeys(fn (array $item): array => [$item['id'] => $item['title']])->each(fn ($title, $id) => Log::info('Testing', ['id' => $id, 'title' => $title]));
+                                ->mapWithKeys(fn (array $item): array => [$item['id'] => $item['title']]);
                         })
                     ->getOptionLabelUsing(function (string $value, TwitchService $twitchService, ImportCategoryAction $importCategoryAction) {
                         if ($title = Category::find((int) $value)?->title) {
