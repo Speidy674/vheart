@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class GenerateVotingQueueAction
 {
-    private const int QUEUE_SIZE = 20;
+    private const int QUEUE_SIZE = 50;
 
     public function execute(Authenticatable $user): array
     {
