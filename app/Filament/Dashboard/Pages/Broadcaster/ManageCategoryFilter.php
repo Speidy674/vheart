@@ -35,7 +35,6 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use UnitEnum;
 
@@ -66,12 +65,11 @@ class ManageCategoryFilter extends Page implements HasTable
         return self::getBroadcaster()?->id === auth()->user()?->id;
     }
 
-    /**
-     * @return Broadcaster
-     */
-    public static function getBroadcaster(): Model
+    public static function getBroadcaster(): ?Broadcaster
     {
-        return Filament::getTenant();
+        $tenant = Filament::getTenant();
+
+        return $tenant instanceof Broadcaster ? $tenant : null;
     }
 
     public function getTitle(): string|Htmlable
