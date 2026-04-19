@@ -145,7 +145,7 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                     ->getSearchResultsUsing(
                         function (string $search, TwitchService $twitchService) {
                             $search = mb_trim($search);
-                            $categorys = collect($twitchService->asSessionUser()->searchCategories($search, 100))
+                            $categories = collect($twitchService->asSessionUser()->searchCategories($search, 100))
                                 ->each(fn (CategoryDto $category) => Cache::put("twitch:category:$category->id", $category, now()->addMinutes(30)))
                                 ->map(fn (CategoryDto $item): array => ['title' => $item->name, 'id' => $item->id]);
 
@@ -159,7 +159,7 @@ class ManageCategoryFilter extends Page implements HasActions, HasSchemas, HasTa
                                 ->limit(5)
                                 ->pluck('title', 'id')
                                 ->map(fn (string $title, int $id): array => ['id' => $id, 'title' => $title])
-                                ->merge($categorys)
+                                ->merge($categories)
                                 ->unique('id')
                                 ->take(100);
 
