@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Enums\Reports\ReportReason;
 use App\Http\Requests\Reports\StoreReportRequest;
+use App\Models\Clip;
 use App\Models\Report;
 use App\Models\User;
 use Exception;
@@ -15,18 +16,35 @@ use Spatie\DiscordAlerts\Facades\DiscordAlert;
 
 class StoreReportAction
 {
-    public function execute(Model|StoreReportRequest $reportableOrStoreReportRequest, ?ReportReason $reason = null, ?string $description = null, ?User $user = null): Report
+    public function fromRequest(StoreReportRequest $request): Report
     {
-        $usingFormRequest = $reportableOrStoreReportRequest instanceof StoreReportRequest;
+        $clip = Clip::findOrFail($request->input('reportable_id'));
 
+        return $this->execute(
+            reportable: $clip,
+            reason: $request->enum('reason', ReportReason::class),
+            user: $request->user(),
+            description: $request->input('description'),
+        );
+    }
+
+    public function execute(Model $reportable, ReportReason $reason, User $user, ?string $description = null): Report
+    {
         $report = Report::create([
-            'user_id' => $usingFormRequest ? $reportableOrStoreReportRequest->user()->id : $user->getKey(),
-            'reportable_type' => $usingFormRequest ? $reportableOrStoreReportRequest->input('reportable_type') : $reportableOrStoreReportRequest->getMorphClass(),
-            'reportable_id' => $usingFormRequest ? $reportableOrStoreReportRequest->input('reportable_id') : $reportableOrStoreReportRequest->getKey(),
-            'reason' => $usingFormRequest ? $reportableOrStoreReportRequest->enum('reason', ReportReason::class) : $reason,
-            'description' => $usingFormRequest ? $reportableOrStoreReportRequest->input('description') : $description,
+            'user_id' => $user->getKey(),
+            'reportable_type' => $reportable->getMorphClass(),
+            'reportable_id' => $reportable->getKey(),
+            'reason' => $reason,
+            'description' => $description,
         ]);
 
+        $this->notifyDiscord($report);
+
+        return $report;
+    }
+
+    private function notifyDiscord(Report $report): void
+    {
         try {
             DiscordAlert::to('moderation')->message('<@&1494691682422226996>', [[
                 'title' => 'New Report',
@@ -36,7 +54,5 @@ class StoreReportAction
         } catch (Exception $exception) {
             report($exception);
         }
-
-        return $report;
     }
 }
