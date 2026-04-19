@@ -101,14 +101,14 @@ arch()
     ->expect('App\Actions')
     ->toHaveSuffix('Action')
     ->toBeClasses()
+    ->toHaveMethod('execute')
+    ->not->toImplement(Throwable::class)
     ->not->toExtend(FormRequest::class)
     ->not->toExtend(Model::class)
-    ->not->toImplement(Throwable::class)
     ->not->toExtend(Command::class)
     ->not->toExtend(Mailable::class)
     ->not->toExtend(Notification::class)
     ->not->toExtend(AbstractServiceProvider::class)
-    // ->toBeInvokable()
     ->not->toBeEnums();
 
 /**
