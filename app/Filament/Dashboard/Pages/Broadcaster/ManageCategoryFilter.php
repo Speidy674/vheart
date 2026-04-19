@@ -114,8 +114,8 @@ class ManageCategoryFilter extends Page implements HasTable
                     ->trueLabel(__('dashboard/settings/manage-category-filters.filters.state.true'))
                     ->falseLabel(__('dashboard/settings/manage-category-filters.filters.state.false'))
                     ->queries(
-                        true: fn (Builder $q) => $q->whereState(true),
-                        false: fn (Builder $q) => $q->whereState(false),
+                        true: fn (Builder $q) => $q->where('state', true),
+                        false: fn (Builder $q) => $q->where('state', false),
                     ),
             ])
             ->recordActions([
