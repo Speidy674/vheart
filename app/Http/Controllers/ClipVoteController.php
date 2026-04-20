@@ -93,6 +93,8 @@ class ClipVoteController extends Controller
             $this->shiftClipQueue($request);
         }
 
+        Log::debug('exhausted all possible options, giving up on getting a clip');
+
         return null;
     }
 
