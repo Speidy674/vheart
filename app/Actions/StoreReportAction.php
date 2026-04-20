@@ -42,7 +42,7 @@ class StoreReportAction
         $this->notifyDiscord($report);
 
         $clip = $reportable instanceof Clip ? $reportable : null;
-        if ($reason === ReportReason::ContentUnavailable && $clip !== null) {
+        if ($reason === ReportReason::ContentUnavailable && $clip instanceof Clip) {
             $report->update(['claimed_by' => 0, 'claimed_at' => now()]);
             CheckForRemovedClipJob::dispatch($clip, $report);
         }

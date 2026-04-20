@@ -12,7 +12,11 @@ class CommentPolicy extends \Kirschbaum\Commentions\Policies\CommentPolicy
 {
     public function create(Commenter $user): bool
     {
-        return $user->getKey() === 0 || $user->can(Permission::CreateComment);
+        if ($user->getKey() === 0) {
+            return true;
+        }
+
+        return $user->can(Permission::CreateComment);
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Enums\Reports\ResolveAction;
 use App\Models\Clip;
 use App\Models\Report;
 use App\Models\User;
+use App\Services\Twitch\Data\ClipDto;
 use App\Services\Twitch\TwitchService;
 use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -46,7 +47,7 @@ class CheckForRemovedClipJob implements ShouldBeUnique, ShouldDispatchAfterCommi
 
         Log::debug('Checking for Clip availability...');
 
-        if ($twitchService->asApp()->getClip($this->clip->twitch_id)) {
+        if ($twitchService->asApp()->getClip($this->clip->twitch_id) instanceof ClipDto) {
             Log::debug('Clip found on Twitch');
             $this->cannotResolve('Clip has been found on Twitch, manual moderation required.');
 
