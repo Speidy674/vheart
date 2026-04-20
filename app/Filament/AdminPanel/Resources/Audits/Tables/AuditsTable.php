@@ -24,9 +24,13 @@ class AuditsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with([
+                'causer' => fn ($q) => $q->withTrashed(),
+                'auditable' => fn ($q) => $q->withTrashed(),
+            ]))
             ->columns([
-                MorphColumn::make('causer'),
-                MorphColumn::make('auditable'),
+                MorphColumn::make('causer')->placeholder('System'),
+                MorphColumn::make('auditable')->placeholder('Removed'),
 
                 TextColumn::make('event')
                     ->color(fn (string $state): string => match ($state) {
