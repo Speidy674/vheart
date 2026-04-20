@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models\Contracts;
 
-use Filament\Infolists\Components\Entry;
+use Filament\Schemas\Components\Component;
 
 interface HasFilamentInfolistEntry
 {
-    public static function getFilamentInfolistEntry(string $name): Entry;
+    public static function getFilamentInfolistEntry(string $name): Component;
 }
