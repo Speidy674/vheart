@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 #[Middleware('throttle:10,1', only: ['store'])]
@@ -27,11 +28,7 @@ class ClipVoteController extends Controller
      */
     public function create(Request $request): View
     {
-        $clipIdToVote = $this->getNextClipId($request);
-
-        $clip = Clip::query()
-            ->withoutGlobalScope(ClipPermissionScope::class)
-            ->find($clipIdToVote);
+        $clip = $this->resolveNextClip($request);
 
         return view('clips.vote', [
             'clip' => $clip,
@@ -72,12 +69,25 @@ class ClipVoteController extends Controller
             return back(fallback: route('vote'));
         }
 
-        $clip = Clip::query()
-            ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withAbsoluteVoteCount()
-            ->find($this->getNextClipId($request));
+        $nextClip = $this->resolveNextClip($request);
 
-        return new JsonResponse($clip?->toResource());
+        return new JsonResponse($nextClip?->toResource());
+    }
+
+    protected function resolveNextClip(Request $request): ?Clip
+    {
+        while ($clipId = $this->getNextClipId($request)) {
+            if ($clip = Clip::query()->withoutGlobalScope(ClipPermissionScope::class)->find($clipId)) {
+                return $clip;
+            }
+
+            Log::debug('Clip not found, shifting to next clip in queue', ['clip_id' => $clipId]);
+            $this->shiftClipQueue($request);
+        }
+
+        Log::debug('exhausted all possible options, giving up on getting a clip');
+
+        return null;
     }
 
     /**
@@ -125,10 +135,6 @@ class ClipVoteController extends Controller
     {
         $voteQueue = $this->getVoteQueue($request);
 
-        if (count($voteQueue) !== 0) {
-            return $voteQueue[0];
-        }
-
-        return null;
+        return $voteQueue[0] ?? null;
     }
 }
