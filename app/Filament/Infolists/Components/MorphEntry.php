@@ -31,13 +31,10 @@ class MorphEntry extends Entry
         $related = $this->getRelated();
 
         if ($related) {
-            $class = get_class($related);
-            $name = $this->getName();
-
-            if (isset($this->resolvers[$class])) {
-                $this->childComponents($this->resolvers[$class]);
+            if (isset($this->resolvers[$related::class])) {
+                $this->childComponents($this->resolvers[$related::class]);
             } elseif ($related instanceof HasFilamentInfolistEntry) {
-                $this->childComponents([$related::getFilamentInfolistEntry($name)]);
+                $this->childComponents([$related::getFilamentInfolistEntry($this->getName())]);
             }
         }
 
