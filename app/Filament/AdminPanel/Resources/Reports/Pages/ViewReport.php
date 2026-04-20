@@ -52,7 +52,7 @@ class ViewReport extends ViewRecord
                 ->label('Unclaim')
                 ->icon(LucideIcon::LockOpen)
                 ->color('warning')
-                ->visible(fn (Report $record): bool => $record->claimed_by === auth()->id() && $record->status === ReportStatus::InReview)
+                ->visible(fn (Report $record): bool => $record->claimed_by === auth()->id() && $record->status !== ReportStatus::Resolved)
                 ->authorize('claim')
                 ->action(function (Report $record): void {
                     $data = [
@@ -86,7 +86,7 @@ class ViewReport extends ViewRecord
                         ->hint('Required if Action is Other')
                         ->required(fn (Get $get): bool => $get('action') !== null && $get('action') === ResolveAction::Other),
                 ])
-                ->visible(fn (Report $record): bool => $record->claimed_by === auth()->id() && $record->status === ReportStatus::InReview)
+                ->visible(fn (Report $record): bool => $record->claimed_by === auth()->id() && $record->status !== ReportStatus::Resolved)
                 ->authorize('claim')
                 ->action(function (Report $record, array $data): void {
                     $record->update([
@@ -114,7 +114,7 @@ class ViewReport extends ViewRecord
                         ]);
                     }),
                 Action::make('reopen')
-                    ->disabled(fn (Report $record): bool => ($record->status === ReportStatus::Pending || $record->status === ReportStatus::InReview) && $record->resolved_at === null)
+                    ->disabled(fn (Report $record): bool => $record->status !== ReportStatus::Resolved && $record->resolved_at === null)
                     ->requiresConfirmation()
                     ->label('Re-Open')
                     ->icon(LucideIcon::Recycle)
