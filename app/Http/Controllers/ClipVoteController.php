@@ -125,10 +125,6 @@ class ClipVoteController extends Controller
     {
         $voteQueue = $this->getVoteQueue($request);
 
-        if (count($voteQueue) !== 0) {
-            return $voteQueue[0];
-        }
-
-        return null;
+        return $voteQueue[0] ?? null;
     }
 }
