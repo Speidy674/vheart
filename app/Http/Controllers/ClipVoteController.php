@@ -69,23 +69,15 @@ class ClipVoteController extends Controller
             return back(fallback: route('vote'));
         }
 
-        $nextClip = $this->resolveNextClip($request, withAbsoluteVoteCount: true);
+        $nextClip = $this->resolveNextClip($request);
 
         return new JsonResponse($nextClip?->toResource());
     }
 
-    protected function resolveNextClip(Request $request, bool $withAbsoluteVoteCount = false): ?Clip
+    protected function resolveNextClip(Request $request): ?Clip
     {
         while ($clipId = $this->getNextClipId($request)) {
-            $query = Clip::query()->withoutGlobalScope(ClipPermissionScope::class);
-
-            if ($withAbsoluteVoteCount) {
-                $query->withAbsoluteVoteCount();
-            }
-
-            $clip = $query->find($clipId);
-
-            if ($clip) {
+            if ($clip = Clip::query()->withoutGlobalScope(ClipPermissionScope::class)->find($clipId)) {
                 return $clip;
             }
 
