@@ -28,11 +28,7 @@ class ClipVoteController extends Controller
      */
     public function create(Request $request): View
     {
-        $clipIdToVote = $this->getNextClipId($request);
-
-        $clip = Clip::query()
-            ->withoutGlobalScope(ClipPermissionScope::class)
-            ->find($clipIdToVote);
+        $clip = $this->resolveNextClip($request);
 
         return view('clips.vote', [
             'clip' => $clip,
@@ -73,12 +69,9 @@ class ClipVoteController extends Controller
             return back(fallback: route('vote'));
         }
 
-        $clip = Clip::query()
-            ->withoutGlobalScope(ClipPermissionScope::class)
-            ->withAbsoluteVoteCount()
-            ->find($this->getNextClipId($request));
+        $nextClip = $this->resolveNextClip($request, withAbsoluteVoteCount: true);
 
-        return new JsonResponse($clip?->toResource());
+        return new JsonResponse($nextClip?->toResource());
     }
 
     protected function resolveNextClip(Request $request, bool $withAbsoluteVoteCount = false): ?Clip
