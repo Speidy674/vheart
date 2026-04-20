@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Attributes\Controllers\Middleware;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 #[Middleware('throttle:10,1', only: ['store'])]
@@ -78,6 +79,28 @@ class ClipVoteController extends Controller
             ->find($this->getNextClipId($request));
 
         return new JsonResponse($clip?->toResource());
+    }
+
+    protected function resolveNextClip(Request $request, bool $withAbsoluteVoteCount = false): ?Clip
+    {
+        while ($clipId = $this->getNextClipId($request)) {
+            $query = Clip::query()->withoutGlobalScope(ClipPermissionScope::class);
+
+            if ($withAbsoluteVoteCount) {
+                $query->withAbsoluteVoteCount();
+            }
+
+            $clip = $query->find($clipId);
+
+            if ($clip) {
+                return $clip;
+            }
+
+            Log::debug('Clip not found, shifting to next clip in queue', ['clip_id' => $clipId]);
+            $this->shiftClipQueue($request);
+        }
+
+        return null;
     }
 
     /**
