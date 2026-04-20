@@ -46,14 +46,12 @@ class ReportsTable
                 MorphColumn::make('reportable')
                     ->placeholder('Deleted :('),
 
-                TextColumn::make('reporter.name')
-                    ->label('Reported By')
-                    ->searchable(),
+                MorphColumn::make('reporter')
+                    ->label('Reported By'),
 
-                TextColumn::make('claimer.name')
+                MorphColumn::make('claimer')
                     ->label('Claimed By')
-                    ->placeholder('Unclaimed')
-                    ->toggleable(),
+                    ->placeholder('Unclaimed'),
 
                 TextColumn::make('resolve_action')
                     ->badge()
