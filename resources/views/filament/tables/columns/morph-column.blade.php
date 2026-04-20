@@ -5,6 +5,7 @@
     $record = $getRecord();
     $recordKey = $column->getRecordKey();
     $rowLoop = $column->getRowLoop();
+    $placeholder = $column->getPlaceholder();
 @endphp
 
 @if ($resolved)
@@ -13,4 +14,8 @@
     @endforeach
 @elseif ($related)
     {{ class_basename($related) }} #{{ $related->getKey() }}
+@elseif(filled($placeholder))
+    <p class="fi-ta-placeholder">
+        {{ $placeholder }}
+    </p>
 @endif
