@@ -10,6 +10,9 @@ use App\Enums\Reports\ResolveAction;
 use App\Filament\AdminPanel\Resources\Reports\ReportResource;
 use App\Models\Report;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Pages\ViewRecord;
@@ -95,6 +98,39 @@ class ViewReport extends ViewRecord
                         'deleted_at' => now(),
                     ]);
                 }),
+
+            ActionGroup::make([
+                Action::make('force_unclaim')
+                    ->disabled(fn (Report $record): bool => ! $record->claimed_by)
+                    ->requiresConfirmation()
+                    ->label('Force Unclaim')
+                    ->icon(LucideIcon::LockOpen)
+                    ->color('danger')
+                    ->authorize('superadmin')
+                    ->action(function (Report $record): void {
+                        $record->update([
+                            'claimed_by' => null,
+                            'claimed_at' => null,
+                        ]);
+                    }),
+                Action::make('reopen')
+                    ->disabled(fn (Report $record): bool => ($record->status === ReportStatus::Pending || $record->status === ReportStatus::InReview) && $record->resolved_at === null)
+                    ->requiresConfirmation()
+                    ->label('Re-Open')
+                    ->icon(LucideIcon::Recycle)
+                    ->color('warning')
+                    ->authorize('superadmin')
+                    ->action(function (Report $record): void {
+                        $record->update([
+                            'status' => ReportStatus::Pending,
+                            'resolved_by' => null,
+                            'resolved_at' => null,
+                            'deleted_at' => null,
+                        ]);
+                    }),
+                DeleteAction::make()->authorize('superadmin'),
+                RestoreAction::make()->authorize('superadmin'),
+            ]),
         ];
     }
 
