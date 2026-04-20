@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs\Reports;
 
+use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Models\Clip;
 use App\Models\Report;
@@ -87,10 +88,12 @@ class CheckForRemovedClipJob implements ShouldBeUnique, ShouldDispatchAfterCommi
     private function resolve(): void
     {
         $this->report?->update([
+            'status' => ReportStatus::Resolved,
             'resolved_by' => 0,
             'resolved_at' => now(),
             'resolve_action' => ResolveAction::ContentRemoved,
             'resolve_description' => 'Clip was removed from Twitch. (Automatically Resolved)',
+            'deleted_at' => now(),
         ]);
     }
 
