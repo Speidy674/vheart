@@ -9,6 +9,7 @@ use App\Enums\Reports\ReportReason;
 use App\Enums\Reports\ReportStatus;
 use App\Enums\Reports\ResolveAction;
 use App\Filament\Actions\ResourceLinkAction;
+use App\Filament\Tables\MorphColumn;
 use App\Models\Report;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\ViewAction;
@@ -42,13 +43,7 @@ class ReportsTable
                     ->badge()
                     ->sortable(),
 
-                TextColumn::make('reportable')
-                    ->description(fn (Report $record): ?string => $record->reportable
-                        ? class_basename($record->reportable::class).($record->reportable && $record->reportable->trashed() ? (' (Removed)') : '')
-                        : null
-                    )
-                    ->formatStateUsing(fn (Report $record) => $record->reportable?->{$record->reportable->getReportableTitleAttribute()})
-                    ->color(fn (Report $record): string => $record->reportable && ! $record->reportable->trashed() ? 'primary' : 'gray')
+                MorphColumn::make('reportable')
                     ->placeholder('Deleted :('),
 
                 TextColumn::make('reporter.name')
