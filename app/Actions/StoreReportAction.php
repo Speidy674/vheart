@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Enums\Reports\ReportReason;
 use App\Http\Requests\Reports\StoreReportRequest;
+use App\Jobs\Reports\CheckForRemovedClipJob;
 use App\Models\Clip;
 use App\Models\Report;
 use App\Models\User;
@@ -39,6 +40,12 @@ class StoreReportAction
         ]);
 
         $this->notifyDiscord($report);
+
+        $clip = $reportable instanceof Clip ? $reportable : null;
+        if ($reason === ReportReason::ContentUnavailable && $clip !== null) {
+            $report->update(['claimed_by' => 0, 'claimed_at' => now()]);
+            CheckForRemovedClipJob::dispatch($clip, $report);
+        }
 
         return $report;
     }
