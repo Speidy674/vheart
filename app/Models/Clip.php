@@ -37,6 +37,7 @@ use Filament\Schemas\Components\Component as FilamentSchemaComponent;
 use Filament\Schemas\Components\Grid;
 use Filament\Support\Enums\FontFamily;
 use Filament\Support\Enums\TextSize;
+use Filament\Tables\Columns\Column as FilamentTableColumn;
 use Filament\Tables\Columns\Layout\Component as FilamentTableComponent;
 use Filament\Tables\Columns\Layout\Split;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -80,7 +81,7 @@ class Clip extends Model implements Commentable, ExternalProxyable, HasFilamentI
         return 'jpg';
     }
 
-    public static function getFilamentTableColumn(string $name): FilamentTableComponent
+    public static function getFilamentTableColumn(string $name): FilamentTableComponent|FilamentTableColumn
     {
         return Split::make([
             ClipColumns::thumbnail()

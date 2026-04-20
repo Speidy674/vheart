@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models\Contracts;
 
 use App\Filament\Tables\MorphColumn;
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\Layout\Component;
 
 /**
@@ -12,5 +13,5 @@ use Filament\Tables\Columns\Layout\Component;
  */
 interface HasFilamentTableColumn
 {
-    public static function getFilamentTableColumn(string $name): Component;
+    public static function getFilamentTableColumn(string $name): Component|Column;
 }
