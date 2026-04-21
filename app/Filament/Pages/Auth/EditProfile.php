@@ -15,7 +15,8 @@ class EditProfile extends BaseEditProfile
         return $schema
             ->components([
                 TextInput::make('email')
-                    ->hidden() // Hidden for now as we cant send emails anyway haha
+                    ->disabled() // Hidden for now as we cant send emails anyway haha
+                    ->belowLabel('currently disabled because of technical reasons')
                     ->label(__('filament-panels::auth/pages/edit-profile.form.email.label'))
                     ->email()
                     ->nullable()
