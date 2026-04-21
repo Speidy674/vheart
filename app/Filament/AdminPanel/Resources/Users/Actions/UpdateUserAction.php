@@ -32,7 +32,7 @@ class UpdateUserAction extends Action
             ->translateLabel()
             ->icon(fn (Model $record): LucideIcon => is_int($this->resolveTarget($record)) ? LucideIcon::Plus : LucideIcon::RefreshCcw)
             ->requiresConfirmation()
-            ->hidden(fn (Model $record): bool => ($resolved = $this->resolveTarget($record)) === null || $resolved->id === 0)
+            ->hidden(fn (Model $record): bool => ($resolved = $this->resolveTarget($record)) === null || $resolved?->id === 0)
             ->action(function (Model $record, array $data, TwitchService $twitchService): void {
                 $target = $this->resolveTarget($record);
 
