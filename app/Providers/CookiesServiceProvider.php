@@ -47,6 +47,11 @@ class CookiesServiceProvider extends ServiceProvider
                 $cookie->name('youtube_embed_consent')
                     ->description(__('cookies.youtube_embed_consent.description'))
                     ->duration(60 * 24 * 30);
+            })
+            ->cookie(function (Cookie $cookie): void {
+                $cookie->name('external-services')
+                    ->description(__('cookies.external-services.description'))
+                    ->duration(60 * 24 * 30);
             });
 
         // Register all Analytics cookies at once using one single shorthand method:
