@@ -21,6 +21,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -141,6 +142,8 @@ class ClipsTable
                             CompilationStatus::Planned,
                         ], CompilationStatus::getPublicCases()))),
                     ),
+
+                TrashedFilter::make(),
 
                 DateRangeFilter::make('date')
                     ->withPresets()
