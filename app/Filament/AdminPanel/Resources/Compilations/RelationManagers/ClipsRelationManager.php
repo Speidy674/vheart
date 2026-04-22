@@ -33,6 +33,7 @@ use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -252,6 +253,8 @@ class ClipsRelationManager extends RelationManager
                     ->translateLabel()
                     ->multiple()
                     ->options(ClipStatus::class),
+
+                TrashedFilter::make(),
             ])
             ->filtersFormColumns(2)
             ->headerActions([

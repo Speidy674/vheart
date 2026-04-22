@@ -15,6 +15,7 @@ use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -119,6 +120,8 @@ abstract class BaseUserClipsRelationManager extends RelationManager
                     ->translateLabel()
                     ->multiple()
                     ->options(ClipStatus::class),
+
+                TrashedFilter::make(),
             ])
             ->filtersFormColumns(2)
             ->recordActions([
