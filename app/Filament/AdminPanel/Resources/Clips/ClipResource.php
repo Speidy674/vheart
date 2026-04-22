@@ -67,4 +67,12 @@ class ClipResource extends Resource
             ->withPublicVoteCount()
             ->withJuryVoteCount();
     }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
 }
