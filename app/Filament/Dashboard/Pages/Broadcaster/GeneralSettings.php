@@ -19,7 +19,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use UnitEnum;
@@ -28,7 +30,7 @@ use UnitEnum;
  * @property-read Schema $consentForm
  * @property-read Schema $defaultClipStatusForm
  */
-class ManageConsent extends Page implements HasForms
+class GeneralSettings extends Page implements HasForms
 {
     use InteractsWithForms;
 
@@ -37,25 +39,32 @@ class ManageConsent extends Page implements HasForms
 
     public ?array $defaultClipStatusFormData = [];
 
+    public ?array $submissionsSettingFormData = [];
+
     protected static string|null|BackedEnum $navigationIcon = LucideIcon::Settings;
 
     protected static ?int $navigationSort = 999;
 
     protected static string|null|UnitEnum $navigationGroup = DashboardNavigationGroup::Settings;
 
-    protected static ?string $title = '';
+    protected string $view = 'filament.dashboard.pages.broadcaster.manage-general-settings';
 
-    protected string $view = 'filament.dashboard.pages.broadcaster.manage-consent';
+    protected ?string $heading = '';
 
     public static function getNavigationLabel(): string
     {
-        return DashboardNavigationItem::ManageConsent->getLabel();
+        return DashboardNavigationItem::GeneralSettings->getLabel();
     }
 
     public static function canAccess(): bool
     {
         // later we can check for permission to this specific page here
         return Filament::getTenant()?->id === auth()->user()?->id;
+    }
+
+    public function getTitle(): string|Htmlable
+    {
+        return Filament::getTenant()->name.' - '.DashboardNavigationItem::GeneralSettings->getLabel();
     }
 
     public function mount(): void
@@ -68,14 +77,15 @@ class ManageConsent extends Page implements HasForms
                 ->all()
         );
         $this->defaultClipStatusForm->fill($this->getRecord()->only(['default_clip_status']));
+        $this->submissionsSettingForm->fill($this->getRecord()->only(['submit_user_allowed', 'submit_vip_allowed', 'submit_mods_allowed']));
     }
 
     public function defaultClipStatusForm(Schema $schema): Schema
     {
         return $schema->components([
             Section::make('default_clip_status')
-                ->heading(__('dashboard/settings/manage-consent.sections.default_clip_status.label'))
-                ->description(__('dashboard/settings/manage-consent.sections.default_clip_status.description'))
+                ->heading(__('dashboard/settings/manage-general-settings.sections.default_clip_status.label'))
+                ->description(__('dashboard/settings/manage-general-settings.sections.default_clip_status.description'))
                 ->schema([Form::make([
                     Radio::make('default_clip_status')
                         ->hiddenLabel()
@@ -107,8 +117,9 @@ class ManageConsent extends Page implements HasForms
     public function consentForm(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make(DashboardNavigationItem::ManageConsent->getLabel())
-                ->description(__('dashboard/settings/manage-consent.sections.consent.description'))
+            Section::make('consent')
+                ->heading(__('dashboard/settings/manage-general-settings.sections.consent.label'))
+                ->description(__('dashboard/settings/manage-general-settings.sections.consent.description'))
                 ->schema([Form::make(
                     collect(BroadcasterConsent::cases())
                         ->map(fn (BroadcasterConsent $case): Toggle => Toggle::make("consent_{$case->value}")
@@ -135,6 +146,65 @@ class ManageConsent extends Page implements HasForms
         $this->getRecord()->update(['consent' => $consent]);
     }
 
+    public function submissionsSettingForm(Schema $schema): Schema
+    {
+        return $schema->components([
+            Section::make('submissions_settings')
+                ->heading(__('dashboard/settings/manage-general-settings.sections.submissions_settings.label'))
+                ->description(__('dashboard/settings/manage-general-settings.sections.submissions_settings.description'))
+                ->schema([Form::make([
+                    Toggle::make('submit_user_allowed')
+                        ->label('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_user_allowed.label')
+                        ->helperText(__('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_user_allowed.description'))
+                        ->translateLabel()
+                        ->afterStateUpdated(function (bool $state, Set $set): void {
+                            if ($state) {
+                                $set('submit_vip_allowed', true);
+                                $set('submit_mods_allowed', true);
+                            }
+                            $this->submissionsSettingFormAutosave();
+                        }),
+                    Toggle::make('submit_vip_allowed')
+                        ->label('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_vip_allowed.label')
+                        ->helperText(__('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_vip_allowed.description'))
+                        ->translateLabel()
+                        ->afterStateUpdated(function (bool $state, Set $set): void {
+                            if (! $state) {
+                                $set('submit_user_allowed', false);
+                            }
+                            $this->submissionsSettingFormAutosave();
+                        }),
+                    Toggle::make('submit_mods_allowed')
+                        ->label('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_mods_allowed.label')
+                        ->helperText(__('dashboard/settings/manage-general-settings.sections.submissions_settings.form.submit_mods_allowed.description'))
+                        ->translateLabel()
+                        ->afterStateUpdated(function (bool $state, Set $set): void {
+                            if (! $state) {
+                                $set('submit_user_allowed', false);
+                            }
+                            $this->submissionsSettingFormAutosave();
+                        }),
+                ])
+                    ->live(),
+                ]),
+        ])->statePath('submissionsSettingFormData');
+    }
+
+    public function submissionsSettingFormAutosave(): void
+    {
+        $state = $this->submissionsSettingForm->getState();
+
+        if ($state['submit_user_allowed'] === true) {
+            $state['submit_vip_allowed'] = true;
+            $state['submit_mods_allowed'] = true;
+        }
+
+        $this->getRecord()->update($state);
+        $this->getRecord()->refresh();
+        $this->mount();
+
+    }
+
     /**
      * @return Broadcaster
      */
@@ -148,6 +218,7 @@ class ManageConsent extends Page implements HasForms
         return [
             'consentForm',
             'defaultClipStatusForm',
+            'submissionsSettingForm',
         ];
     }
 }
