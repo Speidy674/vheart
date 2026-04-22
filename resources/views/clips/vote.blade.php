@@ -1,4 +1,4 @@
-<x-layout :title="__('clips.vote.page_title')" class="md:w-[clamp(42rem,calc(42rem+28*((100svw-40rem)/60)),80rem)] w-full mx-auto pt-8 space-y-2" x-data="clipVote">
+<x-layout :title="__('clips.vote.page_title')" class="md:w-[clamp(32rem,calc(32rem+24*((100svw-40rem)/60)),80rem)] w-full mx-auto pt-8 space-y-2" x-data="clipVote">
     <section class="w-full aspect-video h-full relative bg-black rounded-xl border border-muted shadow-sm overflow-hidden select-none">
         <template x-if="hasClip">
             <x-embeds.twitch :clip="$clip?->twitch_id ?? ''" x-model="clipTwitchId" class="h-full w-full" />
