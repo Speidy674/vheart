@@ -166,7 +166,7 @@
                                 this.clipBroadcasterAvatar = nextClip.broadcaster.avatar;
                                 this.clipBroadcasterUrl = 'https://twitch.tv/'+nextClip.broadcaster.name;
                                 this.clipBroadcasterName = nextClip.broadcaster.name;
-                                this.hasBroadcaster = nextClip.broadcaster ? true : false;
+                                this.hasBroadcaster = !!nextClip.broadcaster;
                                 this.startTimer(nextClip.clip_duration * 0.3);
                             } else {
                                 this.hasClip = false;
