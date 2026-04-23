@@ -178,8 +178,6 @@
                                 this.clipBroadcasterName = '';
                                 this.hasBroadcaster = false;
                             }
-                        } catch (error) {
-                            console.error('Failed to submit vote:', error);
                         } finally {
                             this.isLoading = false;
                         }
