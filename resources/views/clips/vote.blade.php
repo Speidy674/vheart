@@ -59,7 +59,7 @@
                         :title="__('clips.vote.form.fields.vote.label')"
                         class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-all duration-150 ease-out active:scale-95 sm:hover:scale-110 sm:hover:text-destructive group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full data-[armed=true]:scale-110 data-[armed=true]:ring-2 data-[armed=true]:ring-destructive data-[armed=true]:bg-destructive/10"
                     >
-                        <x-lucide-heart defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-destructive transition-colors group-data-[armed=true]:text-destructive" />
+                        <x-lucide-heart defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-destructive transition-colors group-data-[armed=true]:text-destructive group-data-[armed=true]:scale-110 group-data-[armed=true]:fill-current" />
                         <span class="sr-only">{{ __('clips.vote.form.fields.vote.label') }}</span>
                     </x-ui.button>
 
@@ -73,7 +73,7 @@
                         :title="__('clips.vote.form.fields.skip.label')"
                         class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-all duration-150 ease-out active:scale-95 sm:hover:scale-110 group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full data-[armed=true]:scale-110 data-[armed=true]:ring-2 data-[armed=true]:ring-muted-foreground data-[armed=true]:bg-muted/30"
                     >
-                        <x-lucide-circle-x defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-muted-foreground transition-colors group-data-[armed=true]:text-muted-foreground" />
+                        <x-lucide-circle-x defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-muted-foreground transition-colors group-data-[armed=true]:text-muted-foreground group-data-[armed=true]:scale-110" />
                         <span class="sr-only">{{ __('clips.vote.form.fields.skip.label') }}</span>
                     </x-ui.button>
                 </div>
