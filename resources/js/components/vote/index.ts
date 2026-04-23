@@ -1,0 +1,150 @@
+import { AlpineComponent } from 'alpinejs';
+import clipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
+
+const MINIMUM_RATE_LIMIT = 6;
+const INTERACTION_ARM_TIMEOUT = 3000;
+
+export interface ClipBroadcaster {
+    name: string;
+    avatar: string;
+}
+
+export interface ClipVoteNextClip {
+    id: number;
+    slug: string;
+    clip_duration: number;
+    broadcaster: ClipBroadcaster;
+}
+
+export interface ClipVoteConfig {
+    clipTwitchId: string;
+    clipId: number | null;
+    clipBroadcasterAvatar: string;
+    clipBroadcasterUrl: string;
+    clipBroadcasterName: string;
+    hasBroadcaster: boolean;
+    hasClip: boolean;
+    initialDuration: number;
+    reportItems: { type: string; id: number }[] | null;
+}
+
+export interface ClipVoteData extends ClipVoteConfig {
+    timeLeft: number;
+    isLoading: boolean;
+    timer: ReturnType<typeof setInterval> | null;
+    armedButton: 'like' | 'skip' | null;
+    armTimeout: ReturnType<typeof setTimeout> | null;
+    keyboardHandler: ((e: KeyboardEvent) => void) | null;
+    startTimer(seconds: number): void;
+    arm(type: 'like' | 'skip'): Promise<void>;
+    vote(decision: 0 | 1): Promise<void>;
+}
+
+export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
+    ...config,
+    timeLeft: 0,
+    isLoading: false,
+    timer: null,
+    armedButton: null,
+    armTimeout: null,
+    keyboardHandler: null,
+
+    init() {
+        this.startTimer(config.initialDuration * 0.3);
+
+        this.keyboardHandler = (e: KeyboardEvent) => {
+            if (this.isLoading || !this.hasClip || this.timeLeft > 0) return;
+
+            if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowLeft')
+                void this.arm('like');
+            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowRight')
+                void this.arm('skip');
+        };
+
+        window.addEventListener('keydown', this.keyboardHandler);
+    },
+
+    destroy() {
+        if (this.keyboardHandler) {
+            window.removeEventListener('keydown', this.keyboardHandler);
+        }
+        if (this.timer) clearInterval(this.timer);
+        if (this.armTimeout) clearTimeout(this.armTimeout);
+    },
+
+    startTimer(seconds: number) {
+        this.timeLeft =
+            !seconds || seconds < MINIMUM_RATE_LIMIT
+                ? MINIMUM_RATE_LIMIT
+                : Math.round(seconds);
+
+        if (this.timer) clearInterval(this.timer);
+        this.timer = setInterval(() => {
+            if (this.timeLeft > 0) {
+                this.timeLeft--;
+            } else {
+                clearInterval(this.timer!);
+            }
+        }, 1000);
+    },
+
+    async arm(type: 'like' | 'skip') {
+        if (this.isLoading || !this.hasClip) return;
+
+        if (this.armedButton === type) {
+            this.armedButton = null;
+            clearTimeout(this.armTimeout!);
+            await this.vote(type === 'like' ? 1 : 0);
+            return;
+        }
+
+        this.armedButton = type;
+        clearTimeout(this.armTimeout!);
+        this.armTimeout = setTimeout(() => {
+            this.armedButton = null;
+        }, INTERACTION_ARM_TIMEOUT);
+    },
+
+    async vote(decision: 0 | 1) {
+        if (this.isLoading || !this.hasClip) return;
+        this.isLoading = true;
+        this.reportItems = [];
+
+        try {
+            const response = await window.axios.post(
+                clipVoteController.store().url,
+                {
+                    voted: decision,
+                },
+                {
+                    headers: { Accept: 'application/json' },
+                },
+            );
+
+            const nextClip: ClipVoteNextClip | null = response.data;
+
+            if (nextClip?.id) {
+                this.hasClip = true;
+                this.clipTwitchId = nextClip.slug;
+                this.clipId = nextClip.id;
+                this.reportItems = [{ type: 'clip', id: this.clipId }];
+                this.clipBroadcasterAvatar = nextClip.broadcaster.avatar;
+                this.clipBroadcasterUrl = `https://twitch.tv/${nextClip.broadcaster.name}`;
+                this.clipBroadcasterName = nextClip.broadcaster.name;
+                this.hasBroadcaster = !!nextClip.broadcaster;
+                this.startTimer(nextClip.clip_duration * 0.3);
+            } else {
+                this.hasClip = false;
+                this.clipTwitchId = '';
+                this.clipId = null;
+                this.reportItems = null;
+                this.clipBroadcasterAvatar = '';
+                this.clipBroadcasterUrl = '';
+                this.clipBroadcasterName = '';
+                this.hasBroadcaster = false;
+            }
+        } finally {
+            this.isLoading = false;
+        }
+    },
+});

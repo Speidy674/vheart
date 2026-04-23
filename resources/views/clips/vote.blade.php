@@ -2,7 +2,19 @@
     :title="__('clips.vote.page_title')"
     style="--base-w: 32rem; --growth: 24; --max-w: 80rem;"
     class="md:w-[clamp(var(--base-w),calc(var(--base-w)+var(--growth)*((100svw-40rem)/60)),var(--max-w))] w-full mx-auto 2xl:pt-8 space-y-2"
-    x-data="clipVote"
+    x-load
+    x-data="clipVote({
+        clipTwitchId: '{{ $clip?->twitch_id ?? '' }}',
+        clipId: {{ $clip?->id ?? 'null' }},
+        clipBroadcasterAvatar: '{{ $clip?->owner?->proxiedContentUrl() ?? '' }}',
+        clipBroadcasterUrl: 'https://twitch.tv/{{ $clip?->owner?->name ?? '' }}',
+        clipBroadcasterName: '{{ $clip?->owner?->name ?? '' }}',
+        hasBroadcaster: {{ $clip?->owner ? 'true' : 'false' }},
+        hasClip: {{ $clip ? 'true' : 'false' }},
+        votes: {{ $clip?->absolute_votes ?? 0 }},
+        initialDuration: {{ $clip?->duration ?? 0 }},
+        reportItems: {{ $clip ? '[{ type: \'clip\', id: ' . $clip->id . ' }]' : 'null' }},
+    })"
 >
     <section class="w-full aspect-video h-full relative bg-black rounded-xl border border-muted shadow-sm overflow-hidden select-none">
         <template x-if="hasClip">
@@ -86,115 +98,4 @@
             />
         </div>
     </section>
-
-    @pushonce('elements')
-        <script>
-            const MINIMUM_RATE_LIMIT = 6;
-            const INTERACTION_ARM_TIMEOUT = 3000;
-
-            document.addEventListener('alpine:init', () => {
-                Alpine.data('clipVote', () => ({
-                    timeLeft: 0,
-                    clipTwitchId: '{{ $clip?->twitch_id ?? '' }}',
-                    clipId: {{ $clip?->id ?? 'null' }},
-                    clipBroadcasterAvatar: '{{ $clip?->owner?->proxiedContentUrl() ?? '' }}',
-                    clipBroadcasterUrl: 'https://twitch.tv/{{ $clip?->owner?->name ?? '' }}',
-                    clipBroadcasterName: '{{ $clip?->owner?->name ?? '' }}',
-                    hasBroadcaster: {{ $clip?->owner ? 'true' : 'false' }},
-                    hasClip: {{ $clip ? 'true' : 'false' }},
-                    votes: {{ $clip?->absolute_votes ?? 0 }},
-                    isLoading: false,
-                    timer: null,
-                    armedButton: null,
-                    armTimeout: null,
-                    reportItems: @if($clip) [{ type: 'clip', id: {{ $clip->id }}}] @else null @endif ,
-                    keyboardHandler: null,
-                    init() {
-                        this.startTimer({{ ($clip?->duration ?? 0) * 0.3 }});
-                        this.keyboardHandler = (e) => {
-                            if (this.isLoading || !this.hasClip || this.timeLeft > 0) return;
-
-                            if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowLeft') this.arm('like');
-                            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowRight') this.arm('skip');
-                        };
-                        window.addEventListener('keydown', this.keyboardHandler);
-                    },
-                    destroy() {
-                        window.removeEventListener('keydown', this.keyboardHandler);
-                    },
-                    startTimer(seconds) {
-                        if(! seconds || seconds < MINIMUM_RATE_LIMIT) {
-                            this.timeLeft = MINIMUM_RATE_LIMIT;
-                        } else {
-                            this.timeLeft = Math.round(seconds);
-                        }
-
-                        if (this.timer) clearInterval(this.timer);
-                        this.timer = setInterval(() => {
-                            if (this.timeLeft > 0) {
-                                this.timeLeft--;
-                            } else {
-                                clearInterval(this.timer);
-                            }
-                        }, 1000);
-                    },
-                    async arm(type) {
-                        if (this.isLoading || !this.hasClip) return;
-
-                        if (this.armedButton === type) {
-                            this.armedButton = null;
-                            clearTimeout(this.armTimeout);
-                            await this.vote(type === 'like' ? 1 : 0);
-                            return;
-                        }
-
-                        this.armedButton = type;
-                        clearTimeout(this.armTimeout);
-                        this.armTimeout = setTimeout(() => {
-                            this.armedButton = null;
-                        }, INTERACTION_ARM_TIMEOUT);
-                    },
-                    async vote(decision) {
-                        if (this.isLoading || !this.hasClip) return;
-                        this.isLoading = true;
-                        this.reportItems = [];
-
-                        try {
-                            const response = await window.axios.post('{{ route('vote.submit') }}', {
-                                voted: decision
-                            }, {
-                                headers: { 'Accept': 'application/json' }
-                            });
-
-                            const nextClip = response.data;
-
-                            if (nextClip && nextClip.id) {
-                                this.hasClip = true;
-                                this.clipTwitchId = nextClip.slug;
-                                this.clipId = nextClip.id;
-                                this.votes = nextClip.votes || 0;
-                                this.reportItems = [{ type: 'clip', id: this.clipId}];
-                                this.clipBroadcasterAvatar = nextClip.broadcaster.avatar;
-                                this.clipBroadcasterUrl = 'https://twitch.tv/'+nextClip.broadcaster.name;
-                                this.clipBroadcasterName = nextClip.broadcaster.name;
-                                this.hasBroadcaster = !!nextClip.broadcaster;
-                                this.startTimer(nextClip.clip_duration * 0.3);
-                            } else {
-                                this.hasClip = false;
-                                this.clipTwitchId = '';
-                                this.clipId = null;
-                                this.reportItems = null;
-                                this.clipBroadcasterAvatar = '';
-                                this.clipBroadcasterUrl = '';
-                                this.clipBroadcasterName = '';
-                                this.hasBroadcaster = false;
-                            }
-                        } finally {
-                            this.isLoading = false;
-                        }
-                    }
-                }));
-            })
-        </script>
-    @endpushonce
 </x-layout>
