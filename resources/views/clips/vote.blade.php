@@ -52,26 +52,28 @@
                     <x-ui.button
                         variant="icon"
                         type="button"
-                        @click="vote(1)"
+                        @click="arm('like')"
                         x-bind:disabled="timeLeft > 0 || isLoading || !hasClip"
+                        x-bind:data-armed="armedButton === 'like' ? 'true' : 'false'"
                         :disabled="!$clip"
                         :title="__('clips.vote.form.fields.vote.label')"
-                        class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110 sm:hover:text-destructive group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full"
+                        class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-all duration-150 ease-out active:scale-95 sm:hover:scale-110 sm:hover:text-destructive group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full data-[armed=true]:scale-110 data-[armed=true]:ring-2 data-[armed=true]:ring-destructive data-[armed=true]:bg-destructive/10"
                     >
-                        <x-lucide-heart defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-destructive transition-colors" />
+                        <x-lucide-heart defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-destructive transition-colors group-data-[armed=true]:text-destructive" />
                         <span class="sr-only">{{ __('clips.vote.form.fields.vote.label') }}</span>
                     </x-ui.button>
 
                     <x-ui.button
                         variant="icon"
                         type="button"
-                        @click="vote(0)"
+                        @click="arm('skip')"
                         :disabled="!$clip"
                         x-bind:disabled="timeLeft > 0 || isLoading || !hasClip"
+                        x-bind:data-armed="armedButton === 'skip' ? 'true' : 'false'"
                         :title="__('clips.vote.form.fields.skip.label')"
-                        class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-transform duration-150 ease-out active:scale-95 sm:hover:scale-110 group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full"
+                        class="inline size-9 place-items-center rounded-full bg-accent/25 dark:bg-black ring-1 ring-white/10 sm:size-11 transition-all duration-150 ease-out active:scale-95 sm:hover:scale-110 group relative before:absolute before:-inset-2 before:content-[''] before:rounded-full data-[armed=true]:scale-110 data-[armed=true]:ring-2 data-[armed=true]:ring-muted-foreground data-[armed=true]:bg-muted/30"
                     >
-                        <x-lucide-circle-x defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-muted-foreground transition-colors" />
+                        <x-lucide-circle-x defer class="size-4 sm:size-5 text-accent-foreground group-hover:text-muted-foreground transition-colors group-data-[armed=true]:text-muted-foreground" />
                         <span class="sr-only">{{ __('clips.vote.form.fields.skip.label') }}</span>
                     </x-ui.button>
                 </div>
@@ -88,6 +90,7 @@
     @pushonce('elements')
         <script>
             const MINIMUM_RATE_LIMIT = 6;
+            const INTERACTION_ARM_TIMEOUT = 3000;
 
             document.addEventListener('alpine:init', () => {
                 Alpine.data('clipVote', () => ({
@@ -102,6 +105,8 @@
                     votes: {{ $clip?->absolute_votes ?? 0 }},
                     isLoading: false,
                     timer: null,
+                    armedButton: null,
+                    armTimeout: null,
                     reportItems: @if($clip) [{ type: 'clip', id: {{ $clip->id }}}] @else null @endif ,
                     init() {
                         this.startTimer({{ ($clip?->duration ?? 0) * 0.3 }});
@@ -121,6 +126,22 @@
                                 clearInterval(this.timer);
                             }
                         }, 1000);
+                    },
+                    async arm(type) {
+                        if (this.isLoading || !this.hasClip) return;
+
+                        if (this.armedButton === type) {
+                            this.armedButton = null;
+                            clearTimeout(this.armTimeout);
+                            await this.vote(type === 'like' ? 1 : 0);
+                            return;
+                        }
+
+                        this.armedButton = type;
+                        clearTimeout(this.armTimeout);
+                        this.armTimeout = setTimeout(() => {
+                            this.armedButton = null;
+                        }, INTERACTION_ARM_TIMEOUT);
                     },
                     async vote(decision) {
                         if (this.isLoading || !this.hasClip) return;
