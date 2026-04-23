@@ -108,8 +108,19 @@
                     armedButton: null,
                     armTimeout: null,
                     reportItems: @if($clip) [{ type: 'clip', id: {{ $clip->id }}}] @else null @endif ,
+                    keyboardHandler: null,
                     init() {
                         this.startTimer({{ ($clip?->duration ?? 0) * 0.3 }});
+                        this.keyboardHandler = (e) => {
+                            if (this.isLoading || !this.hasClip || this.timeLeft > 0) return;
+
+                            if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowLeft') this.arm('like');
+                            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowRight') this.arm('skip');
+                        };
+                        window.addEventListener('keydown', this.keyboardHandler);
+                    },
+                    destroy() {
+                        window.removeEventListener('keydown', this.keyboardHandler);
                     },
                     startTimer(seconds) {
                         if(! seconds || seconds < MINIMUM_RATE_LIMIT) {
