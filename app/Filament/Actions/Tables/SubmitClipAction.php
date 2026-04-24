@@ -31,6 +31,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Facades\Log;
 
 class SubmitClipAction extends Action
 {
@@ -231,12 +232,18 @@ class SubmitClipAction extends Action
                             'id' => [$clipInfo->broadcasterId],
                         ]);
 
-                    User::updateOrCreate([
-                        'id' => $broadcasterDto->id,
-                    ], [
-                        'name' => $broadcasterDto->displayName,
-                        'avatar_url' => $broadcasterDto->profileImageUrl,
-                    ]);
+                    if ($broadcasterDto) {
+                        User::updateOrCreate([
+                            'id' => $broadcasterDto->id,
+                        ], [
+                            'name' => $broadcasterDto->displayName,
+                            'avatar_url' => $broadcasterDto->profileImageUrl,
+                        ]);
+                    } else {
+                        Log::notice('Broadcaster has been removed because they where not found on twitch, possibly banned.', ['broadcaster_id' => $clipInfo->broadcasterId]);
+
+                        Broadcaster::find($clipInfo->broadcasterId)?->delete();
+                    }
 
                     User::updateOrCreate([
                         'id' => $clipInfo->creatorId,
