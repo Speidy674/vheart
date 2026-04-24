@@ -15,6 +15,7 @@ use App\Models\Clip;
 use App\Models\Clip\Tag;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
+use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\Exceptions\TwitchApiException;
 use App\Services\Twitch\TwitchService;
@@ -222,6 +223,20 @@ class SubmitClipAction extends Action
                             'id' => $clipInfo->broadcasterId,
                         ]);
                     }
+
+                    /** @var UserDto $broadcasterDto */
+                    [$broadcasterDto] = $twitchService
+                        ->asSessionUser()
+                        ->getUsers([
+                            'id' => [$clipInfo->broadcasterId],
+                        ]);
+
+                    User::updateOrCreate([
+                        'id' => $broadcasterDto->id,
+                    ], [
+                        'name' => $broadcasterDto->displayName,
+                        'avatar_url' => $broadcasterDto->profileImageUrl,
+                    ]);
 
                     User::updateOrCreate([
                         'id' => $clipInfo->creatorId,
