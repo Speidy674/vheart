@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7b5ce4af21461d3e8cba59c028cd94a",
+    "content-hash": "97d63491c6c725a6533cd1718f6f739b",
     "packages": [
         {
             "name": "blade-ui-kit/blade-heroicons",
@@ -9918,16 +9918,16 @@
         },
         {
             "name": "ublabs/blade-simple-icons",
-            "version": "0.195.0",
+            "version": "0.196.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ublabs/blade-simple-icons.git",
-                "reference": "cde342c6eee31932f3bc955aa0e1f3bb0d016b6c"
+                "reference": "87d88fc12a87ec6f3ac675f8d8af22e489dac42a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ublabs/blade-simple-icons/zipball/cde342c6eee31932f3bc955aa0e1f3bb0d016b6c",
-                "reference": "cde342c6eee31932f3bc955aa0e1f3bb0d016b6c",
+                "url": "https://api.github.com/repos/ublabs/blade-simple-icons/zipball/87d88fc12a87ec6f3ac675f8d8af22e489dac42a",
+                "reference": "87d88fc12a87ec6f3ac675f8d8af22e489dac42a",
                 "shasum": ""
             },
             "require": {
@@ -9971,7 +9971,7 @@
             ],
             "support": {
                 "issues": "https://github.com/ublabs/blade-simple-icons/issues",
-                "source": "https://github.com/ublabs/blade-simple-icons/tree/0.195.0"
+                "source": "https://github.com/ublabs/blade-simple-icons/tree/0.196.0"
             },
             "funding": [
                 {
@@ -9979,7 +9979,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-12T14:34:15+00:00"
+            "time": "2026-04-19T14:34:26+00:00"
         },
         {
             "name": "ueberdosis/tiptap-php",
