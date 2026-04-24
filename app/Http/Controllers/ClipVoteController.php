@@ -77,7 +77,11 @@ class ClipVoteController extends Controller
     protected function resolveNextClip(Request $request): ?Clip
     {
         while ($clipId = $this->getNextClipId($request)) {
-            if ($clip = Clip::query()->withoutGlobalScope(ClipPermissionScope::class)->find($clipId)) {
+            if ($clip = Clip::query()
+                ->withoutGlobalScope(ClipPermissionScope::class)
+                ->whereNoVotesFrom($request->user())
+                ->find($clipId)
+            ) {
                 return $clip;
             }
 
