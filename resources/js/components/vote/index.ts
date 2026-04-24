@@ -34,6 +34,9 @@ export interface ClipVoteData extends ClipVoteConfig {
     timer: ReturnType<typeof setInterval> | null;
     armedButton: 'like' | 'skip' | null;
     armTimeout: ReturnType<typeof setTimeout> | null;
+    isTouch: boolean;
+    isTouchHandler: ((e: MediaQueryListEvent) => void) | null;
+    isTouchQuery: MediaQueryList | null;
     keyboardHandler: ((e: KeyboardEvent) => void) | null;
     startTimer(seconds: number): void;
     arm(type: 'like' | 'skip'): Promise<void>;
@@ -47,6 +50,9 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
     timer: null,
     armedButton: null,
     armTimeout: null,
+    isTouch: false,
+    isTouchHandler: null,
+    isTouchQuery: null,
     keyboardHandler: null,
 
     init() {
@@ -61,13 +67,30 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
                 void this.arm('skip');
         };
 
+        this.isTouchQuery = window.matchMedia('(pointer: coarse)');
+        this.isTouch = this.isTouchQuery.matches;
+
+        this.isTouchHandler = (e) => {
+            console.debug('Is Touch', e.matches);
+            this.isTouch = e.matches;
+        };
+
         window.addEventListener('keydown', this.keyboardHandler);
+        this.isTouchQuery.addEventListener('change', this.isTouchHandler);
     },
 
     destroy() {
         if (this.keyboardHandler) {
             window.removeEventListener('keydown', this.keyboardHandler);
         }
+
+        if (this.isTouchQuery && this.isTouchHandler) {
+            this.isTouchQuery.removeEventListener(
+                'change',
+                this.isTouchHandler,
+            );
+        }
+
         if (this.timer) clearInterval(this.timer);
         if (this.armTimeout) clearTimeout(this.armTimeout);
     },
@@ -90,6 +113,11 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
 
     async arm(type: 'like' | 'skip') {
         if (this.isLoading || !this.hasClip) return;
+
+        if (!this.isTouch) {
+            await this.vote(type === 'like' ? 1 : 0);
+            return;
+        }
 
         if (this.armedButton === type) {
             this.armedButton = null;
