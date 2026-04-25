@@ -15,6 +15,7 @@ use App\Models\Clip;
 use App\Models\Clip\Tag;
 use App\Models\User;
 use App\Services\Twitch\Data\ClipDto;
+use App\Services\Twitch\Data\UserDto;
 use App\Services\Twitch\Enums\TwitchEndpoints;
 use App\Services\Twitch\Exceptions\TwitchApiException;
 use App\Services\Twitch\TwitchService;
@@ -30,6 +31,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Facades\Log;
 
 class SubmitClipAction extends Action
 {
@@ -221,6 +223,26 @@ class SubmitClipAction extends Action
                         Broadcaster::firstOrCreate([
                             'id' => $clipInfo->broadcasterId,
                         ]);
+                    }
+
+                    /** @var UserDto $broadcasterDto */
+                    [$broadcasterDto] = $twitchService
+                        ->asSessionUser()
+                        ->getUsers([
+                            'id' => [$clipInfo->broadcasterId],
+                        ]);
+
+                    if ($broadcasterDto) {
+                        User::updateOrCreate([
+                            'id' => $broadcasterDto->id,
+                        ], [
+                            'name' => $broadcasterDto->displayName,
+                            'avatar_url' => $broadcasterDto->profileImageUrl,
+                        ]);
+                    } else {
+                        Log::notice('Broadcaster has been removed because they where not found on twitch, possibly banned.', ['broadcaster_id' => $clipInfo->broadcasterId]);
+
+                        Broadcaster::find($clipInfo->broadcasterId)?->delete();
                     }
 
                     User::updateOrCreate([
