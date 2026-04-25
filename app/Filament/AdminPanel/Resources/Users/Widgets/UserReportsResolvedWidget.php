@@ -93,6 +93,6 @@ class UserReportsResolvedWidget extends ChartWidget
         $ttl = $filter === 'day' ? now()->addMinute() : now()->addHour();
         $cacheKey = 'AdminPanel:charts:'.static::class.":$table:$filter:user:{$this->record->getKey()}";
 
-        return Cache::remember($cacheKey, $ttl, fn () => $this->getBaseQuery($table, $start, $end, $interval));
+        return Cache::remember($cacheKey, $ttl, fn (): Collection => $this->getBaseQuery($table, $start, $end, $interval));
     }
 }
