@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\GenerateVotingQueueAction;
 use App\Enums\ClipVoteType;
 use App\Enums\Permission;
+use App\Http\Resources\Clip\ClipVoteResource;
 use App\Models\Clip;
 use App\Models\Scopes\ClipPermissionScope;
 use Illuminate\Contracts\View\View;
@@ -71,7 +72,7 @@ class ClipVoteController extends Controller
 
         $nextClip = $this->resolveNextClip($request);
 
-        return new JsonResponse($nextClip?->toResource());
+        return new JsonResponse($nextClip?->toResource(ClipVoteResource::class));
     }
 
     protected function resolveNextClip(Request $request): ?Clip
