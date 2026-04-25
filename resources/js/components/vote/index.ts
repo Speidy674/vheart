@@ -1,6 +1,5 @@
 import { AlpineComponent } from 'alpinejs';
 import clipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
-import { CategoryResource } from '@/types';
 
 const MINIMUM_RATE_LIMIT = 6;
 const INTERACTION_ARM_TIMEOUT = 3000;
@@ -21,7 +20,6 @@ export type ClipVoteResource = {
         name: string;
         avatar: string;
     };
-    category?: CategoryResource;
 };
 
 export interface ClipVoteConfig {

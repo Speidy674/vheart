@@ -31,8 +31,6 @@ class ClipVoteResource extends JsonResource
                 'name' => $this->owner->name,
                 'avatar' => $this->owner->proxiedContentUrl(),
             ],
-
-            'category' => $this->whenLoaded('category', $this->category->toResource()),
         ];
     }
 }
