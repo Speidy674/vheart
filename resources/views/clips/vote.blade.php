@@ -1,7 +1,7 @@
 <x-layout
     :title="__('clips.vote.page_title')"
     style="--base-w: 32rem; --growth: 24; --max-w: 80rem;"
-    class="md:w-[clamp(var(--base-w),calc(var(--base-w)+var(--growth)*((100svw-40rem)/60)),var(--max-w))] w-full mx-auto 2xl:pt-8 space-y-2"
+    class="md:w-[clamp(var(--base-w),calc(var(--base-w)+var(--growth)*((100svw-40rem)/60)),var(--max-w))] w-full mx-auto 2xl:pt-8 space-y-2 flex flex-col justify-center md:block"
     x-load
     x-data="clipVote({
         clipTwitchId: '{{ $clip?->twitch_id ?? '' }}',
