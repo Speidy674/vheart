@@ -69,7 +69,7 @@
     @cookieconsentscripts
 </head>
 <body class="font-inter antialiased">
-    <div class="flex flex-col m-auto min-h-screen w-[95svw] md:w-[98svw] max-w-480">
+    <div class="flex flex-col m-auto min-h-svh w-[95svw] md:w-[98svw] max-w-480">
         <x-layout.header />
 
         <main {{ $attributes->twMerge("grow") }}>
