@@ -44,6 +44,8 @@ export interface ClipVoteData extends ClipVoteConfig {
     startTimer(seconds: number): void;
     arm(type: 'like' | 'skip'): Promise<void>;
     vote(decision: 0 | 1): Promise<void>;
+    isTextInput(el: HTMLElement | null): boolean;
+
 }
 
 export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
@@ -63,6 +65,8 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
 
         this.keyboardHandler = (e: KeyboardEvent) => {
             if (this.isLoading || !this.hasClip || this.timeLeft > 0) return;
+
+            if(e.target instanceof HTMLElement && this.isTextInput(e.target as HTMLElement)) return;
 
             if (e.key === 'ArrowLeft')
                 void this.arm('like');
@@ -177,5 +181,11 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
         } finally {
             this.isLoading = false;
         }
+    },
+
+    isTextInput (el: HTMLElement | null) {
+        if (!el) return false;
+        const tag = (el.tagName || '').toLowerCase();
+        return tag === 'input' || tag === 'textarea' || el.isContentEditable;
     },
 });
