@@ -1,5 +1,6 @@
-import { AlpineComponent } from 'alpinejs';
 import clipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
+import { PublicUser } from '@/types';
+import { AlpineComponent } from 'alpinejs';
 
 const MINIMUM_RATE_LIMIT = 6;
 const INTERACTION_ARM_TIMEOUT = 3000;
@@ -15,11 +16,7 @@ export type ClipVoteResource = {
     duration: number;
     url: string;
     thumbnail_url: string;
-    broadcaster: {
-        id: number;
-        name: string;
-        avatar: string;
-    };
+    broadcaster: PublicUser;
 };
 
 export interface ClipVoteConfig {
