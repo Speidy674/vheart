@@ -5,7 +5,7 @@
     target="_blank"
     {{ $attributes->twMerge('block group focus-visible:ring-primary-500 relative aspect-video w-full overflow-hidden rounded-md bg-gray-200 outline-none focus-visible:ring-2 dark:bg-gray-800') }}
 >
-    <x-image src="{{ $clip->proxiedContentUrl() }}" :fallback="Vite::asset('resources/images/webp/clips/no_thumbnail.webp')" class="aspect-video">
+    <x-image cookieName="external-services" src="{{ $clip->thumbnail_url ?? '' }}" :fallback="Vite::asset('resources/images/webp/clips/no_thumbnail.webp')" class="aspect-video">
         <x-slot:placeholder class="animate-pulse">
             <x-lucide-video defer class="size-16 opacity-25" />
         </x-slot:placeholder>
