@@ -64,9 +64,9 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
         this.keyboardHandler = (e: KeyboardEvent) => {
             if (this.isLoading || !this.hasClip || this.timeLeft > 0) return;
 
-            if (e.key === 'l' || e.key === 'L' || e.key === 'ArrowLeft')
+            if (e.key === 'ArrowLeft')
                 void this.arm('like');
-            if (e.key === 's' || e.key === 'S' || e.key === 'ArrowRight')
+            if (e.key === 'ArrowRight')
                 void this.arm('skip');
         };
 
