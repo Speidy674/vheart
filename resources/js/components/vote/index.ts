@@ -16,7 +16,7 @@ export type ClipVoteResource = {
     duration: number;
     url: string;
     thumbnail_url: string;
-    broadcaster?: {
+    broadcaster: {
         id: number;
         name: string;
         avatar: string;

@@ -26,11 +26,11 @@ class ClipVoteResource extends JsonResource
             'url' => $this->getClipUrl(),
             'thumbnail_url' => $this->proxiedContentUrl(),
 
-            'broadcaster' => $this->whenLoaded('owner', [
+            'broadcaster' => [
                 'id' => $this->broadcaster_id,
                 'name' => $this->owner->name,
                 'avatar' => $this->owner->proxiedContentUrl(),
-            ]),
+            ],
 
             'category' => $this->whenLoaded('category', $this->category->toResource()),
         ];
