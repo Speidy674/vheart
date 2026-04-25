@@ -24,18 +24,6 @@ export type ClipVoteResource = {
     category?: CategoryResource;
 };
 
-export interface ClipBroadcaster {
-    name: string;
-    avatar: string;
-}
-
-export interface ClipVoteNextClip {
-    id: number;
-    slug: string;
-    clip_duration: number;
-    broadcaster: ClipBroadcaster;
-}
-
 export interface ClipVoteConfig {
     clipTwitchId: string;
     clipId: number | null;
@@ -169,7 +157,7 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
                 },
             );
 
-            const nextClip: ClipVoteNextClip | null = response.data;
+            const nextClip: ClipVoteResource | null = response.data;
 
             if (nextClip?.id) {
                 this.hasClip = true;
@@ -180,7 +168,7 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
                 this.clipBroadcasterUrl = `https://twitch.tv/${nextClip.broadcaster.name}`;
                 this.clipBroadcasterName = nextClip.broadcaster.name;
                 this.hasBroadcaster = !!nextClip.broadcaster;
-                this.startTimer(nextClip.clip_duration * 0.3);
+                this.startTimer(nextClip.duration * 0.3);
             } else {
                 this.hasClip = false;
                 this.clipTwitchId = '';
