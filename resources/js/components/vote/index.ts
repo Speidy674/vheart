@@ -5,6 +5,10 @@ import { CategoryResource } from '@/types';
 const MINIMUM_RATE_LIMIT = 6;
 const INTERACTION_ARM_TIMEOUT = 3000;
 
+/**
+ * @resource App\Http\Resources\Clip\ClipVoteResource
+ * @see App/Http/Resources/Clip/ClipVoteResource.php
+ */
 export type ClipVoteResource = {
     id: number;
     slug: string;
