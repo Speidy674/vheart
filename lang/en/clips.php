@@ -83,6 +83,10 @@ return [
             'other' => 'Other',
         ],
     ],
+
+    'preview' => [
+        'consent-required' => 'Requires external services consent to view this preview.',
+    ],
     // Untouched
 
     'recent' => [

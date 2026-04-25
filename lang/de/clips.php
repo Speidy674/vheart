@@ -78,6 +78,10 @@ return [
         ],
     ],
 
+    'preview' => [
+        'consent-required' => 'Erfordert Zustimmung zu externen Diensten um diese Vorschau anzuzeigen.',
+    ],
+
     // Untouched
 
     'recent' => [
