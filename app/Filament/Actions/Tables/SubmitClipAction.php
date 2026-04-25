@@ -138,7 +138,7 @@ class SubmitClipAction extends Action
                     $bypassMaxAge = auth()->user()?->can(Permission::BypassMaximumAgeLimitCheck) && $data['maximum_age'];
                     $bypassCategoryBan = auth()->user()?->can(Permission::BypassBannedCategoryCheck) && $data['category_ban'];
 
-                    if (Clip::query()->where('twitch_id', $clipInfo->id)->exists()) {
+                    if (Clip::query()->withTrashed()->where('twitch_id', $clipInfo->id)->exists()) {
                         Notification::make()->title(__('clips.errors.clip_already_known'))->danger()->send();
 
                         $this->halt();

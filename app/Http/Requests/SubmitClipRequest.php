@@ -163,6 +163,7 @@ class SubmitClipRequest extends FormRequest
 
                 // Check if clip already exists
                 $clipAlreadyExists = Clip::query()
+                    ->withTrashed()
                     ->where('twitch_id', $this->clipInfo->id)
                     ->exists();
 
