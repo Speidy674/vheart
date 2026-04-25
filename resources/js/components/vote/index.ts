@@ -1,20 +1,23 @@
-import { AlpineComponent } from 'alpinejs';
 import clipVoteController from '@/actions/App/Http/Controllers/ClipVoteController';
+import { PublicUser } from '@/types';
+import { AlpineComponent } from 'alpinejs';
 
 const MINIMUM_RATE_LIMIT = 6;
 const INTERACTION_ARM_TIMEOUT = 3000;
 
-export interface ClipBroadcaster {
-    name: string;
-    avatar: string;
-}
-
-export interface ClipVoteNextClip {
+/**
+ * @resource App\Http\Resources\Clip\ClipVoteResource
+ * @see App/Http/Resources/Clip/ClipVoteResource.php
+ */
+export type ClipVoteResource = {
     id: number;
     slug: string;
-    clip_duration: number;
-    broadcaster: ClipBroadcaster;
-}
+    title: string;
+    duration: number;
+    url: string;
+    thumbnail_url: string;
+    broadcaster: PublicUser;
+};
 
 export interface ClipVoteConfig {
     clipTwitchId: string;
@@ -149,7 +152,7 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
                 },
             );
 
-            const nextClip: ClipVoteNextClip | null = response.data;
+            const nextClip: ClipVoteResource | null = response.data;
 
             if (nextClip?.id) {
                 this.hasClip = true;
@@ -160,7 +163,7 @@ export default (config: ClipVoteConfig): AlpineComponent<ClipVoteData> => ({
                 this.clipBroadcasterUrl = `https://twitch.tv/${nextClip.broadcaster.name}`;
                 this.clipBroadcasterName = nextClip.broadcaster.name;
                 this.hasBroadcaster = !!nextClip.broadcaster;
-                this.startTimer(nextClip.clip_duration * 0.3);
+                this.startTimer(nextClip.duration * 0.3);
             } else {
                 this.hasClip = false;
                 this.clipTwitchId = '';
