@@ -32,6 +32,8 @@ return [
             'rules' => [
                 'heading' => 'Richtlinien',
                 'items' => [
+                    'max_age' => 'Clips dürfen nicht älter als :age sein.',
+                    'minimum_duration' => 'Clips müssen mindestens :duration sekunden lang sein.',
                     'registered' => 'Clip muss von einem registrierten Broadcaster stammen',
                     'consent' => 'Broadcaster muss der Verwendung zugestimmt haben',
                     'no_explicit' => 'Keine expliziten oder beleidigenden Inhalte',
