@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\Permission;
 use App\Models\Broadcaster\Broadcaster;
 use App\Models\Category;
 use App\Models\Clip;
@@ -73,7 +74,10 @@ class SubmitClipRequest extends FormRequest
                     return;
                 }
 
-                if ($totalLimit = config('vheart.clips.submission.limits.total', false)) {
+                if (
+                    ($totalLimit = config('vheart.clips.submission.limits.total', false))
+                    && $this->user()->cannot(Permission::CanIgnoreTotalSubmissionLimits)
+                ) {
                     $total = Clip::query()
                         ->withTrashed()
                         ->whereSubmittedAfter(now()->startOfDay())
@@ -98,7 +102,10 @@ class SubmitClipRequest extends FormRequest
                 }
 
                 // Check Limitations
-                if ($broadcasterLimit = config('vheart.clips.submission.limits.per_broadcaster', false)) {
+                if (
+                    ($broadcasterLimit = config('vheart.clips.submission.limits.per_broadcaster', false))
+                    && $this->user()->cannot(Permission::CanIgnoreBroadcasterSubmissionLimits)
+                ) {
                     $total = Clip::query()
                         ->withTrashed()
                         ->whereSubmittedAfter(now()->startOfDay())
