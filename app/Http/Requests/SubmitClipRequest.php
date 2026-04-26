@@ -73,6 +73,20 @@ class SubmitClipRequest extends FormRequest
                     return;
                 }
 
+                if ($totalLimit = config('vheart.clips.submission.limits.total', false)) {
+                    $total = Clip::query()
+                        ->withTrashed()
+                        ->whereSubmittedAfter(now()->startOfDay())
+                        ->whereSubmitterId($this->user()->id)
+                        ->count();
+
+                    if ($total >= $totalLimit) {
+                        $validator->errors()->add('clip_url', __('clips.errors.total_limit_reached'));
+
+                        return;
+                    }
+                }
+
                 $this->clipInfo = $this->twitchService
                     ->asSessionUser()
                     ->getClip($this->clipId);
@@ -84,6 +98,21 @@ class SubmitClipRequest extends FormRequest
                 }
 
                 // Check Limitations
+                if ($broadcasterLimit = config('vheart.clips.submission.limits.per_broadcaster', false)) {
+                    $total = Clip::query()
+                        ->withTrashed()
+                        ->whereSubmittedAfter(now()->startOfDay())
+                        ->whereBroadcastBy($this->clipInfo->broadcasterId)
+                        ->whereSubmitterId($this->user()->id)
+                        ->count();
+
+                    if ($total >= $broadcasterLimit) {
+                        $validator->errors()->add('clip_url', __('clips.errors.broadcaster_limit_reached'));
+
+                        return;
+                    }
+                }
+
                 if ($this->clipInfo->duration < config('vheart.clips.submission.minimum_length')) {
                     $validator->errors()->add('clip_url', __('clips.errors.too_short', [
                         'seconds' => config('vheart.clips.submission.minimum_length'),

@@ -113,6 +113,8 @@ return [
         'generic' => 'Ein Fehler ist aufgetreten. Bitte versuche es erneut.',
         'too_old' => 'Dieser Clip ist zu alt. Wir akzeptieren nur Clips, die nicht älter als :age sind.',
         'too_short' => 'Dieser Clip ist zu kurz. Clips müssen mindestens :seconds Sekunden lang sein.',
+        'total_limit_reached' => 'Tageslimit erreicht, bitte versuch es morgen wieder.',
+        'broadcaster_limit_reached' => 'Tageslimit für diesen Broadcaster erreicht, bitte versuch es morgen wieder.',
     ],
 
     'status' => [
