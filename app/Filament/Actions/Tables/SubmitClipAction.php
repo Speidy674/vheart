@@ -116,13 +116,31 @@ class SubmitClipAction extends Action
             ->action(function (array $data, ImportClipAction $importClipAction, TwitchService $twitchService): void {
                 try {
                     $clipId = $twitchService->parseClipId($data['uri']);
+                    $user = auth()->user();
+
                     if (! $clipId) {
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
                         $this->halt();
                     }
 
-                    $user = auth()->user();
+                    if (
+                        ($totalLimit = config('vheart.clips.submission.limits.total', false))
+                        && $user->cannot(Permission::CanIgnoreTotalSubmissionLimits)
+                    ) {
+                        $total = Clip::query()
+                            ->withTrashed()
+                            ->whereSubmittedAfter(now()->startOfDay())
+                            ->whereSubmitterId($user->id)
+                            ->count();
+
+                        if ($total >= $totalLimit) {
+                            Notification::make()->title(__('clips.errors.total_limit_reached'))->danger()->send();
+
+                            $this->halt();
+                        }
+                    }
+
                     $clipInfo = $twitchService
                         ->asSessionUser()
                         ->getClip($clipId);
@@ -131,6 +149,24 @@ class SubmitClipAction extends Action
                         Notification::make()->title(__('clips.errors.clip_not_found'))->danger()->send();
 
                         $this->halt();
+                    }
+
+                    if (
+                        ($broadcasterLimit = config('vheart.clips.submission.limits.per_broadcaster', false))
+                        && $user->cannot(Permission::CanIgnoreBroadcasterSubmissionLimits)
+                    ) {
+                        $total = Clip::query()
+                            ->withTrashed()
+                            ->whereSubmittedAfter(now()->startOfDay())
+                            ->whereBroadcastBy($clipInfo->broadcasterId)
+                            ->whereSubmitterId($user->id)
+                            ->count();
+
+                        if ($total >= $broadcasterLimit) {
+                            Notification::make()->title(__('clips.errors.broadcaster_limit_reached'))->danger()->send();
+
+                            $this->halt();
+                        }
                     }
 
                     $bypassBroadcasterConsent = Feature::isActive(FeatureFlag::IgnoreBroadcasterConsent) || (auth()->user()?->can(Permission::BypassConsentCheck) && $data['broadcaster_consent']);
