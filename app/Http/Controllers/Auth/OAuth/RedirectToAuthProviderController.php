@@ -24,7 +24,6 @@ class RedirectToAuthProviderController extends Controller
             ->scopes([
                 'channel:read:vips', // Required to access VIP list
                 'user:read:moderated_channels', // Required to see who a user moderates for
-                'channel:manage:clips', // Required to allow the VHeart team to download clips for processing
             ])
             ->redirect();
     }
