@@ -22,7 +22,10 @@ class RedirectToAuthProviderController extends Controller
     {
         return Socialite::driver('twitch')
             ->scopes([
-                'channel:read:vips', // Required to access VIP list
+                /**
+                 * @see https://github.com/VHeart-Clips/website/issues/714
+                 */
+                // 'channel:read:vips', // Required to access VIP list
                 'user:read:moderated_channels', // Required to see who a user moderates for
             ])
             ->redirect();
